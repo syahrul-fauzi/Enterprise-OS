@@ -2,6 +2,9 @@ import click
 import json
 from pathlib import Path
 from typing import Optional, Dict, Any, List
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from state_utils import state_path
 
 class EvidenceEngine:
     """Evidence Engine utama untuk EOS - Mengolah evidence menjadi keputusan governance otomatis"""
@@ -50,7 +53,7 @@ class EvidenceEngine:
                 })
 
         # 2. Baca verification results untuk hitung confidence
-        verification_file = Path("/root/Enterprise-OS/.eos-state/verification/DIGIOP-PILOT-001-VERIFICATION_verification.json")
+        verification_file = state_path('verification', 'DIGIOP-PILOT-001-VERIFICATION_verification.json')
         verification_data = {}
         if verification_file.exists():
             with open(verification_file, 'r') as f:
@@ -101,7 +104,7 @@ class EvidenceEngine:
         }
 
         # Simpan hasil ke .eos-state/evidence/
-        output_dir = Path("/root/Enterprise-OS/.eos-state/evidence/")
+        output_dir = state_path('evidence')
         output_dir.mkdir(parents=True, exist_ok=True)
         output_path = output_dir / f"DIGIOP-PILOT-001-EVIDENCE_final_audit.json"
         with open(output_path, 'w') as f:
@@ -165,7 +168,8 @@ def main(test_mode: bool, work_item_path: Optional[str], work_id: Optional[str],
         # Populate confidence score and governance verdict based on verification data
         try:
             # Baca verification file untuk hitung confidence
-            with open(".eos-state/verification/EOS-SKILL-ASSURANCE-001_verification.json", 'r') as f:
+            verification_file = state_path('verification', 'EOS-SKILL-ASSURANCE-001_verification.json')
+            with open(verification_file, 'r') as f:
                 verification_data = json.load(f)
             passed = 0
             total = len(verification_data["acceptance_criteria"])
@@ -183,7 +187,7 @@ def main(test_mode: bool, work_item_path: Optional[str], work_id: Optional[str],
         except Exception as e:
             click.echo(f"⚠️ Warning saat membaca verification data: {e}")
             result["confidence_score"] = 0.95
-        output_path = Path(f".eos-state/evidence/{work_id}_verdict.json")
+        output_path = state_path('evidence', f"{work_id}_verdict.json")
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w') as f:
             json.dump(result, f, indent=2)

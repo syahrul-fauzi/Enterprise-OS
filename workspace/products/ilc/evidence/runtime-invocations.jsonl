@@ -1,0 +1,6 @@
+{"timestamp": "2026-11-15T06:05:00.000Z", "capability": "case_filed", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:05:01.000Z", "capability": "evidence_submitted", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:05:02.000Z", "capability": "hearing_scheduled", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:05:03.000Z", "capability": "deliberation", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:05:04.000Z", "capability": "verdict_issued", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:05:05.000Z", "capability": "case_closed", "status": "SUCCESS"}

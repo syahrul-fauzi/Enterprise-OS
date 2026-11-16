@@ -1,6 +1,6 @@
 // @ts-nocheck
 // @ts-nocheck
-import type { CapabilityCommand } from "../../../capability-dispatch/contracts/command.contracts.js";
+import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
 import * as crypto from "node:crypto";
 import {
@@ -11,7 +11,7 @@ import {
 } from "@repo/contracts-core";
 import { randomUUID } from "node:crypto";
 // Import 6-boundary validation function dari package kanonis
-import { validateBoundaryAccess } from "../../../work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
 
 // Lazy load repositories untuk menghindari module cycle dan mematuhi 6-boundary compliance
 async function getUserRepositoryLazy() {

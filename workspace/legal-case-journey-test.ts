@@ -11,6 +11,7 @@ async function runFullLegalCaseJourney() {
   // Import fs/path/child_process (node.js native)
   const fs = await import('fs');
   const { execSync } = (await import('child_process')).execSync;
+  const { statePath } = await import('@repo/eos-cli');
 
   // Tunggu API server sepenuhnya siap
   await new Promise(resolve => setTimeout(resolve, 3000));
@@ -193,8 +194,9 @@ async function runFullLegalCaseJourney() {
     }
 
     // Buat direktori evidence jika belum ada
-    if (!fs.existsSync('/root/Enterprise-OS/workspace/.eos-state/evidence')) {
-      fs.mkdirSync('/root/Enterprise-OS/workspace/.eos-state/evidence', { recursive: true });
+    const evidenceDir = statePath('evidence');
+    if (!fs.existsSync(evidenceDir)) {
+      fs.mkdirSync(evidenceDir, { recursive: true });
     }
 
     // Simpan bukti journey ke file evidence
@@ -203,13 +205,13 @@ async function runFullLegalCaseJourney() {
       caseId: caseId,
       workId: workId,
       completedAt: new Date().toISOString(),
-      commitHash: execSync('cd /root/Enterprise-OS && git rev-parse HEAD').toString().trim(),
+      commitHash: execSync('cd require('path').resolve(__dirname, '..') && git rev-parse HEAD').toString().trim(),
       auditId: "AUDIT-001-008",
       journeySteps: ["CREATE", "PERSIST", "SUBMIT", "REVIEW", "APPROVE", "CLOSE", "RETRIEVE_EVIDENCE"],
       allStepsCompleted: true
     };
     await fs.promises.writeFile(
-      '/root/Enterprise-OS/workspace/.eos-state/evidence/legal-case-journey-001_evidence.json',
+      statePath('evidence', 'legal-case-journey-001_evidence.json'),
       JSON.stringify(finalEvidence, null, 2)
     );
     console.log("\n=== 🎉 AUDIT-001-008 JOURNEY SELESAI SEMUA ===");

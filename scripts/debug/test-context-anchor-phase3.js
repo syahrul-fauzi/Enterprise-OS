@@ -93,5 +93,10 @@ const proof = {
     metrics: (0, state_js_1.getStateMetrics)()
 };
 const node_fs_1 = require("node:fs");
-(0, node_fs_1.writeFileSync)('/root/Enterprise-OS/.eos-state/proofs/EOS-JOURNEY-003-P3-complete.json', JSON.stringify(proof, null, 2));
+const path = require("node:path");
+const REPO_ROOT = path.resolve(__dirname, '../../');
+const EOS_STATE_DIR = path.join(REPO_ROOT, '.eos-state');
+const proofPath = path.join(EOS_STATE_DIR, 'proofs', 'EOS-JOURNEY-003-P3-complete.json');
+node_fs_1.mkdirSync(path.dirname(proofPath), { recursive: true });
+(0, node_fs_1.writeFileSync)(proofPath, JSON.stringify(proof, null, 2));
 console.log("\n📄 Proof artifact saved to: .eos-state/proofs/EOS-JOURNEY-003-P3-complete.json");

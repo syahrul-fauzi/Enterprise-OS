@@ -1,6 +1,6 @@
+import { describe, it } from "vitest";
 // @ts-nocheck
 import assert from "node:assert/strict";
-import test from "node:test";
 import type { CommandInvocationRecord } from "@repo/core-kernel";
 import {
   ServiceRequestRepositoryInMemory,
@@ -76,7 +76,7 @@ const REQUESTER_ACTOR_ID = "user-john-customer-001";
 const SUPPORT_TECH_ACTOR_ID = "tech-rika-support-007";
 const SENIOR_ENGINEER_ACTOR_ID = "eng-andi-senior-003";
 
-test("SERVICES.ID-REAL-021: workId persists across actor handoffs in service ticket lifecycle", async (t) => {
+it("SERVICES.ID-REAL-021: workId persists across actor handoffs in service ticket lifecycle", async (t) => {
   // Step 1: Customer creates service request (initial actor: requester)
   const createResult = await mockCapabilityRegistry.invoke<{ 
     readonly id: string; 

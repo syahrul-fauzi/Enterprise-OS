@@ -81,7 +81,7 @@ function resolveEvidenceAbsolutePath(relativePath: string): string | undefined {
     evidenceRoot ?? undefined,
     process.cwd(),
     path.resolve(process.cwd(), ".."),
-    "/root/Enterprise-OS/workspace",
+    "require('path').resolve(__dirname, '..')/workspace",
   ].filter((c): c is string => Boolean(c));
   for (const rootCandidate of workspaceRootCandidates) {
     const abs = path.join(rootCandidate, relativePath);

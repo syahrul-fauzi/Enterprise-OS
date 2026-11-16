@@ -1,6 +1,6 @@
 // @ts-nocheck
 // Inline type definitions from canonical atomic-composition contract (temporary fix for module resolution)
-// Source file: /root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/intent-understanding.contracts.ts
+// Source file: require('path').resolve(__dirname, '..')/workspace/capabilities/atomic-composition/implementation/contracts/intent-understanding.contracts.ts
 // We inline these types here to prevent UI build errors while the project reference build is fixed
 export type IntentActorType = "human" | "agent" | "system";
 export type IntentSource = {

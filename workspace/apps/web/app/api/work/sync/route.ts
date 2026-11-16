@@ -5,6 +5,7 @@
  */
 import { NextResponse } from "next/server";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+import { statePath } from "@repo/eos-cli";
 
 export async function POST(request: Request) {
   try {
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
         tenantId,
         sessionId,
         executionId: executionId || `edge-execution-${Date.now()}`,
-        statePath: `./.eos-state/execution/edge-work-${workId}.json`,
+        statePath: statePath("execution", `edge-work-${workId}.json`),
         metadata: body.metadata || {}
       }
     );

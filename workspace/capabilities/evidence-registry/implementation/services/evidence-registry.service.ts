@@ -532,8 +532,8 @@ async function startCohortObservationScanner(): Promise<void> {
             
             // 4.2 Update L1-WORK-QUEUE.json to mark cohort expansion as blocked
             const fs = await import('fs');
-            const path = await import('path');
-            const workQueuePath = path.join(process.cwd(), 'workspace', '.eos-state', 'command-center', 'L1-WORK-QUEUE.json');
+            const { statePath } = await import('@repo/eos-cli');
+            const workQueuePath = statePath("command-center", "L1-WORK-QUEUE.json");
             
             try {
               const workQueueContent = fs.readFileSync(workQueuePath, 'utf8');
@@ -578,8 +578,8 @@ async function startCohortObservationScanner(): Promise<void> {
             
             // 6. Update work queue to advance to L1.3 preparation
             const fs = await import('fs');
-            const path = await import('path');
-            const workQueuePath = path.join(process.cwd(), 'workspace', '.eos-state', 'command-center', 'L1-WORK-QUEUE.json');
+            const { statePath } = await import('@repo/eos-cli');
+            const workQueuePath = statePath("command-center", "L1-WORK-QUEUE.json");
             
             try {
               const workQueueContent = fs.readFileSync(workQueuePath, 'utf8');

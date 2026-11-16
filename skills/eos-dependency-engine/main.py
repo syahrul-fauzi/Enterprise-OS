@@ -2,6 +2,9 @@ import click
 import json
 from pathlib import Path
 from typing import Optional, Dict, Any
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from state_utils import state_path
 
 class DependencyEngine:
     """Dependency Engine utama untuk EOS - menganalisis dependensi dan impact perubahan"""
@@ -75,7 +78,7 @@ def main(test_mode: bool, work_item_path: Optional[str], work_id: Optional[str],
     
     if engine:
         result = engine.analyze_impact(work_id, change_path, workspace_path)
-        output_path = Path(f"/root/Enterprise-OS/.eos-state/dependency/{work_id}_impact.json")
+        output_path = state_path('dependency', f"{work_id}_impact.json")
         # Tambahkan debug logs untuk memverifikasi output generation
         click.echo(f"🔍 DEBUG: Starting dependency analysis output generation for work_id: {work_id}")
         click.echo(f"🔍 DEBUG: Output path: {output_path}")

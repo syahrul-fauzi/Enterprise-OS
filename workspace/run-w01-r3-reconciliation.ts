@@ -4,14 +4,12 @@
 import { loadCurrentJourney, saveCurrentJourney, JOURNEY_ENGINE_ID } from './packages/tooling/eos-cli/src/state.ts';
 import type { CurrentJourney } from './packages/tooling/eos-cli/src/schema.ts';
 import { writeFileSync, readFileSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
+import { statePath } from '@repo/eos-cli';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const REPOSITORY_ROOT = resolve(__dirname, ".");
-const EOS_STATE_DIR = resolve(REPOSITORY_ROOT, ".eos-state");
-const PROOFS_DIR = resolve(EOS_STATE_DIR, "proofs");
+const PROOFS_DIR = statePath("proofs");
 
 async function runW01R3Reconciliation() {
   console.log("[EJ007-W01-R3] Starting canonical state reconciliation...");
@@ -48,7 +46,7 @@ async function runW01R3Reconciliation() {
     // Add W01 technical binding to evidence artifacts
     updatedState.evidence_artifacts = [
       ...(currentState.evidence_artifacts || []),
-      ".eos-state/proofs/EOS-JOURNEY-007-W01-verification.json"
+      statePath("proofs", "EOS-JOURNEY-007-W01-verification.json")
     ];
     
     // Reset next_work_milestones for W01 recovery

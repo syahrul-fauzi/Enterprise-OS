@@ -1,11 +1,9 @@
 // @ts-nocheck
 import * as fs from "node:fs";
-import * as path from "node:path";
-import { fileURLToPath } from "node:url";
+import { statePath } from "@repo/eos-cli";
 import { trustFrameworkService } from "../../../trust-framework/implementation/services/trust-framework.service.js";
 
 const { existsSync, readFileSync, readdirSync } = fs;
-const { dirname, resolve, join } = path;
 import type {
   GovernanceEvidenceArtifactCatalog,
   GovernanceEvidenceArtifactKind,
@@ -23,8 +21,8 @@ import type {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 // Hitung path yang benar ke workspace root: dari /workspace/capabilities/.../services
-// __dirname = /root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/services
-// ../../.. = /root/Enterprise-OS/workspace (benar, tanpa tambahan /workspace)
+// __dirname = require('path').resolve(__dirname, '..')/workspace/capabilities/governance-evidence/implementation/services
+// ../../.. = require('path').resolve(__dirname, '..')/workspace (benar, tanpa tambahan /workspace)
 const WORKSPACE_ROOT = resolve(__dirname, "../../../..");
 
 const EVIDENCE_PATHS: Record<GovernanceEvidenceArtifactKind, string> = {
@@ -416,7 +414,7 @@ export class GovernanceEvidenceService implements GovernanceEvidenceProvider {
     const evidence_missing: string[] = [];
     
     // VME-001: Calculate economic leverage correlation from dashboard metrics
-    const dashboardPath = resolve(WORKSPACE_ROOT, ".eos-state/eos-leverage-dashboard.json");
+    const dashboardPath = statePath("eos-leverage-dashboard.json");
     let costCorrelationScore = 0.0;
     if (existsSync(dashboardPath)) {
       const dashboardData = JSON.parse(readFileSync(dashboardPath, "utf8"));

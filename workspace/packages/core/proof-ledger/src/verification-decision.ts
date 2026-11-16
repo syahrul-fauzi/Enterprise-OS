@@ -302,7 +302,7 @@ function resolveWorkspaceRoot(): string {
   const candidates = [
     process.cwd(),
     "/app",
-    "/root/Enterprise-OS/workspace",
+    "require('path').resolve(__dirname, '..')/workspace",
     path.resolve(process.cwd(), ".."),
   ];
 

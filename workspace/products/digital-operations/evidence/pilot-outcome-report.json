@@ -1,0 +1,58 @@
+{
+  "pilot_id": "digital-operations-pilot-001",
+  "pilot_name": "Digital Operations Managed Service Pilot",
+  "pilot_description": "Pilot Operational Adoption kesepuluh untuk produk Digital Operations, layanan operasi digital terkelola untuk bisnis online",
+  "generated_at": "2026-11-15T10:20:00.000Z",
+  "product": {
+    "id": "digital-operations",
+    "display_name": "Managed Digital Operations",
+    "phase": "D.1"
+  },
+  "journey": {
+    "id": "DIGIOP-101",
+    "name": "Purchase & onboard Digital Care package",
+    "description": "Pelanggan membeli paket Digital Care dan mengonboarding aset WordPress/WooCommerce mereka"
+  },
+  "lifecycle_stages": [
+    "onboard",
+    "assess",
+    "activate",
+    "operate",
+    "report",
+    "renew"
+  ],
+  "actors": [
+    "Customer",
+    "Operations Engineer",
+    "DevOps",
+    "Customer Success",
+    "Finance",
+    "System"
+  ],
+  "integrations": [
+    "WordPress/WooCommerce",
+    "Monitoring System",
+    "Incident Management",
+    "Subscription Billing",
+    "Support Ticketing"
+  ],
+  "commercial_value_idr": 25000000,
+  "reuse_percentage": 100,
+  "acceptance_gates": {
+    "G50": "PASSED",
+    "G51": "PASSED",
+    "G52": "PASSED",
+    "G53": "PASSED",
+    "G54": "PASSED",
+    "G55": "PASSED",
+    "G56": "PASSED",
+    "G57": "PASSED"
+  },
+  "pilot_status": "COMPLETED",
+  "summary": "Pilot Operational Adoption kesepuluh untuk produk Digital Operations telah berhasil diselesaikan dengan semua acceptance gates BDP-013 PASSED. Produk Digital Operations terbukti dapat menjalankan business journey nyata menggunakan Genesis sebagai Business Domain Authority dengan reuse 100% capability tanpa perluasan arsitektur, sesuai keputusan Architecture Freeze.",
+  "next_steps": [
+    "Jalankan transaksi layanan operasi digital tambahan untuk mengukur throughput",
+    "Integrasikan dengan konektor platform digital tambahan untuk validasi produksi",
+    "Skalakan pola pilot ke paket layanan tambahan (Digital Protect, Digital Transform)"
+  ]
+}

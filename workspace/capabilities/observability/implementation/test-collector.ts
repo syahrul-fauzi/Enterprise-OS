@@ -13,7 +13,7 @@ function main() {
   console.log(`[TEST] Metrics count: ${snapshot.metrics.length}`);
   console.log(`[TEST] Traces count: ${snapshot.traces.length}`);
   
-  console.log('[TEST] Check evidence file at: /root/Enterprise-OS/workspace/capabilities/observability/evidence/verification/runtime-invocations.jsonl');
+  console.log('[TEST] Check evidence file at: require('path').resolve(__dirname, '..')/workspace/capabilities/observability/evidence/verification/runtime-invocations.jsonl');
 }
 
 main();

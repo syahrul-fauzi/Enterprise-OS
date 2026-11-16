@@ -2,6 +2,7 @@
 // Independent verification script for W06-A1 acceptance criteria
 
 import { capabilityRegistry } from './packages/core/kernel/src/registry/capability-command-registry.js';
+import { statePath } from '@repo/eos-cli';
 
 async function runW06A1Verification() {
   console.log("[W06-A1-VERIFICATION] 🚀 Memulai verifikasi gate A1: Command key generation & static registration");
@@ -146,8 +147,9 @@ async function runW06A1Verification() {
 
   // Simpan hasil verifikasi ke file evidence
   const fs = await import('fs/promises');
-  await fs.mkdir(".eos-state/verification", { recursive: true });
-  await fs.writeFile(".eos-state/verification/W06-A1-001_verification.json", JSON.stringify(verificationResult, null, 2));
+  const verificationDir = statePath("verification");
+  await fs.mkdir(verificationDir, { recursive: true });
+  await fs.writeFile(statePath("verification", "W06-A1-001_verification.json"), JSON.stringify(verificationResult, null, 2));
   
   console.log("\n[W06-A1-VERIFICATION] 📝 Hasil verifikasi lengkap disimpan ke .eos-state/verification/W06-A1-001_verification.json");
   console.log(`[W06-A1-VERIFICATION] 🏁 Total passed: ${totalPassed}/${Object.keys(acceptanceCriteria).length}`);

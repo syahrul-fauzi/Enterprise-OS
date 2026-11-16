@@ -3,8 +3,8 @@ import { capabilityRegistry } from "./packages/core/kernel/src/registry/capabili
 import {
   ServiceRequestRepositoryInMemory,
 } from "./capabilities/service-directory/implementation/repository/service.repository";
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
+import { writeFile, mkdir } from 'fs/promises';
+import { statePath } from '@repo/eos-cli';
 
 const SRV_DETAILS = {
   id: "sreq-201-VERTB2",
@@ -120,7 +120,9 @@ async function main() {
     b4_firewall_honored: true,
   };
 
-  const outPath = join(process.cwd(), ".eos-state", "evidence", `${SRV_DETAILS.id}_t3_evidence.json`);
+  const evidenceDir = statePath('evidence');
+  await mkdir(evidenceDir, { recursive: true });
+  const outPath = statePath('evidence', `${SRV_DETAILS.id}_t3_evidence.json`);
   await writeFile(outPath, JSON.stringify(evidence, null, 2));
   console.log(`\n  Evidence written → ${outPath}`);
   console.log(`\n=== VERTICAL#2 SRV-PRO PROFESSIONAL FIRST ACTION COMPLETE (L3 PROVEN AGAIN) ===`);

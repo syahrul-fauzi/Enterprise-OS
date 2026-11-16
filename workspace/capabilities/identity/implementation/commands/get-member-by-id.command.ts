@@ -5,8 +5,7 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import { UserRepositoryPostgres } from "../repositories/index.js";
 import type { UserId } from "@repo/contracts-core";
 // Import canonical boundary validation utilities from work-core (Rule of Two compliance)
-import { validateBoundaryAccess, validateAllBoundaries } from "../../../work-core/contracts/work.contracts.js";
-import type { IdentityBoundary, SemanticBoundary, AuthorityBoundary, ExecutionBoundary, EvidenceBoundary, PresentationBoundary } from "../../../work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess, validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary } from "@capabilities/work-core/contracts/work.contracts.js";
 
 export const GetMemberByIdInputSchema = z.object({
   memberId: z.string().min(1),

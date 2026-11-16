@@ -6,7 +6,7 @@
  */
 
 import { existsSync, writeFileSync, mkdirSync } from "node:fs";
-import { resolve } from "node:path";
+import { statePath } from "@repo/eos-cli";
 import { WorkAggregate } from "../capabilities/work-core/contracts/work.contracts.ts";
 import { WorkId, newWorkId, ActorId, SessionId, TenantId } from "../capabilities/identity/implementation/contracts/identity.contracts.ts";
 import { ExecutionAttemptSchema } from "../capabilities/atomic-composition/implementation/contracts/execution-requirements.contracts.ts";
@@ -83,10 +83,10 @@ async function runThreeRegionSkew001Tests() {
   // ACCEPTANCE 1: SAME Work identity di Region A, B, C
   const sharedWorkId: WorkId = newWorkId();
   const initialWork: Partial<WorkAggregate> = {
-    id: sharedWorkId as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").WorkId,
-    actorId: "actor-three-region-001" as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").ActorId,
-    tenantId: "tenant-global-123" as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").TenantId,
-    sessionId: "session-sync-us-eu-sg-789" as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").SessionId,
+    id: sharedWorkId as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").WorkId,
+    actorId: "actor-three-region-001" as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").ActorId,
+    tenantId: "tenant-global-123" as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").TenantId,
+    sessionId: "session-sync-us-eu-sg-789" as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").SessionId,
     createdAt: new Date(Date.now() - 73*3600000), // Work dibuat 73h lalu (sesuai IOT-001's 72h baseline)
     updatedAt: new Date()
   };
@@ -183,7 +183,7 @@ async function runThreeRegionSkew001Tests() {
   console.log("[MULTI-REGION-002] ACCEPTANCE 11 PASSED: Semantic core tidak diubah, hanya logic test yang ditambahkan");
 
   // Simpan evidence JSON
-  const evidenceDir = resolve(process.cwd(), ".eos-state/evidence");
+  const evidenceDir = statePath("evidence");
   if (!existsSync(evidenceDir)) mkdirSync(evidenceDir, { recursive: true });
   const report = {
     artifact_id: "MULTI-REGION-002",

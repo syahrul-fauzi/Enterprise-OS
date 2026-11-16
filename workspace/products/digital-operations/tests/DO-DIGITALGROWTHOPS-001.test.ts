@@ -9,7 +9,7 @@ process.env.NODE_ENV = 'test';
 (globalThis as any)._forceMockPool = true;
 
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import { traceExecutionByDecision } from "@repo/core-runtime";
 import { createDevAuthenticatedSession } from "@repo/core-kernel";
 // Import SessionRepositoryInMemory langsung dari file implementasi (path yang benar)

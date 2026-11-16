@@ -2,17 +2,24 @@
 """
 Quick test script for EIS runtime
 """
+from pathlib import Path
 from eke.api.compiler import EnterpriseKnowledgeCompiler
 from eis.api.intelligence import EnterpriseIntelligenceRuntime
 
 
+def get_repository_root() -> Path:
+    current_file = Path(__file__).resolve()
+    return current_file.parents[1]
+
+
 def main():
     print("Testing Enterprise Intelligence Runtime with new Engine Framework...")
+    repo_root = get_repository_root()
 
     # Step 1: Get a knowledge package from EKE
     print("1. Compiling knowledge package...")
     eke_compiler = EnterpriseKnowledgeCompiler()
-    package_result = eke_compiler.package("/root/Enterprise OS")
+    package_result = eke_compiler.package(str(repo_root))
 
     if package_result.status.value != "success":
         print("❌ Failed to compile knowledge package!")

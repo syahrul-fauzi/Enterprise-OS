@@ -6,9 +6,10 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
+import { statePath } from '@repo/eos-cli';
 
 // Ensure evidence directory exists
-const evidenceDir = '/root/Enterprise-OS/.eos-state/audit';
+const evidenceDir = statePath('audit');
 if (!fs.existsSync(evidenceDir)) {
   fs.mkdirSync(evidenceDir, { recursive: true });
 }
@@ -74,7 +75,7 @@ async function runStartupTest() {
       missing_capabilities: missingCapabilities,
       development_server_startup_possible: g5Passed,
       logs: logs.join('\n'),
-      log_source: "/root/Enterprise-OS/.eos-state/chain-verification-audit001006-g5.log"
+      log_source: statePath('chain-verification-audit001006-g5.log')
     };
     
     // Write evidence and logs
@@ -84,7 +85,7 @@ async function runStartupTest() {
     );
     
     fs.writeFileSync(
-      '/root/Enterprise-OS/.eos-state/chain-verification-audit001006-g5.log',
+      statePath('chain-verification-audit001006-g5.log'),
       logs.join('\n')
     );
     
@@ -107,7 +108,7 @@ async function runStartupTest() {
       startup_duration_ms: startupDuration,
       development_server_startup_possible: false,
       logs: logs.join('\n'),
-      log_source: "/root/Enterprise-OS/.eos-state/chain-verification-audit001006-g5.log"
+      log_source: statePath('chain-verification-audit001006-g5.log')
     };
     
     fs.writeFileSync(
@@ -116,7 +117,7 @@ async function runStartupTest() {
     );
     
     fs.writeFileSync(
-      '/root/Enterprise-OS/.eos-state/chain-verification-audit001006-g5.log',
+      statePath('chain-verification-audit001006-g5.log'),
       logs.join('\n')
     );
     

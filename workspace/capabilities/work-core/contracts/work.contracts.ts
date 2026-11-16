@@ -461,6 +461,7 @@ export function validateBoundaryAccess(domain: string, accessedDomain: string): 
     "acaas": ["work-core", "identity", "evidence-gateway"],
     "investment-compliance": ["work-core", "identity", "evidence-gateway"], // ILC-001: Tambahkan ACaaS capability sebagai domain yang diizinkan
     "requirement-management": ["work-core", "identity"],
+    "legal-case": ["work-core", "identity", "legal-case"], // LH-CASE-001: Tambahkan legal-case sebagai domain yang diizinkan, termasuk akses ke domain itu sendiri
     "api-gateway": ["work-core", "identity", "capability-dispatch", "evidence-gateway", "acaas", "requirement-management", "investment-compliance"],
     "full-platform-integration": ["work-core", "identity", "connector-ecosystem"], // DIGIOP-104: Tambahkan full-platform-integration dengan dependency yang diizinkan
     "work-core": [] // Work Core tidak boleh mengakses domain lain

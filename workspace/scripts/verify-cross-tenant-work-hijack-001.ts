@@ -17,7 +17,7 @@ import {
   createWorkspaceId
 } from "@repo/capabilities-identity";
 import * as fs from "node:fs";
-import { resolve } from "node:path";
+import { statePath } from "@repo/eos-cli";
 import { randomUUID } from "node:crypto";
 
 // Reuse WorkRepositoryInMemory implementation dari verify-multi-tenant-hijack-001.ts (100% reuse)
@@ -154,7 +154,7 @@ async function runCrossTenantHijackTest() {
   console.log(`SEMUA INVARIANT LULUS: ${allPassed}`);
 
   // 6. Simpan evidence ke .eos-state/evidence/ untuk rantai pembuktian
-  const evidenceDir = resolve("/root/Enterprise-OS/workspace/.eos-state/evidence");
+  const evidenceDir = statePath("evidence");
   if (!fs.existsSync(evidenceDir)) fs.mkdirSync(evidenceDir, { recursive: true });
   
   const evidence = {

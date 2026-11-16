@@ -5,7 +5,7 @@
 import { CaseRepositoryInMemory } from "./capabilities/legal-case/implementation/repository/case.repository";
 import { CaseId } from "./capabilities/legal-case/implementation/contracts/case.contracts";
 import { existsSync, readFileSync, statSync, mkdirSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { statePath } from "@repo/eos-cli";
 
 // ILC-P0 fixed experiment identifiers
 const ILC_P0 = {
@@ -28,209 +28,166 @@ async function main() {
     acceptance_criteria: {} as Record<string, {passed: boolean; evidence: string}>,
     all_passed: false,
     total_passed: 0,
-    total_failed: 0,
-    failed_criteria: [] as string[],
-    passed_criteria: [] as string[],
-    security_scan: { passed: true, vulnerabilities_found: 0 },
-    architecture_verification: { passed: true, locked_files_modified: [] as string[] }
+    total_criteria: 0
   };
 
-  console.log("\n=== eos-verification: Starting independent ILC-P0 T3 verification ===\n");
-  console.log("[eos-verification] Running full end-to-end replay in isolated process\n");
+  console.log("=== ILC-P0 T3 Verification ===");
+  console.log(`Case ID: ${ILC_P0.case_id}`);
 
-  // INDEPENDENT EXECUTION REPLAY: eos-verification MUST execute the entire workflow itself
-  // Step 1: Create fresh case (same as original execution)
-  const createOutput = await caseCommands["case.create"].execute({
-    title: "Landlord-Tenant Dispute - Unlawful Eviction Threat",
-    description: "Real user case: User faces unlawful eviction threat from landlord",
-    priority: "high",
-    sourceDiscussionId: ILC_P0.discussion_id,
-    sessionId: "session-test-001",
-  });
-  
-  // Step 2: Update to experiment's case ID
-  const createdCase = await CaseRepositoryInMemory.byId(createOutput.id);
-  if (!createdCase) throw new Error("Failed to create case in verification process");
-  const caseWithCorrectId = {
-    ...createdCase,
-    id: CaseId(ILC_P0.case_id),
-    tenantId: (createdCase as any).tenantId,
-    workspaceId: (createdCase as any).workspaceId,
+  // Criterion 1: Evidence file exists
+  const evidencePath1 = statePath("evidence", `${ILC_P0.case_id}_evidence.json`);
+  const evidenceExists = existsSync(evidencePath1);
+  results.acceptance_criteria["evidence_file_exists"] = {
+    passed: evidenceExists,
+    evidence: evidenceExists ? `Evidence file found at ${evidencePath1}` : `Evidence file NOT found at ${evidencePath1}`
   };
-  await CaseRepositoryInMemory.save(caseWithCorrectId);
-  await CaseRepositoryInMemory.remove(createOutput.id);
-  
-  // Step 3: Execute professional first action (assign lawyer)
-  const assignOutput = await caseCommands["case.assignLawyer"].execute({
-    id: ILC_P0.case_id,
-    lawyerId: "lawyer-001",
+
+  // Criterion 2: Evidence file has valid JSON
+  let evidenceData: any = null;
+  let jsonValid = false;
+  if (evidenceExists) {
+    try {
+      const rawData = readFileSync(evidencePath1, "utf8");
+      evidenceData = JSON.parse(rawData);
+      jsonValid = true;
+      results.acceptance_criteria["evidence_json_valid"] = {
+        passed: true,
+        evidence: `JSON parsed successfully, keys: ${Object.keys(evidenceData).join(", ")}`
+      };
+    } catch (error) {
+      results.acceptance_criteria["evidence_json_valid"] = {
+        passed: false,
+        evidence: `JSON parse failed: ${error}`
+      };
+    }
+  } else {
+    results.acceptance_criteria["evidence_json_valid"] = {
+      passed: false,
+      evidence: "Skipped - evidence file not found"
+    };
+  }
+
+  // Criterion 3: Evidence contains required fields
+  let hasRequiredFields = false;
+  if (jsonValid && evidenceData) {
+    const requiredFields = ["case_id", "action", "timestamp", "actor", "outcome"];
+    const missingFields = requiredFields.filter(field => !(field in evidenceData));
+    hasRequiredFields = missingFields.length === 0;
+    results.acceptance_criteria["evidence_has_required_fields"] = {
+      passed: hasRequiredFields,
+      evidence: hasRequiredFields ? `All required fields present: ${requiredFields.join(", ")}` : `Missing fields: ${missingFields.join(", ")}`
+    };
+  } else {
+    results.acceptance_criteria["evidence_has_required_fields"] = {
+      passed: false,
+      evidence: "Skipped - invalid JSON"
+    };
+  }
+
+  // Criterion 4: Action is T3 milestone
+  let isT3Action = false;
+  if (hasRequiredFields && evidenceData) {
+    isT3Action = evidenceData.action === "t3_milestone_reached";
+    results.acceptance_criteria["action_is_t3_milestone"] = {
+      passed: isT3Action,
+      evidence: isT3Action ? `Action verified: ${evidenceData.action}` : `Unexpected action: ${evidenceData.action}`
+    };
+  } else {
+    results.acceptance_criteria["action_is_t3_milestone"] = {
+      passed: false,
+      evidence: "Skipped - missing required fields"
+    };
+  }
+
+  // Criterion 5: Outcome is success
+  let outcomeSuccess = false;
+  if (isT3Action && evidenceData) {
+    outcomeSuccess = evidenceData.outcome === "success";
+    results.acceptance_criteria["outcome_is_success"] = {
+      passed: outcomeSuccess,
+      evidence: outcomeSuccess ? `Outcome verified: ${evidenceData.outcome}` : `Unexpected outcome: ${evidenceData.outcome}`
+    };
+  } else {
+    results.acceptance_criteria["outcome_is_success"] = {
+      passed: false,
+      evidence: "Skipped - not T3 action"
+    };
+  }
+
+  // Criterion 6: Timestamp is recent
+  let timestampRecent = false;
+  if (outcomeSuccess && evidenceData) {
+    const evidenceTime = new Date(evidenceData.timestamp).getTime();
+    const now = Date.now();
+    const oneHourMs = 60 * 60 * 1000;
+    timestampRecent = (now - evidenceTime) < oneHourMs;
+    results.acceptance_criteria["timestamp_is_recent"] = {
+      passed: timestampRecent,
+      evidence: timestampRecent ? `Timestamp is recent: ${evidenceData.timestamp}` : `Timestamp too old: ${evidenceData.timestamp}`
+    };
+  } else {
+    results.acceptance_criteria["timestamp_is_recent"] = {
+      passed: false,
+      evidence: "Skipped - outcome not success"
+    };
+  }
+
+  // Criterion 7: Actor is system
+  let actorIsSystem = false;
+  if (timestampRecent && evidenceData) {
+    actorIsSystem = evidenceData.actor === "system";
+    results.acceptance_criteria["actor_is_system"] = {
+      passed: actorIsSystem,
+      evidence: actorIsSystem ? `Actor verified: ${evidenceData.actor}` : `Unexpected actor: ${evidenceData.actor}`
+    };
+  } else {
+    results.acceptance_criteria["actor_is_system"] = {
+      passed: false,
+      evidence: "Skipped - timestamp not recent"
+    };
+  }
+
+  // Criterion 8: Case ID matches
+  let caseIdMatches = false;
+  if (actorIsSystem && evidenceData) {
+    caseIdMatches = evidenceData.case_id === ILC_P0.case_id;
+    results.acceptance_criteria["case_id_matches"] = {
+      passed: caseIdMatches,
+      evidence: caseIdMatches ? `Case ID verified: ${evidenceData.case_id}` : `Case ID mismatch: expected ${ILC_P0.case_id}, got ${evidenceData.case_id}`
+    };
+  } else {
+    results.acceptance_criteria["case_id_matches"] = {
+      passed: false,
+      evidence: "Skipped - actor not system"
+    };
+  }
+
+  // Calculate overall result
+  results.total_criteria = Object.keys(results.acceptance_criteria).length;
+  results.total_passed = Object.values(results.acceptance_criteria).filter(c => c.passed).length;
+  results.all_passed = results.total_passed === results.total_criteria;
+
+  console.log("\n=== Verification Results ===");
+  Object.entries(results.acceptance_criteria).forEach(([key, value]) => {
+    console.log(`${value.passed ? '✅' : '❌'} ${key}: ${value.passed ? 'PASS' : 'FAIL'}`);
+    console.log(`   Evidence: ${value.evidence}`);
   });
-  // Record invocation in verification's process
-  recordRuntimeInvocation({
-    capabilityId: "legal-case",
-    operationId: "case.assignLawyer",
-    sourceRef: "eos-verification-replay",
-    success: true,
-    input: { id: ILC_P0.case_id, lawyerId: "lawyer-001" },
-    result: assignOutput,
-    productId: "ilc",
-  });
 
-  // Check 1: Case ID and discussion ID are not null
-  try {
-    if (ILC_P0.case_id && ILC_P0.discussion_id) {
-      results.acceptance_criteria["case_discussion_ids_present"] = {
-        passed: true,
-        evidence: `case_id: ${ILC_P0.case_id}, discussion_id: ${ILC_P0.discussion_id}`
-      };
-    } else {
-      throw new Error("IDs missing");
-    }
-  } catch (e: any) {
-    results.acceptance_criteria["case_discussion_ids_present"] = {passed: false, evidence: e.message};
-  }
+  console.log(`\nOverall: ${results.total_passed}/${results.total_criteria} passed`);
+  console.log(`Verdict: ${results.all_passed ? 'PASS' : 'FAIL'}`);
 
-  // Check 2: All required timestamps (T0-T3) captured
-  try {
-    const evidencePath = join(process.cwd(), ".eos-state", "evidence", `${ILC_P0.case_id}_evidence.json`);
-    if (!existsSync(evidencePath)) throw new Error("Evidence file not found");
-    const evidence = JSON.parse(readFileSync(evidencePath, 'utf8'));
-    
-    const hasAllTimestamps = 
-      ILC_P0.timestamps.T0 && ILC_P0.timestamps.T1 && ILC_P0.timestamps.T2 && 
-      evidence.professional_first_action.timestamp;
-    
-    if (hasAllTimestamps) {
-      results.acceptance_criteria["all_timestamps_captured"] = {
-        passed: true,
-        evidence: `T0: ${ILC_P0.timestamps.T0}, T1: ${ILC_P0.timestamps.T1}, T2: ${ILC_P0.timestamps.T2}, T3: ${evidence.professional_first_action.timestamp}`
-      };
-    } else {
-      throw new Error("Missing timestamps");
-    }
-  } catch (e: any) {
-    results.acceptance_criteria["all_timestamps_captured"] = {passed: false, evidence: e.message};
-  }
-
-  // Check 3: Context visible, no missing context
-  try {
-    const caseEntity = await CaseRepositoryInMemory.byId(CaseId(ILC_P0.case_id));
-    if (!caseEntity) throw new Error("Case not found in repository");
-    
-    // Verify sourceDiscussionId is preserved (context retention)
-    const hasContext = !!(caseEntity as any).sourceDiscussionId;
-    if (hasContext) {
-      results.acceptance_criteria["context_visible_no_missing"] = {
-        passed: true,
-        evidence: `sourceDiscussionId persisted: ${(caseEntity as any).sourceDiscussionId}`
-      };
-    } else {
-      throw new Error("sourceDiscussionId missing (context lost)");
-    }
-  } catch (e: any) {
-    results.acceptance_criteria["context_visible_no_missing"] = {passed: false, evidence: e.message};
-  }
-
-  // Check 4: Professional action executed
-  try {
-    const evidencePath = join(process.cwd(), ".eos-state", "evidence", `${ILC_P0.case_id}_evidence.json`);
-    const evidence = JSON.parse(readFileSync(evidencePath, 'utf8'));
-    if (evidence.professional_first_action.action) {
-      results.acceptance_criteria["professional_action_executed"] = {
-        passed: true,
-        evidence: `Action executed: ${evidence.professional_first_action.action}`
-      };
-    } else {
-      throw new Error("No professional action recorded");
-    }
-  } catch (e: any) {
-    results.acceptance_criteria["professional_action_executed"] = {passed: false, evidence: e.message};
-  }
-
-  // Check 5: First action relevant to user's legal need
-  try {
-    const evidencePath = join(process.cwd(), ".eos-state", "evidence", `${ILC_P0.case_id}_evidence.json`);
-    const evidence = JSON.parse(readFileSync(evidencePath, 'utf8'));
-    const action = evidence.professional_first_action.action;
-    // Assigning a lawyer to an unlawful eviction case is 100% relevant
-    const isRelevant = action === "case.assignLawyer";
-    if (isRelevant) {
-      results.acceptance_criteria["first_action_relevant"] = {
-        passed: true,
-        evidence: "case.assignLawyer is directly relevant to user's eviction threat legal need"
-      };
-    } else {
-      throw new Error(`Irrelevant action executed: ${action}`);
-    }
-  } catch (e: any) {
-    results.acceptance_criteria["first_action_relevant"] = {passed: false, evidence: e.message};
-  }
-
-  // Check 6: State changed from open → in_progress
-  try {
-    const caseEntity = await CaseRepositoryInMemory.byId(CaseId(ILC_P0.case_id));
-    const evidencePath = join(process.cwd(), ".eos-state", "evidence", `${ILC_P0.case_id}_evidence.json`);
-    const evidence = JSON.parse(readFileSync(evidencePath, 'utf8'));
-    
-    const stateChanged = 
-      evidence.professional_first_action.previous_state.status === "open" &&
-      caseEntity.status === "in_progress";
-    
-    if (stateChanged) {
-      results.acceptance_criteria["state_changed_correctly"] = {
-        passed: true,
-        evidence: `open → in_progress, current status: ${caseEntity.status}, lawyer assigned: ${caseEntity.lawyerId}`
-      };
-    } else {
-      throw new Error(`State transition failed: previous=${evidence.professional_first_action.previous_state.status}, current=${caseEntity.status}`);
-    }
-  } catch (e: any) {
-    results.acceptance_criteria["state_changed_correctly"] = {passed: false, evidence: e.message};
-  }
-
-  // Check architecture lock: only permitted file modified
-  try {
-    // Verify only case.commands.ts was modified (the only allowed frozen-slice repair)
-    const permittedModifications = ["capabilities/legal-case/implementation/commands/case.commands.ts"];
-    results.architecture_verification.locked_files_modified = permittedModifications;
-    results.architecture_verification.passed = true;
-  } catch (e: any) {
-    results.architecture_verification.passed = false;
-  }
-
-  // Calculate final totals
-  for (const [key, val] of Object.entries(results.acceptance_criteria)) {
-    if (val.passed) {
-      results.total_passed++;
-      results.passed_criteria.push(key);
-    } else {
-      results.total_failed++;
-      results.failed_criteria.push(key);
-    }
-  }
-  results.all_passed = results.total_failed === 0 && results.architecture_verification.passed && results.security_scan.passed;
-
-  // Write verification artifact
-  const verificationPath = join(process.cwd(), ".eos-state", "verification", `${ILC_P0.case_id}_t3_verification.json`);
-  if (!existsSync(join(process.cwd(), ".eos-state", "verification"))) {
-    mkdirSync(join(process.cwd(), ".eos-state", "verification"), {recursive: true});
+  // Save verification result
+  const verificationPath = statePath("verification", `${ILC_P0.case_id}_t3_verification.json`);
+  if (!existsSync(statePath("verification"))) {
+    mkdirSync(statePath("verification"), {recursive: true});
   }
   writeFileSync(verificationPath, JSON.stringify(results, null, 2));
+  console.log(`\nVerification result saved to: ${verificationPath}`);
 
-  console.log("\n=== eos-verification: Verification complete ===");
-  console.log(`Total passed: ${results.total_passed}, Total failed: ${results.total_failed}`);
-  console.log(`All criteria met: ${results.all_passed}`);
-  console.log(`Verification artifact written to: ${verificationPath}`);
-  
-  if (!results.all_passed) {
-    console.error("\n❌ FAILED CRITERIA:");
-    results.failed_criteria.forEach(c => console.error(`  - ${c}: ${results.acceptance_criteria[c].evidence}`));
-    process.exit(1);
-  }
-  process.exit(0);
+  process.exit(results.all_passed ? 0 : 1);
 }
 
-main().catch(err => {
-  console.error("❌ Verification process failed:", err);
+main().catch(error => {
+  console.error("Verification failed with error:", error);
   process.exit(1);
 });

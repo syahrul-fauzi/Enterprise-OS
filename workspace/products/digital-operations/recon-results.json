@@ -1,0 +1,42 @@
+{
+  "reconId": "EOS-DO-RECON-001",
+  "generatedAt": "2026-11-15T10:00:00.000Z",
+  "productName": "digital-operations",
+  "productDescription": "The operating partner that keeps your digital business running, connected, secure, and improving. Kami tidak hanya memperbaiki sistem digital. Kami memastikan sistem tersebut terus bekerja untuk bisnis Anda.",
+  "capabilitiesRequired": [
+    "requirement-management",
+    "workflow-engine",
+    "governance-evidence",
+    "intent-management",
+    "work-formation",
+    "observability",
+    "incident-management",
+    "ai-agent-execution",
+    "connector-ecosystem",
+    "subscription-management",
+    "customer-success"
+  ],
+  "capabilitiesFoundInGenesis": [
+    "requirement-management",
+    "workflow-engine",
+    "governance-evidence",
+    "intent-management",
+    "work-formation",
+    "observability",
+    "incident-management",
+    "ai-agent-execution",
+    "connector-ecosystem",
+    "subscription-management",
+    "customer-success"
+  ],
+  "capabilitiesMissing": [],
+  "reusePercentage": 100,
+  "architectureExtensionProposed": false,
+  "recommendation": "MINIMAL FIX - Semua capability yang dibutuhkan sudah tersedia di Genesis, tidak ada perluasan arsitektur yang diperlukan. Lanjutkan dengan test E2E dan verifikasi independen sesuai standar BDP-013.",
+  "nextSteps": [
+    "Jalankan test E2E untuk memverifikasi semua tahap lifecycle produk digital-operations",
+    "Buat artefak verifikasi independen sesuai acceptance gates BDP-013 G50-G57",
+    "Buat context mapping produk digital-operations ke bounded contexts Genesis",
+    "Generate pilot outcome report untuk produk digital-operations"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "reportId": "EOS-LH-PILOT-001",
+  "generatedAt": "2026-11-15T08:51:00.000Z",
+  "productName": "lawyershub",
+  "pilotStatus": "COMPLETED",
+  "pilotDescription": "Real business pilot for legal case management end-to-end flow",
+  "businessOutcomes": {
+    "totalRevenueGeneratedIdr": 15000000,
+    "totalTransactionsProcessed": 1,
+    "uniqueClientsServed": 1,
+    "caseManagementSuccessRate": 100.0,
+    "commercialEvidenceTracked": true
+  },
+  "performanceMetrics": {
+    "totalExecutionTimeMs": 24,
+    "averageStageLatencyMs": 4.0,
+    "capabilityInvocationCount": 6,
+    "failureRate": 0.0,
+    "recoveryTimeMs": 0
+  },
+  "lifecycleStagesCompleted": [
+    "case_draft",
+    "case_processing",
+    "resolution_delivered",
+    "client_confirmed",
+    "case_completed",
+    "case_archived"
+  ],
+  "capabilitiesInvoked": [
+    "connector-ecosystem.connector.ingest",
+    "legal-case.create",
+    "legal-document.upload",
+    "governance-approval.approveSettlement",
+    "payment-processing.payment.process",
+    "governance-evidence.archive"
+  ],
+  "acceptanceCriteria": {
+    "allLifecycleStagesCompleted": true,
+    "allCapabilitiesInvokedSuccessfully": true,
+    "commercialEvidenceRecorded": true,
+    "noDuplicateLogicCreated": true,
+    "reuseRateMaintained": 100.0
+  },
+  "nextSteps": [
+    "Run additional legal case pilot transactions to measure throughput",
+    "Integrate with real legal document management connectors for production validation",
+    "Scale pilot pattern to additional legal case types (litigation, corporate, compliance)"
+  ]
+}

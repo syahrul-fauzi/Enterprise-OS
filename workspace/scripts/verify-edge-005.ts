@@ -13,7 +13,7 @@
  */
 
 import { existsSync, writeFileSync, mkdirSync } from "node:fs";
-import { resolve } from "node:path";
+import { statePath } from "@repo/eos-cli";
 import { WorkAggregate } from "../capabilities/work-core/contracts/work.contracts.ts";
 // Import identity types dari path absolut (reuse pola yang sama dengan verify-edge-003.ts)
 import { WorkId, newWorkId, ActorId, SessionId, TenantId } from "../capabilities/identity/implementation/contracts/identity.contracts.ts";
@@ -170,7 +170,7 @@ async function runIdentityContinuityTest(): Promise<ContinuityTestResult> {
       test_name: "identity_continuity_mobile",
       status: "PASS",
       details: "workId tetap terjaga dari React Native→edge→server",
-      evidence_path: ".eos-state/execution/mobile-identity-continuity-proof.json"
+      evidence_path: statePath("execution", "mobile-identity-continuity-proof.json")
     };
   } else {
     console.error("  ❌ Identity Continuity FAIL: workId berubah selama transisi");
@@ -387,7 +387,7 @@ async function runExecutionContinuityTest(): Promise<ContinuityTestResult> {
       test_name: "execution_continuity_mobile",
       status: "PASS",
       details: "sync otomatis berjalan ketika koneksi pulih di React Native",
-      evidence_path: ".eos-state/execution/mobile-execution-continuity-proof.json"
+      evidence_path: statePath("execution", "mobile-execution-continuity-proof.json")
     };
   } else {
     console.error("  ❌ Execution Continuity FAIL: sync gagal berjalan ketika koneksi pulih di mobile");
@@ -403,7 +403,7 @@ async function runExecutionContinuityTest(): Promise<ContinuityTestResult> {
 // Main execution
 async function main() {
   // Buat directory evidence jika belum ada
-  const evidenceDir = resolve(process.cwd(), ".eos-state/evidence");
+  const evidenceDir = statePath("evidence");
   if (!existsSync(evidenceDir)) {
     mkdirSync(evidenceDir, { recursive: true });
   }

@@ -6,11 +6,12 @@
 
 import { Pool } from 'pg';
 import * as dotenv from 'dotenv';
+import { statePath } from '@repo/eos-cli';
 
 // Load environment variables dari file lokal (.env.local) yang berisi secret terinjeksi
-dotenv.config({ path: '/root/Enterprise-OS/workspace/.env.local' });
+dotenv.config({ path: 'require('path').resolve(__dirname, '..')/workspace/.env.local' });
 // Load juga file produksi untuk konfigurasi lainnya (override jika ada)
-dotenv.config({ path: '/root/Enterprise-OS/workspace/infra/prod/.env', override: false });
+dotenv.config({ path: 'require('path').resolve(__dirname, '..')/workspace/infra/prod/.env', override: false });
 
 // Konfigurasi tenant untuk pengujian isolasi mutual
 const TEST_TENANT_ID = 'tenant-pilot-001';
@@ -202,7 +203,7 @@ async function main() {
     };
     
     require('fs').writeFileSync(
-      '/root/Enterprise-OS/.eos-state/verification/CR006-RUNTIME-RLS-verification.json',
+      statePath('verification', 'CR006-RUNTIME-RLS-verification.json'),
       JSON.stringify(verificationResult, null, 2)
     );
     console.log("\n📝 Bukti verifikasi disimpan ke .eos-state/verification/CR006-RUNTIME-RLS-verification.json");

@@ -8,7 +8,7 @@
  */
 
 import { existsSync, writeFileSync, mkdirSync } from "node:fs";
-import { resolve } from "node:path";
+import { statePath } from "@repo/eos-cli";
 import { WorkAggregate } from "../capabilities/work-core/contracts/work.contracts";
 import { WorkId, newWorkId, ActorId, SessionId, TenantId } from "../capabilities/identity/implementation/contracts/identity.contracts";
 import { ExecutionAttemptSchema } from "../capabilities/atomic-composition/implementation/contracts/execution-requirements.contracts";
@@ -164,7 +164,7 @@ async function runIot001Tests() {
   }
 
   // Simpan evidence JSON ke canonical path
-  const evidenceDir = resolve(process.cwd(), ".eos-state/evidence");
+  const evidenceDir = statePath("evidence");
   if (!existsSync(evidenceDir)) mkdirSync(evidenceDir, { recursive: true });
   const report: Iot001VerificationReport = {
     artifact_id: "IOT-001",

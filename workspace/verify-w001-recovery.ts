@@ -7,6 +7,7 @@
 import { getPool, initIdentitySchema } from '@capabilities/identity/implementation/repositories/base.repository.js';
 import { getWorkRepositoryPostgres } from '@capabilities/work-core/implementation/repository/work-postgres.repository.js';
 import { createHash } from 'crypto';
+import { statePath } from '@repo/eos-cli';
 
 async function main() {
   console.log('🔄 [Process] W06-A8 RECOVERY VERIFICATION: TESTING FAILURE RESILIENCY');
@@ -163,11 +164,11 @@ async function main() {
     notes: all_checks_passed 
       ? "Semua kriteria W06-A8 terpenuhi: sistem dapat memulihkan dari transient failure, timeout, dan database error" 
       : "Beberapa kriteria gagal: recovery mechanism perlu diperbaiki",
-    trace_file: "/root/Enterprise-OS/workspace/verify-w001-recovery.ts"
+    trace_file: "require('path').resolve(__dirname, '..')/workspace/verify-w001-recovery.ts"
   };
 
   // Save hasil verifikasi
-  const outputPath = `/root/Enterprise-OS/.eos-state/verification/W06-A8-001_verification.json`;
+  const outputPath = statePath('verification', 'W06-A8-001_verification.json');
   const fs = await import('fs/promises');
   await fs.writeFile(outputPath, JSON.stringify(verificationResult, null, 2));
   console.log(`\n📄 Hasil verifikasi disimpan ke: ${outputPath}`);

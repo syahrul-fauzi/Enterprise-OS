@@ -101,7 +101,7 @@ async function runVerification() {
 
     // 7. Cek audit log (server logs) — handle file not found gracefully
     try {
-      const serverLog = fs.readFileSync('/root/Enterprise-OS/workspace/apps/web/.next/server.log', 'utf8');
+      const serverLog = fs.readFileSync('require('path').resolve(__dirname, '..')/workspace/apps/web/.next/server.log', 'utf8');
       if (serverLog.includes("SecurityHardeningService: Unauthorized") || serverLog.includes("Missing or invalid API key")) {
         results.audit_recorded.passed = true;
         results.audit_recorded.evidence = "Unauthorized attempt recorded in audit logs";
@@ -137,10 +137,15 @@ async function runVerification() {
     };
 
     // Simpan bukti verifikasi ke .eos-state/verification
-    if (!fs.existsSync('/root/Enterprise-OS/.eos-state/verification')) {
-      fs.mkdirSync('/root/Enterprise-OS/.eos-state/verification', { recursive: true });
+    const path = require('path');
+    const REPO_ROOT = path.resolve(__dirname, '../../');
+    const EOS_STATE_DIR = path.join(REPO_ROOT, '.eos-state');
+    const verificationDir = path.join(EOS_STATE_DIR, 'verification');
+    if (!fs.existsSync(verificationDir)) {
+      fs.mkdirSync(verificationDir, { recursive: true });
     }
-    fs.writeFileSync('/root/Enterprise-OS/.eos-state/verification/EOS-PROD-004-P1_verification.json', JSON.stringify(verificationRecord, null, 2));
+    const verificationPath = path.join(verificationDir, 'EOS-PROD-004-P1_verification.json');
+    fs.writeFileSync(verificationPath, JSON.stringify(verificationRecord, null, 2));
     console.log("\n📝 Verification record saved to: .eos-state/verification/EOS-PROD-004-P1_verification.json");
 
     process.exit(allPassed ? 0 : 1);

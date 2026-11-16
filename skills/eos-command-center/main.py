@@ -2,6 +2,9 @@ import click
 import json
 from pathlib import Path
 from typing import Optional, Dict, Any, List
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from state_utils import state_path
 
 class CommandCenter:
     """Command Center utama untuk EOS - War Room Commander yang mengorkestrasi multi-agent execution"""
@@ -155,7 +158,7 @@ def main(test_mode: bool, work_item_path: Optional[str], objective: Optional[str
         result["next_highest_leverage"] = next_highest_leverage
         
         # Gunakan existing command-center directory yang sudah ada, bukan buat baru
-        output_path = Path(f"/root/Enterprise-OS/.eos-state/command-center/DIGIOP-PILOT-001-ORCHESTRATION_manifest.json")
+        output_path = state_path('command-center', 'DIGIOP-PILOT-001-ORCHESTRATION_manifest.json')
         click.echo(f"🔍 DEBUG: Starting orchestration output generation for work_id: DIGIOP-PILOT-001-ORCHESTRATION")
         click.echo(f"🔍 DEBUG: Output path: {output_path}")
         output_path.parent.mkdir(parents=True, exist_ok=True)

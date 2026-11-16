@@ -1,3 +1,3 @@
 // @ts-nocheck
-// HANYA export default dari implementation/index.ts - HAPUS SEMUA EXPORT DUPLIKAT
-export * from "./implementation/index.ts";
+// HANYA export default dari implementation/index.js - HAPUS SEMUA EXPORT DUPLIKAT
+export * from "./implementation/index.js";

@@ -1,0 +1,74 @@
+{
+  "mappingId": "EOS-DO-GENESIS-MAPPING-001",
+  "generatedAt": "2026-11-15T10:15:00.000Z",
+  "productName": "digital-operations",
+  "genesisBoundedContexts": [
+    "LeadProspect",
+    "SolutionArtifact",
+    "FinancialAssessment",
+    "ConversionAsset",
+    "ClientAccount"
+  ],
+  "digitalOperationsJourneyMapping": [
+    {
+      "digitalOperationsStage": "onboard",
+      "description": "Pelanggan mendaftar dan mengintegrasikan platform mereka ke EOS",
+      "genesisBoundedContext": "LeadProspect",
+      "genesisOperation": "captureLeadProspect",
+      "mappingDetails": "Pelanggan yang mendaftar paket Digital Care = LeadProspect baru yang di-capture dengan sinyal kebutuhan operasi digital",
+      "evidenceRequired": ["customer_registration_form", "platform_inventory", "tenant_id"]
+    },
+    {
+      "digitalOperationsStage": "assess",
+      "description": "Tim engineering melakukan audit infrastruktur dan operasional",
+      "genesisBoundedContext": "SolutionArtifact",
+      "genesisOperation": "createSolutionArtifact",
+      "mappingDetails": "Hasil audit infrastruktur, daftar masalah, dan rencana perbaikan = SolutionArtifact yang dibuat untuk LeadProspect tersebut",
+      "evidenceRequired": ["infrastructure_audit_report", "problem_list", "improvement_plan"]
+    },
+    {
+      "digitalOperationsStage": "activate",
+      "description": "Monitoring dan dukungan diaktifkan untuk pelanggan",
+      "genesisBoundedContext": "FinancialAssessment",
+      "genesisOperation": "createFinancialAssessment + approveFinancialAssessment",
+      "mappingDetails": "Aktivasi langganan, konfirmasi biaya, dan jadwal layanan = FinancialAssessment yang dibuat dan disetujui untuk SolutionArtifact tersebut",
+      "evidenceRequired": ["subscription_activation_confirmation", "service_schedule", "payment_agreement"]
+    },
+    {
+      "digitalOperationsStage": "operate",
+      "description": "Pekerjaan operasional berjalan berkelanjutan (maintain, fix, scale)",
+      "genesisBoundedContext": "ConversionAsset",
+      "genesisOperation": "createConversionAsset + acceptOffer",
+      "mappingDetails": "Laporan operasional harian dan konfirmasi kinerja sistem = ConversionAsset yang dibuat dan diterima sebagai penawaran layanan berkelanjutan yang disetujui",
+      "evidenceRequired": ["operational_dashboard", "incident_log", "performance_metrics"]
+    },
+    {
+      "digitalOperationsStage": "report",
+      "description": "Laporan bulanan disajikan kepada pelanggan",
+      "genesisBoundedContext": "ClientAccount",
+      "genesisOperation": "createClientAccount",
+      "mappingDetails": "Pelanggan yang menerima laporan bulanan = ClientAccount yang dibuat sebagai hasil konversi dari ConversionAsset",
+      "evidenceRequired": ["monthly_report", "revenue_entry", "customer_feedback"]
+    },
+    {
+      "digitalOperationsStage": "renew",
+      "description": "Langganan diperpanjang atau diakhiri dengan offboarding yang teratur",
+      "genesisBoundedContext": "ClientAccount",
+      "genesisOperation": "ClientAccount status transition to ACTIVE",
+      "mappingDetails": "Langganan diperpanjang = ClientAccount status diupdate menjadi ACTIVE untuk periode berikutnya, semua bukti diarsipkan ke governance-evidence",
+      "evidenceRequired": ["renewal_confirmation", "offboarding_checklist", "subscription_end_timestamp"]
+    }
+  ],
+  "mappingValidation": {
+    "allDigitalOperationsStagesMapped": true,
+    "allGenesisContextsUsed": true,
+    "noDuplicateLogicDetected": true,
+    "noNewCorePrimitivesCreated": true,
+    "workContinuityPreserved": true
+  },
+  "nextSteps": [
+    "Integrate Digital Operations runtime dengan Genesis service sesuai mapping ini",
+    "Jalankan end-to-end test untuk memverifikasi mapping berfungsi",
+    "Verifikasi bahwa semua transition memiliki evidence yang sesuai"
+  ]
+}

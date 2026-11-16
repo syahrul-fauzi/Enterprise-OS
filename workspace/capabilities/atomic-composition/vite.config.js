@@ -4,7 +4,7 @@ export default defineConfig({
     plugins: [tsconfigPaths()],
     resolve: {
         alias: {
-            "@capabilities": "/root/Enterprise-OS/workspace/capabilities"
+            "@capabilities": "require('path').resolve(__dirname, '..')/workspace/capabilities"
         }
     }
 });

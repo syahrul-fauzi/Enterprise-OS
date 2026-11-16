@@ -10,7 +10,8 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@repo/presentation-experience": "workspace:*"
+    "@repo/presentation-experience": "workspace:*",
+    "@eos/genesis": "workspace:*"
   },
   "devDependencies": {
     "@repo/config-typescript": "workspace:*",

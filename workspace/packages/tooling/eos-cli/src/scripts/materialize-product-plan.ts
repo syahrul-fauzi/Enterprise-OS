@@ -120,7 +120,7 @@ const expectedEvidence = [
 
 const expectedReplay = {
   command:
-    "pnpm --dir /root/Enterprise-OS/workspace exec node --import tsx packages/composition/src/scripts/validate-composition-package.ts packages/compositions/legal-workspace",
+    "pnpm --dir require('path').resolve(__dirname, '..')/workspace exec node --import tsx packages/composition/src/scripts/validate-composition-package.ts packages/compositions/legal-workspace",
   expected_status: "PASS" as const,
 };
 

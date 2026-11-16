@@ -2,7 +2,7 @@
 // W-003: Falsification Experiment #2 — FACE Independence / Work Survival Under FACE Detachment
 // LANGKAH UNTUK JALANKAN EKSPERIMEN (development mode, TANPA PostgreSQL dependency):
 // 1. export NODE_ENV=development
-// 2. cd /root/Enterprise-OS/workspace/W-BETTER-005/phase-1
+// 2. cd require('path').resolve(__dirname, '..')/workspace/W-BETTER-005/phase-1
 // 3. mkdir -p before after
 // 4. node --import tsx/esm capture-pre-state.ts
 // 5. node --import tsx/esm capture-post-state.ts

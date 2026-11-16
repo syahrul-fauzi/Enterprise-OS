@@ -2,6 +2,9 @@ import click
 import json
 from pathlib import Path
 from typing import Optional, Dict, Any, List
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from state_utils import state_path
 
 class FaceSurfaceEngine:
     """FACE Surface Engine utama untuk EOS - Mengekspos kapabilitas EOS melalui FACE surface dengan Work continuity yang terjaga"""
@@ -90,7 +93,7 @@ def main(test_mode: bool, work_item_path: Optional[str], work_context: Optional[
     
     if engine:
         result = engine.expose_capabilities(work_ctx, cap_list, ui_reqs, surface_spec)
-        output_path = Path(f".eos-state/face/face_surface_configuration.json")
+        output_path = state_path('face', 'face_surface_configuration.json')
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w') as f:
             json.dump(result, f, indent=2)

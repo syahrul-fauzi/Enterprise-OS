@@ -7,10 +7,14 @@ records of what was changed, why it was changed, who changed it, and what the re
 import os
 import json
 import subprocess
+import sys
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 from pathlib import Path
 from dataclasses import dataclass
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from state_utils import state_path, get_repository_root
 
 @dataclass
 class EvidenceBundle:
@@ -29,9 +33,12 @@ class EvidenceBundle:
 class EvidenceAgent:
     """Collects and manages immutable evidence bundles for all work items"""
     
-    def __init__(self, workspace_path: str = "/root/Enterprise-OS"):
-        self.workspace_path = Path(workspace_path)
-        self.evidence_dir = self.workspace_path / ".eos-state" / "evidence"
+    def __init__(self, workspace_path: Optional[str] = None):
+        if workspace_path is None:
+            self.workspace_path = get_repository_root()
+        else:
+            self.workspace_path = Path(workspace_path)
+        self.evidence_dir = state_path("evidence")
         self.evidence_dir.mkdir(parents=True, exist_ok=True)
         self.archived_bundles: List[str] = []
         
@@ -139,12 +146,12 @@ class EvidenceAgent:
         """Load existing recon and verification reports for this work item"""
         reports = {"recon": None, "verification": None}
         
-        recon_path = self.workspace_path / ".eos-state" / "recon" / f"{work_id}_recon.json"
+        recon_path = state_path("recon", f"{work_id}_recon.json")
         if recon_path.exists():
             with open(recon_path, 'r') as f:
                 reports["recon"] = json.load(f)
                 
-        verify_path = self.workspace_path / ".eos-state" / "verification" / f"{work_id}_verification.json"
+        verify_path = state_path("verification", f"{work_id}_verification.json")
         if verify_path.exists():
             with open(verify_path, 'r') as f:
                 reports["verification"] = json.load(f)
@@ -289,7 +296,7 @@ Status: {bundle.status}
             audit_trail["average_reuse_rate"] = reuse_sum / reuse_count
             
         # Save audit trail
-        audit_path = self.workspace_path / ".eos-state" / "audit_trail.json"
+        audit_path = state_path("audit_trail.json")
         with open(audit_path, 'w') as f:
             json.dump(audit_trail, f, indent=2)
             

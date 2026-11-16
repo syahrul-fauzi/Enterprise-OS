@@ -6,7 +6,7 @@
 
 import { writeFile, mkdir } from 'fs/promises';
 import { readFileSync, existsSync, statSync } from 'node:fs';
-import { resolve, join } from 'path';
+import { statePath } from '@repo/eos-cli';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { exec } from 'child_process';
@@ -20,7 +20,7 @@ import { loadCurrentJourney, saveCurrentJourney, JOURNEY_ENGINE_ID, invalidateCa
 
 // Invariant yang dijaga: NEXUS hanya dispatch, tidak ambil keputusan bisnis
 const EXECUTE_ONE_WORK_ONLY = true;
-const PROOF_PATH = join(__dirname, '..', '.eos-state', 'proofs', `EOS-NEXUS-001-staging-proof-${Date.now()}.json`);
+const PROOF_PATH = statePath('proofs', `EOS-NEXUS-001-staging-proof-${Date.now()}.json`);
 
 async function main() {
   console.log('[EOS-NEXUS-001] Starting proof fixture (staging-only)...');
@@ -72,23 +72,23 @@ async function main() {
   // Gunakan command EOS CLI yang sudah terdaftar di src/index.ts
   const commandMap: Record<string, { cliCommand: string; workId: string }> = {
     "EOS-JOURNEY-007-W01": { 
-      cliCommand: "cd /root/Enterprise-OS/workspace/packages/tooling/eos-cli && node --import tsx ./src/index.ts verify-foundation", 
+      cliCommand: "cd require('path').resolve(__dirname, '..')/workspace/packages/tooling/eos-cli && node --import tsx ./src/index.ts verify-foundation", 
       workId: "EOS-NEXUS-001-C17" 
     },
     "C17": { 
-      cliCommand: "cd /root/Enterprise-OS/workspace/packages/tooling/eos-cli && node --import tsx ./src/index.ts verify-foundation", 
+      cliCommand: "cd require('path').resolve(__dirname, '..')/workspace/packages/tooling/eos-cli && node --import tsx ./src/index.ts verify-foundation", 
       workId: "EOS-NEXUS-001-C17" 
     },
     "C18": { 
-      cliCommand: "cd /root/Enterprise-OS/workspace/packages/tooling/eos-cli && node --import tsx ./src/index.ts verify-requirement", 
+      cliCommand: "cd require('path').resolve(__dirname, '..')/workspace/packages/tooling/eos-cli && node --import tsx ./src/index.ts verify-requirement", 
       workId: "EOS-NEXUS-001-C18" 
     },
     "C19": { 
-      cliCommand: "cd /root/Enterprise-OS/workspace/packages/tooling/eos-cli && node --import tsx ./src/index.ts verify-constitution", 
+      cliCommand: "cd require('path').resolve(__dirname, '..')/workspace/packages/tooling/eos-cli && node --import tsx ./src/index.ts verify-constitution", 
       workId: "EOS-NEXUS-001-C19" 
     },
     "C20": { 
-      cliCommand: "cd /root/Enterprise-OS/workspace/packages/tooling/eos-cli && node --import tsx ./src/index.ts tracing:start", 
+      cliCommand: "cd require('path').resolve(__dirname, '..')/workspace/packages/tooling/eos-cli && node --import tsx ./src/index.ts tracing:start", 
       workId: "EOS-NEXUS-001-C20" 
     }
   };
@@ -188,7 +188,7 @@ async function main() {
 
 async function writeProof(proofData: unknown) {
   // Hanya buat directory jika belum ada, JANGAN coba buat directory dari nama file
-  const proofDir = join(__dirname, '..', '.eos-state', 'proofs');
+  const proofDir = statePath('proofs');
   await mkdir(proofDir, { recursive: true });
   await writeFile(PROOF_PATH, JSON.stringify(proofData, null, 2));
   console.log(`[EOS-NEXUS-001] Proof written to: ${PROOF_PATH}`);

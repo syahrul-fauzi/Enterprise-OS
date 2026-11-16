@@ -16,6 +16,7 @@ import {
   type ObservedExecution 
 } from "../../../../packages/core/runtime/dist/execution-observability.js";
 import {createIncident, resolveIncident } from "../commands/observability.commands.js";
+import { statePath } from "../../../../packages/tooling/eos-cli/src/state.js";
 import type {
   ObservableLogEntry,
   ObservableMetric,
@@ -25,20 +26,10 @@ import type {
 } from "../contracts/index.js";
 
 export class ObservabilityService {
-  private __filename: string;
-  private __dirname: string;
-  public readonly WORKSPACE_ROOT: string;
-
-  constructor() {
-    this.__filename = fileURLToPath(import.meta.url);
-    this.__dirname = path.dirname(this.__filename);
-    this.WORKSPACE_ROOT = path.resolve(this.__dirname, "../../../..");
-  }
-
   // Expose canonical dirs creation for external recorders
   public ensureCanonicalDirsExist(): void {
-    const CANONICAL_METRICS_PATH = path.join(this.WORKSPACE_ROOT, ".eos-state/metrics/ACaaS-001/processed_requests.jsonl");
-    const EVIDENCE_PATH = path.join(this.WORKSPACE_ROOT, "capabilities/observability/evidence/verification/runtime-invocations.jsonl");
+    const CANONICAL_METRICS_PATH = statePath("metrics", "ACaaS-001", "processed_requests.jsonl");
+    const EVIDENCE_PATH = path.join(process.cwd(), "capabilities/observability/evidence/verification/runtime-invocations.jsonl");
     
     const evidenceDir = path.dirname(EVIDENCE_PATH);
     const metricsDir = path.dirname(CANONICAL_METRICS_PATH);
@@ -323,24 +314,25 @@ export const observabilityService = new ObservabilityService();
 // ACaaS-001-PILOT-003: Canonical metering implementation - mencatat semua transaksi pilot ke jalur kanonis EOS
 // DIGIOP-103-PILOT-001: Add digital-operations periodic collection untuk Managed Outcome Loop SENSE layer
 // B7.18.2: Basic collector to capture invocations and save as evidence
-export function recordRuntimeInvocation(invocation: RuntimeInvocation): void {
+export async function recordRuntimeInvocation(invocation: RuntimeInvocation): Promise<void> {
   observabilityService.ensureCanonicalDirsExist();
-  const ACAAS_METRICS_PATH = path.join(observabilityService.WORKSPACE_ROOT, ".eos-state/metrics/ACaaS-001/processed_requests.jsonl");
-  const DIGITALOPS_METRICS_PATH = path.join(observabilityService.WORKSPACE_ROOT, ".eos-state/metrics/DIGITAL-OPS-001/processed_requests.jsonl");
+  const { statePath } = await import('@repo/eos-cli');
+  const ACAAS_METRICS_PATH = statePath('metrics', 'ACaaS-001', 'processed_requests.jsonl');
+  const DIGITALOPS_METRICS_PATH = statePath('metrics', 'DIGITAL-OPS-001', 'processed_requests.jsonl');
   const EVIDENCE_PATH = path.join(observabilityService.WORKSPACE_ROOT, "capabilities/observability/evidence/verification/runtime-invocations.jsonl");
   const line = JSON.stringify(invocation) + "\n";
   // Simpan ke evidence umum
   fs.appendFileSync(EVIDENCE_PATH, line);
   // Simpan ke canonical metrics path khusus ACaaS-001 untuk pilot - sesuai mandat "Aktifkan metering sejak awal"
   if (invocation.capability_id === "api-platform" && invocation.operation_id.startsWith("acaas.")) {
+    fs.mkdirSync(path.dirname(ACAAS_METRICS_PATH), { recursive: true });
     fs.appendFileSync(ACAAS_METRICS_PATH, line);
     console.log(`[ACAAS-METERING] Canonical metering recorded: ${invocation.operation_id} untuk tenant: ${invocation.tenant_id} (PILOT-TENANT-001)`);
   }
   // Simpan ke canonical metrics path khusus DIGITAL-OPS-001 untuk pilot - 5 menit interval collection untuk SENSE layer
   if (invocation.capability_id === "observability" && invocation.operation_id.startsWith("digitalops.")) {
     // Ensure directory exists before writing
-    const metricsDir = path.dirname(DIGITALOPS_METRICS_PATH);
-    if (!fs.existsSync(metricsDir)) fs.mkdirSync(metricsDir, { recursive: true });
+    fs.mkdirSync(path.dirname(DIGITALOPS_METRICS_PATH), { recursive: true });
     fs.appendFileSync(DIGITALOPS_METRICS_PATH, line);
     console.log(`[DIGITALOPS-METERING] Canonical metering recorded: ${invocation.operation_id} untuk tenant: ${invocation.tenant_id} (PILOT-DIGITALOPS-001)`);
   }

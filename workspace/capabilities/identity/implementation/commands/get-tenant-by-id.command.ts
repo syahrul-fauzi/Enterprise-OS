@@ -13,7 +13,7 @@ import {
   type ExecutionBoundary,
   type EvidenceBoundary,
   type PresentationBoundary
-} from "../../../work-core/contracts/work.contracts.js";
+} from "@capabilities/work-core/contracts/work.contracts.js";
 import type { TenantAggregate } from "@repo/contracts-core";
 
 // Lazy load repository untuk menghindari module cycle dan mematuhi 6-boundary compliance

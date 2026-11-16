@@ -1,0 +1,36 @@
+{
+  "reconId": "EOS-LH-RECON-001",
+  "generatedAt": "2026-11-15T09:30:00.000Z",
+  "productName": "lawyershub",
+  "productDescription": "Platform manajemen kasus hukum untuk advokat dan firma hukum di Indonesia",
+  "capabilitiesRequired": [
+    "requirement-management",
+    "workflow-engine",
+    "governance-evidence",
+    "intent-management",
+    "work-formation",
+    "observability",
+    "legal-case",
+    "legal-document"
+  ],
+  "capabilitiesFoundInGenesis": [
+    "requirement-management",
+    "workflow-engine",
+    "governance-evidence",
+    "intent-management",
+    "work-formation",
+    "observability",
+    "legal-case",
+    "legal-document"
+  ],
+  "capabilitiesMissing": [],
+  "reusePercentage": 100,
+  "architectureExtensionProposed": false,
+  "recommendation": "MINIMAL FIX - Semua capability yang dibutuhkan sudah tersedia di Genesis, tidak ada perluasan arsitektur yang diperlukan. Lanjutkan dengan test E2E dan verifikasi independen sesuai standar BDP-013.",
+  "nextSteps": [
+    "Jalankan test E2E untuk memverifikasi semua tahap lifecycle produk lawyershub",
+    "Buat artefak verifikasi independen sesuai acceptance gates BDP-013 G50-G57",
+    "Buat context mapping produk lawyershub ke bounded contexts Genesis",
+    "Generate pilot outcome report untuk produk lawyershub"
+  ]
+}

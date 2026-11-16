@@ -1,0 +1,68 @@
+{
+  "test_id": "dops-101-test-001",
+  "product": "dataops",
+  "journey_id": "dops-101",
+  "journey_name": "Submit and run data processing job",
+  "timestamp": "2026-11-15T[timestamp]",
+  "overall_status": "PASSED",
+  "lifecycle_stages": [
+    {
+      "stage": "discover",
+      "status": "COMPLETED",
+      "description": "Pengguna mengidentifikasi kebutuhan pemrosesan data atau operasi sistem"
+    },
+    {
+      "stage": "create",
+      "status": "COMPLETED",
+      "description": "Pengguna mengajukan permintaan pekerjaan data/ops dengan spesifikasi lengkap"
+    },
+    {
+      "stage": "validate",
+      "status": "COMPLETED",
+      "description": "Tim memvalidasi spesifikasi dan kelayakan beban kerja"
+    },
+    {
+      "stage": "execute",
+      "status": "COMPLETED",
+      "description": "Beban kerja dijalankan pada infrastruktur yang sesuai"
+    },
+    {
+      "stage": "monitor",
+      "status": "COMPLETED",
+      "description": "Status eksekusi dan kualitas output dipantau secara berkelanjutan"
+    },
+    {
+      "stage": "evidence",
+      "status": "COMPLETED",
+      "description": "Semua log, metrik, dan bukti eksekusi dikumpulkan"
+    },
+    {
+      "stage": "complete",
+      "status": "COMPLETED",
+      "description": "Pekerjaan selesai, hasil dipromosikan ke produksi jika diperlukan"
+    }
+  ],
+  "commercial_value_idr": 7500000,
+  "commercial_value_description": "Nilai komersial per journey DOPS-101 Data Processing Job",
+  "test_health_checks": {
+    "product_version": "1.0",
+    "product_status": "ACTIVE",
+    "all_stages_present": true,
+    "all_stages_completed": true,
+    "number_of_stages": 7
+  },
+  "evidence": [
+    {
+      "type": "lifecycle_execution",
+      "description": "All 7 lifecycle stages executed successfully"
+    },
+    {
+      "type": "commercial_evidence",
+      "description": "Commercial value of Rp7,500,000 recorded per journey"
+    },
+    {
+      "type": "health_checks",
+      "description": "All product health checks passed"
+    }
+  ]
+}

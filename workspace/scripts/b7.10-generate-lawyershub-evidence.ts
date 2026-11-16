@@ -12,7 +12,7 @@ async function main() {
   console.log(`[B7.10 LAWYERSHUB EVIDENCE] Membuat runtime events untuk req-003, decision_id: ${LAWYERSHUB_REQ003_DECISION_ID}`);
   
   // Set environment untuk menulis ke LawyersHub's runtime log
-  process.env.EOS_RUNTIME_INVOCATION_EVIDENCE_PATH = "/root/Enterprise-OS/workspace/products/lawyershub/evidence/verification/runtime-invocations.jsonl";
+  process.env.EOS_RUNTIME_INVOCATION_EVIDENCE_PATH = "require('path').resolve(__dirname, '..')/workspace/products/lawyershub/evidence/verification/runtime-invocations.jsonl";
   process.env.EOS_RUNTIME_INVOCATION_PRODUCT_ID = "lawyershub";
 
   // 1. api-platform event (SAME SEAM sebagai services-id)

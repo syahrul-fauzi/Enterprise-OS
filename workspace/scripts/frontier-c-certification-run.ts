@@ -15,16 +15,16 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
 
-import { prepareReleaseProcedure } from "/root/Enterprise-OS/workspace/procedures/prepare-release/implementation";
+import { prepareReleaseProcedure } from "require('path').resolve(__dirname, '..')/workspace/procedures/prepare-release/implementation";
 import {
   evaluatePrepareReleaseConditions,
   type PrepareReleaseConditionOutcome,
   type PrepareReleaseOutput,
-} from "/root/Enterprise-OS/workspace/procedures/prepare-release/contracts";
-import { requirementService } from "/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/services";
-import { requirementsTraceabilityMatrixService } from "/root/Enterprise-OS/workspace/capabilities/requirements-traceability-matrix/implementation/services";
-import { evidenceRegistryService } from "/root/Enterprise-OS/workspace/capabilities/evidence-registry/implementation/services";
-import { workflowEngineService } from "/root/Enterprise-OS/workspace/capabilities/workflow-engine/implementation/services/workflow-engine.service";
+} from "require('path').resolve(__dirname, '..')/workspace/procedures/prepare-release/contracts";
+import { requirementService } from "require('path').resolve(__dirname, '..')/workspace/capabilities/requirement-management/implementation/services";
+import { requirementsTraceabilityMatrixService } from "require('path').resolve(__dirname, '..')/workspace/capabilities/requirements-traceability-matrix/implementation/services";
+import { evidenceRegistryService } from "require('path').resolve(__dirname, '..')/workspace/capabilities/evidence-registry/implementation/services";
+import { workflowEngineService } from "require('path').resolve(__dirname, '..')/workspace/capabilities/workflow-engine/implementation/services/workflow-engine.service";
 
 // ─────────── Evidence dir ───────────
 const CERT_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "frontier-c-cert-"));

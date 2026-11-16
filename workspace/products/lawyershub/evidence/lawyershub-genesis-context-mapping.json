@@ -1,0 +1,74 @@
+{
+  "mappingId": "EOS-LH-GENESIS-MAPPING-001",
+  "generatedAt": "2026-11-15T09:45:00.000Z",
+  "productName": "lawyershub",
+  "genesisBoundedContexts": [
+    "LeadProspect",
+    "SolutionArtifact",
+    "FinancialAssessment",
+    "ConversionAsset",
+    "ClientAccount"
+  ],
+  "caseJourneyMapping": [
+    {
+      "lawyershubStage": "discover",
+      "description": "Pengguna menemukan dan memahami produk, menerima permintaan kasus baru dari klien",
+      "genesisBoundedContext": "LeadProspect",
+      "genesisOperation": "captureLeadProspect",
+      "mappingDetails": "Permintaan kasus baru dari klien = LeadProspect baru yang di-capture dengan sinyal permintaan hukum",
+      "evidenceRequired": ["client_intake_form", "case_description", "tenant_id"]
+    },
+    {
+      "lawyershubStage": "create",
+      "description": "Pengguna membuat legal matter baru dengan detail kasus, klien, dan dokumen pendukung",
+      "genesisBoundedContext": "SolutionArtifact",
+      "genesisOperation": "createSolutionArtifact",
+      "mappingDetails": "Detail kasus, informasi klien, dan daftar dokumen pendukung = SolutionArtifact yang dibuat untuk LeadProspect tersebut",
+      "evidenceRequired": ["case_file_number", "client_details", "document_inventory"]
+    },
+    {
+      "lawyershubStage": "execute",
+      "description": "Proses kasus berjalan dengan assignment lawyer, pengumpulan bukti, dan persiapan sidang",
+      "genesisBoundedContext": "FinancialAssessment",
+      "genesisOperation": "createFinancialAssessment + approveFinancialAssessment",
+      "mappingDetails": "Penugasan advokat, perhitungan biaya hukum, dan persiapan kasus = FinancialAssessment yang dibuat dan disetujui untuk SolutionArtifact tersebut",
+      "evidenceRequired": ["lawyer_assignment", "fee_agreement", "case_preparation_checklist"]
+    },
+    {
+      "lawyershubStage": "progress",
+      "description": "Update status kasus secara berkala, sinkronkan perkembangan ke klien",
+      "genesisBoundedContext": "ConversionAsset",
+      "genesisOperation": "createConversionAsset + acceptOffer",
+      "mappingDetails": "Laporan perkembangan kasus dan konfirmasi klien = ConversionAsset yang dibuat dan diterima sebagai penawaran resolusi yang disetujui",
+      "evidenceRequired": ["progress_report", "client_confirmation", "hearing_schedule"]
+    },
+    {
+      "lawyershubStage": "evidence",
+      "description": "Mengumpulkan semua bukti eksekusi, rekonsiliasi biaya hukum, catat pendapatan di governance-evidence",
+      "genesisBoundedContext": "ClientAccount",
+      "genesisOperation": "createClientAccount",
+      "mappingDetails": "Klien yang menerima resolusi kasus = ClientAccount yang dibuat sebagai hasil konversi dari ConversionAsset",
+      "evidenceRequired": ["reconciliation_report", "revenue_entry", "fee_invoice"]
+    },
+    {
+      "lawyershubStage": "complete",
+      "description": "Kasus selesai, evidence terverifikasi, arsipkan semua dokumen kasus",
+      "genesisBoundedContext": "ClientAccount",
+      "genesisOperation": "ClientAccount status transition to ACTIVE",
+      "mappingDetails": "Kasus selesai = ClientAccount status diupdate menjadi ACTIVE, semua bukti diarsipkan ke governance-evidence",
+      "evidenceRequired": ["case_completion_certificate", "evidence_archive_ref", "case_closure_timestamp"]
+    }
+  ],
+  "mappingValidation": {
+    "allLawyershubStagesMapped": true,
+    "allGenesisContextsUsed": true,
+    "noDuplicateLogicDetected": true,
+    "noNewCorePrimitivesCreated": true,
+    "workContinuityPreserved": true
+  },
+  "nextSteps": [
+    "Integrate LawyersHub runtime dengan Genesis service sesuai mapping ini",
+    "Jalankan end-to-end test untuk memverifikasi mapping berfungsi",
+    "Verifikasi bahwa semua transition memiliki evidence yang sesuai"
+  ]
+}

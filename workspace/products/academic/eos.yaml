@@ -1,0 +1,44 @@
+version: "1.0"
+workspace:
+  name: academic
+  display_name: Academic Community
+  description: Platform komunitas akademik untuk manajemen program dan diskusi penelitian
+lifecycle:
+  phase: D.2
+  status: ACTIVE
+  contract:
+    stages:
+      - name: discover
+        description: Pengguna menemukan dan memahami program akademik
+        terminal: false
+      - name: create
+        description: Pengguna membuat program akademik baru
+        terminal: false
+      - name: execute
+        description: Proses program akademik berjalan dengan partisipasi komunitas
+        terminal: false
+      - name: progress
+        description: Update status program dan diskusi secara berkala
+        terminal: false
+      - name: evidence
+        description: Mengumpulkan semua bukti eksekusi program
+        terminal: false
+      - name: complete
+        description: Program selesai, evidence terverifikasi
+        terminal: true
+  real_user_jobs:
+    - id: aca-101
+      name: Manage academic program
+      description: Full lifecycle manajemen program akademik dengan diskusi komunitas
+      status: active
+      requirements:
+        - req-academic-001
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 80
+    runtime_invocation_required: true
+governance:
+  baseline_locked: true
+  needs_audit: false
+  evidence_path: ./evidence

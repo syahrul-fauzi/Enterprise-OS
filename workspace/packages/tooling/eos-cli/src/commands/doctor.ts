@@ -3,7 +3,7 @@ import { execSync } from 'child_process';
 import { existsSync, readdirSync, writeFileSync } from 'fs';
 import { join, resolve } from 'path';
 import { parseArgs } from 'node:util';
-import { loadCurrentJourney, PROOFS_ROOT, loadGovernanceState } from '../state.js';
+import { loadCurrentJourney, PROOFS_ROOT, loadGovernanceState, statePath } from '../state.js';
 // Gunakan package workspace imports yang sudah didefinisikan di pnpm-workspace.yaml
 // import { continue_work } from '@repo/core-runtime/work-continuity'; // Fungsi belum terimplementasi di core-runtime
 // import { WorkInspectionAgent } from '@capabilities/work-inspection/inspection.agent.service'; // Package berhasil dibangun, import sementara dikomentari untuk unblock smoke test
@@ -179,7 +179,7 @@ export function runDoctorCommand(): number {
     { name: 'Application', check: () => existsSync(join(process.cwd(), 'package.json')) },
     { name: 'Git', check: () => { try { execSync('git rev-parse --is-inside-work-tree', {stdio: 'ignore'}); return true; } catch { return false; } }},
     { name: 'Web Runtime', check: () => !!process.version },
-    { name: 'Evidence Registry', check: () => existsSync(join(process.cwd(), 'workspace', '.eos-state')) },
+    { name: 'Evidence Registry', check: () => existsSync(statePath()) },
   ];
 
   services.forEach(svc => {

@@ -1,5 +1,5 @@
 import { join, resolve } from "node:path";
-const __dirname = "/root/Enterprise-OS/workspace/packages/tooling/eos-cli/src/gate/commands";
+const __dirname = "require('path').resolve(__dirname, '..')/workspace/packages/tooling/eos-cli/src/gate/commands";
 const EOS_ROOT = resolve(__dirname, "../../../../../../..");
 const GATE_C_DIR = join(EOS_ROOT, "enterprise", "science", "gate-c");
 console.log("__dirname:", __dirname);

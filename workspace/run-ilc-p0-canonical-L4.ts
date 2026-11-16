@@ -13,7 +13,7 @@
  *  plus §11 Acceptance Gate evaluation, plus KPI dashboard (§13).
  */
 import * as fs from 'fs/promises';
-import * as path from 'path';
+import { statePath } from '@repo/eos-cli';
 
 const BASE_URL = "http://localhost:3004";
 const SESSION = {
@@ -81,8 +81,8 @@ async function main() {
   console.log(`  Discussion: ${CANONICAL.discussion_id}`);
   console.log(`  Lawyer   : ${CANONICAL.lawyer_id}`);
   console.log("═══════════════════════════════════════════════════════════════");
-  const evidenceDir = path.join(process.cwd(), ".eos-state", "evidence");
-  const verifyDir = path.join(process.cwd(), ".eos-state", "verification");
+  const evidenceDir = statePath("evidence");
+  const verifyDir = statePath("verification");
   await fs.mkdir(evidenceDir, { recursive: true });
   await fs.mkdir(verifyDir, { recursive: true });
 

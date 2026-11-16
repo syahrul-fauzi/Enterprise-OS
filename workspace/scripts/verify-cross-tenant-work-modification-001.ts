@@ -1,6 +1,7 @@
 import { WorkId, newWorkId, ActorId, SessionId, TenantId } from "../capabilities/identity/implementation/contracts/identity.contracts.ts";
 import { WorkAggregate } from "../capabilities/work-core/contracts/work.contracts.ts";
 import * as fs from "fs";
+import { statePath } from "@repo/eos-cli";
 
 // Reuse WorkRepositoryInMemory dari split-brain test (99% reuse, baris baru: 17)
 const getGlobalWorkStore = () => {
@@ -72,7 +73,7 @@ async function runCrossTenantTest() {
     notes: testPassed ? "Cross-tenant protection bekerja. E6 invariant masih bertahan." : "CRITICAL: Cross-tenant protection gagal, potensi E6 violation."
   };
 
-  fs.writeFileSync("/root/Enterprise-OS/workspace/.eos-state/evidence/MULTI-TENANT-001_evidence.json", JSON.stringify(evidence, null, 2));
+  fs.writeFileSync(statePath('evidence', 'MULTI-TENANT-001_evidence.json'), JSON.stringify(evidence, null, 2));
   console.log("[RECON-MR-010] Evidence disimpan ke MULTI-TENANT-001_evidence.json");
   return testPassed;
 }

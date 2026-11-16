@@ -12,3 +12,7 @@ jobs:
       - name: Run EOS canonical architecture checks (pnpm arch-check)
         working-directory: packages/tooling/arch-tests
         run: pnpm run arch-check
+      - name: Run canonical path integrity check
+        run: bash scripts/ci/check-hardcoded-paths.sh
+      - name: Run state ownership validation
+        run: bash scripts/ci/validate-state-ownership.sh

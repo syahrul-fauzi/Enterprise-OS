@@ -1,10 +1,14 @@
 import os
 import re
+from pathlib import Path
+import sys
 
-# Base directory untuk semua file .ts yang ingin kita perbaiki
-base_dir = "/root/Enterprise-OS/workspace/packages/tooling/eos-cli/src"
-# Target file (lokasiDigestEngine yang benar)
-target_file = "/root/Enterprise-OS/workspace/packages/core/kernel/src/digest-engine.js"
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "skills"))
+from state_utils import get_repository_root
+
+repo_root = get_repository_root()
+base_dir = repo_root / "workspace" / "packages" / "tooling" / "eos-cli" / "src"
+target_file = repo_root / "workspace" / "packages" / "core" / "kernel" / "src" / "digest-engine.ts"
 
 # Regex untuk mencari import DigestEngine yang perlu diperbaiki
 import_pattern = re.compile(r'import { DigestEngine } from "(.*?)";')

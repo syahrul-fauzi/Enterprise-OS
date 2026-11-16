@@ -503,15 +503,15 @@
 //audit("AUDIT #12: No modification to RuntimeInvocationEvent contract", () => {
 //  const fs = require("fs");
 //  const runtimeContent = fs.readFileSync(
-//    "/root/Enterprise-OS/workspace/packages/core/runtime/src/invocation-evidence.ts",
+//    "require('path').resolve(__dirname, '..')/workspace/packages/core/runtime/src/invocation-evidence.ts",
 //    "utf8",
 //  );
 //  const attrImpl = fs.readFileSync(
-//    "/root/Enterprise-OS/workspace/procedures/attribution/implementation.ts",
+//    "require('path').resolve(__dirname, '..')/workspace/procedures/attribution/implementation.ts",
 //    "utf8",
 //  );
 //  const attrContracts = fs.readFileSync(
-//    "/root/Enterprise-OS/workspace/procedures/attribution/contracts.ts",
+//    "require('path').resolve(__dirname, '..')/workspace/procedures/attribution/contracts.ts",
 //    "utf8",
 //  );
 //

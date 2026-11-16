@@ -18,7 +18,7 @@ import {
   type ExecutionBoundary, 
   type EvidenceBoundary, 
   type PresentationBoundary 
-} from "../../../work-core/contracts/work.contracts.js";
+} from "@capabilities/work-core/contracts/work.contracts.js";
 import { initIdentitySchema } from "../repositories/base.repository.js";
 import { slugifyForTenant } from "../services/password.service.js";
 

@@ -1,0 +1,55 @@
+{
+  "pilot_id": "services-id-pilot-001",
+  "pilot_sequence": 11,
+  "product": "services-id",
+  "pilot_date": "2026-11-15",
+  "pilot_objective": "Membuktikan bahwa Services.ID dapat menjalankan business journey menggunakan Genesis sebagai Business Domain Authority, tanpa menduplikasi business logic dan tanpa mengubah authority EOS Core",
+  "pilot_status": "COMPLETED",
+  "journey_executed": {
+    "journey_id": "SREQ-101",
+    "journey_name": "Service Request Fulfillment",
+    "journey_description": "Professional Service Procurement Marketplace",
+    "lifecycle_stages": 6,
+    "actors_involved": 4,
+    "service_provider_integrations": 1,
+    "commercial_value_idr": 150000
+  },
+  "pilot_results": {
+    "all_lifecycle_stages_completed": true,
+    "reuse_percentage": 100,
+    "architecture_freeze_compliant": true,
+    "no_new_core_primitives": true,
+    "no_business_logic_duplication": true,
+    "all_acceptance_gates_passed": true,
+    "commercial_value_recorded": true
+  },
+  "acceptance_gates_summary": {
+    "G50": "PASSED",
+    "G51": "PASSED",
+    "G52": "PASSED",
+    "G53": "PASSED",
+    "G54": "PASSED",
+    "G55": "PASSED",
+    "G56": "PASSED",
+    "G57": "PASSED"
+  },
+  "key_findings": [
+    "Services.ID product dapat menjalankan business journey dengan reuse 100% capability Genesis",
+    "Tidak ada perluasan arsitektur Genesis yang dibutuhkan untuk produk ini",
+    "Produk menggunakan EOS 6-stage universal lifecycle yang selaras dengan kerangka kerja Genesis",
+    "E1 Capability Provider Economy Audit terpenuhi dengan 4 actor roles yang diuji",
+    "Nilai komersial Rp150rb per journey SREQ-101 terkonfirmasi",
+    "Semua 6 tahap lifecycle berjalan tanpa masalah"
+  ],
+  "pilot_evidence": [
+    "recon-results.json",
+    "clr-report.json",
+    "PORTSID-001_verification.json",
+    "runtime-invocations.jsonl"
+  ],
+  "next_steps": [
+    "Pilih produk EOS berikutnya sebagai kandidat pilot Operational Adoption keduabelas",
+    "Jalankan recon baseline untuk produk pilot keduabelas",
+    "Jalankan test E2E dan verifikasi independen sesuai standar BDP-013"
+  ]
+}

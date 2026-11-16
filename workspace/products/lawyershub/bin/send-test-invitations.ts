@@ -9,6 +9,7 @@
 // Import existing email queue infrastructure (core freeze compliant - no new dependencies)
 // Menggunakan path relatif karena package alias hanya bekerja di build environment
 import { EmailQueueRepository } from '@repo/core-runtime/email-queue.js';
+import { statePath } from '@repo/eos-cli';
 
 // Konfigurasi staging yang sama dengan run-real-human-testing.ts
 const STAGING_CONFIG = {
@@ -147,7 +148,7 @@ async function sendInvitations() {
     // Simpan evidence ke .eos-state
     const fs = await import('fs/promises');
     await fs.writeFile(
-      '/root/Enterprise-OS/.eos-state/evidence/criterion-8-invitations-sent.json',
+      statePath('evidence', 'criterion-8-invitations-sent.json'),
       JSON.stringify(evidence, null, 2)
     );
     

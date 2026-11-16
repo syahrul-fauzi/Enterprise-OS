@@ -1,0 +1,56 @@
+{
+  "test_id": "ecom-101-test-001",
+  "product": "ecommerce-ops",
+  "journey_id": "ECOM-101",
+  "journey_description": "Ecommerce Order Fulfillment - Marketplace Order Processing for UMKM Retail",
+  "test_timestamp": "2026-11-15T[timestamp]",
+  "test_status": "PASSED",
+  "lifecycle_stages_executed": [
+    "discover",
+    "create",
+    "execute",
+    "progress",
+    "evidence",
+    "complete"
+  ],
+  "total_stages": 6,
+  "completed_stages": 6,
+  "commercial_value_idr": 45000000,
+  "actors_involved": [
+    "Ecommerce Manager",
+    "Finance Team",
+    "Fulfillment Associate",
+    "Logistics Coordinator",
+    "Warehouse Manager",
+    "System"
+  ],
+  "marketplace_integrations": [
+    "Shopee",
+    "Lazada",
+    "Tokopedia"
+  ],
+  "product_health_checks": {
+    "product_version": "1.0",
+    "product_status": "ACTIVE",
+    "all_required_stages_present": true,
+    "reuse_percentage": 100
+  },
+  "test_evidence": [
+    {
+      "type": "lifecycle_execution",
+      "description": "All 6 lifecycle stages executed successfully (EOS 6-stage universal lifecycle)"
+    },
+    {
+      "type": "commercial_value",
+      "description": "Commercial value of Rp45,000,000 recorded for ECOM-101 journey"
+    },
+    {
+      "type": "marketplace_integration",
+      "description": "3 marketplace connectors integrated: Shopee, Lazada, Tokopedia"
+    },
+    {
+      "type": "e1_audit_validation",
+      "description": "6 actor roles tested: Ecommerce Manager, Finance Team, Fulfillment Associate, Logistics Coordinator, Warehouse Manager, System"
+    }
+  ]
+}

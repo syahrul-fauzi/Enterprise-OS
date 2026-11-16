@@ -1,6 +1,7 @@
 import { WorkId, newWorkId, ActorId, SessionId, TenantId } from "../capabilities/identity/implementation/contracts/identity.contracts";
 import { WorkAggregate } from "../capabilities/work-core/contracts/work.contracts";
 import * as fs from "fs";
+import { statePath } from "@repo/eos-cli";
 
 // Reuse 100% WorkRepositoryInMemory dari cross-institution test (99.8% reuse, hanya 7 baris baru)
 const getGlobalWorkStore = () => {
@@ -103,7 +104,7 @@ async function generateEvidence(success: boolean, errorMessage?: string) {
             core_gaps: ["core Postgres repository hanya memvalidasi cross-tenant violation, tidak cross-federation"]
           };
           // Simpan evidence ke .eos-state/evidence untuk tracking E6 adjudication (sesuai aturan evidence-first)
-           const evidencePath = `.eos-state/evidence/${evidence.work_id}_evidence.json`;
+           const evidencePath = statePath("evidence", `${evidence.work_id}_evidence.json`);
            await fs.promises.writeFile(evidencePath, JSON.stringify(evidence, null, 2));
            console.log(`[RECON-MR-013] Evidence saved to ${evidencePath}`);
            return evidence;

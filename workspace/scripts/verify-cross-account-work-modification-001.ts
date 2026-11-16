@@ -1,6 +1,7 @@
 import { WorkId, newWorkId, ActorId, SessionId, TenantId, AccountId } from "@repo/contracts-core/src/identity.contracts.ts";
 import { WorkAggregate } from "../capabilities/work-core/contracts/work.contracts.ts";
 import * as fs from "fs";
+import { statePath } from "@repo/eos-cli";
 
 // Reuse 100% WorkRepositoryInMemory dari cross-tenant test (99.5% reuse, 12 baris baru)
 const getGlobalWorkStore = () => {
@@ -72,7 +73,7 @@ async function runCrossAccountTest() {
     notes: testPassed ? "Cross-account protection bekerja. E6 invariant masih bertahan." : "CRITICAL: Cross-account protection gagal, potensi E6 violation."
   };
 
-  fs.writeFileSync("/root/Enterprise-OS/workspace/.eos-state/evidence/MULTI-ACCOUNT-001_evidence.json", JSON.stringify(evidence, null, 2));
+  fs.writeFileSync(statePath('evidence', 'MULTI-ACCOUNT-001_evidence.json'), JSON.stringify(evidence, null, 2));
   console.log("[RECON-MR-011] Evidence disimpan ke MULTI-ACCOUNT-001_evidence.json");
   return testPassed;
 }

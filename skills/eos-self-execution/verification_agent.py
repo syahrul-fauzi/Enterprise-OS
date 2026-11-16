@@ -7,10 +7,14 @@ constraints are preserved. Never trusts implementation agents - always verifies 
 import os
 import json
 import subprocess
+import sys
 from enum import Enum
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from state_utils import state_path, get_repository_root
 
 class VerificationCheck(Enum):
     AUTHENTICATION = "authenticated_user"
@@ -27,8 +31,11 @@ class VerificationCheck(Enum):
 class VerificationAgent:
     """Independent verification agent that validates all work item requirements"""
     
-    def __init__(self, workspace_path: str = "/root/Enterprise-OS"):
-        self.workspace_path = Path(workspace_path)
+    def __init__(self, workspace_path: Optional[str] = None):
+        if workspace_path is None:
+            self.workspace_path = get_repository_root()
+        else:
+            self.workspace_path = Path(workspace_path)
         self.check_results: Dict[str, bool] = {}
         self.failed_checks: List[str] = []
         self.passed_checks: List[str] = []
@@ -298,7 +305,7 @@ class VerificationAgent:
         }
         
         # Save verification report
-        report_path = self.workspace_path / ".eos-state" / "verification" / f"{work_item['work_id']}_verification.json"
+        report_path = state_path("verification", f"{work_item['work_id']}_verification.json")
         report_path.parent.mkdir(exist_ok=True)
         with open(report_path, 'w') as f:
             json.dump(full_report, f, indent=2)

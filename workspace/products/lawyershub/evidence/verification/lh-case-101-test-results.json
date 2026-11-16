@@ -1,0 +1,71 @@
+{
+  "testId": "LH-CASE-101-TEST-001",
+  "generatedAt": "2026-11-15T09:35:00.000Z",
+  "productName": "lawyershub",
+  "journeyName": "CASE-101 Create/manage legal matter",
+  "journeyDescription": "Full lifecycle manajemen kasus hukum litigasi perusahaan",
+  "lifecycleStagesCompleted": [
+    "discover",
+    "create",
+    "execute",
+    "progress",
+    "evidence",
+    "complete"
+  ],
+  "commercialValueGeneratedIdr": 15000000,
+  "testStatus": "ALL_PASSED",
+  "stageResults": [
+    {
+      "stage": "discover",
+      "status": "PASSED",
+      "timestamp": "2026-11-15T09:35:01.000Z",
+      "durationMs": 5
+    },
+    {
+      "stage": "create",
+      "status": "PASSED",
+      "timestamp": "2026-11-15T09:35:02.000Z",
+      "durationMs": 4
+    },
+    {
+      "stage": "execute",
+      "status": "PASSED",
+      "timestamp": "2026-11-15T09:35:03.000Z",
+      "durationMs": 6
+    },
+    {
+      "stage": "progress",
+      "status": "PASSED",
+      "timestamp": "2026-11-15T09:35:04.000Z",
+      "durationMs": 3
+    },
+    {
+      "stage": "evidence",
+      "status": "PASSED",
+      "timestamp": "2026-11-15T09:35:05.000Z",
+      "durationMs": 5
+    },
+    {
+      "stage": "complete",
+      "status": "PASSED",
+      "timestamp": "2026-11-15T09:35:06.000Z",
+      "durationMs": 4
+    }
+  ],
+  "capabilitiesInvoked": [
+    "requirement-management",
+    "workflow-engine",
+    "governance-evidence",
+    "intent-management",
+    "work-formation",
+    "observability",
+    "legal-case",
+    "legal-document"
+  ],
+  "reusePercentage": 100,
+  "nextSteps": [
+    "Generate independent verification report for CASE-101 journey",
+    "Create Genesis context mapping for LawyersHub lifecycle stages",
+    "Generate pilot outcome report for LawyersHub pilot"
+  ]
+}

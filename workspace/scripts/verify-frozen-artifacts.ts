@@ -25,7 +25,7 @@ const FROZEN_PATHS = [
 // ============================================================
 // Path absolut workspace
 // ============================================================
-const WORKSPACE_ROOT = '/root/Enterprise-OS/workspace';
+const WORKSPACE_ROOT = 'require('path').resolve(__dirname, '..')/workspace';
 
 console.log('='.repeat(80));
 console.log('EOS FROZEN ARTIFACTS VERIFICATION — Gate3/Gate4/Gate5');
@@ -38,7 +38,7 @@ console.log('='.repeat(80));
 console.log('\n🔍 Memeriksa git status untuk perubahan di path frozen...');
 try {
   // Jalankan git status untuk melihat modified files
-  const gitStatusOutput = execSync('cd /root/Enterprise-OS/workspace && git status --porcelain', { encoding: 'utf8' });
+  const gitStatusOutput = execSync('cd require('path').resolve(__dirname, '..')/workspace && git status --porcelain', { encoding: 'utf8' });
   const modifiedFiles = gitStatusOutput
     .split('\n')
     .filter(line => line.trim().length > 0)

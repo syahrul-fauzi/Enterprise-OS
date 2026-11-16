@@ -1,0 +1,57 @@
+{
+  "pilot_id": "lawyershub-pilot-001",
+  "pilot_name": "LawyersHub Legal Case Management Pilot",
+  "pilot_description": "Pilot Operational Adoption kesebelas untuk produk LawyersHub, platform manajemen kasus hukum untuk advokat dan firma hukum di Indonesia",
+  "generated_at": "2026-11-15T09:50:00.000Z",
+  "product": {
+    "id": "lawyershub",
+    "display_name": "LawyersHub",
+    "phase": "D.1"
+  },
+  "journey": {
+    "id": "CASE-101",
+    "name": "Create/manage legal matter",
+    "description": "Full lifecycle manajemen kasus hukum litigasi perusahaan"
+  },
+  "lifecycle_stages": [
+    "discover",
+    "create",
+    "execute",
+    "progress",
+    "evidence",
+    "complete"
+  ],
+  "actors": [
+    "Client",
+    "Lawyer",
+    "Legal Assistant",
+    "Finance",
+    "Court Liaison",
+    "System"
+  ],
+  "integrations": [
+    "Document Management System",
+    "Court E-Filing",
+    "Payment Gateway",
+    "Calendar System"
+  ],
+  "commercial_value_idr": 15000000,
+  "reuse_percentage": 100,
+  "acceptance_gates": {
+    "G50": "PASSED",
+    "G51": "PASSED",
+    "G52": "PASSED",
+    "G53": "PASSED",
+    "G54": "PASSED",
+    "G55": "PASSED",
+    "G56": "PASSED",
+    "G57": "PASSED"
+  },
+  "pilot_status": "COMPLETED",
+  "summary": "Pilot Operational Adoption kesebelas untuk produk LawyersHub telah berhasil diselesaikan dengan semua acceptance gates BDP-013 PASSED. Produk LawyersHub terbukti dapat menjalankan business journey nyata menggunakan Genesis sebagai Business Domain Authority dengan reuse 100% capability tanpa perluasan arsitektur, sesuai keputusan Architecture Freeze.",
+  "next_steps": [
+    "Jalankan transaksi kasus hukum tambahan untuk mengukur throughput",
+    "Integrasikan dengan konektor manajemen dokumen hukum nyata untuk validasi produksi",
+    "Skalakan pola pilot ke jenis kasus hukum tambahan (litigasi, korporat, kepatuhan)"
+  ]
+}

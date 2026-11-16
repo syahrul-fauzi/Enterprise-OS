@@ -1,6 +1,7 @@
 import { WorkId, newWorkId, ActorId, SessionId, TenantId, AccountId, InstitutionId } from "../capabilities/identity/implementation/contracts/identity.contracts.ts";
 import { WorkAggregate } from "../capabilities/work-core/contracts/work.contracts.ts";
 import * as fs from "fs";
+import { statePath } from "@repo/eos-cli";
 
 // Reuse 100% WorkRepositoryInMemory dari cross-account test (99.7% reuse, 9 baris baru)
 const getGlobalWorkStore = () => {
@@ -74,7 +75,7 @@ async function runCrossInstitutionTest() {
     notes: testPassed ? "Cross-institution protection bekerja. E6 invariant masih bertahan." : "CRITICAL: Cross-institution protection gagal, potensi E6 violation."
   };
 
-  fs.writeFileSync("/root/Enterprise-OS/workspace/.eos-state/evidence/MULTI-INSTITUTION-001_evidence.json", JSON.stringify(evidence, null, 2));
+  fs.writeFileSync(statePath('evidence', 'MULTI-INSTITUTION-001_evidence.json'), JSON.stringify(evidence, null, 2));
   console.log("[RECON-MR-012] Evidence disimpan ke MULTI-INSTITUTION-001_evidence.json");
   return testPassed;
 }

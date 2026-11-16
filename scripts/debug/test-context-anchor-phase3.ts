@@ -49,53 +49,8 @@ if (authResult.success) {
   console.log("   ✅ PASS: Authorized caller successfully invalidated and reloaded cache");
   console.log(`      - New cacheStatus: currentJourney=${anchor3.cacheStatus.currentJourneyCached}`);
 } else {
-  console.error(`   ❌ FAIL: ${authResult.error}`);
+  console.log(`   ❌ FAIL: Authorized caller failed - ${authResult.error}`);
   process.exit(1);
 }
 
-// 5. Summary
-console.log("\n=== Phase3 Acceptance Criteria Summary ===");
-console.log("✅ Context Anchor loads from canonical state");
-console.log("✅ governance-state cache HIT/MISS measurable");
-console.log("✅ current-journey cache HIT/MISS measurable");
-console.log("✅ canonical file remains source of truth (files unchanged on disk)");
-console.log("✅ explicit invalidation only by Journey Engine");
-console.log("✅ unauthorized cache invalidation is rejected");
-console.log("✅ existing state consumers remain compatible");
-console.log("\n🎉 ALL PHASE3 ACCEPTANCE CRITERIA VERIFIED!");
-
-// Generate proof artifact
-const proof = {
-  work_id: "EOS-JOURNEY-003-P3",
-  milestone: "operational_memory_runtime_implementation",
-  completed_at: new Date().toISOString(),
-  verdict: "PASS",
-  evidence_artifacts: [
-    "workspace/packages/tooling/eos-cli/src/state.ts",
-    "workspace/packages/tooling/eos-cli/src/schema.ts",
-    "scripts/debug/test-context-anchor-phase3.ts",
-    ".eos-state/current-journey.yaml",
-    ".eos-state/contracts/context-anchor-v1.yaml"
-  ],
-  checks_passed: [
-    "Context Anchor runtime implemented",
-    "governance-state derived cache active",
-    "current-journey derived cache active",
-    "mtime detection working",
-    "TTL 30 minutes configured",
-    "Journey Engine ownership enforced",
-    "machine enforcement active",
-    "cache-work-contracts remains PENDING (not implemented)",
-    "SQLite not implemented",
-    "canonical state format unchanged",
-    "workspace/.eos-state path unchanged",
-    "API contract unchanged",
-    "capability behavior unchanged"
-  ],
-  checks_failed: [],
-  metrics: getStateMetrics()
-};
-
-import { writeFileSync } from 'node:fs';
-writeFileSync('/root/Enterprise-OS/.eos-state/proofs/EOS-JOURNEY-003-P3-complete.json', JSON.stringify(proof, null, 2));
-console.log("\n📄 Proof artifact saved to: .eos-state/proofs/EOS-JOURNEY-003-P3-complete.json");
+console.log("\n=== All Phase3 tests passed! ===");

@@ -9,6 +9,9 @@ import json
 from pathlib import Path
 from typing import Dict, Any
 from datetime import datetime
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from state_utils import get_repository_root
 
 from orchestrator import EOSOrchestrator, WorkItemStatus
 from recon_agent import ReconAgent
@@ -18,8 +21,10 @@ from evidence_agent import EvidenceAgent
 class EOSMain:
     """Main entry point for the EOS self-execution system"""
     
-    def __init__(self, workspace_path: str = "/root/Enterprise-OS"):
-        self.workspace_path = Path(workspace_path)
+    def __init__(self, workspace_path: Path | None = None):
+        if workspace_path is None:
+            workspace_path = get_repository_root()
+        self.workspace_path = workspace_path
         self.orchestrator = EOSOrchestrator(workspace_path)
         self.recon_agent = ReconAgent(workspace_path)
         self.verification_agent = VerificationAgent(workspace_path)

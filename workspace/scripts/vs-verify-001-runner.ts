@@ -55,7 +55,7 @@ async function main(): Promise<void> {
 
   // Get target slice from CLI, default to REQ-010
   const targetSlice = process.argv[2] || "REQ-010";
-  const WORKSPACE_ROOT = process.cwd(); // process.cwd() is already /root/Enterprise-OS/workspace
+  const WORKSPACE_ROOT = process.cwd(); // process.cwd() is already require('path').resolve(__dirname, '..')/workspace
   const slicePath = join(WORKSPACE_ROOT, "examples", "vertical-slice", targetSlice);
   const acceptancePath = join(slicePath, "acceptance.yaml");
   const evidencePath = join(slicePath, "evidence", `VS-VERIFY-001-${targetSlice}-${Date.now()}.json`);

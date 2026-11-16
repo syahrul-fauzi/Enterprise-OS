@@ -3,6 +3,7 @@
 import { connectorEcosystemService } from "../implementation/services/connector-ecosystem.service.js";
 import { getWorkRepositoryPostgres } from "../../work-core/implementation/repository/work-postgres.repository.js";
 import { writeFile } from 'fs/promises';
+import { statePath } from '@repo/eos-cli';
 
 interface ProjectsCoIdSyncPayload {
   imported: number;
@@ -70,7 +71,7 @@ async function testProjectsCoIdSync() {
        console.log("\n🎉 PRJ-002-W01 ALL CHECKS PASSED!");
        
        // Generate evidence artifact
-       await writeFile('/root/Enterprise-OS/.eos-state/verification/PRJ-002_W01_verification.json', JSON.stringify({
+       await writeFile(statePath('verification', 'PRJ-002_W01_verification.json'), JSON.stringify({
         work_id: "PRJ-002-ProjectsID",
         slice: "PRJ-002-W01",
         completed_at: new Date().toISOString(),
@@ -97,10 +98,11 @@ async function testProjectsCoIdSync() {
       };
       
       // Ensure .eos-state/proofs directory exists
-      if (!fs.existsSync("/root/Enterprise-OS/.eos-state/proofs")) {
-        fs.mkdirSync("/root/Enterprise-OS/.eos-state/proofs", { recursive: true });
+      const proofsDir = statePath('proofs');
+      if (!fs.existsSync(proofsDir)) {
+        fs.mkdirSync(proofsDir, { recursive: true });
       }
-      fs.writeFileSync("/root/Enterprise-OS/.eos-state/proofs/PRJ-002-verification-complete.json", JSON.stringify(verificationArtifact, null, 2));
+      fs.writeFileSync(statePath('proofs', 'PRJ-002-verification-complete.json'), JSON.stringify(verificationArtifact, null, 2));
       console.log("\n📝 Verification artifact saved to .eos-state/proofs/PRJ-002-verification-complete.json");
       
       // 5. Final proof summary

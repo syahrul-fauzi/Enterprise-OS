@@ -302,7 +302,9 @@ function recordEvidence(gateId, data) {
     return __awaiter(this, void 0, void 0, function* () {
         const fs = yield import('fs/promises');
         const path = yield import('path');
-        const evidenceDir = path.join('/root/Enterprise-OS/.eos-state/evidence/ilc-ins-001');
+        const REPO_ROOT = path.resolve(__dirname, '../../../../../../');
+        const EOS_STATE_DIR = path.join(REPO_ROOT, '.eos-state');
+        const evidenceDir = path.join(EOS_STATE_DIR, 'evidence', 'ilc-ins-001');
         yield fs.mkdir(evidenceDir, { recursive: true });
         yield fs.writeFile(path.join(evidenceDir, `${gateId}_evidence.json`), JSON.stringify(Object.assign({ gateId, recordedAt: new Date().toISOString(), workId: TEST_CONTEXT.workId }, data), null, 2));
         console.log(`[EVIDENCE] ${gateId} PASSED - evidence saved`);

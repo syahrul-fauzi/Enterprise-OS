@@ -4,30 +4,27 @@ workspace:
   display_name: Operational Economics & Value Measurement
   description: Membuat konsumsi layanan, biaya operasional, dan kontribusi ekonomi dapat diukur serta dipertanggungjawabkan.
 lifecycle:
-  phase: D.1
+  phase: D.2
   status: ACTIVE
   contract:
     stages:
       - name: discover
-        description: Identifikasi sumber usage dan biaya yang perlu diukur
+        description: Identifikasi sumber usage dan biaya yang perlu diukur (EOS 6-stage lifecycle phase 1)
         terminal: false
       - name: create
-        description: Setup metering plan dengan spesifikasi attribution
-        terminal: false
-      - name: validate
-        description: Validasi metrik, entitlement, dan sumber data
+        description: Setup metering plan dengan spesifikasi attribution (EOS 6-stage lifecycle phase 2)
         terminal: false
       - name: execute
-        description: Jalankan collection dan processing usage data
+        description: Jalankan collection dan processing usage data (EOS 6-stage lifecycle phase 3)
         terminal: false
-      - name: monitor
-        description: Pantau consumption, margin, dan biaya secara real-time
+      - name: progress
+        description: Pantau consumption, margin, dan biaya secara real-time (EOS 6-stage lifecycle phase 4)
         terminal: false
       - name: evidence
-        description: Kumpulkan bukti usage untuk invoice dan audit
+        description: Kumpulkan bukti usage untuk invoice dan audit (EOS 6-stage lifecycle phase 5)
         terminal: false
       - name: complete
-        description: Laporan periodik selesai, data terarsipkan
+        description: Laporan periodik selesai, data terarsipkan (EOS 6-stage lifecycle phase 6)
         terminal: true
   real_user_jobs:
     - id: vm-101
@@ -42,6 +39,6 @@ quality:
     test_coverage_min: 85
     runtime_invocation_required: true
 governance:
-  baseline_locked: false
+  baseline_locked: true
   needs_audit: false
   evidence_path: ./evidence

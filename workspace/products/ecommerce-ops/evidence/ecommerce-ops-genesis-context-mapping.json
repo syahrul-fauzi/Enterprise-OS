@@ -1,0 +1,74 @@
+{
+  "mappingId": "EOS-ECOM-OPS-GENESIS-MAPPING-001",
+  "generatedAt": "2026-11-15T09:15:00.000Z",
+  "productName": "ecommerce-ops",
+  "genesisBoundedContexts": [
+    "LeadProspect",
+    "SolutionArtifact",
+    "FinancialAssessment",
+    "ConversionAsset",
+    "ClientAccount"
+  ],
+  "orderJourneyMapping": [
+    {
+      "ecommerceStage": "discover",
+      "description": "Pesanan baru diterima dari marketplace (Shopee/Lazada/Tokopedia) dan sinkronkan ke canonical Work",
+      "genesisBoundedContext": "LeadProspect",
+      "genesisOperation": "captureLeadProspect",
+      "mappingDetails": "Order masuk dari marketplace = LeadProspect baru yang di-capture dengan sinyal order dari marketplace",
+      "evidenceRequired": ["marketplace_order_payload", "ingest_timestamp", "tenant_id"]
+    },
+    {
+      "ecommerceStage": "create",
+      "description": "Buat Work baru dengan detail order, customer, dan inventory",
+      "genesisBoundedContext": "SolutionArtifact",
+      "genesisOperation": "createSolutionArtifact",
+      "mappingDetails": "Detail order, item yang dipesan, dan informasi inventory = SolutionArtifact yang dibuat untuk LeadProspect tersebut",
+      "evidenceRequired": ["order_line_items", "inventory_reservation", "customer_details"]
+    },
+    {
+      "ecommerceStage": "execute",
+      "description": "Jalankan proses fulfillment: verifikasi pembayaran, cek stock, generate label shipping, serahkan ke logistik",
+      "genesisBoundedContext": "FinancialAssessment",
+      "genesisOperation": "createFinancialAssessment + approveFinancialAssessment",
+      "mappingDetails": "Verifikasi pembayaran, perhitungan biaya logistik, dan pengecekan stock = FinancialAssessment yang dibuat dan disetujui untuk SolutionArtifact tersebut",
+      "evidenceRequired": ["payment_verification", "shipping_cost_calculation", "stock_confirmation"]
+    },
+    {
+      "ecommerceStage": "progress",
+      "description": "Pantau pengiriman real-time, sinkronkan status balik ke marketplace",
+      "genesisBoundedContext": "ConversionAsset",
+      "genesisOperation": "createConversionAsset + acceptOffer",
+      "mappingDetails": "Shipping label yang di-generate dan konfirmasi pengiriman = ConversionAsset yang dibuat dan diterima sebagai penawaran fulfillment yang disetujui",
+      "evidenceRequired": ["shipping_label_url", "tracking_id", "logistik_confirmation"]
+    },
+    {
+      "ecommerceStage": "evidence",
+      "description": "Rekonsiliasi semua biaya (logistik, fee marketplace, inventory), catat revenue di governance-evidence",
+      "genesisBoundedContext": "ClientAccount",
+      "genesisOperation": "createClientAccount",
+      "mappingDetails": "Customer yang menerima pesanan = ClientAccount yang dibuat sebagai hasil konversi dari ConversionAsset",
+      "evidenceRequired": ["reconciliation_report", "revenue_entry", "fee_breakdown"]
+    },
+    {
+      "ecommerceStage": "complete",
+      "description": "Arsipkan semua bukti transaksi, tutup Work secara resmi",
+      "genesisBoundedContext": "ClientAccount",
+      "genesisOperation": "ClientAccount status transition to ACTIVE",
+      "mappingDetails": "Pesanan selesai = ClientAccount status diupdate menjadi ACTIVE, semua bukti diarsipkan ke governance-evidence",
+      "evidenceRequired": ["completion_proof", "evidence_archive_ref", "work_closure_timestamp"]
+    }
+  ],
+  "mappingValidation": {
+    "allEcommerceStagesMapped": true,
+    "allGenesisContextsUsed": true,
+    "noDuplicateLogicDetected": true,
+    "noNewCorePrimitivesCreated": true,
+    "workContinuityPreserved": true
+  },
+  "nextSteps": [
+    "Integrate ecommerce-ops runtime dengan Genesis service sesuai mapping ini",
+    "Jalankan end-to-end test untuk memverifikasi mapping berfungsi",
+    "Verifikasi bahwa semua transition memiliki evidence yang sesuai"
+  ]
+}

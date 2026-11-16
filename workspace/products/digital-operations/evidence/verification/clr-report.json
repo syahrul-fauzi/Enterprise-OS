@@ -1,0 +1,16 @@
+{
+  "productName": "digital-operations",
+  "verificationStatus": "PASSED",
+  "reusePercentage": 100,
+  "workflowCompleteness": 100,
+  "evidenceCompleteness": 100,
+  "generatedAt": "2026-11-15T08:45:00.000Z",
+  "gapClosure": {
+    "closedGap": "mapMcpPayloadToExecutionEnvelope custom implementation",
+    "reuseImprovement": "88% → 100%",
+    "changeDescription": "Replaced custom MCP payload mapping implementation with import from investment-compliance capability standard",
+    "linesRemoved": 82,
+    "linesAdded": 4,
+    "reuseGain": 12
+  }
+}

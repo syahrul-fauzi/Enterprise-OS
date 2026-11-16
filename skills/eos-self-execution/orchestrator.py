@@ -5,9 +5,14 @@ Implements the core execution loop that transforms work items into verified outc
 
 import json
 import os
+import sys
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 from enum import Enum
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from state_utils import state_path, get_repository_root
 
 class WorkItemStatus(Enum):
     PENDING = "PENDING"
@@ -77,8 +82,11 @@ class WorkItem:
 class EOSOrchestrator:
     """Main orchestrator that manages the entire self-execution pipeline"""
     
-    def __init__(self, workspace_path: str = "/root/Enterprise-OS"):
-        self.workspace_path = workspace_path
+    def __init__(self, workspace_path: Optional[str] = None):
+        if workspace_path is None:
+            self.workspace_path = get_repository_root()
+        else:
+            self.workspace_path = Path(workspace_path)
         self.work_items: Dict[str, WorkItem] = {}
         self.active_slices: int = 0
         self.shipped_slices: int = 0
@@ -87,11 +95,11 @@ class EOSOrchestrator:
         
     def load_state(self):
         """Load existing work items from state storage"""
-        state_path = os.path.join(self.workspace_path, ".eos-state", "workitems.json")
-        os.makedirs(os.path.dirname(state_path), exist_ok=True)
+        state_file_path = state_path("workitems.json")
+        state_file_path.parent.mkdir(parents=True, exist_ok=True)
         
-        if os.path.exists(state_path):
-            with open(state_path, 'r') as f:
+        if os.path.exists(state_file_path):
+            with open(state_file_path, 'r') as f:
                 data = json.load(f)
                 for work_data in data.values():
                     work_item = WorkItem(
@@ -113,10 +121,10 @@ class EOSOrchestrator:
                     
     def save_state(self):
         """Save current state to persistent storage"""
-        state_path = os.path.join(self.workspace_path, ".eos-state", "workitems.json")
-        os.makedirs(os.path.dirname(state_path), exist_ok=True)
+        state_file_path = state_path("workitems.json")
+        state_file_path.parent.mkdir(exist_ok=True)
         
-        with open(state_path, 'w') as f:
+        with open(state_file_path, 'w') as f:
             json.dump({k: v.to_dict() for k, v in self.work_items.items()}, f, indent=2)
             
     def create_work_item(self, work_id: str, product: str, user_job: str, outcome: str,

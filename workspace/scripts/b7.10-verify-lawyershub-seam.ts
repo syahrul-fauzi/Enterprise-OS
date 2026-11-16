@@ -12,8 +12,8 @@ import * as path from "path";
 
 // Match the decision ID from services-id req-003 for direct comparison
 const LAWYERSHUB_REQ003_DECISION_ID = "dec-f18f99cd-0dff-4f11-8632-76e01b9d0864";
-const EVIDENCE_PATH = "/root/Enterprise-OS/workspace/products/lawyershub/evidence/verification/runtime-invocations.jsonl";
-const REPORT_PATH = "/root/Enterprise-OS/workspace/products/lawyershub/evidence/verification/seam-invariant-report.json";
+const EVIDENCE_PATH = "require('path').resolve(__dirname, '..')/workspace/products/lawyershub/evidence/verification/runtime-invocations.jsonl";
+const REPORT_PATH = "require('path').resolve(__dirname, '..')/workspace/products/lawyershub/evidence/verification/seam-invariant-report.json";
 
 // Set product context to lawyershub before any invocations
 process.env.EOS_RUNTIME_INVOCATION_EVIDENCE_PATH = EVIDENCE_PATH;

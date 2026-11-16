@@ -1,18 +1,17 @@
-import { getContextAnchor, invalidateCache, loadCurrentJourney, getStateMetrics, exportMetricsToProofs, saveCurrentJourney, EOS_ROOT, JOURNEY_ENGINE_ID } from './state.js';
+import { getContextAnchor, invalidateCache, loadCurrentJourney, getStateMetrics, exportMetricsToProofs, saveCurrentJourney, statePath, JOURNEY_ENGINE_ID } from './state.js';
 import type { ContextAnchor } from './state.js';
 import type { CurrentJourney } from './schema.js';
 import { fileURLToPath } from 'node:url';
 import { writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
 
 /**
  * Minimal Journey Engine implementation for EOS-JOURNEY-004 EJ004-W01
  * Integrates Context Anchor into Journey Engine client
- * Reuses all existing primitives from state.ts
+ * Reuses all existing primitives from state.js
  */
 
 // JOURNEY_ENGINE_ID imported from state.ts to maintain single source of truth
-const PROOFS_DIR = resolve(EOS_ROOT, ".eos-state", "proofs");
+const PROOFS_DIR = statePath("proofs");
 
 /**
  * EJ004-W03: Generate automated evidence artifact for EOS-JOURNEY-004
@@ -39,15 +38,15 @@ function generateEvidenceArtifact() {
     ],
     checks_failed: [],
     evidence_artifacts: [
-      "/.eos-state/proofs/EOS-JOURNEY-004-cache-metrics.yaml",
-      "/.eos-state/proofs/EOS-JOURNEY-004-machine-validation-complete.json"
+      statePath("proofs", "EOS-JOURNEY-004-cache-metrics.yaml"),
+      statePath("proofs", "EOS-JOURNEY-004-machine-validation-complete.json")
     ],
     generated_at: new Date().toISOString(),
     generated_by: JOURNEY_ENGINE_ID,
     cache_metrics: metrics
   };
 
-  const evidencePath = resolve(PROOFS_DIR, "EOS-JOURNEY-004-machine-validation-complete.json");
+  const evidencePath = statePath("proofs", "EOS-JOURNEY-004-machine-validation-complete.json");
   writeFileSync(evidencePath, JSON.stringify(evidence, null, 2));
   console.log("[Journey Engine] EJ004-W03 completed: Evidence artifact generated at", evidencePath);
 }

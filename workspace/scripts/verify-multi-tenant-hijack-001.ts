@@ -1,6 +1,7 @@
 import { WorkId, newWorkId, ActorId, SessionId, TenantId } from "../capabilities/identity/implementation/contracts/identity.contracts.ts";
 import { WorkAggregate } from "../capabilities/work-core/contracts/work.contracts.ts";
 import { writeFile } from "fs/promises";
+import { statePath } from "@repo/eos-cli";
 
 // Reuse Lamport Clock dari converter.ts (100% reuse)
 let globalLamportClock = 0;
@@ -52,15 +53,15 @@ const workOwnershipVerifier = (work: any, expectedTenantId: string): boolean => 
 
 const crossTenantAttackValidator = async () => {
   // Work milik tenant-valid-123
-  const validTenantId = "tenant-valid-123" as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").TenantId;
-  const maliciousTenantId = "tenant-malicious-456" as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").TenantId;
+  const validTenantId = "tenant-valid-123" as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").TenantId;
+  const maliciousTenantId = "tenant-malicious-456" as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").TenantId;
   const sharedWorkId: WorkId = newWorkId();
   
   const validWork: Partial<WorkAggregate> = {
-    id: sharedWorkId as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").WorkId,
-    actorId: "actor-valid-001" as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").ActorId,
+    id: sharedWorkId as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").WorkId,
+    actorId: "actor-valid-001" as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").ActorId,
     tenantId: validTenantId,
-    sessionId: "session-valid-test-789" as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").SessionId,
+    sessionId: "session-valid-test-789" as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").SessionId,
     createdAt: new Date(Date.now() - 75*3600000), // 75h stale (paling ekstrem sejauh ini)
     updatedAt: new Date()
   };
@@ -105,7 +106,7 @@ const crossTenantAttackValidator = async () => {
     overall_status: allPassed ? "FULL_PASS" : "PARTIAL_FAIL",
     notes: "Test multi-tenant cross-region byzantine work hijack. Core tenant isolation berhasil mencegah serangan. E6 tetap bertahan, tidak ada IdentityFailure(W)."
   };
-  await writeFile("/root/Enterprise-OS/workspace/.eos-state/evidence/MULTI-REGION-005_evidence.json", JSON.stringify(evidence, null, 2));
+  await writeFile(statePath('evidence', 'MULTI-REGION-005_evidence.json'), JSON.stringify(evidence, null, 2));
   console.log("Test RECON-MR-005 selesai. Evidence disimpan.");
   console.log("Status E6:", evidence.e6_invariant_holds ? "MASIH BERTAHAN" : "GAGAL");
   WorkRepositoryInMemory.clear();

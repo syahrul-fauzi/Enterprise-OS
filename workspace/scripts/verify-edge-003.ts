@@ -14,7 +14,7 @@
  */
 
 import { existsSync, writeFileSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { statePath } from "@repo/eos-cli";
 import { WorkAggregate } from "../capabilities/work-core/contracts/work.contracts.ts";
 // Import identity types dari path absolut (sesuai dengan tsconfig path mapping yang sudah terkonfigurasi)
 import { WorkId, newWorkId, ActorId, SessionId, TenantId } from "../capabilities/identity/implementation/contracts/identity.contracts.ts";
@@ -135,7 +135,7 @@ async function runIdentityContinuityTest(): Promise<ContinuityTestResult> {
       test_name: "identity_continuity",
       status: "PASS",
       details: "workId tetap terjaga dari browser→edge→server",
-      evidence_path: ".eos-state/execution/identity-continuity-proof.json"
+      evidence_path: statePath("execution", "identity-continuity-proof.json")
     };
   } else {
     console.error("  ❌ Identity Continuity FAIL: workId berubah selama transisi");
@@ -427,7 +427,7 @@ async function main(): Promise<Edge003VerificationReport> {
   };
   
   // Simpan laporan sebagai artefak bukti di .eos-state/evidence/
-  const evidencePath = resolve(process.cwd(), ".eos-state/evidence/EDGE-003_evidence.json");
+  const evidencePath = statePath("evidence", "EDGE-003_evidence.json");
   writeFileSync(evidencePath, JSON.stringify(report, null, 2));
   console.log(`\n📦 EDGE-003 evidence artifact generated at: ${evidencePath}`);
   

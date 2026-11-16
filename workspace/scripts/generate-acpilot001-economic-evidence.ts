@@ -7,6 +7,7 @@ import {
   acquireTenantLock,
   releaseTenantLock
 } from "../packages/core/runtime/src/execution-observability.js";
+import { statePath } from '@repo/eos-cli';
 
 // Definisikan interface secara lokal untuk menghindari import error
 interface TenantCostLimits {
@@ -646,12 +647,12 @@ async function createThirdPilotCustomerPayments(): Promise<void> {
     
     // Simpan evidence pelanggan ketiga ke file untuk audit War Room
     const fs = await import("fs");
-    const evidenceDir = '/root/Enterprise-OS/.eos-state/evidence';
+    const evidenceDir = statePath('evidence');
     if (!fs.existsSync(evidenceDir)) {
       fs.mkdirSync(evidenceDir, { recursive: true });
     }
     // AC-PILOT-001: Simpan evidence repeat usage P1 ke WORK-ACLPILOT-010_evidence.json sesuai prioritas War Room
-    const evidencePath = `${evidenceDir}/WORK-ACLPILOT-010_evidence.json`;
+    const evidencePath = statePath('evidence', 'WORK-ACLPILOT-010_evidence.json');
     await fs.promises.writeFile(evidencePath, JSON.stringify({
       tenant_id: PILOT_TENANT_003_ID,
       generated_at_utc: new Date().toISOString(),

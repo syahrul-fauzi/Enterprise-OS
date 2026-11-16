@@ -13,7 +13,7 @@
  *   Persistence verified = case.listByWorkspace shows updated state
  */
 import * as fs from 'fs/promises';
-import * as path from 'path';
+import { statePath } from '@repo/eos-cli';
 
 const BASE_URL = "http://localhost:3004";
 import { TenantId, WorkspaceId, SessionId, ActorId } from "./capabilities/identity/implementation/contracts/identity.contracts.js";
@@ -120,8 +120,8 @@ async function main() {
   console.log("============================================================");
 
   // Ensure evidence directories exist
-  const evidenceDir = path.join(process.cwd(), ".eos-state", "evidence");
-  const verificationDir = path.join(process.cwd(), ".eos-state", "verification");
+  const evidenceDir = statePath("evidence");
+  const verificationDir = statePath("verification");
   await fs.mkdir(evidenceDir, { recursive: true });
   await fs.mkdir(verificationDir, { recursive: true });
 

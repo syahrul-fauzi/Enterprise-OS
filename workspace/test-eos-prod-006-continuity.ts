@@ -7,10 +7,7 @@
 
 import { handoff_work, receive_work, continue_work, WorkHandoffEnvelope } from './capabilities/core-runtime/work-continuity';
 import { readFileSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
-
-const EOS_ROOT = resolve("/root/Enterprise-OS");
-const EOS_STATE_DIR = resolve(EOS_ROOT, ".eos-state");
+import { statePath } from '@repo/eos-cli';
 
 // ==========================
 // BUKTI REPO FISIK UNTUK 11 PERTANYAAN AUDIT
@@ -19,12 +16,12 @@ const auditAnswers = {
   // 1. Apa identity Work? ID canonical
   identity_verified: true,
   work_id_canonical: "EOS-PROD-006",
-  identity_source_file: "/.eos-state/recon/EOS-PROD-006_recon.json",
+  identity_source_file: statePath("recon", "EOS-PROD-006_recon.json"),
   
   // 2. Context-nya dimana? artifact/state
   context_verified: true,
-  context_path: "/.eos-state/current-journey.yaml",
-  context_exists: existsSync(resolve(EOS_STATE_DIR, "current-journey.yaml")),
+  context_path: statePath("current-journey.yaml"),
+  context_exists: existsSync(statePath("current-journey.yaml")),
   
   // 3. Siapa authority? governance reference
   authority_verified: true,
@@ -45,7 +42,7 @@ const auditAnswers = {
   
   // 6. Evidence dimana? evidence chain
   evidence_verified: true,
-  evidence_directory_exists: existsSync(resolve(EOS_STATE_DIR, "evidence")),
+  evidence_directory_exists: existsSync(statePath("evidence")),
   
   // 7. Bisa dihentikan? state tetap valid
   can_suspend: true,

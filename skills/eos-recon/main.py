@@ -2,6 +2,9 @@ import click
 import json
 from pathlib import Path
 from typing import Optional, Dict, Any
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from state_utils import state_path
 
 class ReconAgent:
     """Recon Agent utama untuk EOS - menjalankan scanning dan analisis codebase sebelum implementasi"""
@@ -123,7 +126,7 @@ def main(test_mode: bool, work_item_path: Optional[str], work_id: Optional[str],
         click.echo(f"🔍 DEBUG: workspace/capabilities exists: {capabilities_path.exists()}")
         click.echo(f"🔍 DEBUG: Found {len(result['existing_capabilities_found'])} capabilities: {result['existing_capabilities_found']}")
         
-        output_path = Path(f"/root/Enterprise-OS/.eos-state/recon/{work_id}_recon.json")
+        output_path = state_path('recon', f"{work_id}_recon.json")
         click.echo(f"🔍 DEBUG: Output path: {output_path}")
         output_path.parent.mkdir(parents=True, exist_ok=True)
         click.echo(f"🔍 DEBUG: Parent directory created/verified: {output_path.parent.exists()}")

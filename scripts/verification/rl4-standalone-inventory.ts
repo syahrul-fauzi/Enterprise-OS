@@ -7,8 +7,9 @@
 import { existsSync, readFileSync, writeFileSync, readdirSync, mkdirSync } from 'fs';
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
+import { statePath } from '@repo/eos-cli';
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
-const rootDir = resolve(__dirname); // Repository root
+const rootDir = resolve(__dirname);
 
 // RealityClassification logic from rl4-reality-classifier.ts (embedded for standalone use)
 class RealityClassification {
@@ -117,7 +118,7 @@ async function runStandaloneInventoryScan() {
     NOT_ADMITTED: items.filter(i => i.realityTier === 'NOT_ADMITTED').length
   };
 
-  const reportDir = resolve(rootDir, '.eos-state/recon');
+  const reportDir = statePath('recon');
   if (!existsSync(reportDir)) {
     mkdirSync(reportDir, { recursive: true });
   }

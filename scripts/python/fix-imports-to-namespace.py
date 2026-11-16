@@ -1,8 +1,13 @@
 import os
 import re
+from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from state_utils import get_repository_root
 
 # Base directory untuk semua file .ts yang ingin kita perbaiki
-base_dir = "/root/Enterprise-OS/workspace/packages/tooling/eos-cli/src"
+repo_root = get_repository_root()
+base_dir = repo_root / "workspace" / "packages" / "tooling" / "eos-cli" / "src"
 # Import namespace yang BENAR (sesuai dengan subpath export di @repo/core-kernel)
 correct_import = 'import { DigestEngine } from "@repo/core-kernel/digest-engine";'
 # Regex untuk mencari semua import DigestEngine yang masih menggunakan path relatif
@@ -10,7 +15,7 @@ import_pattern = re.compile(r'import { DigestEngine } from "\.\.\/.*?digest-engi
 
 # Iterasi semua file .ts di dalam base_dir
 fixed_count = 0
-for root, dirs, files in os.walk(base_dir):
+for root, dirs, files in os.walk(str(base_dir)):
     for file in files:
         if file.endswith(".ts"):
             file_path = os.path.join(root, file)

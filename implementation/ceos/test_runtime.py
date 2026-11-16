@@ -2,19 +2,26 @@
 """
 Test CEOS
 """
+from pathlib import Path
 from eke.api.compiler import EnterpriseKnowledgeCompiler
 from eis.api.intelligence import EnterpriseIntelligenceRuntime
 from eaeo.api.analyzer import EnterpriseArchitectureOrchestrator
 from ceos.api.authorizer import ComplianceEnterpriseAuthorizationAuthorizer
 
 
+def get_repository_root() -> Path:
+    current_file = Path(__file__).resolve()
+    return current_file.parents[1]
+
+
 def main():
     print("Testing full pipeline: EKE → EIS → EAEO → CEOS")
+    repo_root = get_repository_root()
 
     # Step 1: EKE
     print("\nStep 1: Run EKE")
     eke_compiler = EnterpriseKnowledgeCompiler()
-    eke_result = eke_compiler.package("/root/Enterprise OS")
+    eke_result = eke_compiler.package(str(repo_root))
     if eke_result.status.value != "success":
         print(f"EKE failed: {[d.message for d in eke_result.diagnostics]}")
         return

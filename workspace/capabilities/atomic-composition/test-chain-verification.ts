@@ -4,6 +4,7 @@
  * Verify that Work-Core→Identity→Security→Governance→Legal-Case chain executes successfully
  */
 import { getGlobalCapabilityRegistry } from './implementation/services/capability-resolver.service';
+import { statePath } from '@repo/eos-cli';
 
 async function runChainVerification() {
   console.log('🔍 AUDIT-001-006: Starting core capability chain verification...');
@@ -47,9 +48,9 @@ async function runChainVerification() {
       core_chain_executed: true,
       fail_fast_verified: true,
       registry_initialized: true,
-      log_source: "/root/Enterprise-OS/.eos-state/chain-verification-audit001006.log"
+      log_source: statePath('chain-verification-audit001006.log')
     };
-    fs.writeFileSync('/root/Enterprise-OS/.eos-state/audit/AUDIT-001-006_G2_evidence.json', JSON.stringify(evidence, null, 2));
+    fs.writeFileSync(statePath('audit', 'AUDIT-001-006_G2_evidence.json'), JSON.stringify(evidence, null, 2));
     console.log('📝 Evidence recorded to .eos-state/audit/AUDIT-001-006_G2_evidence.json');
     
     process.exit(0);

@@ -1,6 +1,8 @@
 // @ts-nocheck
 import { evidenceRegistryService } from "./capabilities/evidence-registry/implementation/index.js";
 import { observabilityService } from "./capabilities/observability/implementation/index.js";
+import { statePath } from "@repo/eos-cli";
+import fs from "node:fs";
 
 async function collectOperationalEvidenceInventory() {
   console.log("=== W06-A3-006 Operational Evidence Inventory Collection ===");
@@ -46,16 +48,17 @@ async function collectOperationalEvidenceInventory() {
   });
   inventory.observability.logs = {
     total: observabilityLogs.logs.length,
-    logs: observabilityLogs.logs.slice(0, 100) // First 100 logs for inventory
+    logs: observabilityLogs.logs.slice(0, 100)
   };
   console.log("Observability logs found:", observabilityLogs.logs.length);
   
   // 4. Save inventory to file
   console.log("\n[4] Saving evidence inventory...");
-  const fs = require('fs');
-  const inventoryPath = "/root/Enterprise-OS/workspace/.eos-state/verification/W06-A3-006_evidence_inventory.json";
+  const inventoryDir = statePath('verification');
+  fs.mkdirSync(inventoryDir, { recursive: true });
+  const inventoryPath = statePath('verification', 'W06-A3-006_evidence_inventory.json');
   fs.writeFileSync(inventoryPath, JSON.stringify(inventory, null, 2));
-  console.log("Evidence inventory saved to:", inventoryPath);
+  console.log("Evidence inventory saved to canonical EOS path:", inventoryPath);
   
   console.log("\n=== Inventory Collection Complete ===");
   return inventory;

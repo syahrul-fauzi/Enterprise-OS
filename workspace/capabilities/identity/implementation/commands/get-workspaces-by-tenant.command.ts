@@ -5,7 +5,7 @@ import { z } from "zod";
 // Import shared identity types from contracts-core
 import { TenantId, ActorId, UserId, SessionId, WorkId, type MembershipAggregate, type WorkspaceAggregate } from "@repo/contracts-core";
 // Import 6-boundary validation function dari package kanonis
-import { validateBoundaryAccess } from "../../../work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
 
 // Lazy load repositories untuk menghindari module cycle dan mematuhi 6-boundary compliance
 async function getTenantRepositoryLazy() {

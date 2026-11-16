@@ -1,4 +1,5 @@
 const fs = await import('fs');
+import { statePath } from "@repo/eos-cli";
 const TIMESTAMP = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5) + 'Z';
 
 const b4Harness = {
@@ -138,7 +139,7 @@ const b4Harness = {
     },
   },
   replay_artifacts_to_capture: {
-    path: '/root/Enterprise-OS/workspace/.eos-state/evidence/',
+    path: statePath('evidence'),
     expected_files_after_human_session: [
       'B4-SESSION-observer-<id>-LH-screenshot.png',
       'B4-SESSION-observer-<id>-SRV-screenshot.png',
@@ -155,10 +156,10 @@ const b4Harness = {
   },
 };
 
-const outdir = '/root/Enterprise-OS/workspace/.eos-state/evidence';
+const outdir = statePath('evidence');
 if (!fs.existsSync(outdir)) fs.mkdirSync(outdir, { recursive: true });
 
-const outfile = outdir + '/B4-BLACKBOX-HARNESS-' + TIMESTAMP + '.json';
+const outfile = statePath('evidence', `B4-BLACKBOX-HARNESS-${TIMESTAMP}.json`);
 fs.writeFileSync(outfile, JSON.stringify(b4Harness, null, 2));
 
 const observerScript = `# EOS B4 HUMAN BLACK-BOX OBSERVER SCRIPT

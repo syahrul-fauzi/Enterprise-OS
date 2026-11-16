@@ -3,6 +3,7 @@
 // Buktikan: Pasang channel WhatsApp via onboarding, ikat identitas eksternal, jalankan capability ACaaS, verifikasi Work traceability
 import assert from "node:assert/strict";
 import test from "node:test";
+import { statePath } from "@repo/eos-cli";
 import { installWhatsAppChannel } from "../implementation/channels/whatsapp/whatsapp.adapter.ts";
 import { SessionRepositoryInMemory } from "../../identity/implementation/repositories/session.inmemory.ts";
 import { capabilityRegistry } from "../../../packages/core/kernel/src/registry/capability-command-registry.js";
@@ -106,8 +107,8 @@ test("W-010: WhatsApp channel completes full 7-step lifecycle + ACaaS cross-chan
     workspaceId: testWorkspaceId
   };
 
-  await require('fs').promises.writeFile('/root/Enterprise-OS/workspace/.eos-state/evidence/W-010_evidence.json', JSON.stringify(evidence, null, 2));
-  console.log(`[W-010 PROOF] Evidence disimpan ke /root/Enterprise-OS/workspace/.eos-state/evidence/W-010_evidence.json`);
+  await require('fs').promises.writeFile(statePath('evidence', 'W-010_evidence.json'), JSON.stringify(evidence, null, 2));
+  console.log(`[W-010 PROOF] Evidence disimpan ke ${statePath('evidence', 'W-010_evidence.json')}`);
 
   console.log("\n✅ W-010 PROOF BERHASIL! Semua kriteria terpenuhi:");
   console.log("   - 7-step lifecycle installation selesai");

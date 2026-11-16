@@ -1,27 +1,32 @@
 #!/usr/bin/env python3
-import os
+from pathlib import Path
 from typing import Any, Dict, Tuple
 
 import yaml
 
-BASELINE_LOCK_PATH = "/root/Enterprise-OS/governance/BASELINE_LOCK.yaml"
+from eos.kernel.utils.state_utils import get_repository_root
+
+BASELINE_LOCK_PATH = get_repository_root() / "governance" / "BASELINE_LOCK.yaml"
 
 
-def load_yaml(path: str) -> Dict[str, Any]:
-    if not os.path.exists(path):
+def load_yaml(path: Path) -> Dict[str, Any]:
+    if not path.exists():
         raise FileNotFoundError(f"State file not found at {path}")
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
-def load_repository_state() -> Tuple[Dict[str, Any], Dict[str, Any], str]:
+def load_repository_state() -> Tuple[Dict[str, Any], Dict[str, Any], Path]:
     baseline_lock = load_yaml(BASELINE_LOCK_PATH)
-    governance_state_path = (
+    governance_state_path_str = (
         baseline_lock.get("baseline", {}).get("repository_state")
         or baseline_lock.get("machine_readable_state", {}).get("governance_state")
     )
-    if not governance_state_path:
+    if not governance_state_path_str:
         raise KeyError("BASELINE_LOCK.yaml does not declare repository_state")
+    governance_state_path = Path(governance_state_path_str)
+    if not governance_state_path.is_absolute():
+        governance_state_path = get_repository_root() / governance_state_path
     governance_state = load_yaml(governance_state_path)
     return baseline_lock, governance_state, governance_state_path
 
@@ -40,7 +45,7 @@ def format_scalar(value: Any) -> str:
 def print_state_summary(
     baseline_lock: Dict[str, Any],
     governance_state: Dict[str, Any],
-    governance_state_path: str,
+    governance_state_path: Path,
 ) -> None:
     baseline = baseline_lock.get("baseline", {})
     current_gate = governance_state.get("current_gate", {})

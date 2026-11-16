@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     const fs = await import('fs/promises');
     const path = await import('path');
     await fs.writeFile(
-      path.join('/root/Enterprise-OS/workspace/products/commsme/evidence', `external-response-${serviceRequestId}-${system}.json`),
+      path.join('require('path').resolve(__dirname, '..')/workspace/products/commsme/evidence', `external-response-${serviceRequestId}-${system}.json`),
       JSON.stringify({
         serviceRequestId,
         system,

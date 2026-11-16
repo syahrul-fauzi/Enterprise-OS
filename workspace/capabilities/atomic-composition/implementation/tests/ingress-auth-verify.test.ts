@@ -12,8 +12,10 @@ import * as fs from "fs";
 import * as path from "path";
 import type { ExpressionOrigin } from "../contracts/universal-intent.contracts";
 
+import { statePath } from "@repo/eos-cli";
+
 // Path ke canonical state untuk verifikasi tidak ada mutasi unauthorized
-const CANONICAL_STATE_PATH = path.join("/root/Enterprise-OS", ".eos-state", "current-journey.yaml");
+const CANONICAL_STATE_PATH = statePath("current-journey.yaml");
 
 // Simpan state awal di scope luar test
 let initialCanonicalState: string;

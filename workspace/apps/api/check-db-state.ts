@@ -1,5 +1,5 @@
 // Reuse existing Work Repository primitive (100% primitive reuse, no new code)
-import { getWorkRepositoryPostgres } from "/root/Enterprise-OS/workspace/capabilities/work-core/implementation/repository/work-postgres.repository.ts";
+import { getWorkRepositoryPostgres } from "require('path').resolve(__dirname, '..')/workspace/capabilities/work-core/implementation/repository/work-postgres.repository.ts";
 
 async function main() {
   console.log("✅ Connected to database via existing work repository. Mengecek jumlah work yang ada sebelum test...");

@@ -154,12 +154,12 @@ export async function runArchitectureFitnessChecks(): Promise<FitnessCheckResult
   console.log('='.repeat(80));
   
   // 1. Jalankan scan capability commands
-  const capabilitiesDir = '/root/Enterprise-OS/workspace/capabilities';
+  const capabilitiesDir = join(process.cwd(), 'workspace', 'capabilities');
   const commandErrors = await scanCapabilityCommands(capabilitiesDir);
   allErrors.push(...commandErrors);
   
   // 2. Jalankan scan API routes
-  const apiAppDir = '/root/Enterprise-OS/workspace/apps/api';
+  const apiAppDir = join(process.cwd(), 'workspace', 'apps', 'api');
   const routeErrors = await scanApiRoutes(apiAppDir);
   allErrors.push(...routeErrors);
   

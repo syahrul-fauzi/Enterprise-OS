@@ -342,12 +342,12 @@ async function main(): Promise<Cont006VerificationReport> {
   
   // Save report to verification directory
   const fs = await import('node:fs');
-  const path = await import('node:path');
-  const reportDir = path.join(process.cwd(), '.eos-state', 'verification');
+  const { statePath } = await import('@repo/eos-cli');
+  const reportDir = statePath('verification');
   if (!fs.existsSync(reportDir)) {
     fs.mkdirSync(reportDir, { recursive: true });
   }
-  const reportPath = path.join(reportDir, 'CONT-006_verification.json');
+  const reportPath = statePath('verification', 'CONT-006_verification.json');
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
   console.log(`\n💾 Report saved to: ${reportPath}`);
   

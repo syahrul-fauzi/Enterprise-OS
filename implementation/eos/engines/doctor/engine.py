@@ -3,10 +3,15 @@ import os
 import sys
 import yaml
 from datetime import datetime
+from pathlib import Path
 
-CONFIG_PATH = "/root/Enterprise-OS/eos.config.yaml"
-PR_RULES_PATH = "/root/Enterprise-OS/governance/readiness/production-readiness.yaml"
-BASE_WORKSPACE_PATH = "/root/Enterprise-OS/workspace/products"
+repo_root = Path(__file__).parent.parent.parent.parent.parent
+sys.path.insert(0, str(repo_root / "skills"))
+from state_utils import get_repository_root
+
+CONFIG_PATH = get_repository_root() / "eos.config.yaml"
+PR_RULES_PATH = get_repository_root() / "governance" / "readiness" / "production-readiness.yaml"
+BASE_WORKSPACE_PATH = get_repository_root() / "workspace" / "products"
 
 
 def load_config():
@@ -20,8 +25,8 @@ def load_production_rules():
 
 
 def load_product_contract(product_name):
-    contract_path = os.path.join(BASE_WORKSPACE_PATH, product_name, "eos.yaml")
-    if not os.path.exists(contract_path):
+    contract_path = BASE_WORKSPACE_PATH / product_name / "eos.yaml"
+    if not contract_path.exists():
         return None
     with open(contract_path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
@@ -29,9 +34,9 @@ def load_product_contract(product_name):
 
 def check_rule(product_path, rule):
     if rule["type"] == "file_exists":
-        return os.path.exists(os.path.join(product_path, rule["file_path"]))
+        return (product_path / rule["file_path"]).exists()
     elif rule["type"] == "dir_exists":
-        return os.path.exists(os.path.join(product_path, rule["dir_path"]))
+        return (product_path / rule["dir_path"]).exists()
     return False
 
 
@@ -44,9 +49,9 @@ def main():
         return
 
     product_name = sys.argv[1]
-    product_path = os.path.join(BASE_WORKSPACE_PATH, product_name)
+    product_path = BASE_WORKSPACE_PATH / product_name
 
-    if not os.path.exists(product_path):
+    if not product_path.exists():
         print(f"❌ Product '{product_name}' not found at {product_path}")
         return
 
@@ -220,12 +225,12 @@ def main():
         print(f"  Action: {dec['recommendation']['action']}")
 
     # Generate report files
-    evidence_dir = os.path.join(product_path, "evidence", "delivery-reports")
-    os.makedirs(evidence_dir, exist_ok=True)
+    evidence_dir = product_path / "evidence" / "delivery-reports"
+    evidence_dir.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
     # Health report (markdown)
-    report_path = os.path.join(evidence_dir, f"health-report-{timestamp}.md")
+    report_path = evidence_dir / f"health-report-{timestamp}.md"
     report_content = "# EOS Workspace Health Report\n\n"
     report_content += f"Generated At: {datetime.now().isoformat()}\n"
     report_content += f"Product: {product_name}\n"
@@ -245,7 +250,7 @@ def main():
     print(f"\n✅ Health report generated: {report_path}")
 
     # Doctor Decisions (yaml) - now includes Decision Log
-    decisions_path = os.path.join(evidence_dir, f"doctor-decisions-{timestamp}.yaml")
+    decisions_path = evidence_dir / f"doctor-decisions-{timestamp}.yaml"
     decisions_content = {
         "product": product_name,
         "generated_at": datetime.now().isoformat(),
@@ -258,7 +263,7 @@ def main():
     print(f"✅ Doctor Decisions (Decision Log) generated: {decisions_path}")
 
     # Doctor Backlog (yaml)
-    backlog_path = os.path.join(evidence_dir, f"doctor-backlog-{timestamp}.yaml")
+    backlog_path = evidence_dir / f"doctor-backlog-{timestamp}.yaml"
     backlog_content = {"actions": actions}
     with open(backlog_path, "w", encoding="utf-8") as f:
         yaml.safe_dump(backlog_content, f, sort_keys=False)
@@ -266,7 +271,7 @@ def main():
 
     # Doctor Metrics (json)
     import json
-    metrics_path = os.path.join(evidence_dir, f"doctor-metrics-{timestamp}.json")
+    metrics_path = evidence_dir / f"doctor-metrics-{timestamp}.json"
     metrics_content = {
         "product": product_name,
         "generated_at": datetime.now().isoformat(),

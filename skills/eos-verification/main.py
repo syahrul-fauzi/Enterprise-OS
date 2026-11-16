@@ -7,11 +7,17 @@ tenant isolation verification, evidence chain check. Produces binary verdict: AL
 import click
 from pathlib import Path
 from typing import Dict, Any
+import sys
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from state_utils import get_repository_root, state_path
 
 class VerificationAgent:
     """Independent verification agent untuk EOS"""
     
-    def __init__(self, workspace_path: str = "/root/Enterprise-OS"):
+    def __init__(self, workspace_path: Path = None):
+        if workspace_path is None:
+            workspace_path = get_repository_root()
         self.workspace_path = Path(workspace_path)
         print(f"✅ VerificationAgent initialized for workspace: {workspace_path}")
         
@@ -166,9 +172,9 @@ class VerificationAgent:
         }
 
         # Simpan hasil verifikasi ke .eos-state/verification/
-        output_dir = self.workspace_path / ".eos-state" / "verification"
+        output_dir = state_path('verification')
         output_dir.mkdir(parents=True, exist_ok=True)
-        output_path = output_dir / f"DIGIOP-PILOT-001-VERIFICATION_verification.json"
+        output_path = output_dir / f"{work_id}_verification.json"
         
         with open(output_path, 'w') as f:
             json.dump(verification_result, f, indent=2)

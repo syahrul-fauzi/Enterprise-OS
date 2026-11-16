@@ -7,11 +7,13 @@ import logging
 # Skrip validasi kontrak domain Sovereign Groups untuk EOS
 # Mematuhi SMACE-002 pattern dan canonical boundary mapping dari Sovereign-Groups.md
 
-# Konfigurasi path
-TEMPLATE_PATH = "/root/Enterprise-OS/.eos-state/contracts/SMACE-002-contract.yaml"
-DOMAINS_DIR = "/root/Enterprise-OS/.eos-state/contracts/domains"
-SOVEREIGN_GROUPS = "/root/Enterprise-OS/Sovereign-Groups.md"
-LOG_FILE = "/root/Enterprise-OS/.eos-state/contracts/validation_report.log"
+# Konfigurasi path - menggunakan path relatif terhadap root repository
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+EOS_STATE_DIR = os.path.join(REPO_ROOT, ".eos-state")
+TEMPLATE_PATH = os.path.join(EOS_STATE_DIR, "contracts", "SMACE-002-contract.yaml")
+DOMAINS_DIR = os.path.join(EOS_STATE_DIR, "contracts", "domains")
+SOVEREIGN_GROUPS = os.path.join(REPO_ROOT, "Sovereign-Groups.md")
+LOG_FILE = os.path.join(EOS_STATE_DIR, "contracts", "validation_report.log")
 
 # Setup logging
 logging.basicConfig(

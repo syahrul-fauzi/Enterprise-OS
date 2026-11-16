@@ -2,6 +2,7 @@
 // Berdasarkan implementasi dari email-queue.ts dan test-runner.ts
 import "../packages/core/runtime/src/email-queue.ts"; // Inisialisasi shared Redis instance
 import { executeBudgetOperation } from "../packages/core/runtime/src/execution-observability.ts";
+import { statePath } from "@repo/eos-cli";
 
 async function runRedisFailureTest() {
   console.log("[026-03-TEST] Memulai pengujian fail-closed Redis...");
@@ -91,7 +92,7 @@ async function runRedisFailureTest() {
     
     // Simpan hasil test ke folder evidence untuk 026-04
     const fs = await import('fs');
-    const logPath = '/root/Enterprise-OS/workspace/.eos-state/evidence/WORK-ACLPILOT-026-03_failclosed_test.log';
+    const logPath = statePath('evidence', 'WORK-ACLPILOT-026-03_failclosed_test.log');
     const logContent = `[${new Date().toISOString()}] WORK-ACLPILOT-026-03: Semua test fail-closed Redis lulus\n`;
     fs.appendFileSync(logPath, logContent);
     console.log(`[026-03-TEST] Hasil test disimpan ke: ${logPath}`);
@@ -102,7 +103,7 @@ async function runRedisFailureTest() {
     console.error("[026-03-TEST] Test gagal dengan error tidak terduga:", error);
     // Simpan error ke log juga
     const fs = await import('fs');
-    const logPath = '/root/Enterprise-OS/workspace/.eos-state/evidence/WORK-ACLPILOT-026-03_failclosed_test.log';
+    const logPath = statePath('evidence', 'WORK-ACLPILOT-026-03_failclosed_test.log');
     const logContent = `[${new Date().toISOString()}] WORK-ACLPILOT-026-03: Test gagal - ${error.message}\n`;
     fs.appendFileSync(logPath, logContent);
     process.exit(1);

@@ -88,9 +88,9 @@ interface ProviderResolutionStage {
 // Implements user requirement: "In-memory registry bukan Execution Fabric production"
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
-import { join } from 'path';
+import { statePath } from '../../../../packages/tooling/eos-cli/src/state.js';
 
-const STORAGE_DIR = '/root/Enterprise-OS/workspace/.eos-state/execution-fabric';
+const STORAGE_DIR = statePath("execution-fabric");
 
 class CapabilityRegistry {
   private capabilities: Map<string, ResolvableCapability> = new Map();
@@ -114,12 +114,12 @@ class CapabilityRegistry {
    */
   static async initialize(): Promise<void> {
     if (!this.initialized) {
-      await mkdir(join(STORAGE_DIR, 'actions'), { recursive: true });
-      await mkdir(join(STORAGE_DIR, 'attempts'), { recursive: true });
-      await mkdir(join(STORAGE_DIR, 'effects'), { recursive: true });
-      await mkdir(join(STORAGE_DIR, 'observations'), { recursive: true });
-      await mkdir(join(STORAGE_DIR, 'evidences'), { recursive: true });
-      await mkdir(join(STORAGE_DIR, 'chains'), { recursive: true });
+      await mkdir(statePath("execution-fabric", 'actions'), { recursive: true });
+      await mkdir(statePath("execution-fabric", 'attempts'), { recursive: true });
+      await mkdir(statePath("execution-fabric", 'effects'), { recursive: true });
+      await mkdir(statePath("execution-fabric", 'observations'), { recursive: true });
+      await mkdir(statePath("execution-fabric", 'evidences'), { recursive: true });
+      await mkdir(statePath("execution-fabric", 'chains'), { recursive: true });
       this.initialized = true;
       console.log("[CapabilityRegistry] Persistence layer initialized at", STORAGE_DIR);
     }
@@ -133,7 +133,7 @@ class CapabilityRegistry {
    */
   private async persistArtifact<T>(category: string, id: string, data: T): Promise<void> {
     await CapabilityRegistry.initialize();
-    const filePath = join(STORAGE_DIR, category, `${id}.json`);
+    const filePath = statePath("execution-fabric", category, `${id}.json`);
     await writeFile(filePath, JSON.stringify(data, null, 2));
   }
 
@@ -144,7 +144,7 @@ class CapabilityRegistry {
    */
   private async loadArtifact<T>(category: string, id: string): Promise<T | null> {
     await CapabilityRegistry.initialize();
-    const filePath = join(STORAGE_DIR, category, `${id}.json`);
+    const filePath = statePath("execution-fabric", category, `${id}.json`);
     if (!existsSync(filePath)) return null;
     const data = await readFile(filePath, 'utf8');
     return JSON.parse(data) as T;
@@ -874,7 +874,7 @@ class CapabilityRegistry {
       attempts: [],
       effects: [],
       observations: [],
-      evidences: [".eos-state/audit/AUDIT-001-006_G*_evidence.json"],
+      evidences: [statePath("audit", "AUDIT-001-006_G*_evidence.json")],
       overallStatus: "completed",
       readinessGate: passedReadinessGates,
       readinessScore: 0.91, // 11 dari 12 gates terpenuhi
@@ -1029,9 +1029,10 @@ const registerCoreCapabilities = async () => {
     // FIX-SERVER-STARTUP-001: Simpan CHAIN COMPLETE log ke file audit
     try {
       const fs = await import('fs/promises');
-      const logPath = ".eos-state/audit/server-startup-logs.txt";
+      const { statePath } = await import('@repo/eos-cli');
+      const logPath = statePath("audit", "server-startup-logs.txt");
       // Pastikan direktori ada
-      await fs.mkdir(".eos-state/audit", { recursive: true });
+      await fs.mkdir(statePath("audit"), { recursive: true });
       // Tambahkan log ke file
       await fs.appendFile(logPath, `\n${chainCompleteLog}\n`);
       console.log("[FIX-SERVER-STARTUP-001] ✅ CHAIN COMPLETE log berhasil disimpan ke server-startup-logs.txt");

@@ -9,7 +9,7 @@
  */
 
 import { existsSync, readFileSync, writeFileSync, readdirSync, mkdirSync } from 'fs';
-import { resolve } from 'path';
+import { statePath } from '../state.js';
 import { RealityClassification } from './rl4-reality-classifier.js';
 
 export interface InventoryItem {
@@ -101,11 +101,11 @@ export async function runProductionInventoryScan(rootDir: string): Promise<Inven
       NOT_ADMITTED: items.filter(i => i.realityTier === 'NOT_ADMITTED').length
     },
     items,
-    reportPath: resolve(rootDir, '.eos-state/recon/RL4-001_inventory_report.json')
+    reportPath: statePath("recon", "RL4-001_inventory_report.json")
   };
 
   // Ensure report directory exists
-  const reportDir = resolve(rootDir, '.eos-state/recon');
+  const reportDir = statePath("recon");
   if (!existsSync(reportDir)) {
     mkdirSync(reportDir, { recursive: true });
   }

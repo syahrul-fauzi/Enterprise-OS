@@ -4,7 +4,7 @@ workspace:
   display_name: Data/Ops Work
   description: Kategori pekerjaan universal untuk operasi data dan beban kerja engineering yang dapat diulang
 lifecycle:
-  phase: D.1
+  phase: D.2
   status: ACTIVE
   contract:
     stages:
@@ -42,6 +42,6 @@ quality:
     test_coverage_min: 85
     runtime_invocation_required: true
 governance:
-  baseline_locked: false
+  baseline_locked: true
   needs_audit: false
   evidence_path: ./evidence

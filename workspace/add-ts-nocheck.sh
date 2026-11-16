@@ -18,7 +18,7 @@ FILES=(
 
 for file in "${FILES[@]}"
 do
-  filepath="/root/Enterprise-OS/workspace/packages/presentation/features/$file"
+  filepath="$(pwd)/workspace/packages/presentation/features/$file"
   if [ -f "$filepath" ]; then
     # Check if file already has // @ts-nocheck
     if ! grep -q "// @ts-nocheck" "$filepath"; then

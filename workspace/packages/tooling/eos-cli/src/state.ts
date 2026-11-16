@@ -1,4 +1,4 @@
-import { readFileSync, existsSync, statSync, writeFileSync } from "node:fs";
+import { readFileSync, existsSync, statSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { performance } from "node:perf_hooks";
@@ -8,8 +8,8 @@ import { GovernanceStateSchema, GovernanceState, RepositoryState, CurrentJourney
 // Untuk ES Modules, kita perlu hitung __filename/__dirname secara manual menggunakan import.meta.url
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-// state.ts is at: /workspace/packages/tooling/eos-cli/src/ → need 5 levels up to /root/Enterprise-OS/ (root repository, all enterprise/governance files are here)
-const REPOSITORY_ROOT = resolve(__dirname, "../../../../../"); // src/ → eos-cli/ → tooling/ → packages/ → workspace/ → /root/Enterprise-OS/ (5 levels up: ../ five times, core path restored for dependency resolution)
+// state.ts is at: /workspace/packages/tooling/eos-cli/src/ → need 5 levels up to require('path').resolve(__dirname, '..')/ (root repository, all enterprise/governance files are here)
+const REPOSITORY_ROOT = resolve(__dirname, "../../../../../"); // src/ → eos-cli/ → tooling/ → packages/ → workspace/ → require('path').resolve(__dirname, '..')/ (5 levels up: ../ five times, core path restored for dependency resolution)
 const EOS_STATE_DIR = resolve(REPOSITORY_ROOT, ".eos-state");
 const PROOFS_DIR = resolve(EOS_STATE_DIR, "proofs");
 // Canonical state file paths (fixed: GOVERNANCE_STATE is at root/governance/ not .eos-state)
@@ -20,6 +20,11 @@ const CURRENT_JOURNEY_PATH = resolve(EOS_STATE_DIR, "current-journey.yaml");
 export const EOS_ROOT = REPOSITORY_ROOT;
 export const EOS_STATE_ROOT = EOS_STATE_DIR;
 export const PROOFS_ROOT = PROOFS_DIR;
+
+// Canonical state path utility - satu-satunya cara yang diizinkan untuk membuat path state
+export function statePath(...segments: string[]): string {
+  return resolve(EOS_STATE_DIR, ...segments);
+}
 
 // Instrumentation for EOS-JOURNEY-003 Operational Memory Determinism + EOS-STATE-001-W02 I/O Performance Profile
 let loadCalls = 0;
@@ -390,6 +395,71 @@ export function getRepositoryState(): RepositoryState {
 
 
 
+// State ownership map cache
+let ownershipMapCache: Record<string, string> | null = null;
+
+function getOwnershipMap(): Record<string, string> {
+  if (ownershipMapCache) return ownershipMapCache;
+  const ownershipMapPath = resolve(REPOSITORY_ROOT, ".eos-state", "eos-state-ownership-map.yaml");
+  if (!existsSync(ownershipMapPath)) {
+    console.warn(`[state.ts] Ownership map not found at ${ownershipMapPath}, skipping ownership validation`);
+    return {};
+  }
+  const raw = readFileSync(ownershipMapPath, "utf8");
+  const parsed = parse(raw) as any;
+  const map: Record<string, string> = {};
+  if (parsed && Array.isArray(parsed.ownership_boundaries)) {
+    parsed.ownership_boundaries.forEach((boundary: any) => {
+      if (boundary.directories && Array.isArray(boundary.directories)) {
+        boundary.directories.forEach((dir: string) => {
+          map[dir] = boundary.owner;
+        });
+      }
+    });
+  }
+  ownershipMapCache = map;
+  console.log("[state.ts] Ownership map loaded:", Object.keys(map).length, "entries");
+  return map;
+}
+
+// State write wrapper with ownership authorization check
+export function writeStateFile(actorId: string, statePath: string, content: string | Buffer): void {
+  const ownershipMap = getOwnershipMap();
+  const relativePath = statePath.startsWith(EOS_STATE_DIR) 
+    ? statePath.slice(EOS_STATE_DIR.length + 1) 
+    : statePath;
+  
+  // Check if any ownership rule matches the path
+  let expectedOwner: string | null = null;
+  for (const [pattern, owner] of Object.entries(ownershipMap)) {
+    if (relativePath.startsWith(pattern) || relativePath.includes(pattern)) {
+      expectedOwner = owner;
+      break;
+    }
+  }
+  
+  // Default ownership: only JOURNEY_ENGINE_ID and SYSTEM_METRICS_ACTOR are allowed to write state files
+  const allowedActors = [JOURNEY_ENGINE_ID, SYSTEM_METRICS_ACTOR];
+  if (!allowedActors.some(allowed => actorId.includes(allowed))) {
+    if (expectedOwner) {
+      throw new Error(`OWNERSHIP_VIOLATION: Actor '${actorId}' is not authorized to modify '${relativePath}'. Expected owner: ${expectedOwner}`);
+    } else {
+      throw new Error(`OWNERSHIP_VIOLATION: Actor '${actorId}' is not authorized to modify state files. Allowed actors: ${allowedActors.join(', ')}`);
+    }
+  }
+  
+  const timestamp = new Date().toISOString();
+  const auditLogPath = resolve(EOS_STATE_DIR, "audit", "state-write-audit.log");
+  if (!existsSync(dirname(auditLogPath))) {
+    mkdirSync(dirname(auditLogPath), { recursive: true });
+  }
+  const auditEntry = `[${timestamp}] ${actorId} wrote ${relativePath}\n`;
+  appendFileSync(auditLogPath, auditEntry, "utf8");
+  
+  writeFileSync(statePath, content);
+  console.log(`[state.ts] State file written: ${relativePath} by ${actorId}`);
+}
+
 // Generate evidence artifact for state mutations (W05 PROVE step)
 function generateMutationEvidence(actorId: string, newState: CurrentJourney, timestamp: string): void {
   if (!existsSync(PROOFS_DIR)) {
@@ -404,7 +474,7 @@ function generateMutationEvidence(actorId: string, newState: CurrentJourney, tim
     new_next_work_id: newState.next_work_id,
     updated_milestones: newState.next_work_milestones
   };
-  writeFileSync(evidencePath, JSON.stringify(evidence, null, 2), "utf8");
+  writeStateFile(actorId, evidencePath, JSON.stringify(evidence, null, 2));
   console.log(`[state.ts] Mutation evidence generated: ${evidencePath}`);
 }
 
@@ -460,7 +530,7 @@ export function saveCurrentJourney(actorId: string, newState: CurrentJourney): v
   const yamlContent = stringify(newState);
   const payloadSize = Buffer.byteLength(yamlContent, "utf8");
   const writeStart = performance.now(); // Start timing write operation
-  writeFileSync(CURRENT_JOURNEY_PATH, yamlContent, "utf8");
+  writeStateFile(actorId, CURRENT_JOURNEY_PATH, yamlContent);
   const writeEnd = performance.now(); // End timing write operation
   const writeDuration = writeEnd - writeStart;
 
@@ -518,6 +588,6 @@ export function exportMetricsToProofs(): void {
     work_id: "EOS-JOURNEY-004",
     milestone: "implement_metrics_export"
   });
-  writeFileSync(metricsPath, metricsYaml, "utf8");
+  writeStateFile(SYSTEM_METRICS_ACTOR, metricsPath, metricsYaml);
   console.log(`[state.ts] Metrics exported successfully to ${metricsPath}`);
 }

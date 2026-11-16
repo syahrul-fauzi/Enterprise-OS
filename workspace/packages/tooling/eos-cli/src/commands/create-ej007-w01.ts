@@ -7,7 +7,7 @@ import { writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
-import { JOURNEY_ENGINE_ID } from "../state.js";
+import { JOURNEY_ENGINE_ID, statePath } from "../state.js";
 // Load DATABASE_URL from .env.local (canonical pattern from verify-W002-P8-e2e.ts)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,8 +16,7 @@ dotenv.config({ path: resolve(REPOSITORY_ROOT, '.env.local') });
 // Import actual createCoreWork and getWork from work-core implementation (correct .ts extension for ts-node)
 import { createCoreWork, getWork, registerWorkCoreCapability } from "../../../../../../workspace/capabilities/work-core/implementation/commands/work.commands.ts";
 
-const EOS_STATE_DIR = resolve(REPOSITORY_ROOT, ".eos-state");
-const PROOFS_DIR = resolve(EOS_STATE_DIR, "proofs");
+const PROOFS_DIR = statePath("proofs");
 
 // Create proofs directory if it doesn't exist
 if (!existsSync(PROOFS_DIR)) {
@@ -86,7 +85,7 @@ async function createEJ007W01Work() {
     };
 
     // Step 5: Create new verification artifact (first run, no existing file)
-    const currentVerificationPath = resolve(PROOFS_DIR, "EOS-JOURNEY-007-W01-verification.json");
+    const currentVerificationPath = statePath("proofs", "EOS-JOURNEY-007-W01-verification.json");
     const baseVerification = {
       journey_id: "EOS-JOURNEY-007",
       work_id: "EOS-JOURNEY-007-W01",

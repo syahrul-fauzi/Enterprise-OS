@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = resolve(__filename, "..");
 const EOS_ROOT_GLOBAL = resolve(__dirname, "../../../../../");
 // Fix path: core-capability-registry is inside workspace/packages, not root packages
-const CORE_CAPABILITY_REGISTRY_PATH = "/root/Enterprise-OS/workspace/packages/core/capability-registry/dist/src/index.js";
+const CORE_CAPABILITY_REGISTRY_PATH = "require('path').resolve(__dirname, '..')/workspace/packages/core/capability-registry/dist/src/index.js";
 import { EOS_ROOT } from "../state.js";
 
 // Dynamically import core capability registry to avoid path resolution issues

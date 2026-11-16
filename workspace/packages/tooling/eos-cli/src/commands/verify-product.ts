@@ -48,7 +48,7 @@ import { EOS_ROOT } from "../state.js";
 import { readWorkspaceCapabilities } from "../workspace-capability-runtime.js";
 
 // Fix path: core-capability-registry is inside workspace/packages
-const CORE_CAPABILITY_REGISTRY_PATH = "/root/Enterprise-OS/workspace/packages/core/capability-registry/dist/src/index.js";
+const CORE_CAPABILITY_REGISTRY_PATH = "require('path').resolve(__dirname, '..')/workspace/packages/core/capability-registry/dist/src/index.js";
 let coreCapabilityModule: any;
 async function getCoreCapabilityRegistry() {
   if (!coreCapabilityModule) {

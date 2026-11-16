@@ -10,7 +10,7 @@ import {
   SessionRepositoryInMemory,
 } from "../repositories/index.js";
 // Import kontrak kanonis dari work-core untuk validasi boundary
-import { validateBoundaryAccess } from "../../../work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
 
 // Lazy loading repository untuk menghindari module cycle dan mendukung Edge Runtime
 let sessionRepository: ReturnType<typeof getSessionRepositoryPostgres> | null = null;

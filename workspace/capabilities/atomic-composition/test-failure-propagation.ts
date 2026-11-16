@@ -7,9 +7,10 @@
 import { spawn } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { statePath } from '@repo/eos-cli';
 
 // Ensure evidence directory exists
-const evidenceDir = '/root/Enterprise-OS/.eos-state/audit';
+const evidenceDir = statePath('audit');
 if (!fs.existsSync(evidenceDir)) {
   fs.mkdirSync(evidenceDir, { recursive: true });
 }
@@ -81,18 +82,18 @@ async function runFailureTest() {
         exit_code: code,
         expected_exit_code: 1,
         logs: logs.join(''),
-        log_source: "/root/Enterprise-OS/.eos-state/chain-verification-audit001006-g4.log"
+        log_source: statePath('chain-verification-audit001006-g4.log')
       };
       
       // Write evidence
       fs.writeFileSync(
-        path.join(evidenceDir, 'AUDIT-001-006_G4_evidence.json'),
+        statePath('audit', 'AUDIT-001-006_G4_evidence.json'),
         JSON.stringify(evidence, null, 2)
       );
       
       // Write logs
       fs.writeFileSync(
-        '/root/Enterprise-OS/.eos-state/chain-verification-audit001006-g4.log',
+        statePath('chain-verification-audit001006-g4.log'),
         logs.join('')
       );
       

@@ -1,5 +1,6 @@
 // Gunakan path relatif sesuai struktur workspace dan package exports
 import * as path from 'path';
+import { statePath } from "@repo/eos-cli";
 import { Pool } from "pg";
 // Import base repository FIRST untuk override getPool() sebelum modul lain memanggilnya
 const baseRepoModule = await import("./capabilities/identity/implementation/repositories/base.repository.js");
@@ -705,7 +706,7 @@ async function runAllTests() {
     results.gateway_call_counts["external_payment_gateway"] = 1; // Hanya 1 gateway call meskipun 20 request
 
     // Simpan hasil ke evidence contract sesuai lokasi yang ditentukan
-    const evidencePath = path.join(process.cwd(), '.eos-state', 'evidence', 'PAYROLL-IDEMPOTENCY-001_verification.json');
+    const evidencePath = statePath('evidence', 'PAYROLL-IDEMPOTENCY-001_verification.json');
     const { existsSync, mkdirSync, writeFileSync } = await import('fs');
     const evidenceDir = path.dirname(evidencePath);
     if (!existsSync(evidenceDir)) {

@@ -5,8 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import * as yaml from "js-yaml";
-// Import capabilityRegistry dari lokasi yang benar (bukan index.ts yang tidak mengekspornya)
-import { capabilityRegistry, type CommandInvocationRecord } from "../../../packages/core/kernel/src/registry/capability-command-registry.js";
+import type { CommandInvocationRecord } from "../../../packages/core/kernel/src/registry/capability-command-registry.js";
 import { CaseRepositoryInMemory } from "../../../capabilities/legal-case/implementation/repository/case.repository.js";
 import type { CaseAggregate, CaseStatus } from "../../../capabilities/legal-case/contracts/index.js";
 import { DocumentRepositoryInMemory } from "../../../capabilities/legal-document/implementation/repository/index.js";
@@ -33,7 +32,7 @@ const mockCapabilityRegistry = {
       });
       return {
         output: { id: caseId, status: "draft", workId: workId },
-        record: { ok: true, invokedAt: new Date().toISOString() }
+        record: { ok: true, invokedAt: new Date().toISOString(), commandKey: "legal-case.case.create" }
       };
     }
     
@@ -45,7 +44,7 @@ const mockCapabilityRegistry = {
         await CaseRepositoryInMemory.save(updated);
         return {
           output: { id: input.id, lawyerId: input.lawyerId, status: "in_progress" },
-          record: { ok: true, invokedAt: new Date().toISOString() }
+          record: { ok: true, invokedAt: new Date().toISOString(), commandKey: "lawyershub.case.assignLawyer" }
         };
       }
       throw new Error(`Case not found: ${input.id}`);
@@ -59,10 +58,58 @@ const mockCapabilityRegistry = {
         await CaseRepositoryInMemory.save(updated);
         return {
           output: { id: input.id, status: "closed", closedAt: new Date() },
-          record: { ok: true, invokedAt: new Date().toISOString() }
+          record: { ok: true, invokedAt: new Date().toISOString(), commandKey: "legal-case.case.close" }
         };
       }
       throw new Error(`Case not found: ${input.id}`);
+    }
+    
+    // Handle legal-document.document.create
+    if (capability === "legal-document" && commandName === "document.create") {
+      const documentId = `doc-${Date.now()}`;
+      const workId = `work-${Date.now()}`;
+      await DocumentRepositoryInMemory.save({
+        id: documentId,
+        matterId: input.matterId,
+        title: input.title,
+        description: input.description || "",
+        author: input.author || "",
+        content: input.content || "",
+        status: "draft",
+        createdAt: new Date()
+      });
+      return {
+        output: { id: documentId, matterId: input.matterId, title: input.title, status: "draft", workId: workId },
+        record: { ok: true, invokedAt: new Date().toISOString(), commandKey: "legal-document.document.create" }
+      };
+    }
+    
+    // Handle legal-document.document.sign
+    if (capability === "legal-document" && commandName === "document.sign") {
+      const existing = await DocumentRepositoryInMemory.byId(input.id);
+      if (existing) {
+        const updated = { ...existing, status: "signed", signedAt: new Date(), signedBy: input.signedBy || "system" };
+        await DocumentRepositoryInMemory.save(updated);
+        return {
+          output: { id: input.id, status: "signed", signedAt: new Date() },
+          record: { ok: true, invokedAt: new Date().toISOString(), commandKey: "legal-document.document.sign" }
+        };
+      }
+      throw new Error(`Document not found: ${input.id}`);
+    }
+    
+    // Handle legal-document.document.archive
+    if (capability === "legal-document" && commandName === "document.archive") {
+      const existing = await DocumentRepositoryInMemory.byId(input.id);
+      if (existing) {
+        const updated = { ...existing, status: "archived", archivedAt: new Date() };
+        await DocumentRepositoryInMemory.save(updated);
+        return {
+          output: { id: input.id, status: "archived", archivedAt: new Date() },
+          record: { ok: true, invokedAt: new Date().toISOString(), commandKey: "legal-document.document.archive" }
+        };
+      }
+      throw new Error(`Document not found: ${input.id}`);
     }
     
     throw new Error(`Command not found in mock: ${capability}.${commandName}`);

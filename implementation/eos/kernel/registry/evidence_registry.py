@@ -2,10 +2,17 @@
 import os
 import yaml
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, Any, List, Optional
 
-CONFIG_PATH = "/root/Enterprise-OS/eos.config.yaml"
-REGISTRY_PATH = "/root/Enterprise-OS/implementation/eos/kernel/registry/evidence-registry.yaml"
+
+def get_repository_root() -> Path:
+    current_file = Path(__file__).resolve()
+    return current_file.parents[4]
+
+
+CONFIG_PATH = get_repository_root() / "eos.config.yaml"
+REGISTRY_PATH = get_repository_root() / "implementation" / "eos" / "kernel" / "registry" / "evidence-registry.yaml"
 
 
 def load_config() -> Dict[str, Any]:
@@ -14,7 +21,7 @@ def load_config() -> Dict[str, Any]:
 
 
 def load_registry() -> Dict[str, Any]:
-    if not os.path.exists(REGISTRY_PATH):
+    if not REGISTRY_PATH.exists():
         return {"version": "1.0", "evidence": []}
     with open(REGISTRY_PATH, "r", encoding="utf-8") as f:
         return yaml.safe_load(f) or {"version": "1.0", "evidence": []}
@@ -37,12 +44,13 @@ def add_observation(
 ) -> Dict[str, Any]:
     registry = load_registry()
     obs_id = generate_id(registry, "OBS")
+    file_path_obj = Path(file_path)
     entry = {
         "id": obs_id,
         "source": {"product": source_product},
         "type": "observation",
         "status": "pending_validation",
-        "file": os.path.relpath(file_path, "/root/Enterprise OS"),
+        "file": str(file_path_obj.relative_to(get_repository_root())),
         "created_at": created_at or datetime.now().isoformat()
     }
     registry["evidence"].append(entry)

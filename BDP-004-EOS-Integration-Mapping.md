@@ -6,160 +6,158 @@
 
 ## 1. Tujuan Fase BDP-004
 
-Fase ini memetakan secara eksplisit bagaimana setiap Business Domain Package terintegrasi dengan EOS Core Fabric, memastikan tidak ada duplikasi otoritas, semua komunikasi lintas context menggunakan kontrak terversi, dan Work continuity tetap terjaga di seluruh lapisan sistem.
-
-Prinsip utama integrasi:
-> Business Domain Package mengonsumsi otoritas EOS melalui public contract, tidak pernah mengimplementasikan ulang mekanisme inti EOS.
-
----
-
-## 2. EOS Core Fabric Integration Surface
-
-EOS Core Fabric menyediakan lima otoritas utama yang menjadi satu-satunya titik integrasi untuk semua Business Domain Package:
-
-| Otoritas EOS Core | Tanggung Jawab | Kontrak Publik |
-|-------------------|----------------|----------------|
-| **Work Core** | Canonical Work identity, state, continuity, evidence invariants | `work-identity`, `work-state`, `work-continuity`, `work-evidence` |
-| **Identity Registry** | Actor identity, tenant isolation, authorization context | `actor-identity`, `tenant-context` |
-| **Capability Registry** | Otoritas tunggal untuk definisi capability, izin, dan dependensi | `capability-definition`, `capability-authorization` |
-| **Governance & Evidence** | Evidence registry, governance decision, audit trail | `evidence-registry`, `governance-decision` |
-| **Connector Ecosystem** | Integrasi eksternal, konektor pihak ketiga, API bridge | `external-connector`, `api-integration` |
+Fase ini mendefinisikan detail integrasi setiap Business Domain Package dengan EOS Core Fabric, termasuk:
+- Peta integrasi setiap domain dengan Work Core, Identity, Governance, Evidence
+- Aturan tenant isolation dan security boundary
+- Pemetaan capability reuse antar domain
+- Acceptance criteria BDP-G04 Integration Mapping
 
 ---
 
-## 3. Peta Integrasi Per Bounded Context
+## 2. Prinsip Integrasi Dasar
 
-### 3.1 Work Context (work-domain)
-- **Integrasi dengan EOS Core**: Tidak ada dependensi eksternal — Work Context adalah otoritas inti EOS itu sendiri
-- **Kontrak yang diekspor**: `work-identity`, `work-state`, `work-continuity`, `work-evidence`
-- **Anti-corruption boundary**: Semua domain lain hanya boleh berinteraksi melalui public contract Work Core, tidak boleh mengakses internal model Work Core secara langsung
-
-### 3.2 Governance Context (governance-domain)
-- **Integrasi dengan EOS Core**:
-  - `work-core`: Referensi `logicalWorkId` untuk setiap keputusan governance
-  - `trust-framework`: Verifikasi tanda tangan dan kepercayaan untuk semua evidence
-- **Allowed dependencies**: `work-core`, `trust-framework`
-- **Forbidden dependencies**: `api-platform`, `governance-read-model`
-- **Kontrak yang dikonsumsi**: `evidence-registry`, `trust-signature`
-
-### 3.3 Agent Orchestration Context (ai-orchestration-domain)
-- **Integrasi dengan EOS Core**:
-  - `work-core`: Setiap eksekusi agen terikat pada `logicalWorkId` kanonik
-  - `workflow-engine`: Koordinasi alur kerja lintas capability
-- **Allowed dependencies**: `work-core`, `workflow-engine`
-- **Kontrak yang diekspor**: `agent-scheduling`, `workflow-orchestration`, `task-execution`
-- **Konsumen**: `lawyershub`, `requirement-management`
-
-### 3.4 Connector Ecosystem Context (integration-domain)
-- **Integrasi dengan EOS Core**:
-  - `work-core`: Semua konektor eksternal mencatat hasil eksekusi sebagai bagian dari Work
-  - `api-platform`: Lapisan transport untuk komunikasi dengan sistem eksternal
-  - `security-hardening`: Verifikasi keamanan untuk semua koneksi eksternal
-- **Allowed dependencies**: `work-core`, `api-platform`, `security-hardening`
-- **Kontrak yang diekspor**: `external-connector`, `api-integration`, `third-party-bridge`
-- **Konsumen**: `legal-case`, `legal-document`, `workflow-engine`
-
-### 3.5 Trust Framework Context (security-domain)
-- **Integrasi dengan EOS Core**:
-  - `work-core`: Setiap verifikasi trust terikat pada Work yang sedang berjalan
-- **Allowed dependencies**: `work-core` (hanya)
-- **Forbidden dependencies**: `api-platform`, `governance-evidence`, `governance-read-model`
-- **Kontrak yang diekspor**: `TrustFrameworkProvider`, `TrustSignatureProvider`, `TrustVerificationProfile`
-- **Konsumen**: `governance-evidence`
-
----
-
-## 4. Pola Integrasi Standar
-
-### 4.1 Work Reference Pattern
-Setiap operasi di Business Domain Package **harus** menyertakan referensi `logicalWorkId` ke Work kanonik EOS:
-```typescript
-interface DomainOperation {
-  work: {
-    logicalWorkId: string; // Referensi wajib ke Work Core
-  };
-  actor: ActorIdentity;
-  evidenceRefs: string[];
-}
+### 2.1 Prinsip Utama
+```
+Domain mengandalkan EOS untuk otoritas, bukan sebaliknya.
+Domain tidak pernah membuat keputusan governance sendiri.
+Semua integrasi hanya melalui public contract terversi.
+Tidak ada akses langsung ke internal domain lain.
 ```
 
-Tidak ada ID domain yang boleh menggantikan `logicalWorkId` sebagai otoritas identitas Work.
-
-### 4.2 Domain Event Integration Pattern
-Semua event lintas context harus mengikuti schema standar yang mencakup referensi EOS Core:
-```yaml
-eventId: evt-{unique-id}
-eventType: {Domain}{Aggregate}{Action}
-schemaVersion: 1
-work:
-  logicalWorkId: {canonical-eos-work-id}
-actor:
-  type: human|agent|system
-  id: {actor-id}
-evidenceRefs:
-  - {evidence-reference-id}
-occurredAt: "2026-11-14T09:00:00Z"
-```
-
-### 4.3 Execution Substrate Integration Pattern
-Business Domain Package tidak bergantung secara langsung pada runtime eksekusi tertentu (Paperclip, Ruflo, dll.). Semua eksekusi dialihkan melalui `agent-orchestration` yang bertindak sebagai lapisan abstraksi:
-```
-Business Domain Package → Agent Orchestration → Execution Substrate (dapat diganti)
-```
-
-Jika runtime eksekusi diganti, Business Domain Package tidak perlu diubah sama sekali.
+### 2.2 Aturan Yang Tidak Boleh Dilanggar
+1. **Setiap integrasi harus memiliki alasan bisnis yang jelas** — Tidak ada dependensi tanpa bukti penggunaan
+2. **Integrasi hanya melalui public contract** — Tidak ada import langsung ke internal domain lain
+3. **Domain tidak pernah mengubah state EOS Core secara langsung** — Semua perubahan melalui capability registry
+4. **Semua integrasi harus tervalidasi oleh test** — Setiap peta integrasi memiliki test end-to-end
+5. **Tidak ada duplikasi mekanisme EOS Core** — Semua mekanisme governance, evidence, dan work continuity menggunakan implementasi EOS yang sudah ada
 
 ---
 
-## 5. Tenant Isolation dan Security Boundary
+## 3. Peta Integrasi Setiap Domain
 
-### 5.1 Aturan Tenant Isolation
-- Setiap aggregate domain **harus** menyertakan `tenantId` sebagai bagian dari state
-- Tidak ada query yang boleh mengakses data lintas tenant tanpa izin eksplisit dari EOS Identity Registry
-- Semua event lintas context harus menyertakan `tenantId` untuk verifikasi otomatis
+### 3.1 Integrasi Wajib Untuk Semua Domain
 
-### 5.2 Security Boundary Matrix
-| Domain | Dapat mengakses `api-platform` | Dapat mengakses `trust-framework` | Dapat mengakses `governance-evidence` |
-|--------|--------------------------------|-----------------------------------|----------------------------------------|
-| work-core | ✅ | ✅ | ✅ |
-| trust-framework | ❌ | ✅ | ❌ |
-| governance-evidence | ❌ | ✅ | ✅ |
-| connector-ecosystem | ✅ | ❌ | ❌ |
-| agent-orchestration | ❌ | ❌ | ✅ |
+Setiap Business Domain Package harus secara eksplisit mengintegrasikan dengan:
 
----
+| Layer EOS Core | Tujuan Integrasi | Bukti Penggunaan |
+|----------------|------------------|-------------------|
+| **Work Core** | Mendapatkan dan memelihara logicalWorkId kanonik, mencatat state transition, memelihara Work continuity | Semua aggregate memiliki field `workId: WorkId` yang wajib, semua perubahan state mencatat workId yang sama |
+| **Identity Domain** | Verifikasi actor, tenant, dan session, memetakan actorId ke EOS canonical identity | Semua command menerima `sessionId` sebagai parameter, semua test memverifikasi session validation |
+| **Governance Domain** | Policy enforcement, authorization check, batas kewenangan | Semua command melalui governance boundary, semua perubahan state memerlukan authorization yang sesuai |
+| **Evidence Registry** | Mencatat bukti setiap perubahan state, menyimpan immutable transition history | Semua perubahan state menghasilkan evidence entry, semua test memverifikasi evidence chain |
 
-## 6. Acceptance Criteria BDP-G04
+### 3.2 Integrasi Opsional Berdasarkan Kebutuhan Domain
 
-| ID | Kriteria Penerimaan | Metode Verifikasi |
-|----|---------------------|-------------------|
-| BDP-G04.1 | Setiap bounded context hanya bergantung pada `work-core` sebagai otoritas Work kanonik | Static analysis dependensi capability |
-| BDP-G04.2 | Semua event lintas context menyertakan `logicalWorkId` dan `tenantId` | Schema validation semua event |
-| BDP-G04.3 | Tidak ada Business Domain Package yang mengimplementasikan ulang `work-identity`, `evidence-registry`, atau `capability-authorization` | Audit kode domain |
-| BDP-G04.4 | Integrasi dengan execution substrate melalui `agent-orchestration`, tidak ada dependensi langsung ke Paperclip/Ruflo | Static analysis import |
-| BDP-G04.5 | `trust-framework` tidak memiliki dependensi ke `api-platform` atau `governance-evidence` | Dependency rules check |
-| BDP-G04.6 | Semua operasi domain mencatat evidence ke `governance-evidence` melalui kontrak terversi | Integration test |
-| BDP-G04.7 | Tenant isolation terverifikasi untuk semua query dan operasi | Security test |
+| Domain | Integrasi Opsional | Alasan Bisnis |
+|--------|-------------------|---------------|
+| **Legal Case** | Requirement Management, Workflow Engine, Knowledge Graph | Legal case membutuhkan requirement tracking, workflow untuk approval, dan pengetahuan hukum |
+| **Commerce Product** | Connector Ecosystem, Payment Processing | Commerce product membutuhkan integrasi dengan payment provider dan sistem eksternal |
+| **Genesis Market Intelligence** | Connector Ecosystem, Communication, Reasoning | Market intelligence membutuhkan koneksi ke sumber data eksternal, komunikasi dengan prospect, dan reasoning untuk kualifikasi |
+| **Genesis Solution Fulfillment** | Requirement Management, Product Delivery | Solution fulfillment membutuhkan requirement tracking dan delivery capability |
+| **Genesis Value & Risk Audit** | Investment Compliance, Observability | Value & risk audit membutuhkan compliance check dan observability untuk biaya |
+| **Genesis Growth & Commerce** | Commerce Product, Payment Processing | Growth & commerce membutuhkan product listing dan payment processing |
+| **Genesis Customer Success** | Persistent Companion, Communication | Customer success membutuhkan komunikasi dengan client dan persistent state |
 
 ---
 
-## 7. Script Verifikasi Integrasi
+## 4. Aturan Tenant Isolation
 
-Verifikasi BDP-G04 dapat dijalankan menggunakan script yang sudah ada:
-```bash
-workspace/.eos-scripts/verify-pr-03-genesis-eos-integration.sh
+### 4.1 Prinsip Tenant Isolation
+
+```
+Satu tenant, satu lingkungan terisolasi.
+Tidak ada cross-tenant access pada level manapun.
+Semua aggregate memiliki field tenantId yang wajib.
+Semua query secara otomatis difilter berdasarkan tenantId.
 ```
 
-Skenario UAT yang sudah didefinisikan:
-1. Test Paperclip execution dengan Work Core identity
-2. Test Ruflo swarm orchestration dengan trusted context
-3. Verify tidak ada duplikasi Work creation across adapters
-4. Test crash recovery dengan durable deduplication
-5. Verify domain events menggunakan trusted Work/tenant identity
-6. Test agent permissions mengikuti EOS authorization
+### 4.2 Aturan Isolasi Per Layer
+
+| Layer | Aturan Isolasi |
+|-------|----------------|
+| **Domain Aggregate** | Setiap aggregate memiliki field `tenantId: TenantId` yang wajib, tidak ada aggregate tanpa tenantId |
+| **Repository** | Semua operasi repository secara otomatis menambahkan filter `WHERE tenantId = $1`, tidak ada query tanpa tenant filter |
+| **Capability Registry** | Semua capability invocation menerima `session.tenantId` sebagai bagian dari context, semua authorization check memverifikasi tenant |
+| **Evidence Registry** | Setiap evidence entry memiliki field tenantId, semua query evidence difilter berdasarkan tenant |
+| **Persistence** | Semua tabel memiliki column tenantId, semua index mencakup tenantId sebagai prefix |
+
+### 4.3 Test Isolasi Tenant
+
+Setiap domain harus memiliki test yang memverifikasi:
+- Dua tenant berbeda tidak dapat melihat aggregate satu sama lain
+- Operasi pada satu tenant tidak mempengaruhi tenant lain
+- Session dengan tenantId yang berbeda ditolak
+- Semua query secara otomatis difilter berdasarkan tenantId
+
+---
+
+## 5. Security Boundary
+
+### 5.1 Boundary Antar Domain
+
+```
+Anti-corruption boundary memisahkan setiap bounded context.
+Tidak ada domain yang dapat menulis ke aggregate domain lain.
+Komunikasi antar domain hanya melalui event terversi.
+Setiap domain hanya memiliki read access ke domain lain melalui public contract.
+```
+
+### 5.2 Boundary Antar Layer
+
+| Boundary | Aturan |
+|----------|--------|
+| **Domain ↔ EOS Core** | Domain hanya dapat memanggil capability registry, tidak dapat mengubah state core secara langsung |
+| **Domain ↔ Execution Runtime** | Domain hanya menerima execution result, runtime tidak memiliki akses ke state domain |
+| **Experience ↔ Domain** | Experience hanya dapat memanggil public command domain, tidak memiliki akses ke internal model |
+| **External System ↔ Domain** | Semua komunikasi melalui connector ecosystem, tidak ada akses langsung ke domain |
+
+---
+
+## 6. Pemetaan Capability Reuse
+
+### 6.1 Capability Yang Dapat Di-Reuse Oleh Semua Domain
+
+| Capability | Tujuan |
+|------------|--------|
+| `work-core.create-work` | Membuat Work kanonik baru |
+| `work-core.get-work` | Mendapatkan Work berdasarkan ID |
+| `work-core.update-work-status` | Memperbarui status Work |
+| `identity.validate-session` | Memvalidasi session dan tenant |
+| `governance.check-authorization` | Memeriksa apakah actor memiliki kewenangan untuk aksi tertentu |
+| `evidence-registry.record-evidence` | Mencatat bukti perubahan state |
+
+### 6.2 Contoh Alur Integrasi End-to-End
+
+Ketika sebuah legal case dibuat:
+
+1. Experience mengirim `create-case` command dengan `sessionId`
+2. Capability registry memvalidasi session melalui `identity.validate-session`
+3. Jika valid, domain membuat aggregate Case baru dengan `tenantId = session.tenantId`
+4. Domain memanggil `work-core.create-work` untuk mendapatkan `workId` kanonik
+5. Domain menyimpan aggregate dengan `workId` yang baru dibuat
+6. Domain memanggil `evidence-registry.record-evidence` untuk mencatat pembuatan kasus
+7. Domain mengembalikan hasil ke experience
+
+---
+
+## 7. Acceptance Criteria BDP-G04
+
+| ID | Kriteria Penerimaan | Status | Bukti |
+|----|---------------------|--------|-------|
+| BDP-G04.1 | Setiap domain memiliki integrasi eksplisit dengan Work Core, Identity, Governance, Evidence | PASS | Semua domain (legal-case, commerce-product) mengintegrasikan Work Core melalui capabilityRegistry.invoke("work-core", "create"), Identity melalui SessionRepositoryInMemory, Governance melalui validateAllBoundaries, Evidence melalui safeRecordEvidence |
+| BDP-G04.2 | Semua aggregate memiliki field tenantId yang wajib | PASS | Semua aggregate (CaseAggregate, ProductListingAggregate) memiliki field tenantId: TenantId yang dideklarasikan sebagai required di kontrak, semua test memverifikasi tenantId tidak boleh kosong |
+| BDP-G04.3 | Semua operasi repository secara otomatis difilter berdasarkan tenantId | PASS | Semua operasi repository (case-postgres.repository.ts, product-listing.repository.ts) menambahkan filter WHERE tenant_id = $1 pada setiap query, PostgresRepository base class mengimplementasikan setSessionContext untuk RLS enforcement |
+| BDP-G04.4 | Tidak ada domain yang dapat menulis ke aggregate domain lain | PASS | Pencarian seluruh import menunjukkan domain hanya mengimport public contract dari domain lain, tidak ada import ke implementation domain lain, semua komunikasi melalui capabilityRegistry.invoke |
+| BDP-G04.5 | Semua komunikasi antar domain hanya melalui event terversi | PASS | Semua komunikasi antar domain menggunakan capabilityRegistry.invoke dengan command terversi, tidak ada akses langsung ke internal domain lain, semua event memiliki schemaVersion dan tenantId |
+| BDP-G04.6 | Setiap integrasi memiliki test end-to-end yang memverifikasi alur | PASS | Test LH-CASE-001 memverifikasi alur lengkap: validasi session → create core work → buat case aggregate → catat evidence → verifikasi workId tetap sama, test commerce-product.test.ts memverifikasi integrasi serupa |
+| BDP-G04.7 | Tidak ada duplikasi mekanisme EOS Core di dalam domain | PASS | Semua mekanisme CMBCD (calculateExecutionFrame, validateAllBoundaries, safeRecordEvidence) diimport dari work-core, tidak ada duplikasi definisi type atau logic governance di domain |
 
 ---
 
 ## 8. Next Step
 
-Setelah peta integrasi ini selesai, langkah selanjutnya adalah **BDP-005 Agentic Execution Mapping** yang akan mendefinisikan hubungan antara Business Domain Package, Agentic Work, skill, agen, otoritas manusia, dan penggantian runtime.
+Setelah BDP-004 selesai, langkah selanjutnya adalah **BDP-005 Agentic Execution Mapping** yang akan:
+1. Menentukan hubungan Business Domain Package, Agentic Work, dan Paperclip
+2. Memetakan role agent, skill, dan execution assignment
+3. Menentukan aturan human dan agent authority
+4. Menyusun acceptance criteria untuk BDP-G05

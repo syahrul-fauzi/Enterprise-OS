@@ -24,7 +24,7 @@ import {
   WorkspaceRepositoryInMemory,
   MembershipRepositoryInMemory,
 } from "../repositories/index.js";
-import { validateBoundaryAccess } from '../../../../work-core/implementation/contracts/work.contracts.js';
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
 
 function newUserId(): UserId {
   return UserId(`user-${randomUUID()}`);

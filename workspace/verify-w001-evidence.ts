@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import crypto from 'crypto';
+import { statePath } from '@repo/eos-cli';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '.env.local') });
@@ -95,7 +96,7 @@ async function main() {
         status: c.value ? "PASS" : "FAIL",
         evidence: c.value ? `Semua ${evidenceRecords.length} evidence record memenuhi kriteria` : "Ada evidence yang tidak memenuhi kriteria"
       })),
-      trace_file: "/root/Enterprise-OS/workspace/verify-w001-evidence.ts",
+      trace_file: "require('path').resolve(__dirname, '..')/workspace/verify-w001-evidence.ts",
       command_execution_log: [
         "npx tsx verify-w001-evidence.ts (Process A: create W1 dan record evidence)",
         `W1_ID=${verifyWorkId} npx tsx verify-w001-evidence.ts (Process B: resume dan verifikasi evidence chain)`
@@ -107,7 +108,7 @@ async function main() {
 
     // Write verification result to audit file
     const fs = await import('fs');
-    const auditPath = "/root/Enterprise-OS/.eos-state/verification/W06-A6-001_verification.json";
+    const auditPath = statePath('verification', 'W06-A6-001_verification.json');
     fs.writeFileSync(auditPath, JSON.stringify(verificationResult));
     console.log(`\n📄 Hasil verifikasi disimpan ke: ${auditPath}`);
 

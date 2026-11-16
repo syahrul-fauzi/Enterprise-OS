@@ -3,14 +3,17 @@ import os
 import sys
 import yaml
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, Any, List
 
-# Add implementation to path
-sys.path.insert(0, os.path.join("/root/Enterprise OS", "implementation"))
-from eos.kernel.registry.evidence_registry import load_registry, update_observation_status
+repo_root = Path(__file__).resolve().parents[4]
+sys.path.insert(0, str(repo_root / "implementation"))
 
-CONFIG_PATH = "/root/Enterprise-OS/eos.config.yaml"
-RULES_PATH = "/root/Enterprise-OS/implementation/eos/engines/validator/rules.yaml"
+from eos.kernel.registry.evidence_registry import load_registry, update_observation_status
+from eos.kernel.utils.state_utils import get_repository_root
+
+CONFIG_PATH = get_repository_root() / "eos.config.yaml"
+RULES_PATH = get_repository_root() / "implementation" / "eos" / "engines" / "validator" / "rules.yaml"
 
 
 def load_config():
@@ -24,20 +27,21 @@ def load_rules():
 
 
 def find_observation_files(product: str, config: Dict[str, Any]) -> List[str]:
-    evidence_path = config["evidence_base"].format(product=product)
-    observations_dir = os.path.join(evidence_path, "observations")
+    evidence_path = Path(config["evidence_base"].format(product=product))
+    observations_dir = evidence_path / "observations"
     files = []
-    if not os.path.exists(observations_dir):
+    if not observations_dir.exists():
         return files
-    for root, dirs, filenames in os.walk(observations_dir):
+    for root, dirs, filenames in observations_dir.walk():
         for file in filenames:
             if file.startswith("observation-") and file.endswith(".md"):
-                files.append(os.path.join(root, file))
+                files.append(str(root / file))
     return sorted(files, reverse=True)
 
 
 def validate_file(file_path: str, rules: Dict[str, Any]) -> Dict[str, Any]:
-    validation_result = {"file": os.path.basename(file_path), "passed": 0, "failed": 0, "rules": {}}
+    file_path_obj = Path(file_path)
+    validation_result = {"file": file_path_obj.name, "passed": 0, "failed": 0, "rules": {}}
 
     for rule in rules["rules"]:
         rule_name = rule["name"]
@@ -47,12 +51,12 @@ def validate_file(file_path: str, rules: Dict[str, Any]) -> Dict[str, Any]:
 
         if rule["type"] == "file":
             if rule_name == "evidence_exists":
-                if os.path.exists(file_path) and os.access(file_path, os.R_OK):
+                if file_path_obj.exists() and os.access(file_path_obj, os.R_OK):
                     validation_result["rules"][rule_name] = True
 
         elif rule["type"] == "content":
             try:
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path_obj, "r", encoding="utf-8") as f:
                     content = f.read()
                 if rule_name == "timestamp_exists":
                     if "Generated at" in content or "Last Updated" in content:
@@ -65,10 +69,10 @@ def validate_file(file_path: str, rules: Dict[str, Any]) -> Dict[str, Any]:
 
         elif rule["type"] == "format":
             if rule_name == "markdown_format":
-                ext = os.path.splitext(file_path)[1]
+                ext = file_path_obj.suffix
                 if ext in rule.get("extensions", []):
                     try:
-                        with open(file_path, "r", encoding="utf-8") as f:
+                        with open(file_path_obj, "r", encoding="utf-8") as f:
                             first_line = f.readline().strip()
                         if first_line.startswith("#"):
                             validation_result["rules"][rule_name] = True
@@ -87,12 +91,12 @@ def validate_file(file_path: str, rules: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def generate_validation_report(product: str, validation_results: List[Dict[str, Any]], config: Dict[str, Any]) -> str:
-    evidence_path = config["evidence_base"].format(product=product)
-    reports_dir = os.path.join(evidence_path, "validation-reports")
-    os.makedirs(reports_dir, exist_ok=True)
+    evidence_path = Path(config["evidence_base"].format(product=product))
+    reports_dir = evidence_path / "validation-reports"
+    reports_dir.mkdir(parents=True, exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    report_path = os.path.join(reports_dir, f"validation-report-{timestamp}.yaml")
+    report_path = reports_dir / f"validation-report-{timestamp}.yaml"
 
     report = {
         "product": product,
@@ -103,7 +107,7 @@ def generate_validation_report(product: str, validation_results: List[Dict[str, 
     with open(report_path, "w", encoding="utf-8") as f:
         yaml.safe_dump(report, f, default_flow_style=False, sort_keys=False)
 
-    return report_path
+    return str(report_path)
 
 
 def main():
@@ -114,7 +118,6 @@ def main():
     rules = load_rules()
     product = config["primary_product"]
 
-    # Load registry to get pending observations
     registry = load_registry()
     pending_obs = [
         e for e in registry["evidence"]
@@ -130,14 +133,14 @@ def main():
 
     validation_results = []
     for file_path in observation_files:
-        print(f"  Validating: {os.path.basename(file_path)}")
+        file_path_obj = Path(file_path)
+        print(f"  Validating: {file_path_obj.name}")
         result = validate_file(file_path, rules)
         validation_results.append(result)
         status_emoji = "✅" if result["status"] == "ACCEPTED" else "❌"
         print(f"    Status: {status_emoji} {result['status']} | Score: {result['score']}%")
 
-        # Find corresponding entry in registry and update status
-        rel_file = os.path.relpath(file_path, "/root/Enterprise OS")
+        rel_file = str(file_path_obj.relative_to(get_repository_root()))
         for obs in pending_obs:
             if obs["file"] == rel_file:
                 new_status = "validated" if result["status"] == "ACCEPTED" else "rejected"

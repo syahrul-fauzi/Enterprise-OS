@@ -13,7 +13,7 @@
  *   Evidence artifact written to .eos-state/evidence/
  */
 import * as fs from 'fs/promises';
-import * as path from 'path';
+import { statePath } from '@repo/eos-cli';
 
 const BASE_URL = "http://localhost:3004";
 const SESSION = {
@@ -73,8 +73,8 @@ async function main() {
   console.log(`  Actor (Lawyer) : ${TARGET.lawyer_id}`);
   console.log("");
 
-  const evidenceDir = path.join(process.cwd(), ".eos-state", "evidence");
-  const verificationDir = path.join(process.cwd(), ".eos-state", "verification");
+  const evidenceDir = statePath("evidence");
+  const verificationDir = statePath("verification");
   await fs.mkdir(evidenceDir, { recursive: true });
   await fs.mkdir(verificationDir, { recursive: true });
 

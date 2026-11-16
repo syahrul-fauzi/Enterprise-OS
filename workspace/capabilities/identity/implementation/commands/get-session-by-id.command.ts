@@ -3,7 +3,7 @@
 console.log("[get-session-by-id.command.ts] FILE DILOAD SUKSES!");
 import { z } from "zod";
 import type { WorkspaceSession } from "@repo/core-kernel";
-import { CapabilityCommand } from "../../../work-core/contracts/command.contracts.js";
+import type { CapabilityCommand } from "@repo/core-kernel";
 import {
   validateBoundaryAccess,
   type IdentityBoundary,
@@ -12,7 +12,7 @@ import {
   type ExecutionBoundary,
   type EvidenceBoundary,
   type PresentationBoundary
-} from "../../../work-core/contracts/work.contracts.js";
+} from "@capabilities/work-core/contracts/work.contracts.js";
 import type { SessionAggregate } from "@repo/contracts-core";
 
 // Lazy load repository untuk menghindari module cycle dan mematuhi 6-boundary compliance

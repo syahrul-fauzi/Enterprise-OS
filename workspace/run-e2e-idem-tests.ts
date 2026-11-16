@@ -10,6 +10,7 @@ import { Pool } from "pg";
 import { randomUUID as cryptoRandomUUID } from "crypto";
 import { writeFile, readFile } from "fs/promises";
 import { resolve } from "path";
+import { statePath } from '@repo/eos-cli';
 // GUNAKAN ALIAS CANONICAL @repo/core-kernel SESUAI YANG DIGUNAKAN SEMUA FILE DI work.commands.ts, BUKAN RELATIVE PATH
 // work.commands.ts menggunakan package exports tanpa src/ - ikuti pola yang sama!
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
@@ -17,7 +18,7 @@ import { capabilityRegistry } from "@repo/core-kernel/registry/capability-comman
 // import { processPayrollCommand, registerWorkCoreCapability } from "./capabilities/work-core/implementation/commands/work.commands.js";
 
 // Path evidence sesuai arahan WAR ROOM: /.eos-state/verification/PAYROLL-IDEMPOTENCY-001_verification.json
-const EVIDENCE_PATH = resolve("/root/Enterprise-OS/.eos-state/verification/PAYROLL-IDEMPOTENCY-001_verification.json");
+const EVIDENCE_PATH = statePath('verification', 'PAYROLL-IDEMPOTENCY-001_verification.json');
 
 // Gunakan crypto.randomUUID
 const crypto = { randomUUID: cryptoRandomUUID };

@@ -3,12 +3,14 @@
  * AUDIT-001-006 G3 VERIFICATION: Test duplicate registration prevention
  * Verifikasi bahwa registrasi ganda capability ditolak dengan perilaku yang teruji
  */
+import { statePath } from '@repo/eos-cli';
+
 async function testDuplicateRegistration() {
   console.log('🔍 AUDIT-001-006 G3: Starting duplicate registration verification...');
   
   const fs = await import('fs');
-  const evidencePath = '/root/Enterprise-OS/.eos-state/audit/AUDIT-001-006_G3_evidence.json';
-  const logPath = '/root/Enterprise-OS/.eos-state/chain-verification-audit001006-g3.log';
+  const evidencePath = statePath('audit', 'AUDIT-001-006_G3_evidence.json');
+  const logPath = statePath('chain-verification-audit001006-g3.log');
   
   // Initialize log file
   const logStream = fs.createWriteStream(logPath, { flags: 'a' });

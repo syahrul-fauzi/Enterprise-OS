@@ -10,6 +10,7 @@ import { addEvidenceToCase } from './capabilities/legal-case/implementation/comm
 import { markCaseCompleted } from './capabilities/legal-case/implementation/commands/case.commands';
 import { CaseRepositoryInMemory } from './capabilities/legal-case/implementation/repository/case.repository';
 import { recordRuntimeInvocation } from '@repo/core-runtime';
+import { statePath } from '@repo/eos-cli';
 
 // ============================================================================
 // P0-003 ACCEPTANCE CHAIN VERIFICATION
@@ -386,8 +387,9 @@ async function runP003Validation() {
   
   // Save evidence artifact
   const fs = await import('node:fs');
-  const evidencePath = `.eos-state/evidence/p0-003_validation_${Date.now()}.json`;
-  fs.mkdirSync('.eos-state/evidence', { recursive: true });
+  const evidenceDir = statePath("evidence");
+  fs.mkdirSync(evidenceDir, { recursive: true });
+  const evidencePath = statePath("evidence", `p0-003_validation_${Date.now()}.json`);
   fs.writeFileSync(evidencePath, JSON.stringify(validationResults, null, 2));
   console.log(`\n   📄 Evidence saved to: ${evidencePath}`);
   

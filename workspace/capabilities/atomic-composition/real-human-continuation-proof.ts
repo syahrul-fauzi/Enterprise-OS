@@ -241,7 +241,10 @@ async function runRealHumanContinuationProof() {
     coreChanges: 0,
     summary: "P6 PASSED: Single Work Reality terjaga, semua actor melihat work yang sama dan state yang konsisten sepanjang execution."
   };
-  fs.writeFileSync('/root/Enterprise-OS/workspace/.eos-state/E2-P6-REAL-HUMAN-CONTINUATION-VERIFIED.json', JSON.stringify(proofArtifact, null, 2));
+  const { statePath } = await import('@repo/eos-cli');
+  const proofPath = statePath('E2-P6-REAL-HUMAN-CONTINUATION-VERIFIED.json');
+  fs.mkdirSync(require('path').dirname(proofPath), { recursive: true });
+  fs.writeFileSync(proofPath, JSON.stringify(proofArtifact, null, 2));
   console.log("📝 Verification artifact saved: E2-P6-REAL-HUMAN-CONTINUATION-VERIFIED.json");
 }
 

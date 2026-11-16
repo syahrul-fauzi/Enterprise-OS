@@ -46,7 +46,7 @@ import {
   WorkRepositoryInMemory,
   safeRecordEvidence,
   validateAllBoundaries
-} from "../../work-core/index.js";
+} from "../../../work-core/index.js";
 
 // Import hanya type, inisialisasi dilakukan di dalam fungsi async untuk menghindari circular dependency
 import type { SessionRepository } from "@repo/contracts-core";

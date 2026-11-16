@@ -15,7 +15,7 @@
  */
 
 import { existsSync, writeFileSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { statePath } from "@repo/eos-cli";
 // Seragamkan import dari work.contracts yang sudah mere-export semua identity types dari @repo/capabilities-identity
 // Menghindari branded type collision dari dual import source dan memperbaiki TS5097
 import { WorkId, TenantId, ActorId, SessionId, WorkspaceId, WorkAggregate } from "../capabilities/work-core/contracts/work.contracts";
@@ -84,7 +84,7 @@ async function runIdentityContinuityTest(workId: WorkId, originalTenantId: Tenan
       test_name: "identity_continuity",
       status: "PASS",
       details: `WorkId ${workId} terjaga selama handoff cloud→edge`,
-      evidence_path: `.eos-state/evidence/handoff-${workId}.json`
+      evidence_path: statePath("evidence", `handoff-${workId}.json`)
     };
   } else {
     console.error("  ❌ Identity Continuity FAIL: WorkId berubah selama handoff");
@@ -207,7 +207,7 @@ async function main(): Promise<CONTINUITYEDGE001Report> {
     target_actor_id: targetActorId,
     tenant_id: tenantId,
     workspace_id: workspaceId,
-    state_path: "./.eos-state/execution/cloud-work-123.json",
+    state_path: statePath("execution", "cloud-work-123.json"),
     evidence_chain: [`cloud-created-${Date.now()}`, `handoff-initiated-${Date.now()}`],
     metadata: {
       reason: "edge-offline-test",
@@ -277,7 +277,7 @@ async function main(): Promise<CONTINUITYEDGE001Report> {
   };
   
   // 7. Simpan evidence
-  const evidencePath = resolve(process.cwd(), ".eos-state/evidence/CONTINUITY-EDGE-001_evidence.json");
+  const evidencePath = statePath("evidence", "CONTINUITY-EDGE-001_evidence.json");
   writeFileSync(evidencePath, JSON.stringify(report, null, 2));
   console.log(`\n📦 [CONTINUITY-EDGE-001] Evidence artifact disimpan di: ${evidencePath}`);
   

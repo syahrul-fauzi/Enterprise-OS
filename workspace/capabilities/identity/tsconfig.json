@@ -18,6 +18,6 @@
       "@capabilities/*": ["../../capabilities/*"]
     }
   },
-  "include": ["implementation/**/*.ts", "contracts/**/*.ts"],
+  "include": ["implementation/**/*.ts", "contracts/**/*.ts", "index.ts"],
   "exclude": ["dist", "build", "node_modules", "**/*.d.ts", "../requirement-management", "../requirements-traceability-matrix"]
 }

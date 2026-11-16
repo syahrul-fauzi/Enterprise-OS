@@ -13,7 +13,7 @@
  */
 
 import { existsSync, writeFileSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { statePath } from "@repo/eos-cli";
 // Seragamkan import dari work.contracts yang sudah mere-export semua identity types dari @repo/capabilities-identity
 // Menghindari branded type collision dari dual import source dan memperbaiki TS5097
 import { WorkId, TenantId, ActorId, SessionId, WorkspaceId, WorkAggregate } from "../capabilities/work-core/contracts/work.contracts.js";
@@ -281,7 +281,7 @@ async function runDenialEvidenceTest(workId: WorkId): Promise<IsolationTestResul
   console.log("\n=== [TENANT-ISOLATION-001] Step 3: Denial Evidence Logging Test ===");
   
   // Cek evidence chain apakah ada record dari recordRuntimeInvocation
-  const evidenceDir = resolve(process.cwd(), ".eos-state/evidence");
+  const evidenceDir = statePath("evidence");
   if (!existsSync(evidenceDir)) {
     return {
       test_name: "denial_evidence_logged",
@@ -388,8 +388,8 @@ async function runTenantIsolationTests() {
   };
   
   // 5. Simpan evidence artifact
-  const evidencePath = resolve(process.cwd(), ".eos-state/evidence/TENANT-ISOLATION-002_evidence.json");
-  const evidenceDir = resolve(process.cwd(), ".eos-state/evidence");
+  const evidencePath = statePath("evidence", "TENANT-ISOLATION-002_evidence.json");
+  const evidenceDir = statePath("evidence");
   if (!existsSync(evidenceDir)) {
     import("node:fs").then(fs => fs.mkdirSync(evidenceDir, { recursive: true }));
   }

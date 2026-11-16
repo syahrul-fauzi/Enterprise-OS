@@ -7,6 +7,7 @@ import { atomicCompositionCommands } from "../../../../capabilities/atomic-compo
 import { observabilityCommands } from "../../../../capabilities/observability/implementation/commands/observability.commands.js";
 import { connectorCommands } from "../../../../capabilities/connector-ecosystem/implementation/commands/connector.commands.js";
 import { evidenceRegistryCommands, registerEvidenceCoreCapability } from "../../../../capabilities/evidence-registry/implementation/commands/index.js";
+import { statePath } from "@repo/eos-cli";
 
 // DIGIOP-101: End-to-end test untuk Digital Care Onboarding Journey (sesuai 9 Layer Execution Contract)
 describe("DO-DIGITALCARE-001: End-to-end Digital Care onboarding journey (DIGIOP-101)", { concurrent: false }, () => {
@@ -154,11 +155,10 @@ describe("DO-DIGITALCARE-001: End-to-end Digital Care onboarding journey (DIGIOP
     
     // Write to .eos-state/evidence sesuai output contract eos-product-slice
     const fs = await import('node:fs');
-    const path = await import('node:path');
-    const evidenceDir = path.join(process.cwd(), '.eos-state', 'evidence');
+    const evidenceDir = statePath('evidence');
     if (!fs.existsSync(evidenceDir)) fs.mkdirSync(evidenceDir, { recursive: true });
     fs.writeFileSync(
-      path.join(evidenceDir, `${TEST_WORK_ID}_evidence.json`),
+      statePath('evidence', `${TEST_WORK_ID}_evidence.json`),
       JSON.stringify(evidenceArtifact, null, 2)
     );
     console.log(`💾 Evidence artifact disimpan ke: .eos-state/evidence/${TEST_WORK_ID}_evidence.json`);

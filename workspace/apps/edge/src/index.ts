@@ -5,6 +5,7 @@
  * AUDIT-005 compliant: hanya execution surface, tidak merubah semantic authority
  */
 import { capabilityRegistry } from "@repo/core-kernel";
+import { statePath } from "@repo/eos-cli";
 // Import evidence-registry commands secara synchronous di top-level (fix race condition di test)
 import { evidenceRegistryCommands } from '../../../capabilities/evidence-registry/implementation/commands/evidence-registry.commands';
 // Import shared commercial capabilities (value-metering & deal-coordinator) secara static sesuai W06-A A1 requirement
@@ -101,7 +102,7 @@ export class EdgeRuntime {
                   tenantId,
                   sessionId,
                   executionId,
-                  statePath: `./.eos-state/execution/edge-work-${workId}.json`,
+                  statePath: statePath("execution", `edge-work-${workId}.json`),
                   metadata: {
                     runtime: "edge",
                     deviceType: "desktop",

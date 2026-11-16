@@ -1,0 +1,15 @@
+{
+  "productName": "ecommerce-ops",
+  "verificationStatus": "PASSED",
+  "reusePercentage": 100,
+  "workflowCompleteness": 100,
+  "evidenceCompleteness": 100,
+  "gapClosure": {
+    "closedGap": "Missing capability-invokers.ts with standard Genesis MCP payload mapping",
+    "reuseImprovement": "67% → 100%",
+    "changeDescription": "Created capability-invokers.ts importing standard mapMcpPayloadToExecutionEnvelope from investment-compliance capability",
+    "linesAdded": 22,
+    "reuseGain": 33
+  },
+  "generatedAt": "2026-11-15T06:12:00.000Z"
+}

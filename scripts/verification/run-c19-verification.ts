@@ -5,15 +5,12 @@ import { RequirementRepositoryInMemory } from '../../workspace/capabilities/requ
 import type { ExecutionContext } from '../../workspace/packages/core/runtime/src/execution-context.js';
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
-import * as path from 'node:path';
+import { statePath } from '@repo/eos-cli';
 
-// C19 — Work Continuity Under Partial Execution Failure
-// Verify that Work remains ONE continuity boundary when an execution fails halfway through a transition,
-// and can be recovered/resumed from a fresh context without ambiguity or reconstruction
 const DECISION_ID = "C19-WORK-CONTINUITY-UNDER-PARTIAL-FAILURE";
 const TENANT_ID = "T-FAILURE-TEST";
 const WORK_ID = "W1-C19-TEST-001";
-const EVIDENCE_PATH = path.join(process.cwd(), '.eos-state', 'evidence', `${DECISION_ID}.json`);
+const EVIDENCE_PATH = statePath('evidence', `${DECISION_ID}.json`);
 
 // Authorization computation function (must be INDEPENDENT per context - same as C18)
 function computeAuthorization(actor_id: string, logicalWorkId: string, context_trace_id: string): boolean {

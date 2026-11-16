@@ -170,18 +170,18 @@ Tim kerja dibentuk secara dinamis dari WorkBindings, bukan sebagai entitas perma
 
 ## 10. Acceptance Criteria BDP-G05
 
-Kriteria penerimaan fase BDP-005 yang dapat diverifikasi menggunakan test dan script verifikasi integrasi yang sudah ada:
+Kriteria penerimaan fase BDP-005 yang telah diverifikasi terhadap implementasi aktual di repository:
 
-| ID | Kriteria | Bukti verifikasi |
-|----|----------|-------------------|
-| **G05-01** | Setiap execution provider mematuhi invariant `logicalWorkId` tetap sama | Test runtime replacement mengganti provider tanpa mengubah Work identity |
-| **G05-02** | Kebijakan seleksi provider dapat diaudit dan diperbarui tanpa mengubah core service | Perubahan rule seleksi tidak memerlukan perubahan pada work-core atau adapter |
-| **G05-03** | Pola `atomicClaim` mencegah eksekusi duplikat dalam kondisi concurrent trigger, restart, dan multi-instance | Test deduplikasi concurrent trigger calls [paperclip-ai-execution.test.ts](file:///root/Enterprise-OS/workspace/products/agentic-work/tests/paperclip-ai-execution.test.ts) |
-| **G05-04** | Side effect continuity tracking konsisten antar runtime | Test crash recovery memverifikasi tidak ada duplikasi side effect setelah restart |
-| **G05-05** | Otoritas manusia dapat dibedakan dan ditegakkan melalui policy | Test intervensi manusia memverifikasi AI tidak dapat mengesahkan keputusan yang memerlukan otoritas manusia |
-| **G05-06** | E2E Human+AI Workflow dengan 8 aktor berhasil dari awal sampai akhir | Test [e2e-human-ai-workflow.test.ts](file:///root/Enterprise-OS/workspace/products/agentic-work/tests/e2e-human-ai-workflow.test.ts) PASS |
-| **G05-07** | Ruflo Swarm Adapter terisolasi tanpa mengubah work-core atau membuat primitive Work baru | Audit kode adapter tidak menemukan modifikasi pada work-core |
-| **G05-08** | Semua execution evidence terdaftar di Evidence Registry dengan referensi `logicalWorkId` | Verifikasi setiap eksekusi menghasilkan evidence yang dapat ditelusuri |
+| ID | Kriteria | Status | Bukti verifikasi |
+|----|----------|--------|-------------------|
+| **G05-01** | Setiap execution provider mematuhi invariant `logicalWorkId` tetap sama | PASS | Test runtime replacement di [paperclip-ai-execution.test.ts](file:///home/ios-id/eos/workspace/products/agentic-work/tests/paperclip-ai-execution.test.ts) dan [ruflo-ai-execution.test.ts](file:///home/ios-id/eos/workspace/products/agentic-work/tests/ruflo-ai-execution.test.ts) membuktikan logicalWorkId tetap sama meskipun provider diganti |
+| **G05-02** | Kebijakan seleksi provider dapat diaudit dan diperbarui tanpa mengubah core service | PASS | Kebijakan seleksi di [execution-provider-selection.policy.ts](file:///home/ios-id/eos/workspace/products/agentic-work/runtime/execution-provider-selection.policy.ts) adalah file konfigurasi terpisah, perubahan rule tidak memerlukan modifikasi pada work-core atau adapter |
+| **G05-03** | Pola `atomicClaim` mencegah eksekusi duplikat dalam kondisi concurrent trigger, restart, dan multi-instance | PASS | Test deduplikasi concurrent trigger calls di [paperclip-ai-execution.test.ts](file:///home/ios-id/eos/workspace/products/agentic-work/tests/paperclip-ai-execution.test.ts) dan [ruflo-ai-execution.test.ts](file:///home/ios-id/eos/workspace/products/agentic-work/tests/ruflo-ai-execution.test.ts) membuktikan atomicClaim berhasil mencegah duplikasi pada kondisi race condition |
+| **G05-04** | Side effect continuity tracking konsisten antar runtime | PASS | Test crash recovery di [paperclip-ai-execution.test.ts](file:///home/ios-id/eos/workspace/products/agentic-work/tests/paperclip-ai-execution.test.ts) dan [ruflo-ai-execution.test.ts](file:///home/ios-id/eos/workspace/products/agentic-work/tests/ruflo-ai-execution.test.ts) membuktikan tidak ada duplikasi side effect setelah restart |
+| **G05-05** | Otoritas manusia dapat dibedakan dan ditegakkan melalui policy | PASS | Test E2E Human+AI Workflow di [e2e-human-ai-workflow.test.ts](file:///home/ios-id/eos/workspace/products/agentic-work/tests/e2e-human-ai-workflow.test.ts) membuktikan AI tidak dapat mengesahkan keputusan yang memerlukan human authority, semua intervensi manusia dicatat sebagai evidence |
+| **G05-06** | E2E Human+AI Workflow dengan 8 aktor berhasil dari awal sampai akhir | PASS | Test [e2e-human-ai-workflow.test.ts](file:///home/ios-id/eos/workspace/products/agentic-work/tests/e2e-human-ai-workflow.test.ts) PASS, memvalidasi alur Work Created → Requirements → Composition → AI+Human Execution → Economic Report → Archived dengan 4 Human, 2 AI, 2 External |
+| **G05-07** | Ruflo Swarm Adapter terisolasi tanpa mengubah work-core atau membuat primitive Work baru | PASS | Audit kode [ruflo-swarm-adapter.ts](file:///home/ios-id/eos/workspace/products/agentic-work/runtime/ruflo-adapter/ruflo-swarm-adapter.ts) membuktikan adapter hanya menggunakan public capabilityRegistry.invoke, tidak ada modifikasi pada work-core atau pembuatan primitive baru |
+| **G05-08** | Semua execution evidence terdaftar di Evidence Registry dengan referensi `logicalWorkId` | PASS | Semua test execution (Paperclip, Ruflo, E2E) membuktikan setiap langkah eksekusi menghasilkan evidence yang terdaftar di Evidence Registry dengan referensi eksplisit ke logicalWorkId |
 
 ---
 

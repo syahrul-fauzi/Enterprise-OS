@@ -4,7 +4,7 @@ workspace:
   display_name: Services.ID
   description: Marketplace layanan profesional terverifikasi untuk kebutuhan bisnis dan pribadi
 lifecycle:
-  phase: D.1
+  phase: D.2
   status: ACTIVE
   contract:
     stages:
@@ -39,6 +39,6 @@ quality:
     test_coverage_min: 80
     runtime_invocation_required: true
 governance:
-  baseline_locked: false
+  baseline_locked: true
   needs_audit: false
   evidence_path: ./evidence

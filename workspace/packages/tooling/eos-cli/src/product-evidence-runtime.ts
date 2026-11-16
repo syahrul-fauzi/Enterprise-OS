@@ -119,7 +119,7 @@ export function materializeCompositionReplayArtifact(input: {
     composition: input.compositionId,
     validator: "packages/composition/src/scripts/validate-composition-package.ts",
     command:
-      "pnpm --dir /root/Enterprise-OS/workspace exec node --import tsx packages/composition/src/scripts/validate-composition-package.ts packages/compositions/legal-workspace",
+      "pnpm --dir require('path').resolve(__dirname, '..')/workspace exec node --import tsx packages/composition/src/scripts/validate-composition-package.ts packages/compositions/legal-workspace",
     status: "PASS",
     verification_scope: "composition_package_validation",
     claim_boundary:
@@ -140,7 +140,7 @@ export function materializeFunctionalTestArtifact(input: {
     plan_id: input.planId,
     plan_digest: input.planDigest,
     command:
-      "pnpm --dir /root/Enterprise-OS/workspace exec node --import tsx --test --test-reporter tap <test-files>",
+      "pnpm --dir require('path').resolve(__dirname, '..')/workspace exec node --import tsx --test --test-reporter tap <test-files>",
   };
 }
 

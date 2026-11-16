@@ -1,0 +1,6 @@
+{"timestamp": "2026-11-15T06:00:00.000Z", "capability": "ticket_created", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:00:01.000Z", "capability": "triage", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:00:02.000Z", "capability": "assign", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:00:03.000Z", "capability": "resolve", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:00:04.000Z", "capability": "verify", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:00:05.000Z", "capability": "completed", "status": "SUCCESS"}

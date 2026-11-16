@@ -8,7 +8,7 @@ import { parse } from "yaml";
 // Calculate repository root (same path resolution as state.ts)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const REPOSITORY_ROOT = resolve(process.cwd(), ".."); // Jika dijalankan dari /root/Enterprise-OS/workspace, process.cwd() adalah /root/Enterprise-OS/workspace → .. = /root/Enterprise-OS/ (root repository utama)
+const REPOSITORY_ROOT = resolve(process.cwd(), ".."); // Jika dijalankan dari require('path').resolve(__dirname, '..')/workspace, process.cwd() adalah require('path').resolve(__dirname, '..')/workspace → .. = require('path').resolve(__dirname, '..')/ (root repository utama)
 
 // Sparse-checkout configuration sesuai ADR-0013 dan .gitmodules
 interface SubmoduleConfig {
@@ -20,13 +20,8 @@ interface SubmoduleConfig {
 const REQUIRED_SUBMODULES: SubmoduleConfig[] = [
   {
     path: ".eos-state",
-    sparseDir: "root/",
-    description: "Root state submodule (isolasikan state konstitusi root)",
-  },
-  {
-    path: "workspace/.eos-state",
-    sparseDir: "workspace/",
-    description: "Workspace state submodule (isolasikan state workspace)",
+    sparseDir: "",
+    description: "Canonical state submodule (One State Repository → One State Mount)",
   },
 ];
 
@@ -94,14 +89,14 @@ export async function runBootstrapCommand(): Promise<number> {
   let allPassed = true;
   const verificationResults: Record<string, boolean> = {};
 
-  // 1. Verifikasi tepat 2 submodule (sesuai topologi yang difrozen)
+  // 1. Verifikasi tepat 1 submodule (One State Repository → One State Mount)
   const submoduleCount = REQUIRED_SUBMODULES.length;
-  verificationResults["exactly_2_submodules"] = submoduleCount === 2;
-  if (!verificationResults["exactly_2_submodules"]) {
-    console.error(`❌ FAIL: Jumlah submodule tidak sesuai (ditemukan ${submoduleCount}, harus 2)`);
+  verificationResults["exactly_1_submodule"] = submoduleCount === 1;
+  if (!verificationResults["exactly_1_submodule"]) {
+    console.error(`❌ FAIL: Jumlah submodule tidak sesuai (ditemukan ${submoduleCount}, harus 1)`);
     allPassed = false;
   } else {
-    console.log("✅ PASS: Tepat 2 submodule terkonfigurasi");
+    console.log("✅ PASS: Tepat 1 submodule canonical terkonfigurasi");
   }
 
   // 2. Verifikasi remote URL submodule benar
@@ -159,15 +154,7 @@ export async function runBootstrapCommand(): Promise<number> {
     console.error("❌ FAIL: Root submodule (.eos-state) memiliki file/direktori workspace/ (cross-namespace)");
     allPassed = false;
   }
-
-  const workspaceSubmoduleFiles = execSync(`ls -la ${resolve(REPOSITORY_ROOT, "workspace/.eos-state")}`, { encoding: "utf8" });
-  const hasCrossNamespaceInWorkspace = workspaceSubmoduleFiles.includes("root/");
-  verificationResults["no_cross_namespace_workspace"] = !hasCrossNamespaceInWorkspace;
-  if (hasCrossNamespaceInWorkspace) {
-    console.error("❌ FAIL: Workspace submodule (workspace/.eos-state) memiliki file/direktori root/ (cross-namespace)");
-    allPassed = false;
-  }
-  console.log("✅ PASS: Tidak ada file cross-namespace antar submodule");
+  console.log("✅ PASS: Tidak ada file cross-namespace di canonical submodule");
 
   // 5. Verifikasi working tree valid (hanya cek perubahan di dalam submodule, bukan untracked submodule itu sendiri)
   try {

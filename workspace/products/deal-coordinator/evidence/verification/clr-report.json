@@ -1,0 +1,15 @@
+{
+  "productName": "deal-coordinator",
+  "verificationStatus": "PASSED",
+  "reusePercentage": 100,
+  "workflowCompleteness": 100,
+  "evidenceCompleteness": 100,
+  "generatedAt": "2026-11-15T09:15:00.000Z",
+  "gapClosure": {
+    "closedGap": "Missing capability-invokers.ts with standard Genesis MCP payload mapping",
+    "reuseImprovement": "75% → 100%",
+    "changeDescription": "Created capability-invokers.ts importing standard mapMcpPayloadToExecutionEnvelope from investment-compliance capability",
+    "linesAdded": 45,
+    "reuseGain": 25
+  }
+}

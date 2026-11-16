@@ -13,7 +13,7 @@
  */
 
 import { existsSync, writeFileSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { statePath } from "@repo/eos-cli";
 import { webcrypto } from "node:crypto";
 const crypto = webcrypto;
 import { WorkAggregate } from "../capabilities/work-core/contracts/work.contracts.ts";
@@ -179,7 +179,7 @@ async function runIdentityContinuityTest(): Promise<ContinuityTestResult> {
       test_name: "identity_continuity",
       status: "PASS",
       details: "workId tetap terjaga dari browser→edge→server untuk real legal case",
-      evidence_path: ".eos-state/execution/real-001-identity-continuity-proof.json"
+      evidence_path: statePath("execution", "real-001-identity-continuity-proof.json")
     };
   } else {
     console.error("  ❌ Identity Continuity FAIL: workId berubah selama transisi");
@@ -430,11 +430,11 @@ async function runREAL001Verification() {
   };
   
   // Simpan artefak bukti
-  const evidenceDir = resolve("/root/Enterprise-OS/workspace/.eos-state/evidence");
+  const evidenceDir = statePath("evidence");
   if (!existsSync(evidenceDir)) {
     console.log("[REAL-001] Creating evidence directory...");
   }
-  const evidencePath = resolve(evidenceDir, "REAL-001_evidence.json");
+  const evidencePath = statePath("evidence", "REAL-001_evidence.json");
   writeFileSync(evidencePath, JSON.stringify(finalReport, null, 2));
   
   console.log("\n" + "=".repeat(80));

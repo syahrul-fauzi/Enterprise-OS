@@ -2,6 +2,7 @@
 import { sessionQueries, resetSessionRepository } from '../capabilities/identity/implementation/queries/session.queries.js';
 import { decodeWorkspaceSession } from '../packages/core/kernel/src/session/workspace-session.js';
 import { SessionRepositoryInMemory } from '../capabilities/identity/implementation/repositories/session.inmemory.js';
+import { statePath } from "@repo/eos-cli";
 
 async function runG2R01Test() {
   console.log("[G2-R01-TEST] Memulai Session Store Runtime Assurance Test...\n");
@@ -98,10 +99,9 @@ async function runG2R01Test() {
 
   // Simpan bukti
   const fs = require('fs');
-  const path = require('path');
-  const evidenceDir = path.join(process.cwd(), '.eos-state', 'verification', 'SMACE-007');
+  const evidenceDir = statePath('verification', 'SMACE-007');
   if (!fs.existsSync(evidenceDir)) fs.mkdirSync(evidenceDir, { recursive: true });
-  const evidencePath = path.join(evidenceDir, `EVI-G2-R01-${Date.now()}.json`);
+  const evidencePath = statePath('verification', 'SMACE-007', `EVI-G2-R01-${Date.now()}.json`);
   fs.writeFileSync(evidencePath, JSON.stringify({
     testId: "G2-R01",
     overallResult: allPassed ? "ALL_PASSED" : "FAILED",

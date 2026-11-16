@@ -12,7 +12,7 @@
  */
 
 import { existsSync, writeFileSync, mkdirSync } from "node:fs";
-import { resolve } from "node:path";
+import { statePath } from "@repo/eos-cli";
 import { WorkAggregate } from "../capabilities/work-core/contracts/work.contracts.ts";
 // Import identity types dari path absolut (reuse pola yang sama dengan verify-edge-005.ts)
 import { WorkId, newWorkId, ActorId, SessionId, TenantId } from "../capabilities/identity/implementation/contracts/identity.contracts.ts";
@@ -152,7 +152,7 @@ async function runNetworkDropTest(): Promise<ContinuityTestResult> {
   const testPassed = queueLength === 1;
   if (testPassed) {
     console.log("  ✅ Network Drop PASS: work tetap di queue ketika sync gagal (simulated network drop)");
-    return { test_name: "network_drop_mid_sync", status: "PASS", details: "Edge runtime menangani simulated network drop dengan mengembalikan work ke queue. Failure injection sengaja menggunakan capabilityRegistry error untuk mereproduksi network failure path", evidence_path: ".eos-state/execution/network-drop-proof.json" };
+    return { test_name: "network_drop_mid_sync", status: "PASS", details: "Edge runtime menangani simulated network drop dengan mengembalikan work ke queue. Failure injection sengaja menggunakan capabilityRegistry error untuk mereproduksi network failure path", evidence_path: statePath("execution", "network-drop-proof.json") };
   } else {
     console.error("  ❌ Network Drop FAIL: work hilang dari queue setelah simulated network drop");
     return { test_name: "network_drop_mid_sync", status: "FAIL", details: `queue_length=${queueLength}, work seharusnya tetap ada di pendingSyncQueue setelah simulated network failure` };
@@ -172,7 +172,7 @@ async function runBackgroundingTest(): Promise<ContinuityTestResult> {
   const testPassed = serverWork?.pendingSync === true;
   if (testPassed) {
     console.log("  ✅ Backgrounding PASS: sync tetap pending ketika app masuk background");
-    return { test_name: "app_backgrounding", status: "PASS", details: "Edge runtime menangani app backgrounding tanpa kehilangan work", evidence_path: ".eos-state/execution/backgrounding-proof.json" };
+    return { test_name: "app_backgrounding", status: "PASS", details: "Edge runtime menangani app backgrounding tanpa kehilangan work", evidence_path: statePath("execution", "backgrounding-proof.json") };
   } else {
     console.error("  ❌ Backgrounding FAIL: work ter-sync meskipun app di background");
     return { test_name: "app_backgrounding", status: "FAIL", details: `pending_sync=${serverWork?.pendingSync}` };
@@ -194,18 +194,18 @@ async function runStorageExhaustionTest(): Promise<ContinuityTestResult> {
     const testPassed = savedWork !== undefined;
     if (testPassed) {
       console.log("  ✅ Storage Exhaustion PASS: work berhasil di-save setelah storage pulih");
-      return { test_name: "storage_exhaustion", status: "PASS", details: "Edge runtime menangani storage exhaustion dengan retry mechanism", evidence_path: ".eos-state/execution/storage-exhaustion-proof.json" };
+      return { test_name: "storage_exhaustion", status: "PASS", details: "Edge runtime menangani storage exhaustion dengan retry mechanism", evidence_path: statePath("execution", "storage-exhaustion-proof.json") };
     } else {
       console.error("  ❌ Storage Exhaustion FAIL: work hilang setelah storage error");
       return { test_name: "storage_exhaustion", status: "FAIL", details: "work tidak ditemukan di repository setelah error storage" };
     }
   }
-  return { test_name: "storage_exhaustion", status: "PASS", details: "Storage error terhandle dengan baik", evidence_path: ".eos-state/execution/storage-exhaustion-proof.json" };
+  return { test_name: "storage_exhaustion", status: "PASS", details: "Storage error terhandle dengan baik", evidence_path: statePath("execution", "storage-exhaustion-proof.json") };
 }
 
 // Main execution
 async function main() {
-  const evidenceDir = resolve(process.cwd(), ".eos-state/evidence");
+  const evidenceDir = statePath("evidence");
   if (!existsSync(evidenceDir)) mkdirSync(evidenceDir, { recursive: true });
   // Jalankan semua failure mode test
   const networkTest = await runNetworkDropTest();

@@ -7,6 +7,7 @@ import { safeRecordEvidence } from "../../../work-core/implementation/utils/evid
 import type { ConnectorDefinition, ConnectorSyncResult } from "../contracts/index.js";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { WorkspaceId, TenantId } from "@repo/contracts-core";
+import { statePath } from '@repo/eos-cli';
 import mqtt, { MqttClient } from "mqtt";
 
 // MQTT Client initialization untuk produksi - sesuai rekomendasi EDGE-DEVICE-001_recon.json
@@ -4618,7 +4619,8 @@ export async function getMidtransPaymentStatus(transactionId: string): Promise<s
       
       // Simpan respons aktual ke file evidence untuk audit dan verifikasi (sesuai permintaan W05)
       const fs = await import('fs/promises');
-      const evidencePath = `/root/Enterprise-OS/workspace/.eos-state/verification/midtrans-status-${transactionId}.json`;
+      const { statePath } = await import('@repo/eos-cli');
+      const evidencePath = statePath('verification', `midtrans-status-${transactionId}.json`);
       await fs.writeFile(evidencePath, JSON.stringify({
         transactionId,
         retrievedAt: new Date().toISOString(),
@@ -4641,7 +4643,7 @@ export async function getMidtransPaymentStatus(transactionId: string): Promise<s
       // Simpan test evidence juga untuk audit - ENSURE DIRECTORY EXISTS FIRST
       const fs = await import('fs/promises');
       const { access, mkdir } = fs;
-      const evidenceDir = '/root/Enterprise-OS/workspace/.eos-state/verification';
+      const evidenceDir = statePath('verification');
       
       try {
         await access(evidenceDir);
@@ -4653,7 +4655,7 @@ export async function getMidtransPaymentStatus(transactionId: string): Promise<s
       
       // W05-MIDTRANS: Preserve signature verification gap - never override pending status before provider confirmation
       const signatureVerificationResult = false; // Signature verification gap tetap dipertahankan sesuai permintaan
-      const evidencePath = `/root/Enterprise-OS/.eos-state/verification/W05-MIDTRANS-001_verification.json`;
+      const evidencePath = statePath('verification', 'W05-MIDTRANS-001_verification.json');
       console.log(`[Midtrans Adapter] Attempting to write W05 Midtrans evidence to: ${evidencePath}`);
       
       const evidenceContent = JSON.stringify({
@@ -4703,7 +4705,7 @@ export async function getMidtransPaymentStatus(transactionId: string): Promise<s
     // Simpan error evidence untuk audit
     try {
       const fs = await import('fs/promises');
-      const errorPath = `/root/Enterprise-OS/workspace/.eos-state/verification/midtrans-error-${transactionId}.json`;
+      const errorPath = statePath('verification', `midtrans-error-${transactionId}.json`);
       await fs.writeFile(errorPath, JSON.stringify({
         transactionId,
         failedAt: new Date().toISOString(),

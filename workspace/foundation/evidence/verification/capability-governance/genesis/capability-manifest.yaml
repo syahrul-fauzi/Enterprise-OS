@@ -1,0 +1,52 @@
+id: genesis
+name: Genesis Business Domain
+version: 1.0.0
+owner: genesis-eos-team
+status: authority
+stability: stable
+provides:
+  - LeadProspect capture and qualification
+  - SolutionArtifact generation
+  - FinancialAssessment authorization
+  - ConversionAsset execution
+  - ClientAccount onboarding
+purpose: End-to-end business vertical slice from LeadProspect to ClientAccount following EOS architecture principles
+manifest_version: 1.0.0
+exports:
+  - captureLeadProspect
+  - qualifyLeadProspect
+  - createSolutionArtifact
+  - createFinancialAssessment
+  - approveFinancialAssessment
+  - createConversionAsset
+  - acceptOffer
+  - createClientAccount
+implementation:
+  entry_point: /home/ios-id/eos/workspace/capabilities/genesis/implementation/index.ts
+depends_on:
+  - work-core
+  - identity
+  - evidence-registry
+  - capability-registry
+  - governance
+  - connector-ecosystem
+  - agent-orchestration
+metadata:
+  boundedContexts:
+    - market-intelligence
+    - solution-fulfillment
+    - value-risk-audit
+    - growth-commerce
+    - customer-success
+  businessJourney: LeadProspect → SolutionArtifact → FinancialAssessment → ConversionAsset → ClientAccount
+  logicalWorkContinuity: One logicalWorkId remains constant throughout the entire journey
+contracts:
+  - /home/ios-id/eos/workspace/capabilities/genesis/implementation/contracts/genesis.contracts.ts
+verification:
+  testPassRate: 100%
+  totalTests: 47
+  passedTests: 47
+  gapClosure:
+    - G43 (Replay, duplicate delivery, external side effects) PASS 100%
+    - G48 (Observability, failure handling, operational recovery) PASS 100%
+  finalArchitectureAudit: 43/43 PASS

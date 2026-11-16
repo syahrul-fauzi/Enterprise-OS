@@ -20,6 +20,7 @@ import {
 } from '../../../../packages/core/kernel/src/registry/capability-command-registry.js';
 import { WorkInspectionAgent } from '../../../../capabilities/work-inspection/implementation/services/inspection.agent.service.js';
 import { WorkRepositoryPostgres } from '../../../../capabilities/work-core/implementation/repository/work-postgres.repository.js';
+import { statePath } from '@repo/eos-cli';
 
 // Test actors with roles matching ILC workflow requirements
 const ACTORS = {
@@ -405,11 +406,10 @@ describe('ILC-INS-001: Institutional Coordination Reality Slice', () => {
  */
 async function recordEvidence(gateId: string, data: any): Promise<void> {
   const fs = await import('fs/promises');
-  const path = await import('path');
-  const evidenceDir = path.join('/root/Enterprise-OS/.eos-state/evidence/ilc-ins-001');
+  const evidenceDir = statePath('evidence', 'ilc-ins-001');
   await fs.mkdir(evidenceDir, { recursive: true });
   await fs.writeFile(
-    path.join(evidenceDir, `${gateId}_evidence.json`),
+    statePath('evidence', 'ilc-ins-001', `${gateId}_evidence.json`),
     JSON.stringify({
       gateId,
       recordedAt: new Date().toISOString(),

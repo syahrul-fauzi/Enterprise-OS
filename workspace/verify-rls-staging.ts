@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import * as path from 'path';
 import { Pool } from 'pg';
 import * as crypto from 'crypto';
+import { statePath } from "@repo/eos-cli";
 
 // Load standard dotenv (no expansion needed for local test - use hardcoded root .env credentials)
 const ROOT_ENV_PATH = path.join(process.cwd(), '.env');
@@ -211,7 +212,7 @@ async function verifyRLS() {
     results.security_scan.passed = results.security_scan.vulnerabilities_found === 0;
 
     // Simpan hasil verifikasi
-    const evidencePath = path.join(process.cwd(), '.eos-state', 'verification', 'PAY-IDEM-001_verification.json');
+    const evidencePath = statePath('verification', 'PAY-IDEM-001_verification.json');
     const evidenceDir = path.dirname(evidencePath);
     if (!existsSync(evidenceDir)) {
       mkdirSync(evidenceDir, { recursive: true });

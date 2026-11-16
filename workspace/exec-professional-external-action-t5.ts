@@ -7,8 +7,7 @@ import { recordRuntimeInvocation } from "./packages/core/runtime/src/index";
 import { CaseRepositoryInMemory } from "./capabilities/legal-case/implementation/repository/case.repository";
 import { DocumentRepositoryInMemory } from "./capabilities/legal-document/implementation/repository/document.repository";
 import { CaseId } from "./capabilities/legal-case/implementation/contracts/case.contracts";
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { statePath } from '@repo/eos-cli';
 import { existsSync } from 'fs';
 
 // ILC-P0 case details
@@ -229,7 +228,7 @@ async function main() {
   console.log("[T5] State after action:", stateAfter);
 
   // Step 7: Write T5 evidence artifact (only records actual human actions, no simulations)
-  const evidenceDir = join(process.cwd(), ".eos-state", "evidence");
+  const evidenceDir = statePath('evidence');
   if (!existsSync(evidenceDir)) await mkdir(evidenceDir, { recursive: true });
 
   const ladderLevel = outcomeBoolean ? "L5" : HUMAN_CONFIRMED.delivery_confirmed ? "L4_DELIVERY_ONLY_OUTCOME_PENDING" : "L3";

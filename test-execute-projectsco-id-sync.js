@@ -88,7 +88,7 @@ async function runProjectsCoIdAdapterTest() {
       }
     };
     
-    fs.writeFileSync("/root/Enterprise-OS/.eos-state/proofs/PRJ-002-verification-complete.json", JSON.stringify(verificationArtifact, null, 2));
+    fs.writeFileSync("/ios-id/eos/.eos-state/proofs/PRJ-002-verification-complete.json", JSON.stringify(verificationArtifact, null, 2));
     console.log("\n📝 Verification artifact saved to .eos-state/proofs/PRJ-002-verification-complete.json");
     
   } catch (error) {

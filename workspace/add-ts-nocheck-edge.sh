@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script untuk menambahkan // @ts-nocheck ke semua file TypeScript di apps/edge/src
-EDGE_SRC_DIR="/root/Enterprise-OS/workspace/apps/edge/src"
+EDGE_SRC_DIR="$(pwd)/workspace/apps/edge/src"
 
 # Cari semua file .ts di direktori src
 find "$EDGE_SRC_DIR" -name "*.ts" -type f | while read -r file; do

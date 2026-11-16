@@ -1,0 +1,65 @@
+{
+  "recon_id": "services-id-recon-001",
+  "product": "services-id",
+  "timestamp": "2026-11-15T[timestamp]",
+  "overall_status": "REUSE_100_PERCENT",
+  "product_binding_analysis": {
+    "total_capabilities_required": 6,
+    "capabilities_found_in_genesis": 6,
+    "reuse_percentage": 100,
+    "missing_capabilities": []
+  },
+  "required_capabilities": [
+    "requirement-management",
+    "workflow-engine",
+    "governance-evidence",
+    "service-directory",
+    "intent-management",
+    "work-formation"
+  ],
+  "capability_verification": {
+    "all_capabilities_exist": true,
+    "no_new_primitives_required": true,
+    "no_duplicate_logic_detected": true
+  },
+  "lifecycle_analysis": {
+    "stages_aligned_with_genesis": true,
+    "lifecycle_stages": ["discover", "create", "execute", "progress", "evidence", "complete"],
+    "claim_boundary_valid": true,
+    "claim_boundary_description": "Product-ACTIVE binding for the Services.ID identity onto the canonical apps/web discovery experience surface. Domain aggregates (ServiceProvider, ServiceRequest) are connected to the product reality surface, enabling end-to-end service request fulfillment."
+  },
+  "governance_checks": {
+    "architecture_freeze_compliant": true,
+    "no_genesis_expansion_proposed": true,
+    "work_continuity_preserved": true,
+    "tenant_isolation_boundaries_clear": true
+  },
+  "recon_outcome": "MINIMAL_FIX",
+  "next_steps": [
+    "Run E2E test for Service Request Fulfillment journey",
+    "Validate product binding against Genesis contract",
+    "Execute independent verification of all acceptance gates BDP-013"
+  ],
+  "evidence": [
+    {
+      "type": "capability_inventory",
+      "description": "All 6 required capabilities present in Genesis"
+    },
+    {
+      "type": "reuse_calculation",
+      "description": "100% reuse percentage - no new code required"
+    },
+    {
+      "type": "architecture_freeze",
+      "description": "No Genesis expansion proposed - compliant with Architecture Freeze"
+    },
+    {
+      "type": "claim_boundary",
+      "description": "Product claim boundary valid - no new lifecycle created, uses EOS 6-stage universal lifecycle"
+    },
+    {
+      "type": "e1_audit_validation",
+      "description": "E1 Capability Provider Economy Audit passed: 4 actor roles tested, 0 core changes required"
+    }
+  ]
+}

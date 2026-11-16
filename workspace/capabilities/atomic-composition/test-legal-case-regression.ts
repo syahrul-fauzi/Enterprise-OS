@@ -2,6 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import { test } from 'node:test';
+import { statePath } from "@repo/eos-cli";
 // Path relatif yang BENAR ke capability-resolver (sesuai lokasi test: atomic-composition/test-...)
 import { getGlobalCapabilityRegistry } from './implementation/services/capability-resolver.service.js';
 
@@ -61,10 +62,10 @@ test('AUDIT-001-006 G6: Legal-case regression test', async (t) => {
             command_invocable: true,
             evidence_system_active: true,
             registered_capabilities: capabilityIds,
-            log_source: "/root/Enterprise-OS/workspace/.eos-state/legal-case-audit001006.log"
+            log_source: statePath('legal-case-audit001006.log')
           };
   fs.writeFileSync(
-    '/root/Enterprise-OS/workspace/.eos-state/audit/AUDIT-001-006_G6_evidence.json',
+    statePath('audit', 'AUDIT-001-006_G6_evidence.json'),
     JSON.stringify(evidence, null, 2)
   );
 });

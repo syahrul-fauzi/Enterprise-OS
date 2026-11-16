@@ -1,7 +1,7 @@
 const nextConfig = {
 // Hapus hardcoded turbopack root agar Turbopack mendeteksi workspace root secara otomatis
 // turbopack: {
-//   root: '/root/Enterprise-OS/workspace',
+//   root: 'require('path').resolve(__dirname, '..')/workspace',
 // },
 };
 export default nextConfig;

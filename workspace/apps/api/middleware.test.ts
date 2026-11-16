@@ -4,6 +4,7 @@ import { executionContext } from "@repo/core-runtime";
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import * as sessionModule from "@repo/core-kernel/session/workspace-session";
+import { statePath } from "@repo/eos-cli";
 
 // SET NODE_ENV=test setelah semua import top-level selesai (karena process.env.NODE_ENV read-only di ESM)
 Object.assign(process.env, { NODE_ENV: "test" });
@@ -364,10 +365,9 @@ describe("W06-A3 - MIDDLEWARE VERIFICATION: Per-request context isolation dan tr
   it("W06-A3-TEST-6: Evidence tetap tersimpan di fallback storage ketika database unavailable", async () => {
     // Import fs untuk write/read file ke .eos-state/evidence (EOS canonical evidence path)
     const fs = await import("node:fs");
-    const path = await import("node:path");
     
     // Pastikan direktori evidence ada (sesuai EOS standard path)
-    const evidenceDir = path.join("/root/Enterprise-OS/workspace/.eos-state/evidence");
+    const evidenceDir = statePath("evidence");
     if (!fs.existsSync(evidenceDir)) {
       fs.mkdirSync(evidenceDir, { recursive: true });
     }

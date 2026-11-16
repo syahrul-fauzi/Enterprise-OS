@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { statePath } from '@repo/eos-cli';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '.env.local') });
@@ -137,7 +138,7 @@ async function main() {
     work_id: workId,
     verification_timestamp: new Date().toISOString(),
     acceptance_criteria,
-    trace_file: "/root/Enterprise-OS/workspace/verify-w001-replay-idempotency.ts",
+    trace_file: "require('path').resolve(__dirname, '..')/workspace/verify-w001-replay-idempotency.ts",
     command_execution_log: [`W1_ID=${workId} npx tsx verify-w001-replay-idempotency.ts`],
     initial_evidence_count: initialEvidenceCount,
     final_evidence_count: finalEvidenceCount,
@@ -151,7 +152,7 @@ async function main() {
       : "Beberapa kriteria gagal: idempotency atau concurrency safety terlanggar."
   };
 
-  const outputPath = `/root/Enterprise-OS/.eos-state/verification/W06-A7-001_verification.json`;
+  const outputPath = statePath('verification', 'W06-A7-001_verification.json');
   const fs = await import('fs/promises');
   await fs.writeFile(outputPath, JSON.stringify(verificationResult, null, 2));
   console.log(`\n📄 Hasil verifikasi disimpan ke: ${outputPath}`);

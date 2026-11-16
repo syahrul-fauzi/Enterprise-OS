@@ -2,6 +2,9 @@ import click
 import json
 from pathlib import Path
 from typing import Optional, Dict, Any, List
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from state_utils import state_path
 
 class FaceCapabilityEngine:
     """FACE Capability Engine utama untuk EOS - Memetakan capability server ke UI affordances"""
@@ -81,7 +84,7 @@ def main(test_mode: bool, work_item_path: Optional[str], capability_id: Optional
     
     if engine:
         result = engine.map_capability_to_face(capability_id, actor_data, workspace_path)
-        output_path = Path(f".eos-state/face/{capability_id}_mapping.json")
+        output_path = state_path('face', f"{capability_id}_mapping.json")
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w') as f:
             json.dump(result, f, indent=2)

@@ -49,5 +49,5 @@ export async function registerIdentityCoreCapability() {
   console.log("[Identity-Core] AUDIT-001-005: Identity-Core capability registered successfully");
 }
 
-// Panggil registrasi segera setelah modul diimpor (sesuai pola semua capability lain)
-registerIdentityCoreCapability();
+// Panggil registrasi secara eksplisit oleh consumer (tidak otomatis untuk menghindari masalah inisialisasi test)
+// registerIdentityCoreCapability();

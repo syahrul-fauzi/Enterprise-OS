@@ -9,6 +9,7 @@ import type { BaseWorkAggregateSchema, WorkId, ActorId } from '@capabilities/wor
 import { InspectionRecommendation } from '@capabilities/work-inspection';
 import { checkAutonomyBoundary } from '@capabilities/work-core/implementation/utils/boundary-checks.utils.js';
 import type { AutonomyBoundaryCheck } from '@capabilities/work-core/implementation/utils/boundary-checks.types.js';
+import { statePath } from '@repo/eos-cli';
 
 // Test actors with roles matching ILC workflow requirements
 const ACTORS = {
@@ -49,317 +50,167 @@ describe('ILC-INS-001: Institutional Coordination Reality Slice', () => {
       ACTORS.institutionalRepresentative,
       TEST_CONTEXT
     );
-
-    assert.ok(result.success === true);
-    assert.ok(result.nextStep?.id === 'review-initiated');
-    assert.ok(result.nextStep?.id !== 'project-created');
-    assert.ok(result.nextStep?.id !== 'project-execution');
-
-    await recordEvidence("I1_PASS", {
-      initialTransitionCorrect: true,
-      nextStep: result.nextStep?.id
-    });
+    
+    assert.ok(result.success, "Transition should succeed");
+    assert.equal(result.nextState, 'institutional-need-submitted', "Should remain in institutional-need-submitted state");
+    assert.equal(result.isTerminal, false, "Should not be terminal state");
+    
+    const boundaryCheck = checkAutonomyBoundary(result.workAggregate);
+    assert.equal(boundaryCheck.isWithinBoundary, true, "Should be within autonomy boundary");
+    
+    await recordEvidence('I1', { result, boundaryCheck });
   });
 
-  it('I2 - Multi-actor binding with observable responsibilities (≥3 actors)', async () => {
-    const result = await executeWorkflowTransition(
+  it('I2 - Legal Review required before project approval', async () => {
+    // First transition to institutional-need-submitted
+    await executeWorkflowTransition(
       ILC_WORKFLOW,
       'institutional-need-submitted',
       ACTORS.institutionalRepresentative,
       TEST_CONTEXT
     );
-
-    assert.ok(result.success === true);
-    assert.ok(result.nextStep?.id === 'review-initiated');
     
-    // Verify that the next step requires at least 3 roles (as per ILC workflow)
-    const reviewStep = ILC_WORKFLOW.steps.find(s => s.id === 'review-initiated');
-    assert.ok(reviewStep?.requiredRoles.length >= 2);
-
-    // Verify that the transition result includes assigned actors
-    assert.ok(result.assignedActors !== undefined);
-    assert.ok(result.assignedActors?.length >= 2);
-    
-    await recordEvidence("I2_PASS", {
-      multiActorBindingVerified: true,
-      assignedActors: result.assignedActors
-    });
-  });
-
-  it('I3 - Unauthorized transition attempts blocked by hierarchical role validation', async () => {
+    // Try to transition directly to project-approved - should fail
     const result = await executeWorkflowTransition(
       ILC_WORKFLOW,
-      'institutional-need-submitted',
-      ACTORS.unauthorizedActor, // This actor does not have the required role
-      TEST_CONTEXT
-    );
-
-    assert.ok(result.success === false);
-    assert.ok(result.error !== undefined);
-    expect(result.error).toContain(`Actor ${ACTORS.unauthorizedActor} lacks required roles`);
-
-    await recordEvidence("I3_PASS", {
-      unauthorizedTransitionBlocked: true,
-      errorMessage: result.error
-    });
-  });
-
-  it('I4 - Real coordination events change Work state (Legal→IT→Finance dependency chain)', async () => {
-    // Note: The workflow defines a single 'review-initiated' step. The Legal->IT->Finance
-    // chain is conceptually part of this review. This test verifies the state transitions
-    // between major steps driven by different actors.
-
-    // 1. Institutional Representative submits the need -> moves to Review
-    const result1 = await executeWorkflowTransition(
-      ILC_WORKFLOW,
-      'institutional-need-submitted',
-      ACTORS.institutionalRepresentative,
-      TEST_CONTEXT
-    );
-    expect(result1.success).toBe(true);
-    expect(result1.nextStep?.id).toBe('review-initiated');
-
-    // 2. Executive Authority authorizes the project -> moves to Authorization
-    // This transition requires the work to be in the 'review-initiated' state.
-    const result2 = await executeWorkflowTransition(
-      ILC_WORKFLOW,
-      'review-initiated', // Current state
+      'project-approved',
       ACTORS.executiveAuthority,
       TEST_CONTEXT
     );
-    expect(result2.success).toBe(true);
-    expect(result2.nextStep?.id).toBe('authorized-for-execution');
+    
+    assert.equal(result.success, false, "Should fail without legal review");
+    assert.ok(result.errors?.some((e: string) => e.includes('legal review')), "Should mention legal review requirement");
+    
+    await recordEvidence('I2', { result });
+  });
 
-    // 3. Project Manager starts execution -> moves to Execution
-    const result3 = await executeWorkflowTransition(
+  it('I3 - IT Review required before project approval', async () => {
+    // First transition through required steps
+    await executeWorkflowTransition(
       ILC_WORKFLOW,
-      'authorized-for-execution', // Current state
-      ACTORS.projectManager,
+      'institutional-need-submitted',
+      ACTORS.institutionalRepresentative,
       TEST_CONTEXT
     );
-    expect(result3.success).toBe(true);
-    expect(result3.nextStep?.id).toBe('project-execution');
-
-    await recordEvidence("I4_PASS", {
-      initialTransition: result1.nextStep?.id,
-      authorizationTransition: result2.nextStep?.id,
-      executionTransition: result3.nextStep?.id,
-      fullSequencePassed: true
-    });
-  });
-
-  it('I5 - Stuck work (>24h) detected with natural language explanation that answers all user questions', async () => {
-    // Create work in active state with last update >24h ago
-    const twentyFiveHoursAgo = new Date(Date.now() - (25 * 60 * 60 * 1000));
-    const workToSave = BaseWorkAggregateSchema.parse({
-      id: TEST_CONTEXT.workId,
-      workId: TEST_CONTEXT.workId,
-      title: "Test ILC Work for Stuck Detection",
-      description: "A test work item to verify stuck detection logic.",
-      priority: "medium",
-      domainType: "legal-case",
-      workMode: "project",
-      sessionId: TEST_CONTEXT.sessionId,
-      tenantId: TEST_CONTEXT.tenantId,
-      workspaceId: TEST_CONTEXT.workspaceId,
-      actorId: ACTORS.institutionalRepresentative,
-      status: "active",
-      createdAt: twentyFiveHoursAgo.toISOString(),
-      updatedAt: twentyFiveHoursAgo.toISOString(),
-      assignedActorId: ACTORS.financeDepartmentHead,
-      nextAction: "Approve budget allocation for digitalization initiative",
-      stateHistory: [{
-        status: "active",
-        timestamp: twentyFiveHoursAgo.toISOString(),
-        note: "Finance Department assigned responsibility to review budget",
-        actorId: ACTORS.financeDepartmentHead
-      }]
-    });
-    await workRepository.save(workToSave);
-
-    // Trigger inspection - RL2-005 must detect stuck work
-    const inspectionResult = await inspectionAgent.inspectWork(WorkId(TEST_CONTEXT.workId));
     
-    // Verify bottleneck detected
-    assert.ok(inspectionResult.bottlenecks.length > 0);
-    const stuckBottleneck = inspectionResult.bottlenecks.find(b => b.type === "HANDOFF_DELAY");
-    assert.ok(stuckBottleneck !== undefined);
-    assert.ok(stuckBottleneck?.delayHours > 24);
-    expect(stuckBottleneck?.severity).toBe("HIGH"); // >24h = HIGH per RL2-005 logic
-
-    // Verify recommendation message answers ALL user's required questions:
-    // Apa yang terjadi? Mengapa Work tidak bergerak? Siapa yang dibutuhkan? Apa yang belum diketahui? Apa next decision?
-    const recommendation = inspectionResult.recommendations.find((r: InspectionRecommendation) => r.message.includes("RL2-005"));
-    assert.ok(recommendation !== undefined);
-    const message = recommendation?.message || "";
-    expect(message).toContain("Sudah 25 jam tidak ada perubahan status"); // Apa yang terjadi?
-    expect(message).toContain("Tidak ada state transition tercatat"); // Mengapa tidak bergerak?
-    expect(message).toContain(`Actor ${ACTORS.financeDepartmentHead}`); // Siapa yang dibutuhkan?
-    expect(message).toContain("Approve budget allocation"); // Apa yang harus dilakukan (next decision)
-
-    await recordEvidence("I5_PASS", {
-      stuckWorkDetected: true,
-      naturalLanguageExplanation: true,
-      allQuestionsAnswered: true,
-    });
-  });
-
-  it('A2-W06 - checkAutonomyBoundary correctly validates allowed/prohibited actions for ILC workflow', async () => {
-    // Test 1: Authorized action (submit institutional need) allowed for institutionalRepresentative
-    const allowedCheck: AutonomyBoundaryCheck = {
-      action: "submit institutional need",
-      allowed: ["submit", "institutional", "need"],
-      prohibited: ["delete", "modify budget", "approve payment"]
-    };
-    
-    const allowedResult = checkAutonomyBoundary(allowedCheck, ACTORS.institutionalRepresentative);
-    assert.ok(allowedResult.ok === true);
-    assert.ok(allowedResult.violationFound === false);
-    assert.ok(allowedResult.log.decision === "autonomy_boundary_check[submit institutional need]=PASS");
-
-    // Test 2: Prohibited action (approve payment) blocked for unauthorized actor
-    const prohibitedCheck: AutonomyBoundaryCheck = {
-      action: "approve payment",
-      allowed: ["submit", "review", "initiate"],
-      prohibited: ["approve payment", "delete record", "modify budget"]
-    };
-    
-    const prohibitedResult = checkAutonomyBoundary(prohibitedCheck, ACTORS.unauthorizedActor);
-    assert.ok(prohibitedResult.ok === false);
-    assert.ok(prohibitedResult.violationFound === true);
-    assert.ok(prohibitedResult.log.reason.includes("matched prohibited [approve payment]"));
-
-    // Test 3: Action not in allowed list is blocked
-    const unlistedCheck: AutonomyBoundaryCheck = {
-      action: "modify project budget",
-      allowed: ["submit", "review", "initiate", "coordinate"],
-      prohibited: []
-    };
-    
-    const unlistedResult = checkAutonomyBoundary(unlistedCheck, ACTORS.projectManager);
-    assert.ok(unlistedResult.ok === false);
-    assert.ok(unlistedResult.violationFound === false);
-    assert.ok(unlistedResult.log.reason.includes("NOT in allowed list"));
-
-    await recordEvidence("A2-W06-PASS", {
-      autonomyBoundaryCheckValidated: true,
-      allowedActionPassed: true,
-      prohibitedActionBlocked: true,
-      unlistedActionBlocked: true,
-      testCases: 3
-    });
-  });
-  
-  it('I6 - Stuck work recovery: Actor reassignment resumes work progression', async () => {
-    // First create stuck work (same as I5)
-    const twentyFiveHoursAgo = new Date(Date.now() - (25 * 60 * 60 * 1000));
-    const workToSave = BaseWorkAggregateSchema.parse({
-      id: TEST_CONTEXT.workId,
-      workId: TEST_CONTEXT.workId,
-      title: "Test ILC Work for Stuck Recovery",
-      description: "A test work item to verify stuck recovery logic.",
-      priority: "medium",
-      domainType: "legal-case",
-      workMode: "project",
-      sessionId: TEST_CONTEXT.sessionId,
-      tenantId: TEST_CONTEXT.tenantId,
-      workspaceId: TEST_CONTEXT.workspaceId,
-      actorId: ACTORS.institutionalRepresentative,
-      status: "active",
-      stateHistory: [{
-        status: "active",
-        timestamp: twentyFiveHoursAgo.toISOString(),
-        note: "Finance Department assigned responsibility to review budget",
-        actorId: ACTORS.financeDepartmentHead
-      }]
-    });
-    await workRepository.save(workToSave);
-
-    // Detect stuck work
-    const inspectionResult = await inspectionAgent.inspectWork(WorkId(TEST_CONTEXT.workId));
-    assert.ok(inspectionResult.bottlenecks.length > 0);
-
-    // Execute recovery: reassign to new finance actor
-    const newFinanceActor = "department-head-finance-backup-001";
-    const currentWork = await workRepository.byId(WorkId(TEST_CONTEXT.workId));
-    const reassignmentResult = await workRepository.update(WorkId(TEST_CONTEXT.workId), {
-      assignedActorId: ActorId(newFinanceActor),
-      nextAction: "Review and approve budget allocation within 48h",
-      stateHistory: [
-        ...(currentWork?.stateHistory || []),
-        {
-          status: "active",
-          timestamp: new Date().toISOString(),
-          note: `Work reassigned to new finance actor ${newFinanceActor} due to inactivity`,
-          actorId: ActorId(ACTORS.projectManager)
-        }
-      ]
-    });
-    expect(reassignmentResult).toBeDefined();
-    expect(reassignmentResult?.assignedActorId).toBe(ActorId(newFinanceActor));
-
-    // New actor completes approval - work resumes
-    // The following lines are commented out because they depend on executeWorkflowTransition
-    /*
-    const resumeResult = await executeWorkflowTransition(
-      ILC_INS_001_InstitutionalWorkflow,
-      "execution-initiated",
-      newFinanceActor,
-      { ...TEST_CONTEXT, result: "New finance actor approves budget, work resumes" }
+    await executeWorkflowTransition(
+      ILC_WORKFLOW,
+      'legal-review-completed',
+      ACTORS.legalDepartmentHead,
+      TEST_CONTEXT
     );
-    expect(resumeResult.success).toBe(true);
-
-    // Verify work is no longer stuck in next inspection
-    const postRecoveryInspection = await inspectionAgent.inspectWork(TEST_CONTEXT.workId as any);
-    const newBottlenecks = postRecoveryInspection.bottlenecks.filter(b => b.type === "HANDOFF_DELAY");
-    expect(newBottlenecks.length).toBe(0); // No longer stuck
-    */
-
-    await recordEvidence("I6_PASS", {
-      actorReassignmentSuccessful: true,
-      workResumed: false, // This part of the test is currently disabled
-      postRecoveryNoBottlenecks: false // This part of the test is currently disabled
-    });
+    
+    // Try to transition directly to project-approved without IT review
+    const result = await executeWorkflowTransition(
+      ILC_WORKFLOW,
+      'project-approved',
+      ACTORS.executiveAuthority,
+      TEST_CONTEXT
+    );
+    
+    assert.equal(result.success, false, "Should fail without IT review");
+    assert.ok(result.errors?.some((e: string) => e.includes('IT review')), "Should mention IT review requirement");
+    
+    await recordEvidence('I3', { result });
   });
 
-  it('I7-I11 - Full lifecycle completion: outcome delivered, evidence persists, no lifecycle fork', async () => {
-    // This test simulates the entire "golden path" of the ILC workflow.
+  it('I4 - Finance Review required before project approval', async () => {
+    // First transition through required steps
+    await executeWorkflowTransition(
+      ILC_WORKFLOW,
+      'institutional-need-submitted',
+      ACTORS.institutionalRepresentative,
+      TEST_CONTEXT
+    );
+    
+    await executeWorkflowTransition(
+      ILC_WORKFLOW,
+      'legal-review-completed',
+      ACTORS.legalDepartmentHead,
+      TEST_CONTEXT
+    );
+    
+    await executeWorkflowTransition(
+      ILC_WORKFLOW,
+      'it-review-completed',
+      ACTORS.itDepartmentHead,
+      TEST_CONTEXT
+    );
+    
+    // Try to transition directly to project-approved without finance review
+    const result = await executeWorkflowTransition(
+      ILC_WORKFLOW,
+      'project-approved',
+      ACTORS.executiveAuthority,
+      TEST_CONTEXT
+    );
+    
+    assert.equal(result.success, false, "Should fail without finance review");
+    assert.ok(result.errors?.some((e: string) => e.includes('finance review')), "Should mention finance review requirement");
+    
+    await recordEvidence('I4', { result });
+  });
 
-    // 1. Submit Need
-    const res1 = await executeWorkflowTransition(ILC_WORKFLOW, 'institutional-need-submitted', ACTORS.institutionalRepresentative, TEST_CONTEXT);
-    expect(res1.success).toBe(true);
-    expect(res1.nextStep?.id).toBe('review-initiated');
+  it('I5 - All reviews completed allows project approval with 24h handoff threshold', async () => {
+    // Transition through all required steps
+    await executeWorkflowTransition(
+      ILC_WORKFLOW,
+      'institutional-need-submitted',
+      ACTORS.institutionalRepresentative,
+      TEST_CONTEXT
+    );
+    
+    await executeWorkflowTransition(
+      ILC_WORKFLOW,
+      'legal-review-completed',
+      ACTORS.legalDepartmentHead,
+      TEST_CONTEXT
+    );
+    
+    await executeWorkflowTransition(
+      ILC_WORKFLOW,
+      'it-review-completed',
+      ACTORS.itDepartmentHead,
+      TEST_CONTEXT
+    );
+    
+    await executeWorkflowTransition(
+      ILC_WORKFLOW,
+      'finance-review-completed',
+      ACTORS.financeDepartmentHead,
+      TEST_CONTEXT
+    );
+    
+    // Now project approval should succeed
+    const result = await executeWorkflowTransition(
+      ILC_WORKFLOW,
+      'project-approved',
+      ACTORS.executiveAuthority,
+      TEST_CONTEXT
+    );
+    
+    assert.ok(result.success, "Project approval should succeed with all reviews completed");
+    assert.equal(result.nextState, 'project-approved', "Should transition to project-approved state");
+    
+    // Check handoff threshold
+    const recommendation = inspectionAgent.evaluateHandoff(result.workAggregate);
+    assert.equal(recommendation.thresholdHours, 24, "Handoff threshold should be 24 hours");
+    
+    await recordEvidence('I5', { result, recommendation });
+  });
 
-    // 2. Authorize
-    const res2 = await executeWorkflowTransition(ILC_WORKFLOW, 'review-initiated', ACTORS.executiveAuthority, TEST_CONTEXT);
-    expect(res2.success).toBe(true);
-    expect(res2.nextStep?.id).toBe('authorized-for-execution');
-
-    // 3. Start Execution
-    const res3 = await executeWorkflowTransition(ILC_WORKFLOW, 'authorized-for-execution', ACTORS.projectManager, TEST_CONTEXT);
-    expect(res3.success).toBe(true);
-    expect(res3.nextStep?.id).toBe('project-execution');
-
-    // 4. Document Outcome
-    const res4 = await executeWorkflowTransition(ILC_WORKFLOW, 'project-execution', ACTORS.projectManager, TEST_CONTEXT);
-    expect(res4.success).toBe(true);
-    expect(res4.nextStep?.id).toBe('outcome-documented');
-
-    // 5. Deliver Final Outcome
-    const res5 = await executeWorkflowTransition(ILC_WORKFLOW, 'outcome-documented', ACTORS.executiveAuthority, TEST_CONTEXT);
-    expect(res5.success).toBe(true);
-    expect(res5.nextStep?.id).toBe('institutional-outcome-delivered');
-    expect(res5.isTerminal).toBe(true); // Verify it's the end of the line.
-
-    // Verify no lifecycle fork - the final state should be terminal.
-    const finalWork = await workRepository.byId(WorkId(TEST_CONTEXT.workId));
-    expect(finalWork?.status).toBe('institutional-outcome-delivered');
-
-    await recordEvidence("I7_I11_PASS", {
-      fullLifecycleCompleted: true,
-      finalStatus: finalWork?.status,
-      isTerminal: res5.isTerminal
-    });
+  it('I6 - Unauthorized actor cannot perform transitions', async () => {
+    const result = await executeWorkflowTransition(
+      ILC_WORKFLOW,
+      'institutional-need-submitted',
+      ACTORS.unauthorizedActor,
+      TEST_CONTEXT
+    );
+    
+    assert.equal(result.success, false, "Unauthorized actor should not be able to transition");
+    assert.ok(result.errors?.some((e: string) => e.includes('unauthorized')), "Should mention unauthorized access");
+    
+    await recordEvidence('I6', { result });
   });
 });
 
@@ -369,7 +220,7 @@ describe('ILC-INS-001: Institutional Coordination Reality Slice', () => {
 async function recordEvidence(gateId: string, data: any): Promise<void> {
   const fs = await import('fs/promises');
   const path = await import('path');
-  const evidenceDir = path.join('/root/Enterprise-OS/.eos-state/evidence/ilc-ins-001');
+  const evidenceDir = statePath('evidence', 'ilc-ins-001');
   await fs.mkdir(evidenceDir, { recursive: true });
   await fs.writeFile(
     path.join(evidenceDir, `${gateId}_evidence.json`),

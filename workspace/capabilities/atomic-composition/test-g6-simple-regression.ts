@@ -6,9 +6,10 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
+import { statePath } from '@repo/eos-cli';
 
 // Ensure evidence directory exists
-const evidenceDir = path.join('/root/Enterprise-OS/.eos-state', 'audit');
+const evidenceDir = statePath('audit');
 if (!fs.existsSync(evidenceDir)) {
   fs.mkdirSync(evidenceDir, { recursive: true });
 }

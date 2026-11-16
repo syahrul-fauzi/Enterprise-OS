@@ -38,7 +38,7 @@ import {
   WorkRepositoryInMemory,
   safeRecordEvidence,
   validateAllBoundaries
-} from "../../work-core/index.js";
+} from "../../../work-core/index.js";
 // Lazy import capability registry untuk menghindari module cycle dan path issues (SAMA PERSIS dengan semua capability lain)
 async function getCapabilityRegistry() {
   const { capabilityRegistry } = await import("../../../core/kernel/src/registry/capability-command-registry.js");

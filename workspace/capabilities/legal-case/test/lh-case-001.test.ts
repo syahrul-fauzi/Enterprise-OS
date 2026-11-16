@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import { createDevAuthenticatedSession } from "../../../packages/core/kernel/src/session/workspace-session.js";
 import { capabilityRegistry } from "../../../packages/core/kernel/src/registry/capability-command-registry.js";
 import { commands as legalCaseCommands } from "../implementation/commands/case.commands.js";
-import { createWorkCommand, getWorkCommand, updateWorkStatusCommand } from "../../work-core/implementation/commands/work.commands.js";
+import { createWorkCommand, getWorkCommand } from "../../work-core/implementation/commands/work.commands.js";
 // Import session repository untuk save createDevAuthenticatedSession sessions ke in-memory store
 import { SessionRepositoryInMemory } from "../../identity/implementation/repositories/session.inmemory.js";
 
@@ -47,10 +47,6 @@ beforeAll(async () => {
   });
   capabilityRegistry.register({
     ...getWorkCommand,
-    capability: "work-core"
-  });
-  capabilityRegistry.register({
-    ...updateWorkStatusCommand,
     capability: "work-core"
   });
   console.log("[LH-001 TEST SETUP] ✅ All core commands registered successfully (following DEL-001 pattern)");
@@ -127,7 +123,13 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
     };
 
     // Panggil capability secara langsung (NO MOCKS)
-    const result = await capabilityRegistry.invoke("legal-case", "create-case", input);
+    const executionContext = {
+      actor_id: session.actorId,
+      tenant_id: session.tenantId,
+      session_id: session.sessionId,
+      workspace_id: session.workspaceId
+    };
+    const result = await capabilityRegistry.invoke("legal-case", "create-case", input, executionContext);
     
     // Verifikasi hasil
     assert.ok(result, "Result should be defined");
@@ -173,8 +175,14 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
     };
 
     // Harus throw error karena session invalid
+    const invalidExecutionContext = {
+      actor_id: invalidSession.actorId,
+      tenant_id: invalidSession.tenantId,
+      session_id: invalidSession.sessionId,
+      workspace_id: invalidSession.workspaceId
+    };
     await assert.rejects(
-      () => capabilityRegistry.invoke("legal-case", "create-case", invalidInput),
+      () => capabilityRegistry.invoke("legal-case", "create-case", invalidInput, invalidExecutionContext),
       "Should reject invalid session"
     );
   });
@@ -214,7 +222,13 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       }
     };
 
-    const created = await capabilityRegistry.invoke("legal-case", "create-case", input);
+    const executionContext = {
+      actor_id: session.actorId,
+      tenant_id: session.tenantId,
+      session_id: session.sessionId,
+      workspace_id: session.workspaceId
+    };
+    const created = await capabilityRegistry.invoke("legal-case", "create-case", input, executionContext);
     
     // Panggil work-core.get dengan SEMUA parameter yang sesuai GetWorkRequestSchema
     const fetchedWork = await capabilityRegistry.invoke("work-core", "get", {
@@ -223,7 +237,7 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       workspaceId: session.workspaceId,
       sessionId: session.sessionId,
       tenantId: session.tenantId
-    });
+    }, executionContext);
 
     assert.ok(fetchedWork, "Fetched work should be defined (work-core.get berhasil)");
     assert.strictEqual(fetchedWork.workId, created.workId, "Work IDs match (CORE-001 compliance)");
@@ -235,7 +249,7 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       tenantId: session.tenantId,
       actorId: session.actorId,
       workspaceId: session.workspaceId
-    });
+    }, executionContext);
     assert.ok(fetchedCase, "Fetched case should be defined (legal-case.case.getById berhasil)");
     assert.strictEqual(fetchedCase.id, created.id, "Case IDs should match");
     console.log(`[LH-CASE-001 TEST] ✅ Case persisted and retrievable: ${fetchedCase.id}`);
@@ -300,7 +314,13 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       }
     };
     
-    const clientCreated = await capabilityRegistry.invoke("legal-case", "create-case", clientInput);
+    const clientExecutionContext = {
+      actor_id: clientSession.actorId,
+      tenant_id: clientSession.tenantId,
+      session_id: clientSession.sessionId,
+      workspace_id: clientSession.workspaceId
+    };
+    const clientCreated = await capabilityRegistry.invoke("legal-case", "create-case", clientInput, clientExecutionContext);
     const originalWorkId = clientCreated.workId;
     assert.ok(originalWorkId, "workId harus ada setelah creation");
 
@@ -325,11 +345,17 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       createdAt: new Date(),
       updatedAt: new Date()
     });
+    const lawyerExecutionContext = {
+      actor_id: lawyerSession.actorId,
+      tenant_id: lawyerSession.tenantId,
+      session_id: lawyerSession.sessionId,
+      workspace_id: lawyerSession.workspaceId
+    };
     const lawyerFetched = await capabilityRegistry.invoke("legal-case", "case.getById", {
       caseId: clientCreated.id,
       sessionId: lawyerSession.sessionId,
       tenantId: lawyerSession.tenantId
-    });
+    }, lawyerExecutionContext);
     assert.strictEqual(lawyerFetched.workId, originalWorkId, "workId tetap sama saat diambil lawyer");
 
     // 3. Verifikasi workId tetap sama saat diambil oleh judge
@@ -353,11 +379,17 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       createdAt: new Date(),
       updatedAt: new Date()
     });
+    const judgeExecutionContext = {
+      actor_id: judgeSession.actorId,
+      tenant_id: judgeSession.tenantId,
+      session_id: judgeSession.sessionId,
+      workspace_id: judgeSession.workspaceId
+    };
     const judgeFetched = await capabilityRegistry.invoke("legal-case", "case.getById", {
       caseId: clientCreated.id,
       sessionId: judgeSession.sessionId,
       tenantId: judgeSession.tenantId
-    });
+    }, judgeExecutionContext);
     assert.strictEqual(judgeFetched.workId, originalWorkId, "workId tetap sama saat diambil judge");
 
     console.log(`[LH-CASE-001 IDENTITY TEST] ✅ workId invariant terjaga: ${originalWorkId}`);
@@ -417,7 +449,13 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       createdAt: new Date(),
       updatedAt: new Date()
     });
-    const created = await capabilityRegistry.invoke("legal-case", "create-case", input);
+    const clientExecutionContext = {
+      actor_id: clientSession.actorId,
+      tenant_id: clientSession.tenantId,
+      session_id: clientSession.sessionId,
+      workspace_id: clientSession.workspaceId
+    };
+    const created = await capabilityRegistry.invoke("legal-case", "create-case", input, clientExecutionContext);
 
     // Test authorization tetap dijalankan menggunakan command claimWork yang valid
     console.log(`[LH-CASE-001 AUTHORITY TEST] ✅ Menggunakan claimWork command yang terdaftar di work-core`);
@@ -479,7 +517,13 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       createdAt: new Date(),
       updatedAt: new Date()
     });
-    const created = await capabilityRegistry.invoke("legal-case", "create-case", input);
+    const lawyerExecutionContext = {
+      actor_id: lawyerSession.actorId,
+      tenant_id: lawyerSession.tenantId,
+      session_id: lawyerSession.sessionId,
+      workspace_id: lawyerSession.workspaceId
+    };
+    const created = await capabilityRegistry.invoke("legal-case", "create-case", input, lawyerExecutionContext);
 
     // Coba atomicClaim oleh AI tanpa otorisasi (harus ditolak)
     const unauthAiSession = createDevAuthenticatedSession();
@@ -508,6 +552,22 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
     // 1. Buat kasus oleh client
     const clientSession = createDevAuthenticatedSession();
     clientSession.actorId = "client.test.ai001";
+    // SIMPAN SESSION CLIENT KE REPOSITORY
+    await SessionRepositoryInMemory.save({
+      id: clientSession.sessionId as any,
+      userId: clientSession.actorId as any,
+      actorId: clientSession.actorId as any,
+      tenantId: clientSession.tenantId as any,
+      workspaceId: clientSession.workspaceId as any,
+      productId: "lawyershub",
+      actorLabel: clientSession.actorLabel,
+      isAgent: clientSession.actorId.startsWith("ai-"),
+      issuedAt: new Date(),
+      expiresAt: new Date(Date.now() + 86400000),
+      revokedAt: null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
     const input = {
       title: "AI-001 Test - Actor Substitution Legal Case",
       description: "Verifikasi workId tetap sama saat AI judge digantikan human lawyer",
@@ -542,7 +602,13 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
         assessedAt: new Date()
       }
     };
-    const created = await capabilityRegistry.invoke("legal-case", "create-case", input);
+    const clientExecutionContext = {
+      actor_id: clientSession.actorId,
+      tenant_id: clientSession.tenantId,
+      session_id: clientSession.sessionId,
+      workspace_id: clientSession.workspaceId
+    };
+    const created = await capabilityRegistry.invoke("legal-case", "create-case", input, clientExecutionContext);
     const originalWorkId = created.workId;
     assert.ok(originalWorkId, "workId harus ada setelah creation");
 
@@ -566,12 +632,22 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       updatedAt: new Date()
     });
 
-    await capabilityRegistry.invoke("legal-case", "approve-case-ruling", {
+    const aiJudgeExecutionContext = {
+      actor_id: aiJudgeSession.actorId,
+      tenant_id: aiJudgeSession.tenantId,
+      session_id: aiJudgeSession.sessionId,
+      workspace_id: aiJudgeSession.workspaceId
+    };
+    await capabilityRegistry.invoke("legal-case", "submit", {
       caseId: created.id,
       sessionId: aiJudgeSession.sessionId,
-      ruling: "pending_review",
-      rulingNotes: "AI judge memproses kasus, perlu review human lawyer"
-    });
+      submitNotes: "Kasus diajukan untuk review"
+    }, aiJudgeExecutionContext);
+    await capabilityRegistry.invoke("legal-case", "review", {
+      caseId: created.id,
+      sessionId: aiJudgeSession.sessionId,
+      reviewNotes: "AI judge memproses kasus, perlu review human lawyer"
+    }, aiJudgeExecutionContext);
 
     // 3. Human lawyer ambil alih kasus (actor berubah, workId harus tetap sama)
     const humanLawyerSession = createDevAuthenticatedSession();
@@ -594,29 +670,34 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       createdAt: new Date(),
       updatedAt: new Date()
     });
+    const humanLawyerExecutionContext = {
+      actor_id: humanLawyerSession.actorId,
+      tenant_id: humanLawyerSession.tenantId,
+      session_id: humanLawyerSession.sessionId,
+      workspace_id: humanLawyerSession.workspaceId
+    };
     const fetchedAfterTransition = await capabilityRegistry.invoke("legal-case", "case.getById", {
       caseId: created.id,
       sessionId: humanLawyerSession.sessionId,
       tenantId: humanLawyerSession.tenantId
-    });
+    }, humanLawyerExecutionContext);
     
     // VERIFIKASI IDENTITY BOUNDARY: workId invariant
     assert.strictEqual(fetchedAfterTransition.workId, originalWorkId, `[AI-001] WORK ID INVARIANT VIOLATION: expected ${originalWorkId}, got ${fetchedAfterTransition.workId}`);
     console.log(`[AI-001 TEST] ✅ IDENTITY BOUNDARY PASSED: workId ${originalWorkId} tetap sama setelah AI judge → human lawyer transition`);
 
     // 4. Human lawyer finalisasi kasus
-    await capabilityRegistry.invoke("legal-case", "approve-case-ruling", {
+    await capabilityRegistry.invoke("legal-case", "close", {
       caseId: created.id,
       sessionId: humanLawyerSession.sessionId,
-      ruling: "approve",
-      rulingNotes: "Human lawyer menyetujui ruling AI, kasus selesai"
-    });
+      closeReason: "Human lawyer menyetujui ruling AI, kasus selesai"
+    }, humanLawyerExecutionContext);
 
     const finalFetched = await capabilityRegistry.invoke("legal-case", "case.getById", {
       caseId: created.id,
       sessionId: humanLawyerSession.sessionId,
       tenantId: humanLawyerSession.tenantId
-    });
+    }, humanLawyerExecutionContext);
     assert.strictEqual(finalFetched.workId, originalWorkId, "[AI-001] workId tetap invariant hingga akhir chain");
     assert.strictEqual(finalFetched.status, "settled", "Status mencapai settlement setelah transition");
     console.log(`[AI-001 TEST] ✅ SEMUA BOUNDARY LULUS: Actor substitution AI→human berhasil tanpa gangguan continuity`);
@@ -676,7 +757,13 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       createdAt: new Date(),
       updatedAt: new Date()
     });
-    const created = await capabilityRegistry.invoke("legal-case", "create-case", createInput);
+    const clientExecutionContext = {
+      actor_id: clientSession.actorId,
+      tenant_id: clientSession.tenantId,
+      session_id: clientSession.sessionId,
+      workspace_id: clientSession.workspaceId
+    };
+    const created = await capabilityRegistry.invoke("legal-case", "create-case", createInput, clientExecutionContext);
     const sharedWorkId = created.workId;
     assert.ok(sharedWorkId, "workId harus ada");
 
@@ -690,8 +777,8 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       id: lawyerSession.sessionId as any,
       userId: lawyerSession.actorId as any,
       actorId: lawyerSession.actorId as any,
-      tenantId: lawyerSession.tenantId as any,
-      workspaceId: lawyerSession.workspaceId as any,
+      tenantId: lawyerSession.tenantId,
+      workspaceId: lawyerSession.workspaceId,
       productId: "lawyershub",
       actorLabel: lawyerSession.actorLabel,
       isAgent: lawyerSession.actorId.startsWith("ai-"),
@@ -702,7 +789,12 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       updatedAt: new Date()
     });
 
-
+    const lawyerExecutionContext = {
+      actor_id: lawyerSession.actorId,
+      tenant_id: lawyerSession.tenantId,
+      session_id: lawyerSession.sessionId,
+      workspace_id: lawyerSession.workspaceId
+    };
     // 3. Upload evidence (evidence boundary) - FIX: Sesuai AddCaseEvidenceSchema
     await capabilityRegistry.invoke("legal-case", "add-case-evidence", {
       caseId: created.id,
@@ -713,7 +805,7 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
         type: "contract_document",
         data: "sha256:abc123def456"
       }
-    });
+    }, lawyerExecutionContext);
 
     // 4. Judge approve ruling (authority boundary)
     const judgeSession = createDevAuthenticatedSession();
@@ -725,8 +817,8 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       id: judgeSession.sessionId as any,
       userId: judgeSession.actorId as any,
       actorId: judgeSession.actorId as any,
-      tenantId: judgeSession.tenantId as any,
-      workspaceId: judgeSession.workspaceId as any,
+      tenantId: judgeSession.tenantId,
+      workspaceId: judgeSession.workspaceId,
       productId: "lawyershub",
       actorLabel: judgeSession.actorLabel,
       isAgent: judgeSession.actorId.startsWith("ai-"),
@@ -736,19 +828,35 @@ describe("LH-CASE-001: LawyersHub Case Creation End-to-End", () => {
       createdAt: new Date(),
       updatedAt: new Date()
     });
-    await capabilityRegistry.invoke("legal-case", "approve-case-ruling", {
+
+    const judgeExecutionContext = {
+      actor_id: judgeSession.actorId,
+      tenant_id: judgeSession.tenantId,
+      session_id: judgeSession.sessionId,
+      workspace_id: judgeSession.workspaceId
+    };
+    await capabilityRegistry.invoke("legal-case", "submit", {
       caseId: created.id,
       sessionId: judgeSession.sessionId,
-      ruling: "approve",
-      rulingNotes: "Kasus selesai, economic outcome tercapai"
-    });
+      submitNotes: "Kasus dengan bukti lengkap diajukan untuk review"
+    }, judgeExecutionContext);
+    await capabilityRegistry.invoke("legal-case", "review", {
+      caseId: created.id,
+      sessionId: judgeSession.sessionId,
+      reviewNotes: "Review kasus dan bukti sudah lengkap"
+    }, judgeExecutionContext);
+    await capabilityRegistry.invoke("legal-case", "close", {
+      caseId: created.id,
+      sessionId: judgeSession.sessionId,
+      closeReason: "Kasus selesai, economic outcome tercapai"
+    }, judgeExecutionContext);
 
     // 5. Verifikasi workId tetap sama di seluruh chain
     const finalFetched = await capabilityRegistry.invoke("legal-case", "case.getById", {
       caseId: created.id,
       sessionId: judgeSession.sessionId,
       tenantId: judgeSession.tenantId
-    });
+    }, judgeExecutionContext);
     assert.strictEqual(finalFetched.workId, sharedWorkId, "workId tetap sama sampai akhir chain");
     assert.strictEqual(finalFetched.status, "settled", "Status mencapai settlement");
 

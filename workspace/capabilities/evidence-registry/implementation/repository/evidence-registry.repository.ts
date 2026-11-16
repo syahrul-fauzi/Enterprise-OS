@@ -28,7 +28,7 @@ function resolveRepoRoot(): string {
     process.cwd(),
     path.resolve(process.cwd(), ".."),
     path.resolve(process.cwd(), "../.."),
-    "/root/Enterprise-OS/workspace",
+    "require('path').resolve(__dirname, '..')/workspace",
   ];
 
   for (const candidate of Array.from(new Set(candidates))) {

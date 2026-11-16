@@ -2,8 +2,8 @@
 // Standalone script to generate canonical work_<UUID> without build dependencies
 // Reuses the EXACT ID generation logic from work-postgres.repository.ts line 127-128
 import { randomUUID } from "crypto";
-import { writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { writeFileSync, mkdirSync } from "node:fs";
+import { statePath } from "@repo/eos-cli";
 
 function generateId() {
   return randomUUID();
@@ -30,6 +30,8 @@ const evidence = {
 };
 
 // Write to proofs directory
-const proofPath = resolve("/root/Enterprise-OS/workspace/.eos-state/proofs/EOS-JOURNEY-007-W01-verification.json");
+const proofDir = statePath('proofs');
+mkdirSync(proofDir, { recursive: true });
+const proofPath = statePath('proofs', 'EOS-JOURNEY-007-W01-verification.json');
 writeFileSync(proofPath, JSON.stringify(evidence, null, 2));
-console.log(`[EJ007-W01-R2] ✅ Evidence written to: ${proofPath}`);
+console.log(`[EJ007-W01-R2] ✅ Evidence written to canonical EOS path: ${proofPath}`);

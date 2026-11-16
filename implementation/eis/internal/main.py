@@ -14,6 +14,11 @@ from eis.services.register import register_all_services
 from eis.engine import EnterpriseIntelligenceEngine
 
 
+def get_repository_root() -> Path:
+    current_file = Path(__file__).resolve()
+    return current_file.parents[4]
+
+
 def load_artifact(artifact_path: Path):
     """Load an artifact from JSON file"""
     with open(artifact_path, "r") as f:
@@ -28,6 +33,8 @@ def main():
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
 
+    repo_root = get_repository_root()
+
     # Argument parser
     parser = argparse.ArgumentParser(
         description="Enterprise Intelligence Services (EIS)"
@@ -36,14 +43,14 @@ def main():
         "--input-dir",
         "-i",
         type=Path,
-        default=Path("/root/Enterprise-OS/implementation/eke/output"),
+        default=repo_root / "implementation" / "eke" / "output",
         help="Directory containing EKE artifacts (default: eke/output)"
     )
     parser.add_argument(
         "--output-dir",
         "-o",
         type=Path,
-        default=Path("/root/Enterprise-OS/implementation/eis/output"),
+        default=repo_root / "implementation" / "eis" / "output",
         help="Directory to write EIS artifacts (default: eis/output)"
     )
     args = parser.parse_args()

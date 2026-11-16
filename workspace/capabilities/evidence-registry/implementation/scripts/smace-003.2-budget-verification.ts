@@ -3,6 +3,8 @@
 // Sesuai EOS Master System Prompt: arsitektur FROZEN, 100% primitive reuse, tidak ada kode baru core
 // Agent verifikasi independen, tidak tergantung deklarasi implementasi agent
 
+import { statePath } from '@repo/eos-cli';
+
 // Konfigurasi untuk verifikasi SMACE-003.2
 const SMACE_003_2_LOGICAL_WORK_ID = 'work-smace-003.2-budget-alert';
 const REQUIRED_BUD_CRITERIA = ['BUD-001', 'BUD-002', 'BUD-003', 'BUD-004', 'BUD-005', 'BUD-006', 'BUD-007', 'BUD-008'];
@@ -348,7 +350,7 @@ async function runSMACE0032BudgetVerification() {
   };
 
   // Simpan laporan ke .eos-state/verification sesuai contract eos-verification
-  const reportPath = `/root/Enterprise-OS/.eos-state/verification/${SMACE_003_2_LOGICAL_WORK_ID}_verification.json`;
+  const reportPath = statePath('verification', `${SMACE_003_2_LOGICAL_WORK_ID}_verification.json`);
   const fs = await import('fs');
   fs.writeFileSync(reportPath, JSON.stringify(finalReport, null, 2));
   console.log(`\n=== LAPORAN VERIFIKASI SMACE-003.2 SELESAI ===`);

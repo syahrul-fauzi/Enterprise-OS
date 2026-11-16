@@ -293,7 +293,10 @@ async function runRealExecutionProof() {
 
   // Save to .eos-state
   const fs = await import('fs');
-  fs.writeFileSync('/root/Enterprise-OS/workspace/.eos-state/E2-P3-REAL-EXECUTION-VERIFIED.json', JSON.stringify(verificationResult, null, 2));
+  const { statePath } = await import('@repo/eos-cli');
+  const proofPath = statePath('E2-P3-REAL-EXECUTION-VERIFIED.json');
+  fs.mkdirSync(require('path').dirname(proofPath), { recursive: true });
+  fs.writeFileSync(proofPath, JSON.stringify(verificationResult, null, 2));
   console.log("📝 Verification artifact saved: E2-P3-REAL-EXECUTION-VERIFIED.json");
 }
 

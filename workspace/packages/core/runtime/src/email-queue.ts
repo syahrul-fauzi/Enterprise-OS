@@ -384,11 +384,13 @@ const RealitySignalGate = {
 
     // Log ke CSV sebagai evidence
     const fs = await import('fs');
-    const csvPath = '/root/Enterprise-OS/workspace/.eos-state/command-center/sid-gtm-001-conversations.csv';
+    const { statePath } = await import('./path-utils.js');
+    const csvPath = statePath("command-center", "sid-gtm-001-conversations.csv");
     // Tambahkan null check untuk menghindari error TS
             const candidateId = normalized.workCandidate.candidateId || 'UNKNOWN';
             const executionId = signal.sourceMetadata?.executionId || 'unknown';
             const newCsvLine = `\n${candidateId},${normalized.normalizedAt},"Signal dari ${signal.source} dinormalisasi: ${normalized.understanding.issue}. Domain: ${normalized.understanding.domain}. Execution ID: ${executionId}.",SIGNAL_NORMALIZED,${new Date(Date.now() + 86400000).toISOString()},Reality Signal Gate berhasil normalisasi input dari channel ${signal.source}. Signal siap dikonversi menjadi WORK. EVIDENCE TERCAPTURE.`;
+    fs.mkdirSync(require('path').dirname(csvPath), { recursive: true });
     fs.appendFileSync(csvPath, newCsvLine);
 
     console.log(`[REALITY SIGNAL GATE] Signal ${signal.id} dari ${signal.source} dinormalisasi. Domain: ${normalized.understanding.domain}. Issue: ${normalized.understanding.issue}`);
@@ -532,7 +534,8 @@ async function processCarlyInbox(): Promise<void> {
 
       // OTOMATIS CATAT EVIDENCE MASUK KE CSV - TANPA PERUBAHAN CORE
       const fs = await import('fs');
-      const csvPath = '/root/Enterprise-OS/workspace/.eos-state/command-center/sid-gtm-001-conversations.csv';
+      const { statePath } = await import('./path-utils.js');
+      const csvPath = statePath("command-center", "sid-gtm-001-conversations.csv");
       // Tambahkan null check untuk menghindari error TS "possibly undefined"
       const messageFrom = message.from || 'unknown@sender.com';
       const messageSubject = message.subject || 'No Subject';

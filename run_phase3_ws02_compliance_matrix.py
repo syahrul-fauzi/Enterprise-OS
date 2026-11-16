@@ -8,11 +8,17 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any
+import sys
+
+sys.path.insert(0, str(Path(__file__).parent / "skills"))
+from state_utils import get_repository_root, state_path
 
 class ComplianceMatrixGenerator:
     """Generates compliance matrix for EOS skills contract validation"""
     
-    def __init__(self, workspace_path: str = "/root/Enterprise-OS"):
+    def __init__(self, workspace_path: Path = None):
+        if workspace_path is None:
+            workspace_path = get_repository_root()
         self.workspace_path = Path(workspace_path)
         self.compliance_matrix: Dict[str, Any] = {}
         self.skill_manifests: List[Dict[str, Any]] = []
@@ -134,7 +140,7 @@ class ComplianceMatrixGenerator:
         print("="*80)
         
         # Save matrix to verification directory
-        output_dir = self.workspace_path / ".eos-state" / "verification"
+        output_dir = state_path('verification')
         output_dir.mkdir(parents=True, exist_ok=True)
         output_path = output_dir / "EOS-SKILL-ASSURANCE-001_compliance_matrix.json"
         

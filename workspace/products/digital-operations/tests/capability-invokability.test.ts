@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { describe, beforeEach, it, expect } from 'vitest';
-import { createRegistry, capabilityPrefixAliases } from "../../../packages/core/kernel/dist/registry/capability-command-registry.js";
+import { createRegistry, capabilityPrefixAliases } from "../../../packages/core/kernel/dist/src/registry/capability-command-registry.js";
 import { atomicCompositionCommands } from "../../../capabilities/atomic-composition/implementation/services/composition.service.js";
 // Hapus import register*CoreCapability untuk menghindari module cycle dan double registration
 

@@ -8,6 +8,7 @@ import { registerEvidenceCoreCapability } from './capabilities/evidence-registry
 import { registerIdentityCoreCapability } from './capabilities/identity/implementation/commands/index.js';
 import { registerWorkCoreCapability } from './capabilities/work-core/implementation/commands/work.commands.js';
 import { registerValueMeteringCapability } from './products/value-metering/implementation/commands/value-metering.commands.js';
+import { statePath } from '@repo/eos-cli';
 
 // CANONICAL W06-A1 COMMANDS (6 command)
 const W06A1_COMMANDS = [
@@ -247,8 +248,9 @@ async function runW06A2AuthTests() {
 
   // Simpan laporan ke file evidence
   const fs = await import('fs/promises');
-  await fs.mkdir(".eos-state/verification", { recursive: true });
-  await fs.writeFile(".eos-state/verification/W06-A2_verification_report.json", JSON.stringify(finalReport, null, 2));
+  const verificationDir = statePath("verification");
+  await fs.mkdir(verificationDir, { recursive: true });
+  await fs.writeFile(statePath("verification", "W06-A2_verification_report.json"), JSON.stringify(finalReport, null, 2));
   
   console.log("\n=== LAPORAN AKHIR W06-A2 ===");
   console.log(`Total tests: ${finalReport.total_tests}`);

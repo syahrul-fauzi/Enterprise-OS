@@ -2,6 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import { spawn } from 'child_process';
+import { statePath } from "@repo/eos-cli";
 
 // Jalankan test di proses terpisah untuk menangkap process.exit(1) dari fail-fast
 // Ini solusi yang tepat karena:
@@ -40,10 +41,10 @@ testProcess.on('close', (code) => {
       fail_fast_verified: true,
       dependency_failure_propagated: true,
       process_exit_code: code,
-      log_source: "/root/Enterprise-OS/workspace/.eos-state/dependency-failure-audit001006.log"
+      log_source: statePath('dependency-failure-audit001006.log')
     };
     fs.writeFileSync(
-      '/root/Enterprise-OS/workspace/.eos-state/audit/AUDIT-001-006_G4_evidence.json',
+      statePath('audit', 'AUDIT-001-006_G4_evidence.json'),
       JSON.stringify(evidence, null, 2)
     );
     process.exit(0);

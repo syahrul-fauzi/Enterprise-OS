@@ -487,7 +487,7 @@ test.describe('R3: EOS Face Golden Spine E2E Test', () => {
         'artifacts/r3-work-page-loaded.png'
       ]
     };
-    fs.writeFileSync('/root/Enterprise-OS/workspace/artifacts/e2e-mr-final-verified.json', JSON.stringify(finalEvidence, null, 2));
+    fs.writeFileSync('require('path').resolve(__dirname, '..')/workspace/artifacts/e2e-mr-final-verified.json', JSON.stringify(finalEvidence, null, 2));
     console.log('[E2E-MR-DEBUG] Final E2E Golden Path verification evidence written to artifacts/e2e-mr-final-verified.json');
   });
 });

@@ -1,4 +1,9 @@
 // @ts-nocheck: Unblock production build sesuai pola yang sama - hanya nonaktifkan TS checks, tidak ubah business logic
+import { resolve as resolvePath } from "node:path";
+import { fileURLToPath } from "node:url";
+
+export * from "./state.js";
+
 import { runStatusCommand } from "./commands/status.js";
 import {
   runExecutionAdvanceCommand,
@@ -473,10 +478,15 @@ async function main(): Promise<number> {
   }
 }
 
-try {
-  process.exitCode = await main();
-} catch (raw) {
-  const error = raw instanceof Error ? raw : new Error(String(raw));
-  process.stderr.write(`${error.message}\n`);
-  process.exitCode = 1;
+const invokedFile = process.argv[1] ? resolvePath(process.argv[1]) : "";
+const isDirectExecution = invokedFile !== "" && fileURLToPath(import.meta.url) === invokedFile;
+
+if (isDirectExecution) {
+  try {
+    process.exitCode = await main();
+  } catch (raw) {
+    const error = raw instanceof Error ? raw : new Error(String(raw));
+    process.stderr.write(`${error.message}\n`);
+    process.exitCode = 1;
+  }
 }

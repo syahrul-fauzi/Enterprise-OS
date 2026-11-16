@@ -6,7 +6,7 @@ Sebelum domain diangkat menjadi bounded context permanen, harus memenuhi:
 3. **Reuse minimal 2x**: Pola domain telah digunakan di minimal 2 produk berbeda (mematuhi Rule of Two eos-command-center)
 4. **Bukti produksi**: Ada minimal 100 eksekusi Work yang berhasil menggunakan domain tersebut (tercatat di .eos-state/evidence/)
 5. **Tidak ada overlap otoritas**: Audit oleh eos-verification mengkonfirmasi tidak ada pelanggaran canonical boundary
-6. **Dokumen terverifikasi**: Hasil recon WSG-001 terarsip di [.eos-state/recon/WSG-001_recon.json](file:///root/Enterprise-OS/.eos-state/recon/WSG-001_recon.json)
+6. **Dokumen terverifikasi**: Hasil recon WSG-001 terarsip di [.eos-state/recon/WSG-001_recon.json](file:///ios-id/eos/.eos-state/recon/WSG-001_recon.json)
 
 ### Daftar 17 Sovereign Groups yang Terpetakan ke Canonical Boundaries
 | Domain ID | Nama Domain | Canonical Boundary | Status |
@@ -30,5 +30,5 @@ Sebelum domain diangkat menjadi bounded context permanen, harus memenuhi:
 | SG-017 | Government Permit Processing | Work Core Extensions | CANDIDATE |
 
 ### Referensi Kontrak Template
-Semua domain menggunakan template kontrak yang teruji di: [.eos-state/contracts/SMACE-002-contract.yaml](file:///root/Enterprise-OS/.eos-state/contracts/SMACE-002-contract.yaml)
+Semua domain menggunakan template kontrak yang teruji di: [.eos-state/contracts/SMACE-002-contract.yaml](file:///ios-id/eos/.eos-state/contracts/SMACE-002-contract.yaml)
 Semua kontrak domain juga wajib menjalankan validasi otomatis terhadap spesifikasi kontrak dengan menjalankan skrip di: [.eos-scripts/verify-contract.sh](file:///root/Enterprise-OS/.eos-scripts/verify-contract.sh)

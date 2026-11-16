@@ -1,0 +1,44 @@
+version: "1.0"
+workspace:
+  name: smace
+  display_name: SMACE - Sovereign Multi-Modal Agentic Content Engine
+  description: Membuat produksi konten kreatif, verifikasi asal-usul, dan rekonsiliasi komersial dapat dijalankan secara terpercaya dan terukur
+lifecycle:
+  phase: D.2
+  status: ACTIVE
+  contract:
+    stages:
+      - name: discover
+        description: Pengguna menemukan spesifikasi produksi konten yang sesuai
+        terminal: false
+      - name: create
+        description: Pengguna mengajukan brief kreatif dan persyaratan merek
+        terminal: false
+      - name: execute
+        description: Sistem menjalankan produksi konten melalui provider yang dipilih
+        terminal: false
+      - name: progress
+        description: Update status produksi dan kualitas konten secara berkala
+        terminal: false
+      - name: evidence
+        description: Mengumpulkan semua bukti eksekusi, C2PA manifest, dan rekonsiliasi komersial
+        terminal: false
+      - name: complete
+        description: Konten selesai, kualitas terverifikasi, bukti asal-usul tercatat
+        terminal: true
+  real_user_jobs:
+    - id: smace-101
+      name: Generate product photography
+      description: Full lifecycle produksi fotografi produk dari brief kreatif hingga paket aset terkirim
+      status: active
+      requirements:
+        - req-smace-001
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 85
+    runtime_invocation_required: true
+governance:
+  baseline_locked: true
+  needs_audit: false
+  evidence_path: ./evidence

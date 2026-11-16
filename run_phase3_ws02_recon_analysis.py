@@ -9,8 +9,12 @@ from pathlib import Path
 import json
 from datetime import datetime
 
-# Add eos-self-execution to path to import ReconAgent
-sys.path.insert(0, '/root/Enterprise-OS/skills/eos-self-execution')
+# Add scripts directory to path to import state path utility
+repo_root = Path(__file__).parent
+sys.path.insert(0, str(repo_root / "scripts"))
+sys.path.insert(0, str(repo_root / "skills" / "eos-self-execution"))
+
+from state_utils import state_path, get_repository_root
 from recon_agent import ReconAgent
 
 def main():
@@ -18,7 +22,7 @@ def main():
     recon_agent = ReconAgent()
     
     # Load the work item
-    work_item_path = Path("/root/Enterprise-OS/.eos-state/workitems/EOS-SKILL-ASSURANCE-001.json")
+    work_item_path = state_path('workitems', 'EOS-SKILL-ASSURANCE-001.json')
     with open(work_item_path, 'r') as f:
         work_item = json.load(f)
     
@@ -48,11 +52,13 @@ def main():
     # Use the built-in execute_full_recon method that handles everything
     full_recon_report = recon_agent.execute_full_recon(work_item)
     
-    print(f"\n[RECON] Full recon report saved to: /root/Enterprise-OS/.eos-state/recon/{work_item['work_id']}_recon.json")
-    print(f"[RECON] WS-02 Contract Compliance - RECON COMPLETE. Status: REUSE - all required primitives exist.")
-    print(f"[RECON] Reuse percentage achieved: {full_recon_report['reuse_analysis']['reuse_percentage']:.1f}%")
-    print(f"[RECON] Blocked status: {full_recon_report['blocker_analysis']['blocked']}")
-    print(f"[RECON] Recommendations: {full_recon_report['recommendations']}")
+    # Save recon report to canonical state
+    report_path = state_path('recon', f"{work_item['work_id']}_recon_report.json")
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(report_path, 'w') as f:
+        json.dump(full_recon_report, f, indent=2)
+    
+    print(f"[RECON] Recon analysis complete! Report saved to: {report_path}")
 
 if __name__ == "__main__":
     main()

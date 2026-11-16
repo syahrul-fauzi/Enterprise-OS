@@ -65,7 +65,7 @@ export async function runNexusDispatchCommand(): Promise<number> {
     console.log(`[NEXUS] Dispatching execution of ${commandConfig.cliCommand}...`);
     
     // Use absolute path to eos-cli entry from project root (always works regardless of cwd)
-    const projectRoot = resolve("/root/Enterprise-OS");
+    const projectRoot = resolve("require('path').resolve(__dirname, '..')");
     const eosCliEntry = resolve(projectRoot, "workspace/packages/tooling/eos-cli/src/index.ts");
     const eosCliCwd = resolve(projectRoot, "workspace/packages/tooling/eos-cli");
     

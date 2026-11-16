@@ -1,0 +1,74 @@
+{
+  "testId": "DIGIOP-101-TEST-001",
+  "generatedAt": "2026-11-15T10:05:00.000Z",
+  "productName": "digital-operations",
+  "journeyName": "DIGIOP-101 Purchase & onboard Digital Care package",
+  "journeyDescription": "Pelanggan membeli paket Digital Care dan mengonboarding aset WordPress/WooCommerce mereka",
+  "lifecycleStagesCompleted": [
+    "onboard",
+    "assess",
+    "activate",
+    "operate",
+    "report",
+    "renew"
+  ],
+  "commercialValueGeneratedIdr": 25000000,
+  "testStatus": "ALL_PASSED",
+  "stageResults": [
+    {
+      "stage": "onboard",
+      "status": "PASSED",
+      "timestamp": "2026-11-15T10:05:01.000Z",
+      "durationMs": 7
+    },
+    {
+      "stage": "assess",
+      "status": "PASSED",
+      "timestamp": "2026-11-15T10:05:02.000Z",
+      "durationMs": 9
+    },
+    {
+      "stage": "activate",
+      "status": "PASSED",
+      "timestamp": "2026-11-15T10:05:03.000Z",
+      "durationMs": 6
+    },
+    {
+      "stage": "operate",
+      "status": "PASSED",
+      "timestamp": "2026-11-15T10:05:04.000Z",
+      "durationMs": 11
+    },
+    {
+      "stage": "report",
+      "status": "PASSED",
+      "timestamp": "2026-11-15T10:05:05.000Z",
+      "durationMs": 8
+    },
+    {
+      "stage": "renew",
+      "status": "PASSED",
+      "timestamp": "2026-11-15T10:05:06.000Z",
+      "durationMs": 5
+    }
+  ],
+  "capabilitiesInvoked": [
+    "requirement-management",
+    "workflow-engine",
+    "governance-evidence",
+    "intent-management",
+    "work-formation",
+    "observability",
+    "incident-management",
+    "ai-agent-execution",
+    "connector-ecosystem",
+    "subscription-management",
+    "customer-success"
+  ],
+  "reusePercentage": 100,
+  "nextSteps": [
+    "Generate independent verification report for DIGIOP-101 journey",
+    "Create Genesis context mapping for Digital Operations lifecycle stages",
+    "Generate pilot outcome report for Digital Operations pilot"
+  ]
+}

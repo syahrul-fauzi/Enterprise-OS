@@ -315,7 +315,9 @@ async function runAllTests() {
     results.face.latest_state_visible = results.all_passed; // Simplified - UI verification requires browser automation
 
     // Save results to evidence file
-    const evidenceDir = path.join('/root/Enterprise-OS/.eos-state/verification');
+    const REPO_ROOT = path.resolve(__dirname, '../../');
+    const EOS_STATE_DIR = path.join(REPO_ROOT, '.eos-state');
+    const evidenceDir = path.join(EOS_STATE_DIR, 'verification');
     if (!fs.existsSync(evidenceDir)) fs.mkdirSync(evidenceDir, { recursive: true });
     const evidencePath = path.join(evidenceDir, 'EOS-PROD-004-P2_verification.json');
     fs.writeFileSync(evidencePath, JSON.stringify(results, null, 2));

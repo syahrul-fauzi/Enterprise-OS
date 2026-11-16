@@ -2,6 +2,9 @@ import click
 import json
 from pathlib import Path
 from typing import Optional, Dict, Any, List
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from state_utils import state_path
 
 class ProductSliceEngine:
     """Product Slice Engine utama untuk EOS - THE MOST IMPORTANT AGENT yang mengirimkan vertical business output end-to-end"""
@@ -93,7 +96,7 @@ def main(test_mode: bool, work_item_path: Optional[str], user_job: Optional[str]
     
     if engine:
         result = engine.build_vertical_slice(user_job, work_id, workspace_path, actor_data)
-        output_path = Path(f".eos-state/slices/{work_id}_slice.json")
+        output_path = state_path('slices', f"{work_id}_slice.json")
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w') as f:
             json.dump(result, f, indent=2)

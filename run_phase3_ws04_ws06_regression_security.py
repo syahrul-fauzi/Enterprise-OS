@@ -9,6 +9,9 @@ import subprocess
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any
+import sys
+sys.path.insert(0, str(Path(__file__).parent / "skills"))
+from state_utils import state_path, get_repository_root
 
 # Locked directories (tidak boleh dimodifikasi - sesuai EOS arsitektur)
 LOCKED_DIRECTORIES = [
@@ -41,7 +44,8 @@ G8_ACCEPTANCE_CRITERIA = [
 
 def load_skill_manifest(skill_name: str) -> Dict[str, Any] | None:
     """Muat manifest skill dan validasi JSON"""
-    manifest_path = Path(f"/root/Enterprise-OS/skills/{skill_name}/manifest.json")
+    repo_root = get_repository_root()
+    manifest_path = repo_root / "skills" / skill_name / "manifest.json"
     if not manifest_path.exists():
         print(f"[REGRESSION_SECURITY] ❌ Manifest tidak ditemukan: {skill_name}")
         return None
@@ -123,8 +127,9 @@ def run_security_scan() -> Dict[str, Any]:
     
     # 1. Scan untuk hardcoded secrets (AWS, API keys, tokens, dll.)
     try:
+        repo_root = get_repository_root()
         secret_scan = subprocess.run(
-            ["grep", "-r", "AKIAX|secret_key|api_key|token.*=.*[a-zA-Z0-9]{32}", "--include=\"*.py\"", "--include=\"*.js\"", "--include=\"*.ts\"", "/root/Enterprise-OS/skills/"],
+            ["grep", "-r", "AKIAX|secret_key|api_key|token.*=.*[a-zA-Z0-9]{32}", "--include=\"*.py\"", "--include=\"*.js\"", "--include=\"*.ts\"", str(repo_root / "skills")],
             capture_output=True,
             text=True,
             timeout=60
@@ -287,7 +292,7 @@ def main():
             print(f"   - {fail}")
     
     # 5. Simpan evidence ke .eos-state/verification/ sesuai output contract
-    output_path = Path("/root/Enterprise-OS/.eos-state/verification/EOS-SKILL-ASSURANCE-001_regression_security_verification.json")
+    output_path = state_path('verification', 'EOS-SKILL-ASSURANCE-001_regression_security_verification.json')
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, 'w') as f:
         json.dump(verification_result, f, indent=2)

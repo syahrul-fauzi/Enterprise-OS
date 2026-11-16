@@ -4,10 +4,10 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import { ServiceRequestRepositoryInMemory, getServiceRequestRepositoryPostgres } from "../repository/index.js";
 import type { ServiceRequestId, ServiceRequestAggregate, ServiceProviderAggregate } from "../contracts/service.contracts.js";
 // Import shared FACE projection builder untuk mematuhi invariant: "FACE adalah projection, bukan owner"
-import { buildWorkFaceProjection } from "/root/Enterprise-OS/workspace/capabilities/work-core/implementation/utils/index.js";
-import type { WorkFaceProjection } from "@capabilities/work-core/contracts/work.contracts.js";
+import { buildWorkFaceProjection, validateBoundaryAccess, validateAllBoundaries } from "../../../work-core/implementation/utils/index.js";
+import type { WorkFaceProjection } from "../../../work-core/implementation/contracts/work.contracts.js";
 // Import 6-boundary validation functions (6-boundary compliance v2.1.0)
-import { validateBoundaryAccess, validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary } from "/root/Enterprise-OS/workspace/capabilities/work-core/implementation/contracts/work.contracts.js";
+import type { IdentityBoundary, SemanticBoundary, AuthorityBoundary, ExecutionBoundary, EvidenceBoundary, PresentationBoundary } from "../../../work-core/implementation/contracts/work.contracts.js";
 
 // Sementara bypass session repository untuk unblock test DIGIOP-104
 // const sessionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL

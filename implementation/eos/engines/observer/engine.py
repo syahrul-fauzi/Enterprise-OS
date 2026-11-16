@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-import os
 import sys
 import yaml
 from datetime import datetime
+from pathlib import Path
 
-# Add implementation to path - FIXED: corrected space to hyphen in root path
-sys.path.insert(0, os.path.join("/root/Enterprise-OS", "implementation"))
+repo_root = Path(__file__).parent.parent.parent.parent.parent
+sys.path.insert(0, str(repo_root / "skills"))
+from state_utils import get_repository_root
+
+sys.path.insert(0, str(get_repository_root() / "implementation"))
 from eos.kernel.registry.evidence_registry import add_observation
 
-CONFIG_PATH = "/root/Enterprise-OS/eos.config.yaml"
+CONFIG_PATH = get_repository_root() / "eos.config.yaml"
 
 
 def load_config():

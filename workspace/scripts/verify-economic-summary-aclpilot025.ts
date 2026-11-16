@@ -4,7 +4,7 @@
  * Dijalankan oleh eos-verification sebagai auditor independen
  */
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { statePath } from "@repo/eos-cli";
 import { writeFile, mkdir } from 'fs/promises';
 import { generateTenantEconomicSummary, recordWorkPayment, WorkPayment } from '../packages/core/runtime/src/execution-observability.ts';
 
@@ -191,10 +191,10 @@ async function main() {
   });
 
   // Simpan file bukti verifikasi
-  const verifyDir = join(process.cwd(), '.eos-state', 'verification');
+  const verifyDir = statePath('verification');
   await mkdir(verifyDir, { recursive: true });
   await writeFile(
-    join(verifyDir, 'WORK-ACLPILOT-025_verification.json'),
+    statePath('verification', 'WORK-ACLPILOT-025_verification.json'),
     JSON.stringify(verificationResults, null, 2)
   );
 

@@ -7,15 +7,22 @@ ensures minimal architecture changes.
 
 import os
 import json
+import sys
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from state_utils import state_path, get_repository_root
+
 class ReconAgent:
     """Reconnaissance agent that analyzes existing codebase state"""
     
-    def __init__(self, workspace_path: str = "/root/Enterprise-OS"):
-        self.workspace_path = Path(workspace_path)
+    def __init__(self, workspace_path: Optional[str] = None):
+        if workspace_path is None:
+            self.workspace_path = get_repository_root()
+        else:
+            self.workspace_path = Path(workspace_path)
         self.findings: Dict[str, Any] = {}
         self.locked_boundaries: Dict[str, bool] = {}
         self.existing_capabilities: List[str] = []
@@ -246,7 +253,7 @@ class ReconAgent:
         }
         
         # Save recon report
-        report_path = self.workspace_path / ".eos-state" / "recon" / f"{work_item['work_id']}_recon.json"
+        report_path = state_path("recon", f"{work_item['work_id']}_recon.json")
         report_path.parent.mkdir(exist_ok=True)
         with open(report_path, 'w') as f:
             json.dump(recon_report, f, indent=2)

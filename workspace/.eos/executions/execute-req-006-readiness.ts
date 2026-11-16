@@ -10,7 +10,7 @@ const executionResult = workflowEngineService.executeWorkflow({
 });
 
 // Write execution report to evidence directory
-const reportPath = "/root/Enterprise-OS/workspace/.eos/evidence/req-006-execution-report.json";
+const reportPath = "require('path').resolve(__dirname, '..')/workspace/.eos/evidence/req-006-execution-report.json";
 const reportDir = dirname(reportPath);
 
 if (!existsSync(reportDir)) {

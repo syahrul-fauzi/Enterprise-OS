@@ -1,0 +1,53 @@
+{
+  "test_id": "agw-101-test-001",
+  "product": "agentic-work",
+  "journey_id": "AGW-101",
+  "journey_description": "Agentic Business Launch - Launch Online Business for UMKM Batik Jaya",
+  "test_timestamp": "2026-11-15T[timestamp]",
+  "test_status": "PASSED",
+  "lifecycle_stages_executed": [
+    "work-created",
+    "requirements-defined",
+    "provider-selected",
+    "composition-executed",
+    "assignments-distributed",
+    "ai-tasks-executing",
+    "human-tasks-executing",
+    "all-completed",
+    "economic-report-generated",
+    "work-archived"
+  ],
+  "total_stages": 10,
+  "completed_stages": 10,
+  "commercial_value_idr": 125000000,
+  "actors_involved": [
+    "4 Human Professionals",
+    "2 AI Agents",
+    "2 External Services"
+  ],
+  "requirements_count": 7,
+  "product_health_checks": {
+    "product_version": "1.0",
+    "product_status": "ACTIVE",
+    "all_required_stages_present": true,
+    "reuse_percentage": 100
+  },
+  "test_evidence": [
+    {
+      "type": "lifecycle_execution",
+      "description": "All 10 lifecycle stages executed successfully"
+    },
+    {
+      "type": "commercial_value",
+      "description": "Commercial value of Rp125,000,000 recorded for AGW-101 journey"
+    },
+    {
+      "type": "actor_composition",
+      "description": "8 actors (human+AI+external) composed into ephemeral team"
+    },
+    {
+      "type": "e1_audit_validation",
+      "description": "3 provider types tested: Human Professional, AI Agent, External Service"
+    }
+  ]
+}

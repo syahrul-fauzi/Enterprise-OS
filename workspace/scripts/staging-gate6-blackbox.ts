@@ -27,7 +27,7 @@ let generatedDecisionId: string;
 let actualRunId: string;
 let usedRequirementId: string; // Deklarasikan di level global agar bisa diakses semua step
 // Path persistence server (hardcode sesuai konfigurasi yang TERBUKTI, bukan diubah runtime)
-const SERVER_EVIDENCE_PATH = '/root/Enterprise-OS/workspace/evidence/runtime-invocations-staging.jsonl';
+const SERVER_EVIDENCE_PATH = 'require('path').resolve(__dirname, '..')/workspace/evidence/runtime-invocations-staging.jsonl';
 
 console.log('='.repeat(80));
 console.log('EOS GATE 6 STAGING BLACK-BOX PROOF — ACTUAL RUNTIME OBSERVATION');
@@ -392,10 +392,10 @@ async function main() {
   console.log('\n❄️  STEP 7: FROZEN ARTIFACTS CHECK — Verify Gate3-6 unchanged');
   try {
     // Cek timestamp beberapa core file Gate3-6 untuk memastikan tidak dimodifikasi
-    const gate3Path = '/root/Enterprise-OS/workspace/capabilities/requirement-management';
-    const gate4Path = '/root/Enterprise-OS/workspace/capabilities/evidence-registry';
-    const gate5Path = '/root/Enterprise-OS/workspace/capabilities/governance';
-    const gate6Path = '/root/Enterprise-OS/workspace/capabilities/workflow-engine';
+    const gate3Path = 'require('path').resolve(__dirname, '..')/workspace/capabilities/requirement-management';
+    const gate4Path = 'require('path').resolve(__dirname, '..')/workspace/capabilities/evidence-registry';
+    const gate5Path = 'require('path').resolve(__dirname, '..')/workspace/capabilities/governance';
+    const gate6Path = 'require('path').resolve(__dirname, '..')/workspace/capabilities/workflow-engine';
     
     console.log(`   ℹ️  Gate artifacts directories exist (frozen):`);
     console.log(`      - Gate3 (requirement-management): ${fs.existsSync(gate3Path)}`);

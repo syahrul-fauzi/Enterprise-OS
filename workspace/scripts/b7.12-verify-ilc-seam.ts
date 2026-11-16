@@ -26,7 +26,7 @@ async function verifyILCSeam() {
   
   // 3. Verify TypeScript compilation
   console.log("🔄 Step 3: Running TypeScript check for ILC consumption...");
-  const tsCheck = exec("cd /root/Enterprise-OS/workspace && npx tsc --noEmit 2>&1");
+  const tsCheck = exec("cd require('path').resolve(__dirname, '..')/workspace && npx tsc --noEmit 2>&1");
   
   tsCheck.stdout?.on("data", (data) => console.log(data));
   tsCheck.stderr?.on("data", (data) => console.error(data));

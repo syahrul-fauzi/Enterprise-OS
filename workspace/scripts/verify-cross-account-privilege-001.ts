@@ -1,4 +1,6 @@
 import { WorkId, newWorkId, ActorId, SessionId, TenantId } from "../capabilities/identity/implementation/contracts/identity.contracts.ts";
+import { statePath } from "@repo/eos-cli";
+import * as fs from "fs";
 
 // Reuse global work store dari test sebelumnya
 const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
@@ -98,9 +100,8 @@ async function runCrossAccountTest() {
     notes: "Test cross-region cross-account byzantine privilege escalation. Core account isolation berhasil mencegah serangan. E6 tetap bertahan, tidak ada IdentityFailure(W)."
   };
 // Simpan evidence
-  const fs = await import('fs');
   fs.writeFileSync(
-    "/root/Enterprise-OS/workspace/.eos-state/evidence/MULTI-REGION-006_evidence.json",
+    statePath('evidence', 'MULTI-REGION-006_evidence.json'),
     JSON.stringify(evidence, null, 2)
   );
   

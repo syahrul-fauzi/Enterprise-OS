@@ -1,5 +1,5 @@
 // @ts-nocheck: Unblock production build sesuai pola yang sama - hanya nonaktifkan TS checks, tidak ubah business logic
-import { loadCurrentJourney, saveCurrentJourney, JOURNEY_ENGINE_ID } from './state.js';
+import { loadCurrentJourney, saveCurrentJourney, JOURNEY_ENGINE_ID, statePath } from './state.js';
 import type { CurrentJourney } from './schema.js';
 
 /**
@@ -24,8 +24,9 @@ export async function runCanonicalHandoff(): Promise<number> {
     updatedState.milestone = "external_work_sync_initiated"; // Milestone awal PRJ-002 (W02)
     updatedState.verdict = "IN_PROGRESS";
     // Tambahkan bukti verifikasi W05 ke evidence_artifacts
-    if (!updatedState.evidence_artifacts.includes(".eos-state/verification/PRJ-002-W05_verification.json")) {
-      updatedState.evidence_artifacts.push(".eos-state/verification/PRJ-002-W05_verification.json");
+    const verificationPath = statePath("verification", "PRJ-002-W05_verification.json");
+    if (!updatedState.evidence_artifacts.includes(verificationPath)) {
+      updatedState.evidence_artifacts.push(verificationPath);
     }
     // Tambahkan semua kriteria W05 yang lulus ke checks_passed
     updatedState.checks_passed.push("typescript_build_lint_pass", "inbound_eos_sync_pass", "workaggregate_normalization_pass", "persistence_readback_pass", "idempotency_pass", "evidence_chain_pass", "journey_engine_authorization_boundary_pass", "architecture_freeze_compliance", "outbound_bridge_implementation_pass", "external_transport_reality_verified_unavailable");

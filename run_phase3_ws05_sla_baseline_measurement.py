@@ -20,6 +20,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Tuple
 import statistics
+import sys
+sys.path.insert(0, str(Path(__file__).parent / "skills"))
+from state_utils import state_path, get_repository_root
 
 # Daftar 10 skill yang akan diukur baseline-nya
 SKILLS = [
@@ -44,7 +47,8 @@ BASELINE_METRICS = [
 
 def load_skill_manifest(skill_name: str) -> Dict[str, Any] | None:
     """Muat manifest skill dan validasi JSON"""
-    manifest_path = Path(f"/root/Enterprise-OS/skills/{skill_name}/manifest.json")
+    repo_root = get_repository_root()
+    manifest_path = repo_root / "skills" / skill_name / "manifest.json"
     if not manifest_path.exists():
         print(f"[SLA_BASELINE] ❌ Manifest tidak ditemukan: {skill_name}")
         return None
@@ -62,10 +66,11 @@ def test_skill_invocation(skill_name: str) -> Tuple[bool, float]:
     success = False
     
     # Cek apakah skill terdaftar dan dapat dieksekusi dengan memuat manifest dan entry point utama
-    skill_path = Path(f"/root/Enterprise-OS/skills/{skill_name}/main.py")
+    repo_root = get_repository_root()
+    skill_path = repo_root / "skills" / skill_name / "main.py"
     if not skill_path.exists():
         # Fallback: cek apakah ada file main.py di dalam folder skill (alternatif path)
-        skill_path_alt = Path(f"/root/Enterprise-OS/skills/{skill_name}/__main__.py")
+        skill_path_alt = repo_root / "skills" / skill_name / "__main__.py"
         if not skill_path_alt.exists():
             print(f"[INVOKE_TEST] ❌ {skill_name}: Entry point tidak ditemukan")
             latency = (time.time() - start_time) * 1000
@@ -150,7 +155,7 @@ def calculate_baseline_metrics() -> Dict[str, Any]:
     
     # Ambil hasil dari verifikasi sebelumnya untuk governance dan regression
     try:
-        with open("/root/Enterprise-OS/.eos-state/verification/EOS-SKILL-ASSURANCE-001_regression_security_verification.json", 'r') as f:
+        with open(state_path('verification', 'EOS-SKILL-ASSURANCE-001_regression_security_verification.json'), 'r') as f:
             prev_verification = json.load(f)
             baseline_results["overall_metrics"]["governance_violation_count"] = len(prev_verification["governance_scan"]["violations_found"])
             baseline_results["overall_metrics"]["regression_pass_rate"] = 100.0 if prev_verification["all_passed"] else 0.0
@@ -195,7 +200,7 @@ def main():
             print(f"  {metric}: PENDING (memerlukan test tambahan)")
     
     # Simpan hasil baseline ke .eos-state/sla/
-    output_path = Path("/root/Enterprise-OS/.eos-state/sla/EOS-SKILL-ASSURANCE-001_sla_baseline.json")
+    output_path = state_path('sla', 'EOS-SKILL-ASSURANCE-001_sla_baseline.json')
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, 'w') as f:
         json.dump(baseline_results, f, indent=2)

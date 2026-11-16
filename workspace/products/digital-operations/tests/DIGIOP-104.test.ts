@@ -1,3 +1,4 @@
+import { describe, it } from "vitest";
 // @ts-nocheck
 /**
  * E2E Test untuk DIGIOP-104: Managed Digital Operations Onboarding Flow
@@ -16,14 +17,14 @@ process.env.NODE_ENV = 'test';
 (globalThis as any)._forceMockPool = true;
 
 import assert from "node:assert/strict";
-import test from "node:test";
 import { randomUUID } from "crypto";
-import { resolve } from "path";
-import { writeFile, readFile } from "fs/promises";
+import { writeFile, readFile, mkdir } from "fs/promises";
+import { dirname } from "node:path";
+import { statePath } from '@repo/eos-cli';
 
 // Path untuk file verifikasi dan evidence
-const VERIFICATION_PATH = resolve("/root/Enterprise-OS/.eos-state/verification/DIGIOP-104_verification.json");
-const EVIDENCE_PATH = resolve("/root/Enterprise-OS/.eos-state/evidence/DIGIOP-104_evidence.json");
+const VERIFICATION_PATH = statePath('verification', 'DIGIOP-104_verification.json');
+const EVIDENCE_PATH = statePath('evidence', 'DIGIOP-104_evidence.json');
 
 // Generate test IDs yang unik (idempotency)
 const testSessionId = `test-session-${randomUUID()}`;
@@ -57,7 +58,7 @@ describe("DIGIOP-104: Managed Digital Operations Onboarding End-to-End Test", ()
 
       // Test 1: Verifikasi form registrasi memiliki semua field yang diperlukan (Layer 1-3)
       console.log("\n📋 Test 1: Formulir pendaftaran lengkap (Layers 1-3)");
-      // Lazy import capability registry sesuai pola canonical test (consultation/__tests__/datacenter-server-issue.test.ts)
+      // Lazy import capability registry sesuai pola canonical it(consultation/__tests__/datacenter-server-issue.test.ts)
       const { capabilityRegistry } = await import("../../../../workspace/packages/core/kernel/src/registry/capability-command-registry.js");
       // Skip import React component dalam test node (karena membutuhkan browser runtime)
       console.log("   ⚠️  Formulir UI component diimplementasikan sebagai React component (membutuhkan browser runtime untuk rendering, test node hanya verifikasi file existensi)");
@@ -215,7 +216,26 @@ describe("DIGIOP-104: Managed Digital Operations Onboarding End-to-End Test", ()
     // Update verification file sesuai hasil test
     console.log("\n".repeat(2));
     console.log("📝 Update file verifikasi DIGIOP-104_verification.json");
-    const currentVerification = JSON.parse(await readFile(VERIFICATION_PATH, "utf8"));
+    await mkdir(dirname(VERIFICATION_PATH), { recursive: true });
+    await mkdir(dirname(EVIDENCE_PATH), { recursive: true });
+
+    let currentVerification: any;
+    try {
+      currentVerification = JSON.parse(await readFile(VERIFICATION_PATH, "utf8"));
+    } catch {
+      currentVerification = {
+        all_passed: false,
+        total_passed: 0,
+        total_failed: 0,
+        acceptance_criteria: {
+          "Test menyelesaikan end-to-end flow tanpa mock dengan verifikasi semua domain layanan": {
+            passed: false,
+            evidence: ""
+          }
+        }
+      };
+    }
+
     currentVerification.all_passed = allPassed;
     currentVerification.total_passed = testResults.passed;
     currentVerification.total_failed = testResults.failed;

@@ -9,6 +9,7 @@
  */
 
 import { MyRealityModel, RealityWorkItem } from "./packages/presentation/experience/src/my-reality/contracts/my-reality.contracts.js";
+import { statePath } from "@repo/eos-cli";
 // Removed unused legal-case imports (P5 uses existing golden work from work-core PostgreSQL)
 import { mapCaseToRealityWorkItem } from "./mappings/reality-work-mapping.js"; // Reuse canonical mapping instead of local function
 
@@ -337,9 +338,9 @@ async function runP004Validation() {
 
   // Save evidence artifact
   const fs = await import("fs");
-  const evidenceDir = ".eos-state/evidence";
+  const evidenceDir = statePath("evidence");
   if (!fs.existsSync(evidenceDir)) fs.mkdirSync(evidenceDir, { recursive: true });
-  const evidencePath = `${evidenceDir}/p0-004_validation_${Date.now()}.json`;
+  const evidencePath = statePath("evidence", `p0-004_validation_${Date.now()}.json`);
   fs.writeFileSync(evidencePath, JSON.stringify(validationResults, null, 2));
   console.log(`   📄 Evidence saved to: ${evidencePath}`);
 

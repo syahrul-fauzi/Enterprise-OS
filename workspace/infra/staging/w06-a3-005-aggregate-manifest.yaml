@@ -151,19 +151,19 @@ uat_evidence:
   - test_case: Membuat Work baru
     result: PASS
     timestamp: 2026-11-14T00:00:00Z
-    screenshot: /root/Enterprise-OS/.eos-state/verification/uat-create-work.png
+    screenshot: /ios-id/eos/.eos-state/verification/uat-create-work.png
   - test_case: Mengeksekusi capability Work
     result: PASS
     timestamp: 2026-11-14T00:00:00Z
-    screenshot: /root/Enterprise-OS/.eos-state/verification/uat-execute-capability.png
+    screenshot: /ios-id/eos/.eos-state/verification/uat-execute-capability.png
   - test_case: Menampilkan daftar Work
     result: PASS
     timestamp: 2026-11-14T00:00:00Z
-    screenshot: /root/Enterprise-OS/.eos-state/verification/uat-list-work.png
+    screenshot: /ios-id/eos/.eos-state/verification/uat-list-work.png
   - test_case: Login autentikasi
     result: PASS
     timestamp: 2026-11-14T00:00:00Z
-    screenshot: /root/Enterprise-OS/.eos-state/verification/uat-login.png
+    screenshot: /ios-id/eos/.eos-state/verification/uat-login.png
 
 architecture_boundaries:
   - boundary: genesis-eos memiliki business semantics

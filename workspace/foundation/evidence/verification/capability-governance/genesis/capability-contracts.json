@@ -1,0 +1,33 @@
+{
+  "capability_id": "genesis",
+  "provided_contract_versions": [
+    "captureLeadProspect-v1",
+    "qualifyLeadProspect-v1",
+    "createSolutionArtifact-v1",
+    "createFinancialAssessment-v1",
+    "approveFinancialAssessment-v1",
+    "createConversionAsset-v1",
+    "acceptOffer-v1",
+    "createClientAccount-v1"
+  ],
+  "required_contract_ranges": [
+    "work-core-v1.x",
+    "identity-v1.x",
+    "evidence-registry-v1.x",
+    "capability-registry-v1.x",
+    "governance-v1.x",
+    "connector-ecosystem-v1.x",
+    "agent-orchestration-v1.x"
+  ],
+  "compatibility": {
+    "total_required_contract_count": 7,
+    "compatible_required_contract_count": 7,
+    "unresolved_required_contract_count": 0,
+    "ambiguous_required_contract_count": 0,
+    "unbounded_required_contract_count": 0,
+    "compatibility_status": "PASS",
+    "contract_drift_status": "NONE",
+    "migration_required": false
+  },
+  "artifact_boundary": "Capability contracts projection freezes the provided and required contract surface together with resolved provider compatibility so capability evolution remains auditable and deterministic."
+}

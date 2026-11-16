@@ -2,6 +2,9 @@ import click
 import json
 from pathlib import Path
 from typing import Optional, Dict, Any, List
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from state_utils import state_path
 
 class FaceVerificationEngine:
     """FACE Verification Engine utama untuk EOS - Memverifikasi perilaku frontend dan Work continuity"""
@@ -84,7 +87,7 @@ def main(test_mode: bool, work_item_path: Optional[str], surface_url: Optional[s
     
     if engine:
         result = engine.verify_face_behavior(surface_url, work_id, workspace_path, actor_data)
-        output_path = Path(f".eos-state/face/{work_id}_verification.json")
+        output_path = state_path('face', f"{work_id}_verification.json")
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w') as f:
             json.dump(result, f, indent=2)

@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { statePath } from "@repo/eos-cli";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '.env.local') });
@@ -103,7 +104,7 @@ async function main() {
   
   // Update verification report
   const fs = await import('fs');
-  const verificationPath = path.join(__dirname, '.eos-state/verification/W002-P8_verification.json');
+  const verificationPath = statePath('verification', 'W002-P8_verification.json');
   if (fs.existsSync(verificationPath)) {
     const verificationData = JSON.parse(fs.readFileSync(verificationPath, 'utf8'));
     verificationData.acceptance_criteria.creatework_executes = { passed: true, evidence: `E2E test passed: Work created with ID ${createWorkResult.workId}` };

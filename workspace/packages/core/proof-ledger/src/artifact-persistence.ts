@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync, readdirSync, unlinkSync, mkdirSync } from "node:fs";
 import type { ArtifactNode, ArtifactEdge } from "./artifact-graph.js";
-import { resolveWorkspaceRoot } from "./artifact-graph.js";
+import { statePath } from "../../../tooling/eos-cli/src/state.js";
 import path from "path";
 
 // ArtifactGraphPersistence: Minimal file-based persistence layer untuk menyimpan artifact graph secara permanen
@@ -29,8 +29,7 @@ export class ArtifactGraphPersistence {
   // Singleton pattern untuk memastikan hanya satu instance
   public static getInstance(): ArtifactGraphPersistence {
     if (!ArtifactGraphPersistence.instance) {
-      const workspaceRoot = resolveWorkspaceRoot();
-      const storageRoot = path.join(workspaceRoot, ".eos-state/proof-ledger/artifacts");
+      const storageRoot = statePath("proof-ledger", "artifacts");
       ArtifactGraphPersistence.instance = new ArtifactGraphPersistence(storageRoot);
     }
     return ArtifactGraphPersistence.instance;

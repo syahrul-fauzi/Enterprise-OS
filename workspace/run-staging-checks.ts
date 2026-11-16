@@ -1,7 +1,7 @@
 // Skrip untuk menjalankan 3 pemeriksaan read-only di staging sesuai permintaan WAR ROOM
 import { Pool } from "pg";
 import { writeFile } from "fs/promises";
-import { resolve } from "path";
+import { statePath } from '@repo/eos-cli';
 
 // Konfigurasi pool untuk staging (menggunakan kredensial yang sudah terkonfigurasi)
 const pool = new Pool({
@@ -57,14 +57,14 @@ async function runStagingChecks() {
     console.log(`✅ Ditemukan ${constraints.rowCount} constraint pada tabel work_payments`);
 
     // Simpan evidence ke file
-    const evidencePath = resolve("/root/Enterprise-OS/.eos-state/verification/PAYROLL-IDEMPOTENCY-001_staging_checks.json");
+    const evidencePath = statePath('verification', 'PAYROLL-IDEMPOTENCY-001_staging_checks.json');
     await writeFile(evidencePath, JSON.stringify(evidence, null, 2));
     console.log(`\n💾 Hasil pemeriksaan staging disimpan ke: ${evidencePath}`);
 
   } catch (error: any) {
     console.error("❌ Error selama pemeriksaan staging:", error.message);
     evidence.errors.push(error.message);
-    await writeFile(resolve("/root/Enterprise-OS/.eos-state/verification/PAYROLL-IDEMPOTENCY-001_staging_checks.json"), JSON.stringify(evidence, null, 2));
+    await writeFile(statePath('verification', 'PAYROLL-IDEMPOTENCY-001_staging_checks.json'), JSON.stringify(evidence, null, 2));
     throw error;
   } finally {
     await pool.end();

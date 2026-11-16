@@ -19,7 +19,7 @@ import {
   ExecutionBoundary,
   EvidenceBoundary,
   PresentationBoundary
-} from "../../../work-core/contracts/work.contracts.js";
+} from "@capabilities/work-core/contracts/work.contracts.js";
 import { passwordService } from "../services/password.service.js";
 import { UserRepositoryPostgres } from "../repositories/index.js";
 

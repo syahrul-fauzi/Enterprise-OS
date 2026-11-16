@@ -1,6 +1,7 @@
 import { WorkId, newWorkId, ActorId, SessionId, TenantId } from "../capabilities/identity/implementation/contracts/identity.contracts";
 import { WorkAggregate } from "../capabilities/work-core/contracts/work.contracts";
 import * as fs from "fs";
+import { statePath } from "@repo/eos-cli";
 
 // Reuse WorkRepositoryInMemory implementation from cross-federation test script (100% reuse, 0 new lines)
 let globalLamportClock = 0;
@@ -115,7 +116,7 @@ async function runTwoRegionSplitBrainTest() {
     notes: "Split-brain test berhasil, semua ACC RECON-MR-001 terpenuhi. E6 invariant masih bertahan."
   };
 
-  fs.writeFileSync("/root/Enterprise-OS/workspace/.eos-state/evidence/MULTI-REGION-009_evidence.json", JSON.stringify(evidence, null, 2));
+  fs.writeFileSync(statePath('evidence', 'MULTI-REGION-009_evidence.json'), JSON.stringify(evidence, null, 2));
   console.log("[RECON-MR-001] Evidence disimpan ke MULTI-REGION-009_evidence.json");
   return acc5_pass && acc6_pass && acc7_pass;
 }

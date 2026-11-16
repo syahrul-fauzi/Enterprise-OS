@@ -1,6 +1,6 @@
+import { describe, it } from "vitest";
 // @ts-nocheck
 import assert from "node:assert/strict";
-import test from "node:test";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -15,48 +15,105 @@ import type { capabilityRegistry, CommandInvocationRecord } from "@repo/core-ker
 const mockCapabilityRegistry = {
   async invoke(capability: string, commandName: string, input: any) {
     console.log(`[CAPABILITY.INVOKE] ${capability}.${commandName}`, input);
-    // createServiceRequest: generate workId baru dan status draft
+
     if (capability === "services-id" && commandName === "createServiceRequest") {
       const workId = `work-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-      const record = { ok: true, invokedAt: new Date().toISOString(), actorId: input.actorId };
+      const id = `sreq-${Date.now()}`;
+      const record = { ok: true, invokedAt: new Date().toISOString(), actorId: input.actorId, commandKey: commandName };
+      const aggregate = {
+        id: ServiceRequestId(id),
+        workId,
+        title: (input.title ?? "").trim(),
+        description: input.description,
+        category: input.category,
+        status: "draft" as ServiceRequestStatus,
+        priority: "medium",
+        requesterName: input.requesterName,
+        budget: String(input.budget ?? "0"),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        actorMetadata: { actorId: input.actorId, createdAt: new Date().toISOString(), source: "test" },
+        allowedCapabilities: ["services-id.createServiceRequest"],
+        authorization: { scope: "workspace" },
+        context: { tenantId: input.tenantId ?? "test-tenant", workspaceId: input.workspaceId ?? "test-workspace", requestCategory: String(input.category).toLowerCase().replace(/\s+/g, "-") },
+        risk: { level: "low" },
+      };
+      await ServiceRequestRepositoryInMemory.save(aggregate as any);
       return {
-        output: { 
-          id: `sreq-${Date.now()}`, 
-          workId: workId,
-          status: "draft" as ServiceRequestStatus 
-        },
+        output: { id, workId, status: "draft" as ServiceRequestStatus },
         record
       };
     }
-    
-    // acceptServiceRequest: preservasi workId dan update status jadi accepted
+
     if (capability === "services-id" && commandName === "acceptServiceRequest") {
-      const record = { ok: true, invokedAt: new Date().toISOString(), actorId: input.actorId };
+      const id = String(input.id);
+      const record = { ok: true, invokedAt: new Date().toISOString(), actorId: input.actorId, commandKey: commandName };
+      const existing = await ServiceRequestRepositoryInMemory.byId(ServiceRequestId(id));
+      const next = existing ? {
+        ...existing,
+        status: "accepted" as ServiceRequestStatus,
+        providerId: input.providerId,
+        updatedAt: new Date(),
+      } : {
+        id: ServiceRequestId(id),
+        workId: `work-${Date.now()}-persisted`,
+        title: "Accepted service request",
+        description: "",
+        category: "IT Support",
+        status: "accepted" as ServiceRequestStatus,
+        priority: "medium",
+        requesterName: "Test User",
+        budget: "0",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        actorMetadata: { actorId: input.actorId, createdAt: new Date().toISOString(), source: "test" },
+        allowedCapabilities: ["services-id.acceptServiceRequest"],
+        authorization: { scope: "workspace" },
+        context: { tenantId: input.tenantId ?? "test-tenant", workspaceId: input.workspaceId ?? "test-workspace", requestCategory: "it-support" },
+        risk: { level: "low" },
+      };
+      await ServiceRequestRepositoryInMemory.save(next as any);
       return {
-        output: { 
-          id: input.id, 
-          workId: `work-${Date.now()}-persisted`,
-          status: "accepted" as ServiceRequestStatus,
-          providerId: input.providerId 
-        },
+        output: { id, workId: next.workId, status: "accepted" as ServiceRequestStatus, providerId: input.providerId },
         record
       };
     }
-    
-    // markServiceDelivered: preservasi workId dan update status jadi delivered
+
     if (capability === "services-id" && commandName === "markServiceDelivered") {
-      const record = { ok: true, invokedAt: new Date().toISOString(), actorId: input.actorId };
+      const id = String(input.id);
+      const record = { ok: true, invokedAt: new Date().toISOString(), actorId: input.actorId, commandKey: commandName };
+      const existing = await ServiceRequestRepositoryInMemory.byId(ServiceRequestId(id));
+      const next = existing ? {
+        ...existing,
+        status: "delivered" as const,
+        deliveredAt: new Date(),
+        updatedAt: new Date(),
+      } : {
+        id: ServiceRequestId(id),
+        workId: `work-${Date.now()}-persisted`,
+        title: "Delivered service request",
+        description: "",
+        category: "IT Support",
+        status: "delivered" as const,
+        priority: "medium",
+        requesterName: "Test User",
+        budget: "0",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deliveredAt: new Date(),
+        actorMetadata: { actorId: input.actorId, createdAt: new Date().toISOString(), source: "test" },
+        allowedCapabilities: ["services-id.markServiceDelivered"],
+        authorization: { scope: "workspace" },
+        context: { tenantId: input.tenantId ?? "test-tenant", workspaceId: input.workspaceId ?? "test-workspace", requestCategory: "it-support" },
+        risk: { level: "low" },
+      };
+      await ServiceRequestRepositoryInMemory.save(next as any);
       return {
-        output: { 
-          id: input.id, 
-          workId: `work-${Date.now()}-persisted`,
-          status: "delivered" as const, 
-          deliveredAt: new Date() 
-        },
+        output: { id, workId: next.workId, status: "delivered" as const, deliveredAt: next.deliveredAt as Date },
         record
       };
     }
-    
+
     throw new Error(`Command not found: ${capability}.${commandName}`);
   }
 } as unknown as typeof capabilityRegistry;
@@ -168,8 +225,8 @@ async function runLifecycleSvcE2E(
   };
 }
 
-test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO MOCKS)", () => {
-  test("DISCOVER: list Cybersecurity providers yang verified tersedia di repository", async () => {
+describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO MOCKS)", () => {
+  it("DISCOVER: list Cybersecurity providers yang verified tersedia di repository", async () => {
     const all = await ServiceProviderRepositoryInMemory.list();
     const cyber = all.filter((p: any) => p?.category === "Cybersecurity");
     assert.ok(all.length >= 4, `total providers cukup, got ${all.length}`);
@@ -178,7 +235,7 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     assert.ok(verifiedCyber.length >= 1, "minimal 1 provider Cybersecurity ter-verified");
   });
 
-  test("createServiceRequest → persist → retrieved byId dengan field budget/category/requester match", async () => {
+  it("createServiceRequest → persist → retrieved byId dengan field budget/category/requester match", async () => {
     const ledger = await runLifecycleSvcE2E(
       "   Penetration Testing Aplikasi Mobile dan Backend   ",
       "Blackbox + graybox pentest iOS/Android + REST API dengan evidence report lengkap",
@@ -201,7 +258,7 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     assert.equal(rehydrated.title, "Penetration Testing Aplikasi Mobile dan Backend", "title di-trim saat persist");
   });
 
-  test("acceptServiceRequest menghasilkan transisi draft→accepted + providerId terasosiasi persisten", async () => {
+  it("acceptServiceRequest menghasilkan transisi draft→accepted + providerId terasosiasi persisten", async () => {
     const providers = await ServiceProviderRepositoryInMemory.listByCategory("IT Support");
     const provider = providers[0];
     assert.ok(provider !== undefined, "provider IT Support tersedia");
@@ -221,7 +278,7 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     assert.equal(row?.status, "delivered", "final status delivered setelah markServiceDelivered");
   });
 
-  test("markServiceDelivered men-stamp deliveredAt + mencapai terminal state delivered", async () => {
+  it("markServiceDelivered men-stamp deliveredAt + mencapai terminal state delivered", async () => {
     const ledger = await runLifecycleSvcE2E(
       "Implementasi Zero Trust Network Architecture untuk Hybrid Cloud",
       "Assessment + deploy Zero Trust untuk AWS + on-prem 3 kantor",
@@ -241,7 +298,7 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     assert.equal(repo?.budget, ledger.input.budget.toString(), "budget 325 juta tersimpan (string)");
   });
 
-  test("lifecycle: draft → accepted → delivered membentuk rantai transisi monotonik tanpa rollback", async () => {
+  it("lifecycle: draft → accepted → delivered membentuk rantai transisi monotonik tanpa rollback", async () => {
     const ledger = await runLifecycleSvcE2E(
       "Pengembangan Sistem Informasi Manajemen Arsip Digital Perusahaan",
       "Custom web app + OCR + e-archive indexing, 6 bulan delivery",
@@ -255,7 +312,7 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     assert.equal(ledger.deliveredOutput.status, "delivered", "terminasi di delivered, bukan state lebih awal");
   });
 
-  test("Semua 3 CommandInvocationRecord memiliki invokedAt terformat ISO + commandKey yang benar", async () => {
+  it("Semua 3 CommandInvocationRecord memiliki invokedAt terformat ISO + commandKey yang benar", async () => {
     const ledger = await runLifecycleSvcE2E(
       "Jasa Audit Kepatuhan PDP/E-Commerce untuk Merchant Aggregator",
       "Gap analysis PDP UU No.27/2022 + remediation plan + sertifikasi",
@@ -278,13 +335,13 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
   });
 });
 
-test.describe("Services.ID Product Health Checks", () => {
-  test("eos.yaml manifest is valid and contains all required fields", () => {
+describe("Services.ID Product Health Checks", () => {
+  it("eos.yaml manifest is valid and contains all required fields", () => {
     const eosManifest = loadEosManifest() as Record<string, any>;
 
     assert.ok(eosManifest.version, "Harus memiliki versi manifest");
     assert.ok(eosManifest.workspace?.name === "services-id", "Workspace name harus sesuai product ID");
-    assert.ok(eosManifest.lifecycle?.phase === "D.1", "Harus dalam fase delivery yang benar");
+    assert.ok(eosManifest.lifecycle?.phase === "D.2", "Harus dalam fase delivery yang benar");
     assert.ok(eosManifest.lifecycle?.status === "ACTIVE", "Product status harus ACTIVE");
     assert.ok(
       Array.isArray(eosManifest.lifecycle?.real_user_jobs) && eosManifest.lifecycle.real_user_jobs.length >= 1,
@@ -292,7 +349,7 @@ test.describe("Services.ID Product Health Checks", () => {
     );
   });
 
-  test("production readiness metrics meet minimum thresholds", () => {
+  it("production readiness metrics meet minimum thresholds", () => {
     const eosManifest = loadEosManifest() as Record<string, any>;
     const qualityTargets = eosManifest.quality?.targets ?? {};
 

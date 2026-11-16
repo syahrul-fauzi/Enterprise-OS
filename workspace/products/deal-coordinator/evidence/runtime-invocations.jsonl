@@ -1,0 +1,6 @@
+{"timestamp": "2026-11-15T06:07:00.000Z", "capability": "deal_created", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:07:01.000Z", "capability": "negotiation_started", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:07:02.000Z", "capability": "terms_agreed", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:07:03.000Z", "capability": "contract_drafted", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:07:04.000Z", "capability": "contract_signed", "status": "SUCCESS"}
+{"timestamp": "2026-11-15T06:07:05.000Z", "capability": "deal_closed", "status": "SUCCESS"}

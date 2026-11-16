@@ -8,7 +8,7 @@
  */
 
 import { existsSync, writeFileSync, mkdirSync } from "node:fs";
-import { resolve } from "node:path";
+import { statePath } from "@repo/eos-cli";
 // Import LANGSUNG dari source file identity.contracts.ts (path relatif BENAR dari folder scripts/)
 // Solusi SATU-SATUNYA yang tidak modifikasi tsconfig/ semantic core, menghindari error 2307 dan 2322
 // Semua type ter-export dari sumber yang sama, tidak ada duplikat branded type
@@ -103,10 +103,10 @@ async function runWeb001Tests() {
   
   // Buat test Work sesuai EOS semantic model
   const testWork: Partial<WorkAggregate> = {
-    id: newWorkId() as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").WorkId,
-    actorId: "actor-web-001" as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").ActorId,
-    tenantId: "tenant-123" as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").TenantId,
-    sessionId: "session-456" as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").SessionId,
+    id: newWorkId() as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").WorkId,
+    actorId: "actor-web-001" as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").ActorId,
+    tenantId: "tenant-123" as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").TenantId,
+    sessionId: "session-456" as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").SessionId,
     createdAt: new Date(),
     updatedAt: new Date()
   };
@@ -168,9 +168,9 @@ async function runWeb001Tests() {
   };
 
   // Simpan evidence ke canonical path .eos-state/evidence/
-  const evidenceDir = resolve(process.cwd(), ".eos-state", "evidence");
+  const evidenceDir = statePath("evidence");
   if (!existsSync(evidenceDir)) mkdirSync(evidenceDir, { recursive: true });
-  writeFileSync(resolve(evidenceDir, "WEB-001_evidence.json"), JSON.stringify(report, null, 2));
+  writeFileSync(statePath("evidence", "WEB-001_evidence.json"), JSON.stringify(report, null, 2));
   console.log("[WEB-001] Verification complete, evidence saved to .eos-state/evidence/WEB-001_evidence.json");
   console.log("[WEB-001] E6 invariant status: CROSS-SURFACE VALIDATED - EOS INVARIANT CANDIDATE");
 }

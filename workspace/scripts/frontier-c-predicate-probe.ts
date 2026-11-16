@@ -1,10 +1,10 @@
 // Frontier C Recon: Probe actual predicate values for named release IDs.
 // Goal: Falsify or confirm: do 12.3-happy / 12.3-blocked / 12.3-ambiguous produce 3 distinct branches?
 
-import { requirementService } from "/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/services";
-import { requirementsTraceabilityMatrixService } from "/root/Enterprise-OS/workspace/capabilities/requirements-traceability-matrix/implementation/services";
-import { evidenceRegistryService } from "/root/Enterprise-OS/workspace/capabilities/evidence-registry/implementation/services";
-import { evaluatePrepareReleaseConditions } from "/root/Enterprise-OS/workspace/procedures/prepare-release/contracts";
+import { requirementService } from "require('path').resolve(__dirname, '..')/workspace/capabilities/requirement-management/implementation/services";
+import { requirementsTraceabilityMatrixService } from "require('path').resolve(__dirname, '..')/workspace/capabilities/requirements-traceability-matrix/implementation/services";
+import { evidenceRegistryService } from "require('path').resolve(__dirname, '..')/workspace/capabilities/evidence-registry/implementation/services";
+import { evaluatePrepareReleaseConditions } from "require('path').resolve(__dirname, '..')/workspace/procedures/prepare-release/contracts";
 
 const RELEASE_IDS = ["12.3-happy", "12.3-blocked", "12.3-ambiguous"] as const;
 

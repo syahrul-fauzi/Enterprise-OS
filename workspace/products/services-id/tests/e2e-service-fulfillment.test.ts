@@ -3,7 +3,7 @@
  * E2E Test for Product Slice C2: Services.ID Service Fulfillment
  * Verifies the full flow: "Saya butuh IT support untuk kantor" → request → provider accepted → service delivered → closed
  */
-import { describe, it, expect } from '@jest/globals';
+import { describe, it, expect } from 'vitest';
 import type { CreateServiceRequestInput } from '../../../capabilities/service-directory/implementation/contracts/service.contracts.js';
 
 // Mock the capability registry (simulate what the browser would have - SAMA PERSIS dengan LawyersHub pattern)

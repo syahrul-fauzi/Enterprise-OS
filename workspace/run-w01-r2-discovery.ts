@@ -5,7 +5,7 @@
 // Strictly replicates the EXACT canonical ID generation logic from work-postgres.repository.ts (never invented)
 import { randomUUID } from "crypto";
 import { writeFileSync, existsSync, mkdirSync } from "node:fs";
-import { resolve } from "node:path";
+import { statePath } from '@repo/eos-cli';
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 // Import Journey Engine official ID from state.ts
@@ -13,9 +13,7 @@ import { JOURNEY_ENGINE_ID } from './packages/tooling/eos-cli/src/state.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const REPOSITORY_ROOT = resolve(__dirname, ".");
-const EOS_STATE_DIR = resolve(REPOSITORY_ROOT, ".eos-state");
-const PROOFS_DIR = resolve(EOS_STATE_DIR, "proofs");
+const PROOFS_DIR = statePath("proofs");
 
 if (!existsSync(PROOFS_DIR)) {
   mkdirSync(PROOFS_DIR, { recursive: true });

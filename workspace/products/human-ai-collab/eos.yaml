@@ -47,3 +47,12 @@ capabilities:
   - ai-agent-execution
   - governance-evidence
   - agent-orchestration
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 85
+    runtime_invocation_required: true
+governance:
+  baseline_locked: true
+  needs_audit: false
+  evidence_path: ./evidence

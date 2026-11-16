@@ -8,7 +8,7 @@
  */
 
 import { existsSync, writeFileSync, mkdirSync } from "node:fs";
-import { resolve } from "node:path";
+import { statePath } from "@repo/eos-cli";
 // Import LANGSUNG dari source file identity.contracts.ts (path relatif BENAR dari folder scripts/)
 // Solusi SATU-SATUNYA yang tidak modifikasi tsconfig/ semantic core, menghindari error 2307 dan 2322
 // Semua type ter-export dari sumber yang sama, tidak ada duplikat branded type
@@ -94,10 +94,10 @@ async function runMultiRegion001Tests() {
   // ACCEPTANCE CRITERION 1: SAME Work identity di Region A dan B (1 Work ID untuk kedua region)
   const sharedWorkId: WorkId = newWorkId();
   const initialWork: Partial<WorkAggregate> = {
-    id: sharedWorkId as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").WorkId,
-    actorId: "actor-us-001" as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").ActorId,
-    tenantId: "tenant-us-eu-123" as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").TenantId,
-    sessionId: "session-sync-us-eu-456" as unknown as import("/root/Enterprise-OS/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").SessionId,
+    id: sharedWorkId as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").WorkId,
+    actorId: "actor-us-001" as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").ActorId,
+    tenantId: "tenant-us-eu-123" as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").TenantId,
+    sessionId: "session-sync-us-eu-456" as unknown as import("require('path').resolve(__dirname, '..')/workspace/capabilities/identity/dist/implementation/contracts/identity.contracts").SessionId,
     createdAt: new Date(Date.now() - 3600000), // Work dibuat 1 jam lalu
     updatedAt: new Date()
   };
@@ -190,7 +190,7 @@ async function runMultiRegion001Tests() {
   console.log("[MULTI-REGION-001] ACCEPTANCE 10 PASSED: Semantic core tidak diubah, hanya logic test yang ditambahkan");
 
   // Simpan evidence JSON
-  const evidenceDir = resolve(process.cwd(), ".eos-state/evidence");
+  const evidenceDir = statePath("evidence");
   if (!existsSync(evidenceDir)) mkdirSync(evidenceDir, { recursive: true });
   const report = {
     artifact_id: "MULTI-REGION-001",

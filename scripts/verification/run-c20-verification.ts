@@ -17,17 +17,15 @@ import type { CreateDocumentInput, DocumentAggregate } from '../../workspace/cap
 import type { CreateRequirementInput, RequirementAggregate } from '../../workspace/capabilities/requirement-management/implementation/contracts/requirement.contracts.js';
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
-import * as path from 'node:path';
+import { statePath } from '@repo/eos-cli';
 
-// C20 Test Configuration
 const DECISION_ID = "C20-CROSS-CAPABILITY-WORK-CONTINUITY";
 const WORK_ID = "W1-C20-TEST-001";
 const TENANT_ID = "T-LAWYERSHUB-MAIN";
-const EVIDENCE_PATH = path.join(process.cwd(), '.eos-state', 'evidence', `${DECISION_ID}.json`);
+const EVIDENCE_PATH = statePath('evidence', `${DECISION_ID}.json`);
 
-// Buat direktori evidence jika belum ada (sesuai pattern C19)
-if (!fs.existsSync(path.dirname(EVIDENCE_PATH))) {
-  fs.mkdirSync(path.dirname(EVIDENCE_PATH), { recursive: true });
+if (!fs.existsSync(statePath('evidence'))) {
+  fs.mkdirSync(statePath('evidence'), { recursive: true });
 }
 
 // Test session (isolated untuk menghindari kontaminasi tenant lain)

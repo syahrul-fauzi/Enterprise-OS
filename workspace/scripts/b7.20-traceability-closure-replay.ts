@@ -1,11 +1,11 @@
 import * as crypto from "crypto";
-import { executionContext } from "/root/Enterprise-OS/workspace/packages/core/runtime/src/index.js";
-import { capabilityRegistry } from "/root/Enterprise-OS/workspace/packages/core/kernel/src/registry/capability-command-registry.js";
-import { requirementService } from "/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/service.js";
-import { requirementsTraceabilityMatrixService } from "/root/Enterprise-OS/workspace/capabilities/requirements-traceability-matrix/implementation/service.js";
-import { evidenceRegistryService } from "/root/Enterprise-OS/workspace/capabilities/evidence-registry/implementation/service.js";
-import { injectProofLedgerServices, computeArtifactGraphForRequirement } from "/root/Enterprise-OS/workspace/packages/core/proof-ledger/src/index.js";
-import { RequirementDeliveryGatewayService } from "/root/Enterprise-OS/workspace/capabilities/api-platform/implementation/services/requirement-delivery-gateway.service.js";
+import { executionContext } from "require('path').resolve(__dirname, '..')/workspace/packages/core/runtime/src/index.js";
+import { capabilityRegistry } from "require('path').resolve(__dirname, '..')/workspace/packages/core/kernel/src/registry/capability-command-registry.js";
+import { requirementService } from "require('path').resolve(__dirname, '..')/workspace/capabilities/requirement-management/implementation/service.js";
+import { requirementsTraceabilityMatrixService } from "require('path').resolve(__dirname, '..')/workspace/capabilities/requirements-traceability-matrix/implementation/service.js";
+import { evidenceRegistryService } from "require('path').resolve(__dirname, '..')/workspace/capabilities/evidence-registry/implementation/service.js";
+import { injectProofLedgerServices, computeArtifactGraphForRequirement } from "require('path').resolve(__dirname, '..')/workspace/packages/core/proof-ledger/src/index.js";
+import { RequirementDeliveryGatewayService } from "require('path').resolve(__dirname, '..')/workspace/capabilities/api-platform/implementation/services/requirement-delivery-gateway.service.js";
 
 console.log(`[B720-SUT] Initializing B7.20 Traceability Closure Replay...`);
 
@@ -25,7 +25,7 @@ executionContext.run(testExecutionContext, async () => {
   console.log(`[B720-SUT] Execution context established:`, ctx);
 
   // Lazy load work-core commands (sama pola seperti verify-idempotency-acaas.ts)
-  const workCommands = await import("/root/Enterprise-OS/workspace/capabilities/work-core/implementation/commands/work.commands.js");
+  const workCommands = await import("require('path').resolve(__dirname, '..')/workspace/capabilities/work-core/implementation/commands/work.commands.js");
   console.log(`[B720-SUT] work-core commands loaded:`, Object.keys(workCommands).filter(k => k.endsWith('Command')));
 
   // Initialize required services

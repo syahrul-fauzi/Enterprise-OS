@@ -1,0 +1,65 @@
+{
+  "recon_id": "ilc-recon-001",
+  "product": "ilc",
+  "timestamp": "2026-11-15T[timestamp]",
+  "overall_status": "REUSE_100_PERCENT",
+  "product_binding_analysis": {
+    "total_capabilities_required": 11,
+    "capabilities_found_in_genesis": 11,
+    "reuse_percentage": 100,
+    "missing_capabilities": []
+  },
+  "required_capabilities": [
+    "requirement-management",
+    "evidence-registry",
+    "knowledge-graph",
+    "authentication",
+    "atomic-composition",
+    "workflow-engine",
+    "governance-evidence",
+    "legal-case",
+    "legal-document",
+    "institutional-coordination",
+    "document-management"
+  ],
+  "capability_verification": {
+    "all_capabilities_exist": true,
+    "no_new_primitives_required": true,
+    "no_duplicate_logic_detected": true
+  },
+  "lifecycle_analysis": {
+    "stages_aligned_with_genesis": true,
+    "claim_boundary_valid": true,
+    "claim_boundary_description": "Product-ACTIVE binding for the ILC identity onto the canonical apps/web professional experience surface. Institutional coordination aggregates are connected to the product reality surface while maintaining full compliance with canonical Work lifecycle primitives."
+  },
+  "governance_checks": {
+    "architecture_freeze_compliant": true,
+    "no_genesis_expansion_proposed": true,
+    "work_continuity_preserved": true,
+    "tenant_isolation_boundaries_clear": true
+  },
+  "recon_outcome": "MINIMAL_FIX",
+  "next_steps": [
+    "Run E2E test for Institutional Initiative Management journey",
+    "Validate product binding against Genesis contract",
+    "Execute independent verification of all acceptance gates BDP-013"
+  ],
+  "evidence": [
+    {
+      "type": "capability_inventory",
+      "description": "All 11 required capabilities present in Genesis"
+    },
+    {
+      "type": "reuse_calculation",
+      "description": "100% reuse percentage - no new code required"
+    },
+    {
+      "type": "architecture_freeze",
+      "description": "No Genesis expansion proposed - compliant with Architecture Freeze"
+    },
+    {
+      "type": "claim_boundary",
+      "description": "Product claim boundary valid - no new lifecycle created"
+    }
+  ]
+}

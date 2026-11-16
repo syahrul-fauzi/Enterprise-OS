@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
-import os
 import sys
 import yaml
 from datetime import datetime
 from collections import defaultdict
 from typing import Dict, Any, List
+from pathlib import Path
 
-# Add implementation to path
-sys.path.insert(0, os.path.join("/root/Enterprise OS", "implementation"))
+repo_root = Path(__file__).parent.parent.parent.parent.parent
+sys.path.insert(0, str(repo_root / "skills"))
+from state_utils import get_repository_root
+
+sys.path.insert(0, str(get_repository_root() / "implementation"))
 from eos.kernel.registry.evidence_registry import get_validated_observations
 
-CONFIG_PATH = "/root/Enterprise-OS/eos.config.yaml"
-RULES_PATH = "/root/Enterprise-OS/implementation/eos/engines/pattern/rules.yaml"
+CONFIG_PATH = get_repository_root() / "eos.config.yaml"
+RULES_PATH = get_repository_root() / "implementation" / "eos" / "engines" / "pattern" / "rules.yaml"
 
 
 def load_config() -> Dict[str, Any]:
@@ -50,8 +53,8 @@ def main():
     pattern_occurrences = defaultdict(list)
 
     for obs in validated_obs:
-        file_path = os.path.join("/root/Enterprise OS", obs["file"])
-        print(f"🔍 Scanning {obs['id']} ({os.path.basename(file_path)})")
+        file_path = get_repository_root() / obs["file"]
+        print(f"🔍 Scanning {obs['id']} ({file_path.name})")
 
         for pattern in rules["patterns"]:
             hit_count = scan_file_for_keywords(file_path, pattern["keywords"])
@@ -89,11 +92,11 @@ def main():
             })
 
     # Generate pattern candidate report
-    evidence_path = config["evidence_base"].format(product=config["primary_product"])
-    report_dir = os.path.join(evidence_path, "pattern-candidates")
-    os.makedirs(report_dir, exist_ok=True)
+    evidence_path = Path(config["evidence_base"].format(product=config["primary_product"]))
+    report_dir = evidence_path / "pattern-candidates"
+    report_dir.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    report_path = os.path.join(report_dir, f"pattern-candidate-report-{timestamp}.yaml")
+    report_path = report_dir / f"pattern-candidate-report-{timestamp}.yaml"
     report = {
         "generated_at": datetime.now().isoformat(),
         "pattern_candidates": pattern_candidates

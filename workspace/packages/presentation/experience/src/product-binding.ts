@@ -21,7 +21,7 @@ interface ProductBindingManifest {
 
 function workspaceRoot(): string {
   // REALITY PATH ONLY: Detect correct workspace root for both local and containerized environments
-  const localRoot = resolve("/root/Enterprise-OS/workspace");
+  const localRoot = resolve("require('path').resolve(__dirname, '..')/workspace");
   const containerRoot = resolve("/app");
   const isLocal = existsSync(resolve(localRoot, "products"));
   const workspaceRoot = isLocal ? localRoot : containerRoot;

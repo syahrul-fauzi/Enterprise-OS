@@ -11,7 +11,7 @@ async function main() {
   console.log(`[B7.8 EVIDENCE GENERATOR] Membuat runtime events untuk decision_id: ${SERVICES_ID_VALID_DECISION_ID}`);
   
   // Set environment variable untuk menulis ke services-id's runtime log
-  process.env.EOS_RUNTIME_INVOCATION_EVIDENCE_PATH = "/root/Enterprise-OS/workspace/products/services-id/evidence/verification/runtime-invocations.jsonl";
+  process.env.EOS_RUNTIME_INVOCATION_EVIDENCE_PATH = "require('path').resolve(__dirname, '..')/workspace/products/services-id/evidence/verification/runtime-invocations.jsonl";
   process.env.EOS_RUNTIME_INVOCATION_PRODUCT_ID = "services-id";
 
   // 1. Simulasikan api-platform event (sesuai route.ts POST)
