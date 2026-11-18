@@ -1,0 +1,118 @@
+ Image staging-web Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 531B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 2.74kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:22-alpine
+#3 DONE 0.9s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [ 1/33] FROM docker.io/library/node:22-alpine@sha256:b6f26b36c8ff49624cfdac716b8ea1138d606df02586a77d364bb5536a634f85
+#5 resolve docker.io/library/node:22-alpine@sha256:b6f26b36c8ff49624cfdac716b8ea1138d606df02586a77d364bb5536a634f85 0.0s done
+#5 DONE 0.0s
+
+#6 [ 2/33] WORKDIR /app
+#6 CACHED
+
+#7 [internal] load build context
+#7 transferring context: 657.50kB 0.2s done
+#7 DONE 0.3s
+
+#8 [ 3/33] RUN corepack enable
+#8 DONE 0.5s
+
+#9 [ 4/33] COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+#9 DONE 0.1s
+
+#10 [ 5/33] COPY apps ./apps
+#10 DONE 3.4s
+
+#11 [ 6/33] COPY packages/presentation/config ./packages/presentation/config
+#11 DONE 0.1s
+
+#12 [ 7/33] COPY packages/presentation/entities ./packages/presentation/entities
+#12 DONE 0.1s
+
+#13 [ 8/33] COPY packages/presentation/ui-system ./packages/presentation/ui-system
+#13 DONE 0.1s
+
+#14 [ 9/33] COPY packages/presentation/foundation ./packages/presentation/foundation
+#14 DONE 0.1s
+
+#15 [10/33] COPY packages/presentation/experience ./packages/presentation/experience
+#15 DONE 0.1s
+
+#16 [11/33] COPY packages/presentation/hooks ./packages/presentation/hooks
+#16 DONE 0.1s
+
+#17 [12/33] COPY packages/presentation/templates ./packages/presentation/templates
+#17 DONE 0.1s
+
+#18 [13/33] COPY packages/presentation/widgets ./packages/presentation/widgets
+#18 DONE 0.1s
+
+#19 [14/33] COPY packages/presentation/features ./packages/presentation/features
+#19 DONE 0.1s
+
+#20 [15/33] COPY packages/core ./packages/core
+#20 DONE 0.1s
+
+#21 [16/33] COPY packages/composition ./packages/composition
+#21 DONE 0.1s
+
+#22 [17/33] COPY capabilities ./capabilities
+#22 DONE 0.3s
+
+#23 [18/33] COPY config ./config
+#23 DONE 0.1s
+
+#24 [19/33] COPY apps/web/app/(eos)/work/new ./apps/web/app/(eos)/work/new
+#24 DONE 0.1s
+
+#25 [20/33] COPY apps/web/app/(eos)/enter ./apps/web/app/(eos)/enter
+#25 DONE 0.1s
+
+#26 [21/33] COPY apps/web/app/(eos)/my-reality ./apps/web/app/(eos)/my-reality
+#26 DONE 0.1s
+
+#27 [22/33] COPY apps/web/app/(auth)/login ./apps/web/app/(auth)/login
+#27 DONE 0.1s
+
+#28 [23/33] COPY apps/web/app/api/health ./apps/web/app/api/health
+#28 DONE 0.1s
+
+#29 [24/33] COPY apps/web/app/api/work/create ./apps/web/app/api/work/create
+#29 DONE 0.1s
+
+#30 [25/33] COPY apps/web/app/api/capabilities/[cap]/[commandName] ./apps/web/app/api/capabilities/[cap]/[commandName]
+#30 DONE 0.1s
+
+#31 [26/33] COPY apps/web/app/api/governance/decisions ./apps/web/app/api/governance/decisions
+#31 DONE 0.1s
+
+#32 [27/33] COPY apps/web/next.config.js ./apps/web/next.config.js
+#32 DONE 0.1s
+
+#33 [28/33] COPY apps/web/tsconfig.json ./apps/web/tsconfig.json
+#33 DONE 0.1s
+
+#34 [29/33] RUN pnpm install --frozen-lockfile
+#34 0.350 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-11.13.1.tgz
+#34 2.441 Scope: all 37 workspace projects
+#34 2.577 ? Verifying lockfile against supply-chain policies (617 entries)...
+#34 2.595 Lockfile is up to date, resolution step is skipped
+#34 2.771 Progress: resolved 1, reused 0, downloaded 0, added 0
+#34 2.847 Packages: +472
+#34 2.847 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#34 3.774 Progress: resolved 472, reused 0, downloaded 85, added 4
+#34 4.774 Progress: resolved 472, reused 0, downloaded 268, added 16
+#34 5.776 Progress: resolved 472, reused 0, downloaded 345, added 24
+#34 6.800 Progress: resolved 472, reused 0, downloaded 389, added 27
+#34 7.801 Progress: resolved 472, reused 0, downloaded 442, added 32

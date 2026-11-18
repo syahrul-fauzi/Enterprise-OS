@@ -1,0 +1,56 @@
+[2026-11-15T22:54:44Z] Starting state authorization verification...
+[2026-11-15T22:54:44Z] Loaded 28 ownership boundaries
+[2026-11-15T22:59:32Z] Starting state authorization verification...
+[2026-11-15T22:59:32Z] Loaded 28 ownership boundaries
+[2026-11-15T22:59:32Z] Found 2 authorization violations:
+[2026-11-15T22:59:32Z]   Line 2: Actor 'unauthorized-actor' wrote 'wrote unauthorized-test.yaml' at [2026-11-15T19:38:28.147Z]
+[2026-11-15T22:59:32Z]   Line 4: Actor 'unauthorized-actor' wrote 'wrote unauthorized-test.yaml' at [2026-11-15T19:42:13.408Z]
+[2026-11-15T22:59:32Z] ---
+[2026-11-15T22:59:32Z] ❌ State authorization verification failed!
+[2026-11-15T23:00:41Z] Starting state authorization verification...
+[2026-11-15T23:00:41Z] Loaded 28 ownership boundaries
+[2026-11-15T23:00:41Z] Found 2 authorization violations:
+[2026-11-15T23:00:41Z]   Line 2: Actor 'unauthorized-actor' wrote 'wrote unauthorized-test.yaml' at [2026-11-15T19:38:28.147Z]
+[2026-11-15T23:00:41Z]   Line 4: Actor 'unauthorized-actor' wrote 'wrote unauthorized-test.yaml' at [2026-11-15T19:42:13.408Z]
+[2026-11-15T23:00:41Z] ---
+[2026-11-15T23:00:41Z] ❌ State authorization verification failed!
+[2026-11-15T23:01:15Z] Starting state authorization verification...
+[2026-11-15T23:01:16Z] Loaded 28 ownership boundaries
+[2026-11-15T23:01:16Z] All audit log entries are authorized
+[2026-11-15T23:01:16Z] ---
+[2026-11-15T23:01:16Z] ✅ State authorization verification passed!
+[2026-11-15T23:03:09Z] Starting state authorization verification...
+[2026-11-15T23:03:09Z] Loaded 28 ownership boundaries
+[2026-11-15T23:03:09Z] All audit log entries are authorized
+[2026-11-15T23:03:09Z] ---
+[2026-11-15T23:03:09Z] ✅ State authorization verification passed!
+[2026-11-15T23:55:38Z] Starting state authorization verification...
+[2026-11-15T23:55:38Z] Loaded 28 ownership boundaries
+[2026-11-15T23:55:38Z] All audit log entries are authorized
+[2026-11-15T23:55:38Z] ---
+[2026-11-15T23:55:38Z] ✅ State authorization verification passed!
+[2026-11-16T01:20:01Z] Starting state authorization verification...
+[2026-11-16T01:20:01Z] Loaded 28 ownership boundaries
+[2026-11-16T01:20:01Z] All audit log entries are authorized
+[2026-11-16T01:20:01Z] ---
+[2026-11-16T01:20:01Z] ✅ State authorization verification passed!
+[2026-11-16T03:50:55Z] Starting state authorization verification...
+[2026-11-16T03:50:55Z] Loaded 28 ownership boundaries
+[2026-11-16T03:50:55Z] All audit log entries are authorized
+[2026-11-16T03:50:55Z] ---
+[2026-11-16T03:50:55Z] ✅ State authorization verification passed!
+[2026-11-16T04:21:41Z] Starting state authorization verification...
+[2026-11-16T04:21:41Z] Loaded 28 ownership boundaries
+[2026-11-16T04:21:41Z] All audit log entries are authorized
+[2026-11-16T04:21:41Z] ---
+[2026-11-16T04:21:41Z] ✅ State authorization verification passed!
+[2026-11-16T04:56:21Z] Starting state authorization verification...
+[2026-11-16T04:56:21Z] Loaded 59 ownership boundaries
+[2026-11-16T04:56:21Z] All audit log entries are authorized
+[2026-11-16T04:56:21Z] ---
+[2026-11-16T04:56:21Z] ✅ State authorization verification passed!
+[2026-11-16T04:57:58Z] Starting state authorization verification...
+[2026-11-16T04:57:58Z] Loaded 59 ownership boundaries
+[2026-11-16T04:57:58Z] All audit log entries are authorized
+[2026-11-16T04:57:58Z] ---
+[2026-11-16T04:57:58Z] ✅ State authorization verification passed!

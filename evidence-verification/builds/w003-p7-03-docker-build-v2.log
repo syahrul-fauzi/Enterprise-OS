@@ -1,0 +1,256 @@
+ Image staging-web Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 531B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 2.74kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:22-alpine
+#3 DONE 0.9s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [ 1/33] FROM docker.io/library/node:22-alpine@sha256:b6f26b36c8ff49624cfdac716b8ea1138d606df02586a77d364bb5536a634f85
+#5 resolve docker.io/library/node:22-alpine@sha256:b6f26b36c8ff49624cfdac716b8ea1138d606df02586a77d364bb5536a634f85 0.0s done
+#5 DONE 0.0s
+
+#6 [ 2/33] WORKDIR /app
+#6 CACHED
+
+#7 [internal] load build context
+#7 transferring context: 879.22kB 0.2s done
+#7 DONE 0.3s
+
+#8 [ 3/33] RUN corepack enable
+#8 DONE 0.5s
+
+#9 [ 4/33] COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+#9 DONE 0.1s
+
+#10 [ 5/33] COPY apps ./apps
+#10 DONE 3.5s
+
+#11 [ 6/33] COPY packages/presentation/config ./packages/presentation/config
+#11 DONE 0.1s
+
+#12 [ 7/33] COPY packages/presentation/entities ./packages/presentation/entities
+#12 DONE 0.1s
+
+#13 [ 8/33] COPY packages/presentation/ui-system ./packages/presentation/ui-system
+#13 DONE 0.1s
+
+#14 [ 9/33] COPY packages/presentation/foundation ./packages/presentation/foundation
+#14 DONE 0.1s
+
+#15 [10/33] COPY packages/presentation/experience ./packages/presentation/experience
+#15 DONE 0.1s
+
+#16 [11/33] COPY packages/presentation/hooks ./packages/presentation/hooks
+#16 DONE 0.1s
+
+#17 [12/33] COPY packages/presentation/templates ./packages/presentation/templates
+#17 DONE 0.1s
+
+#18 [13/33] COPY packages/presentation/widgets ./packages/presentation/widgets
+#18 DONE 0.1s
+
+#19 [14/33] COPY packages/presentation/features ./packages/presentation/features
+#19 DONE 0.1s
+
+#20 [15/33] COPY packages/core ./packages/core
+#20 DONE 0.1s
+
+#21 [16/33] COPY packages/composition ./packages/composition
+#21 DONE 0.1s
+
+#22 [17/33] COPY capabilities ./capabilities
+#22 DONE 0.3s
+
+#23 [18/33] COPY config ./config
+#23 DONE 0.1s
+
+#24 [19/33] COPY apps/web/app/(eos)/work/new ./apps/web/app/(eos)/work/new
+#24 DONE 0.1s
+
+#25 [20/33] COPY apps/web/app/(eos)/enter ./apps/web/app/(eos)/enter
+#25 DONE 0.1s
+
+#26 [21/33] COPY apps/web/app/(eos)/my-reality ./apps/web/app/(eos)/my-reality
+#26 DONE 0.1s
+
+#27 [22/33] COPY apps/web/app/(auth)/login ./apps/web/app/(auth)/login
+#27 DONE 0.1s
+
+#28 [23/33] COPY apps/web/app/api/health ./apps/web/app/api/health
+#28 DONE 0.1s
+
+#29 [24/33] COPY apps/web/app/api/work/create ./apps/web/app/api/work/create
+#29 DONE 0.1s
+
+#30 [25/33] COPY apps/web/app/api/capabilities/[cap]/[commandName] ./apps/web/app/api/capabilities/[cap]/[commandName]
+#30 DONE 0.1s
+
+#31 [26/33] COPY apps/web/app/api/governance/decisions ./apps/web/app/api/governance/decisions
+#31 DONE 0.1s
+
+#32 [27/33] COPY apps/web/next.config.js ./apps/web/next.config.js
+#32 DONE 0.1s
+
+#33 [28/33] COPY apps/web/tsconfig.json ./apps/web/tsconfig.json
+#33 DONE 0.1s
+
+#34 [29/33] RUN pnpm install --frozen-lockfile
+#34 0.339 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-11.13.1.tgz
+#34 2.397 Scope: all 37 workspace projects
+#34 2.536 ? Verifying lockfile against supply-chain policies (617 entries)...
+#34 2.557 Lockfile is up to date, resolution step is skipped
+#34 2.722 Progress: resolved 1, reused 0, downloaded 0, added 0
+#34 2.790 Packages: +472
+#34 2.790 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#34 3.735 Progress: resolved 472, reused 0, downloaded 67, added 4
+#34 4.738 Progress: resolved 472, reused 0, downloaded 237, added 16
+#34 5.764 Progress: resolved 472, reused 0, downloaded 337, added 23
+#34 6.774 Progress: resolved 472, reused 0, downloaded 356, added 24
+#34 7.789 Progress: resolved 472, reused 0, downloaded 444, added 31
+#34 8.793 Progress: resolved 472, reused 0, downloaded 454, added 32
+#34 9.804 Progress: resolved 472, reused 0, downloaded 456, added 36
+#34 11.01 Progress: resolved 472, reused 0, downloaded 457, added 36
+#34 11.01 ✓ Lockfile passes supply-chain policies (617 entries in 8.4s)
+#34 11.87 Progress: resolved 472, reused 0, downloaded 460, added 472, done
+#34 12.60 
+#34 12.60 dependencies:
+#34 12.60 + @repo/core-kernel 0.1.0 <- packages/core/kernel
+#34 12.60 + @repo/core-runtime 0.1.0 <- packages/core/runtime
+#34 12.60 + @types/pg 8.23.1
+#34 12.60 + core-capability-registry 0.0.0 <- packages/core-capability-registry
+#34 12.60 + pg 8.23.0
+#34 12.60 + zod 3.25.76
+#34 12.60 
+#34 12.60 devDependencies:
+#34 12.60 + @eslint/js 9.39.5
+#34 12.60 + @next/eslint-plugin-next 16.3.5
+#34 12.60 + @playwright/test 1.63.0
+#34 12.60 + @repo/composition 0.1.0-alpha.6 <- packages/composition
+#34 12.60 + @repo/config-typescript 0.0.0 <- config/typescript
+#34 12.60 + @tailwindcss/cli 4.3.3
+#34 12.60 + @types/jest 30.0.0
+#34 12.60 + @types/js-yaml 4.0.9
+#34 12.60 + @types/next 9.0.0
+#34 12.60 + @types/node 26.5.1
+#34 12.60 + @types/node-fetch 2.6.13
+#34 12.60 + @types/react 19.3.0
+#34 12.60 + @types/react-dom 19.3.0
+#34 12.60 + @types/yaml 1.9.7
+#34 12.60 + dotenv 17.4.2
+#34 12.60 + eslint 9.39.5
+#34 12.60 + eslint-config-prettier 10.1.8
+#34 12.60 + eslint-plugin-only-warn 1.2.1
+#34 12.60 + eslint-plugin-react 7.37.5
+#34 12.60 + eslint-plugin-react-hooks 5.2.0
+#34 12.60 + eslint-plugin-turbo 2.10.12
+#34 12.60 + globals 16.5.0
+#34 12.60 + js-yaml 5.4.2
+#34 12.60 + node-fetch 3.3.2
+#34 12.60 + playwright 1.63.0
+#34 12.60 + postcss 8.5.28
+#34 12.60 + prettier 3.9.6
+#34 12.60 + prettier-plugin-tailwindcss 0.7.4
+#34 12.60 + react 19.3.0
+#34 12.60 + react-dom 19.3.0
+#34 12.60 + tailwindcss 4.3.3
+#34 12.60 + tsx 4.23.13
+#34 12.60 + turbo 2.10.12
+#34 12.60 + typescript 6.0.3
+#34 12.60 + typescript-eslint 8.70.0
+#34 12.60 + vitest 3.2.7
+#34 12.60 
+#34 12.77 Done in 11.1s using pnpm v11.13.1
+#34 DONE 22.9s
+
+#35 [30/33] RUN cd packages/composition && pnpm build
+#35 1.580 $ tsc
+#35 DONE 3.5s
+
+#36 [31/33] RUN pnpm build --filter @repo/core-kernel --filter @capabilities/work-core --filter @repo/presentation-ui-system
+#36 1.015 $ turbo run build --filter @repo/core-kernel --filter @capabilities/work-core --filter @repo/presentation-ui-system
+#36 1.073 
+#36 1.073 Attention:
+#36 1.073 Turborepo now collects completely anonymous telemetry regarding usage.
+#36 1.073 This information is used to shape the Turborepo roadmap and prioritize features.
+#36 1.073 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+#36 1.073 https://turborepo.dev/docs/telemetry
+#36 1.073 
+#36 1.089 
+#36 1.089    • Packages in scope: @capabilities/work-core, @repo/core-kernel, @repo/presentation-ui-system
+#36 1.089    • Running build in 3 packages
+#36 1.089    • Remote caching disabled
+#36 1.089 
+#36 1.120 @repo/core-runtime:build: cache miss, executing 9d557b84c57d57d3
+#36 1.120 @repo/presentation-foundation:build: cache miss, executing 4735fc5c52214e27
+#36 1.828 @repo/core-runtime:build: $ tsc
+#36 1.841 @repo/presentation-foundation:build: $ tsc --build
+#36 2.120 @repo/presentation-ui-system:build:styles: cache miss, executing d2ab86a92c45f747
+#36 2.889 @repo/presentation-ui-system:build:styles: $ tailwindcss -i ./src/styles.css -o ./dist/index.css --config ../../../apps/web/tailwind.config.js
+#36 3.171 @repo/presentation-ui-system:build:styles: [3m[1m[34m≈[39m[22m[23m tailwindcss [34mv4.3.3[39m
+#36 3.172 @repo/presentation-ui-system:build:styles: 
+#36 3.350 @repo/presentation-ui-system:build:styles: Done in [34m178ms[39m
+#36 3.378 @repo/presentation-ui-system:build: cache miss, executing 26f9e54c24aefadb
+#36 3.604 @repo/core-kernel:build: cache miss, executing eafc80cb8d925844
+#36 4.124 @repo/presentation-ui-system:build: $ pnpm run build:styles && tsc
+#36 4.340 @repo/core-kernel:build: $ tsc
+#36 4.851 @repo/presentation-ui-system:build: $ tailwindcss -i ./src/styles.css -o ./dist/index.css --config ../../../apps/web/tailwind.config.js
+#36 5.142 @repo/presentation-ui-system:build: [3m[1m[34m≈[39m[22m[23m tailwindcss [34mv4.3.3[39m
+#36 5.143 @repo/presentation-ui-system:build: 
+#36 5.324 @repo/presentation-ui-system:build: Done in [34m181ms[39m
+#36 6.936 @repo/capabilities-identity:build: cache miss, executing 2223acd3e1167a63
+#36 7.654 @repo/capabilities-identity:build: $ tsc --build --force
+#36 11.81 @capabilities/work-core:build: cache miss, executing f121bf125e61aa3f
+#36 12.51 @capabilities/work-core:build: $ tsc
+#36 13.81 @capabilities/work-core:build: implementation/commands/work.commands.ts(38,5): error TS2353: Object literal may only specify known properties, and 'domainType' does not exist in type 'Partial<WorkAggregate>'.
+#36 13.81 @capabilities/work-core:build: implementation/commands/work.commands.ts(171,5): error TS4104: The type 'readonly string[]' is 'readonly' and cannot be assigned to the mutable type 'string[]'.
+#36 13.85 @capabilities/work-core:build: [ELIFECYCLE] Command failed with exit code 2.
+#36 13.86 @capabilities/work-core#build:  ERROR  command (/app/capabilities/work-core) /usr/local/bin/pnpm run build exited (2)
+#36 13.86 
+#36 13.86  Tasks:    6 successful, 7 total
+#36 13.86 Cached:    0 cached, 7 total
+#36 13.86   Time:    12.79s 
+#36 13.86 Failed:    @capabilities/work-core#build
+#36 13.86 
+#36 13.87  ERROR  run failed: command  exited (2)
+#36 13.90 [ELIFECYCLE] Command failed with exit code 2.
+#36 ERROR: process "/bin/sh -c pnpm build --filter @repo/core-kernel --filter @capabilities/work-core --filter @repo/presentation-ui-system" did not complete successfully: exit code: 2
+------
+ > [31/33] RUN pnpm build --filter @repo/core-kernel --filter @capabilities/work-core --filter @repo/presentation-ui-system:
+13.85 @capabilities/work-core:build: [ELIFECYCLE] Command failed with exit code 2.
+13.86 @capabilities/work-core#build:  ERROR  command (/app/capabilities/work-core) /usr/local/bin/pnpm run build exited (2)
+13.86 
+13.86  Tasks:    6 successful, 7 total
+13.86 Cached:    0 cached, 7 total
+13.86   Time:    12.79s 
+13.86 Failed:    @capabilities/work-core#build
+13.86 
+13.87  ERROR  run failed: command  exited (2)
+13.90 [ELIFECYCLE] Command failed with exit code 2.
+------
+Dockerfile:46
+
+--------------------
+
+  44 |     RUN cd packages/composition && pnpm build
+
+  45 |     # Build verified workspace packages:
+
+  46 | >>> RUN pnpm build --filter @repo/core-kernel --filter @capabilities/work-core --filter @repo/presentation-ui-system
+
+  47 |     # Build only golden spine routes (work/new + required APIs - core freeze compliant)
+
+  48 |     WORKDIR /app/apps/web
+
+--------------------
+
+failed to solve: process "/bin/sh -c pnpm build --filter @repo/core-kernel --filter @capabilities/work-core --filter @repo/presentation-ui-system" did not complete successfully: exit code: 2
+

@@ -1,0 +1,451 @@
+ Image staging-web Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 531B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 2.74kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:22-alpine
+#3 DONE 0.9s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [ 1/33] FROM docker.io/library/node:22-alpine@sha256:b6f26b36c8ff49624cfdac716b8ea1138d606df02586a77d364bb5536a634f85
+#5 resolve docker.io/library/node:22-alpine@sha256:b6f26b36c8ff49624cfdac716b8ea1138d606df02586a77d364bb5536a634f85 0.0s done
+#5 DONE 0.0s
+
+#6 [ 2/33] WORKDIR /app
+#6 CACHED
+
+#7 [internal] load build context
+#7 transferring context: 651.49kB 0.2s done
+#7 DONE 0.3s
+
+#8 [ 3/33] RUN corepack enable
+#8 DONE 0.6s
+
+#9 [ 4/33] COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+#9 DONE 0.1s
+
+#10 [ 5/33] COPY apps ./apps
+#10 DONE 3.4s
+
+#11 [ 6/33] COPY packages/presentation/config ./packages/presentation/config
+#11 DONE 0.1s
+
+#12 [ 7/33] COPY packages/presentation/entities ./packages/presentation/entities
+#12 DONE 0.1s
+
+#13 [ 8/33] COPY packages/presentation/ui-system ./packages/presentation/ui-system
+#13 DONE 0.1s
+
+#14 [ 9/33] COPY packages/presentation/foundation ./packages/presentation/foundation
+#14 DONE 0.1s
+
+#15 [10/33] COPY packages/presentation/experience ./packages/presentation/experience
+#15 DONE 0.1s
+
+#16 [11/33] COPY packages/presentation/hooks ./packages/presentation/hooks
+#16 DONE 0.1s
+
+#17 [12/33] COPY packages/presentation/templates ./packages/presentation/templates
+#17 DONE 0.1s
+
+#18 [13/33] COPY packages/presentation/widgets ./packages/presentation/widgets
+#18 DONE 0.1s
+
+#19 [14/33] COPY packages/presentation/features ./packages/presentation/features
+#19 DONE 0.1s
+
+#20 [15/33] COPY packages/core ./packages/core
+#20 DONE 0.1s
+
+#21 [16/33] COPY packages/composition ./packages/composition
+#21 DONE 0.1s
+
+#22 [17/33] COPY capabilities ./capabilities
+#22 DONE 0.4s
+
+#23 [18/33] COPY config ./config
+#23 DONE 0.1s
+
+#24 [19/33] COPY apps/web/app/(eos)/work/new ./apps/web/app/(eos)/work/new
+#24 DONE 0.1s
+
+#25 [20/33] COPY apps/web/app/(eos)/enter ./apps/web/app/(eos)/enter
+#25 DONE 0.1s
+
+#26 [21/33] COPY apps/web/app/(eos)/my-reality ./apps/web/app/(eos)/my-reality
+#26 DONE 0.1s
+
+#27 [22/33] COPY apps/web/app/(auth)/login ./apps/web/app/(auth)/login
+#27 DONE 0.1s
+
+#28 [23/33] COPY apps/web/app/api/health ./apps/web/app/api/health
+#28 DONE 0.1s
+
+#29 [24/33] COPY apps/web/app/api/work/create ./apps/web/app/api/work/create
+#29 DONE 0.1s
+
+#30 [25/33] COPY apps/web/app/api/capabilities/[cap]/[commandName] ./apps/web/app/api/capabilities/[cap]/[commandName]
+#30 DONE 0.1s
+
+#31 [26/33] COPY apps/web/app/api/governance/decisions ./apps/web/app/api/governance/decisions
+#31 DONE 0.1s
+
+#32 [27/33] COPY apps/web/next.config.js ./apps/web/next.config.js
+#32 DONE 0.1s
+
+#33 [28/33] COPY apps/web/tsconfig.json ./apps/web/tsconfig.json
+#33 DONE 0.1s
+
+#34 [29/33] RUN pnpm install --frozen-lockfile
+#34 0.344 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-11.13.1.tgz
+#34 2.509 Scope: all 37 workspace projects
+#34 2.654 ? Verifying lockfile against supply-chain policies (617 entries)...
+#34 2.675 Lockfile is up to date, resolution step is skipped
+#34 2.851 Progress: resolved 1, reused 0, downloaded 0, added 0
+#34 2.921 Packages: +472
+#34 2.921 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#34 3.891 Progress: resolved 472, reused 0, downloaded 79, added 4
+#34 4.897 Progress: resolved 472, reused 0, downloaded 210, added 16
+#34 5.944 Progress: resolved 472, reused 0, downloaded 341, added 24
+#34 6.962 Progress: resolved 472, reused 0, downloaded 361, added 25
+#34 7.979 Progress: resolved 472, reused 0, downloaded 419, added 29
+#34 8.982 Progress: resolved 472, reused 0, downloaded 454, added 36
+#34 10.27 Progress: resolved 472, reused 0, downloaded 455, added 36
+#34 11.28 Progress: resolved 472, reused 0, downloaded 457, added 37
+#34 12.29 Progress: resolved 472, reused 0, downloaded 460, added 179
+#34 12.48 ✓ Lockfile passes supply-chain policies (617 entries in 9.8s)
+#34 13.00 Progress: resolved 472, reused 0, downloaded 460, added 472, done
+#34 13.68 
+#34 13.68 dependencies:
+#34 13.68 + @repo/core-kernel 0.1.0 <- packages/core/kernel
+#34 13.68 + @repo/core-runtime 0.1.0 <- packages/core/runtime
+#34 13.68 + @types/pg 8.23.1
+#34 13.68 + core-capability-registry 0.0.0 <- packages/core-capability-registry
+#34 13.68 + pg 8.23.0
+#34 13.68 + zod 3.25.76
+#34 13.68 
+#34 13.68 devDependencies:
+#34 13.68 + @eslint/js 9.39.5
+#34 13.68 + @next/eslint-plugin-next 16.3.5
+#34 13.68 + @playwright/test 1.63.0
+#34 13.68 + @repo/composition 0.1.0-alpha.6 <- packages/composition
+#34 13.68 + @repo/config-typescript 0.0.0 <- config/typescript
+#34 13.68 + @tailwindcss/cli 4.3.3
+#34 13.68 + @types/jest 30.0.0
+#34 13.68 + @types/js-yaml 4.0.9
+#34 13.68 + @types/next 9.0.0
+#34 13.68 + @types/node 26.5.1
+#34 13.68 + @types/node-fetch 2.6.13
+#34 13.68 + @types/react 19.3.0
+#34 13.68 + @types/react-dom 19.3.0
+#34 13.68 + @types/yaml 1.9.7
+#34 13.68 + dotenv 17.4.2
+#34 13.68 + eslint 9.39.5
+#34 13.68 + eslint-config-prettier 10.1.8
+#34 13.68 + eslint-plugin-only-warn 1.2.1
+#34 13.68 + eslint-plugin-react 7.37.5
+#34 13.68 + eslint-plugin-react-hooks 5.2.0
+#34 13.68 + eslint-plugin-turbo 2.10.12
+#34 13.68 + globals 16.5.0
+#34 13.68 + js-yaml 5.4.2
+#34 13.68 + node-fetch 3.3.2
+#34 13.68 + playwright 1.63.0
+#34 13.68 + postcss 8.5.28
+#34 13.68 + prettier 3.9.6
+#34 13.68 + prettier-plugin-tailwindcss 0.7.4
+#34 13.68 + react 19.3.0
+#34 13.68 + react-dom 19.3.0
+#34 13.68 + tailwindcss 4.3.3
+#34 13.68 + tsx 4.23.13
+#34 13.68 + turbo 2.10.12
+#34 13.68 + typescript 6.0.3
+#34 13.68 + typescript-eslint 8.70.0
+#34 13.68 + vitest 3.2.7
+#34 13.68 
+#34 13.84 Done in 12.1s using pnpm v11.13.1
+#34 DONE 24.0s
+
+#35 [30/33] RUN cd packages/composition && pnpm build
+#35 1.559 $ tsc
+#35 DONE 3.5s
+
+#36 [31/33] RUN pnpm build --filter @repo/core-kernel --filter @capabilities/work-core --filter @repo/presentation-ui-system
+#36 1.016 $ turbo run build --filter @repo/core-kernel --filter @capabilities/work-core --filter @repo/presentation-ui-system
+#36 1.076 
+#36 1.076 Attention:
+#36 1.076 Turborepo now collects completely anonymous telemetry regarding usage.
+#36 1.076 This information is used to shape the Turborepo roadmap and prioritize features.
+#36 1.076 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+#36 1.076 https://turborepo.dev/docs/telemetry
+#36 1.076 
+#36 1.093 
+#36 1.093    • Packages in scope: @capabilities/work-core, @repo/core-kernel, @repo/presentation-ui-system
+#36 1.093    • Running build in 3 packages
+#36 1.093    • Remote caching disabled
+#36 1.093 
+#36 1.125 @repo/core-runtime:build: cache miss, executing 9d557b84c57d57d3
+#36 1.125 @repo/presentation-foundation:build: cache miss, executing 4735fc5c52214e27
+#36 1.824 @repo/presentation-foundation:build: $ tsc --build
+#36 1.852 @repo/core-runtime:build: $ tsc
+#36 2.104 @repo/presentation-ui-system:build:styles: cache miss, executing d2ab86a92c45f747
+#36 2.851 @repo/presentation-ui-system:build:styles: $ tailwindcss -i ./src/styles.css -o ./dist/index.css --config ../../../apps/web/tailwind.config.js
+#36 3.119 @repo/presentation-ui-system:build:styles: [3m[1m[34m≈[39m[22m[23m tailwindcss [34mv4.3.3[39m
+#36 3.119 @repo/presentation-ui-system:build:styles: 
+#36 3.314 @repo/presentation-ui-system:build:styles: Done in [34m194ms[39m
+#36 3.340 @repo/presentation-ui-system:build: cache miss, executing 26f9e54c24aefadb
+#36 3.618 @repo/core-kernel:build: cache miss, executing eafc80cb8d925844
+#36 4.076 @repo/presentation-ui-system:build: $ pnpm run build:styles && tsc
+#36 4.341 @repo/core-kernel:build: $ tsc
+#36 4.822 @repo/presentation-ui-system:build: $ tailwindcss -i ./src/styles.css -o ./dist/index.css --config ../../../apps/web/tailwind.config.js
+#36 5.119 @repo/presentation-ui-system:build: [3m[1m[34m≈[39m[22m[23m tailwindcss [34mv4.3.3[39m
+#36 5.119 @repo/presentation-ui-system:build: 
+#36 5.315 @repo/presentation-ui-system:build: Done in [34m195ms[39m
+#36 6.866 @repo/capabilities-identity:build: cache miss, executing 2223acd3e1167a63
+#36 7.611 @repo/capabilities-identity:build: $ tsc --build --force
+#36 11.82 @capabilities/work-core:build: cache miss, executing 685974f3fffdb13b
+#36 12.50 @capabilities/work-core:build: $ tsc
+#36 14.57 
+#36 14.57  Tasks:    7 successful, 7 total
+#36 14.57 Cached:    0 cached, 7 total
+#36 14.57   Time:    13.495s 
+#36 14.57 
+#36 DONE 14.7s
+
+#37 [32/33] WORKDIR /app/apps/web
+#37 DONE 0.1s
+
+#38 [33/33] RUN pnpm next build
+#38 1.603 ⚠ `eslint` configuration in next.config.js is no longer supported. See more info here: https://nextjs.org/docs/app/api-reference/cli/next#next-lint-options
+#38 1.613 ⚠ Invalid next.config.js options detected: 
+#38 1.613 ⚠     Unrecognized key(s) in object: 'eslint'
+#38 1.613 ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+#38 1.750 ▲ Next.js 16.2.0 (Turbopack)
+#38 1.750 - Environments: .env.local
+#38 1.750 
+#38 1.809   Creating an optimized production build ...
+#38 9.162 Turbopack build encountered 2 warnings:
+#38 9.162 ./apps/web/app/(eos)/work/new/page.tsx:19:71
+#38 9.162 Module not found: Can't resolve '@repo/identity-capability/repositories'
+#38 9.162   [90m17 |[0m   [36mtry[0m {
+#38 9.162   [90m18 |[0m     [90m// Import canonical intent repository (lazy import to avoid circular dependencies)[0m
+#38 9.162 [31m[1m>[0m [90m19 |[0m     [36mconst[0m { getIntentRepositoryPostgres, initIdentitySchema } = [36mawait[0m [36mimport[0m(
+#38 9.162   [90m   |[0m                                                                       [31m[1m^^^^^^[0m
+#38 9.162 [31m[1m>[0m [90m20 |[0m       [32m"@repo/identity-capability/repositories"[0m
+#38 9.162   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.162 [31m[1m>[0m [90m21 |[0m     );
+#38 9.162   [90m   |[0m [31m[1m^^^^^[0m
+#38 9.162   [90m22 |[0m
+#38 9.162   [90m23 |[0m     [36mawait[0m initIdentitySchema();
+#38 9.162   [90m24 |[0m     [36mconst[0m intentRepository = getIntentRepositoryPostgres();
+#38 9.162 
+#38 9.162 Import map: aliased to relative './@repo/identity-capability/repositories' inside of [project]/apps/web
+#38 9.162 
+#38 9.162 
+#38 9.162 Import trace:
+#38 9.162   App Route:
+#38 9.162     ./apps/web/app/(eos)/work/new/page.tsx
+#38 9.162     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.162     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.162     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.162 
+#38 9.162 https://nextjs.org/docs/messages/module-not-found
+#38 9.162 
+#38 9.162 
+#38 9.162 ./apps/web/next.config.js
+#38 9.162 Encountered unexpected file in NFT list
+#38 9.162 A file was traced that indicates that the whole project was traced unintentionally. Somewhere in the import trace below, there are:
+#38 9.162 - filesystem operations (like path.join, path.resolve or fs.readFile), or
+#38 9.162 - very dynamic requires (like require('./' + foo)).
+#38 9.162 To resolve this, you can
+#38 9.162 - remove them if possible, or
+#38 9.162 - only use them in development, or
+#38 9.162 - make sure they are statically scoped to some subfolder: path.join(process.cwd(), 'data', bar), or
+#38 9.162 - add ignore comments: path.join(/*turbopackIgnore: true*/ process.cwd(), bar)
+#38 9.162 
+#38 9.162 Import trace:
+#38 9.162   App Route:
+#38 9.162     ./apps/web/next.config.js
+#38 9.162     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.162     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.162     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.162 
+#38 9.162 
+#38 9.244 
+#38 9.244 > Build error occurred
+#38 9.251 Error: Turbopack build failed with 5 errors:
+#38 9.251 ./capabilities/legal-case/implementation/repository/case-postgres.repository.js:3:1
+#38 9.251 Module not found: Can't resolve '../../../shared/dist/database/migrations/migration.manager.js'
+#38 9.251   [90m1 |[0m ... [33mPool[0m } [36mfrom[0m [32m"pg"[0m;
+#38 9.251   [90m2 |[0m ... [33mPostgresRepository[0m } [36mfrom[0m [32m"../../../identity/dist/implementation/repositories/base.repo...[0m
+#38 9.251 [31m[1m>[0m [90m3 |[0m ... [33mDatabaseMigrationManager[0m } [36mfrom[0m [32m"../../../shared/dist/database/migrations/migration.man...[0m
+#38 9.251   [90m  |[0m    [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.251   [90m4 |[0m ... [33mCaseId[0m, } [36mfrom[0m [32m"../../contracts/index.js"[0m;
+#38 9.251   [90m5 |[0m ...[90mate required environment variables in production - matches communication.postgres.reposi...[0m
+#38 9.251   [90m6 |[0m ...[90mTION: Skip during Next.js build phase (phase-production-build) because build-time static...[0m
+#38 9.251 
+#38 9.251 
+#38 9.251 
+#38 9.251 Import trace:
+#38 9.251   App Route:
+#38 9.251     ./capabilities/legal-case/implementation/repository/case-postgres.repository.js
+#38 9.251     ./capabilities/legal-case/implementation/commands/get-case-by-id.command.ts
+#38 9.251     ./apps/web/app/api/domain/[aggregateId]/route.ts
+#38 9.251 
+#38 9.251 https://nextjs.org/docs/messages/module-not-found
+#38 9.251 
+#38 9.251 
+#38 9.251 ./packages/presentation/ui-system/dist/layouts/GlobalNavigation.js:6:1
+#38 9.251 Module not found: Can't resolve '@repo/composition/navigation'
+#38 9.251   [90m4 |[0m [36mimport[0m [33mLink[0m [36mfrom[0m [32m"next/link"[0m;
+#38 9.251   [90m5 |[0m [90m// Import directly from composition package's source to fix module resolution[0m
+#38 9.251 [31m[1m>[0m [90m6 |[0m [36mimport[0m { createWorkspaceNavigation } [36mfrom[0m [32m"@repo/composition/navigation"[0m;
+#38 9.251   [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.251   [90m7 |[0m [36mimport[0m { [33mBreadcrumb[0m } [36mfrom[0m [32m"../molecules/Breadcrumb"[0m;
+#38 9.251   [90m8 |[0m /**
+#38 9.251   [90m9 |[0m  * [33mGlobal[0m shared navigation component extracted [36mfrom[0m [33mMyRealityLayout[0m and [33mWorkRealitySurface[0m
+#38 9.251 
+#38 9.251 Import map: aliased to relative '../../packages/composition/dist/navigation/index.js' inside of [project]/apps/web
+#38 9.251 
+#38 9.251 
+#38 9.251 Import traces:
+#38 9.251   Server Component:
+#38 9.251     ./packages/presentation/ui-system/dist/layouts/GlobalNavigation.js
+#38 9.251     ./apps/web/app/(eos)/my-reality/page.tsx
+#38 9.251 
+#38 9.251   Client Component Browser:
+#38 9.251     ./packages/presentation/ui-system/dist/layouts/GlobalNavigation.js [Client Component Browser]
+#38 9.251     ./packages/presentation/ui-system/dist/layouts/GlobalNavigation.js [Server Component]
+#38 9.251     ./apps/web/app/(eos)/work/page.tsx [Server Component]
+#38 9.251 
+#38 9.251   Client Component SSR:
+#38 9.251     ./packages/presentation/ui-system/dist/layouts/GlobalNavigation.js [Client Component SSR]
+#38 9.251     ./packages/presentation/ui-system/dist/layouts/GlobalNavigation.js [Server Component]
+#38 9.251     ./apps/web/app/(eos)/work/page.tsx [Server Component]
+#38 9.251 
+#38 9.251 https://nextjs.org/docs/messages/module-not-found
+#38 9.251 
+#38 9.251 
+#38 9.251 ./apps/web/app/(eos)/work/[id]/page.tsx:9:1
+#38 9.251 Module not found: Can't resolve '@repo/presentation-templates'
+#38 9.251   [90m 7 |[0m   decodeWorkspaceSession,
+#38 9.251   [90m 8 |[0m } [36mfrom[0m [32m"@repo/core-kernel"[0m;
+#38 9.251 [31m[1m>[0m [90m 9 |[0m [36mimport[0m { [33mWorkRealityTemplate[0m } [36mfrom[0m [32m"@repo/presentation-templates"[0m;
+#38 9.251   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.251   [90m10 |[0m [36mimport[0m { [33mButton[0m } [36mfrom[0m [32m"@repo/presentation-ui-system"[0m;
+#38 9.251   [90m11 |[0m [36mimport[0m { [33mGlobalNavigation[0m } [36mfrom[0m [32m"@repo/presentation-ui-system/layouts"[0m;
+#38 9.251   [90m12 |[0m [36mimport[0m { buildWorkRealityModel } [36mfrom[0m [32m"./getWorkRealityModel"[0m;
+#38 9.251 
+#38 9.251 Import map: aliased to relative '../../packages/presentation/templates/dist' inside of [project]/apps/web
+#38 9.251 
+#38 9.251 
+#38 9.251 Import trace:
+#38 9.251   App Route:
+#38 9.251     ./apps/web/app/(eos)/work/[id]/page.tsx
+#38 9.251     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.251     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.251     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.251 
+#38 9.251 https://nextjs.org/docs/messages/module-not-found
+#38 9.251 
+#38 9.251 
+#38 9.251 ./apps/web/app/(eos)/enter/page.tsx:7:1
+#38 9.251 Module not found: Can't resolve '@repo/presentation-templates/authentication'
+#38 9.251   [90m 5 |[0m } [36mfrom[0m [32m"@repo/core-kernel"[0m;
+#38 9.251   [90m 6 |[0m
+#38 9.251 [31m[1m>[0m [90m 7 |[0m [36mimport[0m { [33mAuthenticationTemplate[0m } [36mfrom[0m [32m"@repo/presentation-templates/authentication"[0m;
+#38 9.251   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.251   [90m 8 |[0m [36mimport[0m { [33mEnterForm[0m } [36mfrom[0m [32m"./EnterForm"[0m;
+#38 9.251   [90m 9 |[0m
+#38 9.251   [90m10 |[0m [36mexport[0m [36mdefault[0m [36masync[0m [36mfunction[0m [33mEnterPage[0m() {
+#38 9.251 
+#38 9.251 Import map: aliased to relative '../../packages/presentation/templates/dist/authentication-template' inside of [project]/apps/web
+#38 9.251 
+#38 9.251 
+#38 9.251 Import trace:
+#38 9.251   App Route:
+#38 9.251     ./apps/web/app/(eos)/enter/page.tsx
+#38 9.251     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.251     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.251     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.251 
+#38 9.251 https://nextjs.org/docs/messages/module-not-found
+#38 9.251 
+#38 9.251 
+#38 9.251 ./apps/web/app/api/capabilities/[cap]/[commandName]/route.ts:3:1
+#38 9.251 Export capabilityRegistry doesn't exist in target module
+#38 9.251   [90m 1 |[0m [36mimport[0m { [33mNextResponse[0m } [36mfrom[0m [32m"next/server"[0m;
+#38 9.251   [90m 2 |[0m [90m// Force re-check[0m
+#38 9.251 [31m[1m>[0m [90m 3 |[0m [36mimport[0m {
+#38 9.251   [90m   |[0m [31m[1m^^^^^^^[0m
+#38 9.251 [31m[1m>[0m [90m 4 |[0m   capabilityRegistry,
+#38 9.251   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.251 [31m[1m>[0m [90m 5 |[0m   [33mWORKSPACE_SESSION_COOKIE[0m,
+#38 9.251   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.251 [31m[1m>[0m [90m 6 |[0m   decodeWorkspaceSession,
+#38 9.251   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.251 [31m[1m>[0m [90m 7 |[0m } [36mfrom[0m [32m"@repo/core-kernel"[0m;
+#38 9.251   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.251   [90m 8 |[0m
+#38 9.251   [90m 9 |[0m [36mexport[0m [36mconst[0m runtime = [32m"nodejs"[0m;
+#38 9.251   [90m10 |[0m
+#38 9.251 
+#38 9.251 The export capabilityRegistry was not found in module [project]/packages/core/kernel/dist/index.js [app-route] (ecmascript).
+#38 9.251 Did you mean to import CapabilityManifestSchema?
+#38 9.251 All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+#38 9.251 
+#38 9.251 Import trace:
+#38 9.251   App Route:
+#38 9.251     ./apps/web/app/api/capabilities/[cap]/[commandName]/route.ts
+#38 9.251     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.251     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.251     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.251 
+#38 9.251 
+#38 9.251     at <unknown> (./capabilities/legal-case/implementation/repository/case-postgres.repository.js:3:1)
+#38 9.251     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+#38 9.251     at <unknown> (./packages/presentation/ui-system/dist/layouts/GlobalNavigation.js:6:1)
+#38 9.251     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+#38 9.251     at <unknown> (./apps/web/app/(eos)/work/[id]/page.tsx:9:1)
+#38 9.251     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+#38 9.251     at <unknown> (./apps/web/app/(eos)/enter/page.tsx:7:1)
+#38 9.251     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+#38 9.251     at <unknown> (./apps/web/app/api/capabilities/[cap]/[commandName]/route.ts:3:1)
+#38 ERROR: process "/bin/sh -c pnpm next build" did not complete successfully: exit code: 1
+------
+ > [33/33] RUN pnpm next build:
+9.251 
+9.251     at <unknown> (./capabilities/legal-case/implementation/repository/case-postgres.repository.js:3:1)
+9.251     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+9.251     at <unknown> (./packages/presentation/ui-system/dist/layouts/GlobalNavigation.js:6:1)
+9.251     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+9.251     at <unknown> (./apps/web/app/(eos)/work/[id]/page.tsx:9:1)
+9.251     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+9.251     at <unknown> (./apps/web/app/(eos)/enter/page.tsx:7:1)
+9.251     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+9.251     at <unknown> (./apps/web/app/api/capabilities/[cap]/[commandName]/route.ts:3:1)
+------
+Dockerfile:49
+
+--------------------
+
+  47 |     # Build only golden spine routes (work/new + required APIs - core freeze compliant)
+
+  48 |     WORKDIR /app/apps/web
+
+  49 | >>> RUN pnpm next build
+
+  50 |     
+
+  51 |     EXPOSE 3000
+
+--------------------
+
+failed to solve: process "/bin/sh -c pnpm next build" did not complete successfully: exit code: 1
+

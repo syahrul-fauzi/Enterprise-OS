@@ -1,0 +1,98 @@
+diff --git a/workspace/capabilities/work-core/implementation/commands/work.commands.ts b/workspace/capabilities/work-core/implementation/commands/work.commands.ts
+index f8a32ec..5b1f866 100644
+--- a/workspace/capabilities/work-core/implementation/commands/work.commands.ts
++++ b/workspace/capabilities/work-core/implementation/commands/work.commands.ts
+@@ -29,6 +29,8 @@ export type CreateCoreWorkRequest = z.infer<typeof CreateCoreWorkRequestSchema>;
+ 
+ // Core Work aggregate implementation
+ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: string; workId: string; domainType: string }> {
++  // Debug log untuk verifikasi input yang diterima capabilityRegistry
++  console.log(`[createCoreWork] 🔍 Input received: tenantId=${input.tenantId}, workspaceId=${input.workspaceId}, actorId=${input.actorId}, sessionId=${input.sessionId}`);
+   const workRepository = getWorkRepositoryPostgres();
+   
+   // 1. Create core Work primitive first (EOS substrate)
+@@ -52,7 +54,7 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
+   // Panggil atomic-composition untuk compose tim dari requirements
+   const compositionResult = await capabilityRegistry.invoke(
+           "atomic-composition",
+-           "composeTeamFromRequirements",
++           "atomic-composition.composeTeamFromRequirements",
+            {
+              workId: savedWork.workId,
+              work: savedWork,
+@@ -80,15 +82,24 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
+   const domainCapabilityMap: Record<string, { capability: string; command: string }> = {
+     "legal-case": { capability: "legal-case", command: "case.createFromWork" },
+     "service-request": { capability: "services-id", command: "service-request.createFromWork" },
+-    "consultation": { capability: "consultation", command: "consultation.createFromWork" },
++    "consultation": { capability: "consultation", command: "consultation.create" },
+   };
+   
+   const domainConfig = domainCapabilityMap[input.domainType];
+   if (domainConfig) {
++    console.log(`[createCoreWork] 🚀 Invoking ${domainConfig.capability}.${domainConfig.command} with workId=${savedWork.workId}`);
+     await capabilityRegistry.invoke(domainConfig.capability, domainConfig.command, {
+-      workId: savedWork.workId,
+-      coreWork: updatedWork, // Pass the updated work with ONLY compositionId (teamId removed)
+-      domainSpecificData: input.domainSpecificData,
++      // Map core work fields to consultation.create expected input
++      title: updatedWork.title,
++      description: updatedWork.description || "",
++      userNeed: input.domainSpecificData?.userNeed || updatedWork.title,
++      priority: updatedWork.priority,
++      sessionId: updatedWork.sessionId,
++      tenantId: updatedWork.tenantId,
++      workspaceId: updatedWork.workspaceId,
++      actorId: updatedWork.actorId,
++      linkedWorkItemId: savedWork.workId,
++      ...(input.domainSpecificData || {}),
+     });
+   }
+   
+diff --git a/workspace/capabilities/work-core/implementation/repository/work-postgres.repository.ts b/workspace/capabilities/work-core/implementation/repository/work-postgres.repository.ts
+index c321646..da02e67 100644
+--- a/workspace/capabilities/work-core/implementation/repository/work-postgres.repository.ts
++++ b/workspace/capabilities/work-core/implementation/repository/work-postgres.repository.ts
+@@ -34,13 +34,16 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
+     return super.find({ composition_id: institutionId } as any);
+   }
+ 
+-  protected toRecord(entity: WorkAggregate): Record<string, any> {
++  protected toRecord(entity: any): Record<string, any> {
+     return {
+       id: entity.id,
+       title: entity.title,
+       description: entity.description,
+       status: entity.status,
+       actor_id: entity.actorId,
++      tenant_id: entity.tenantId,
++      workspace_id: entity.workspaceId,
++      session_id: entity.sessionId,
+       participants: JSON.stringify(entity.participants || []),
+       version: entity.version || 1,
+       state_history: JSON.stringify(entity.stateHistory || []),
+@@ -61,6 +64,9 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
+       description: record.description,
+       status: record.status,
+       actorId: record.actor_id,
++      tenantId: record.tenant_id,
++      workspaceId: record.workspace_id,
++      sessionId: record.session_id,
+       participants,
+       version: record.version || 1,
+       stateHistory,
+diff --git a/workspace/verify-production-e2e-001.ts b/workspace/verify-production-e2e-001.ts
+index 6c47b32..2ecd0e3 100644
+--- a/workspace/verify-production-e2e-001.ts
++++ b/workspace/verify-production-e2e-001.ts
+@@ -7,8 +7,8 @@ dotenv.config({ path: path.join(__dirname, '.env.local') });
+ process.env.DATABASE_URL = 'postgresql://eos_user:eos_pass123@localhost:5433/eos_identity';
+ console.log('DATABASE_URL set to:', process.env.DATABASE_URL);
+ 
+-import { initIdentitySchema } from './capabilities/identity/implementation/repositories/base.repository';
+-import { getIntentRepositoryPostgres } from './capabilities/identity/implementation/repositories/intent.repository';
++import { initIdentitySchema } from './capabilities/identity/implementation/repositories/base.repository.js';
++import { getIntentRepositoryPostgres } from './capabilities/identity/implementation/repositories/intent.repository.js';
+ 
+ // ============================================================================
+ // PRODUCTION-E2E-001: DUAL SCENARIO VERIFICATION

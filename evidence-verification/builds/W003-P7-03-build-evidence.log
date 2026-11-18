@@ -1,0 +1,455 @@
+ Image staging-web Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 531B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 2.26kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:22-alpine
+#3 DONE 0.6s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [ 1/32] FROM docker.io/library/node:22-alpine@sha256:b6f26b36c8ff49624cfdac716b8ea1138d606df02586a77d364bb5536a634f85
+#5 resolve docker.io/library/node:22-alpine@sha256:b6f26b36c8ff49624cfdac716b8ea1138d606df02586a77d364bb5536a634f85 0.0s done
+#5 DONE 0.0s
+
+#6 [ 2/32] WORKDIR /app
+#6 CACHED
+
+#7 [internal] load build context
+#7 transferring context: 629.66kB 0.2s done
+#7 DONE 0.2s
+
+#8 [ 3/32] RUN corepack enable
+#8 DONE 0.4s
+
+#9 [ 4/32] COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+#9 DONE 0.1s
+
+#10 [ 5/32] COPY apps ./apps
+#10 DONE 3.0s
+
+#11 [ 6/32] COPY packages/presentation/config ./packages/presentation/config
+#11 DONE 0.1s
+
+#12 [ 7/32] COPY packages/presentation/entities ./packages/presentation/entities
+#12 DONE 0.1s
+
+#13 [ 8/32] COPY packages/presentation/ui-system ./packages/presentation/ui-system
+#13 DONE 0.1s
+
+#14 [ 9/32] COPY packages/presentation/foundation ./packages/presentation/foundation
+#14 DONE 0.1s
+
+#15 [10/32] COPY packages/presentation/experience ./packages/presentation/experience
+#15 DONE 0.1s
+
+#16 [11/32] COPY packages/presentation/hooks ./packages/presentation/hooks
+#16 DONE 0.1s
+
+#17 [12/32] COPY packages/presentation/templates ./packages/presentation/templates
+#17 DONE 0.1s
+
+#18 [13/32] COPY packages/presentation/widgets ./packages/presentation/widgets
+#18 DONE 0.1s
+
+#19 [14/32] COPY packages/presentation/features ./packages/presentation/features
+#19 DONE 0.1s
+
+#20 [15/32] COPY packages/core ./packages/core
+#20 DONE 0.1s
+
+#21 [16/32] COPY packages/composition ./packages/composition
+#21 DONE 0.1s
+
+#22 [17/32] COPY capabilities ./capabilities
+#22 DONE 0.3s
+
+#23 [18/32] COPY config ./config
+#23 DONE 0.1s
+
+#24 [19/32] COPY apps/web/app/(eos)/work/new ./apps/web/app/(eos)/work/new
+#24 DONE 0.1s
+
+#25 [20/32] COPY apps/web/app/(eos)/enter ./apps/web/app/(eos)/enter
+#25 DONE 0.1s
+
+#26 [21/32] COPY apps/web/app/(eos)/my-reality ./apps/web/app/(eos)/my-reality
+#26 DONE 0.1s
+
+#27 [22/32] COPY apps/web/app/(auth)/login ./apps/web/app/(auth)/login
+#27 DONE 0.1s
+
+#28 [23/32] COPY apps/web/app/api/health ./apps/web/app/api/health
+#28 DONE 0.1s
+
+#29 [24/32] COPY apps/web/app/api/work/create ./apps/web/app/api/work/create
+#29 DONE 0.1s
+
+#30 [25/32] COPY apps/web/app/api/capabilities/[cap]/[commandName] ./apps/web/app/api/capabilities/[cap]/[commandName]
+#30 DONE 0.1s
+
+#31 [26/32] COPY apps/web/app/api/governance/decisions ./apps/web/app/api/governance/decisions
+#31 DONE 0.1s
+
+#32 [27/32] COPY apps/web/next.config.js ./apps/web/next.config.js
+#32 DONE 0.1s
+
+#33 [28/32] COPY apps/web/tsconfig.json ./apps/web/tsconfig.json
+#33 DONE 0.1s
+
+#34 [29/32] RUN pnpm install --frozen-lockfile
+#34 0.318 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-11.13.1.tgz
+#34 2.239 Scope: all 37 workspace projects
+#34 2.384 ? Verifying lockfile against supply-chain policies (617 entries)...
+#34 2.403 Lockfile is up to date, resolution step is skipped
+#34 2.549 Progress: resolved 1, reused 0, downloaded 0, added 0
+#34 2.623 Packages: +473
+#34 2.623 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#34 3.553 Progress: resolved 473, reused 0, downloaded 36, added 0
+#34 4.559 Progress: resolved 473, reused 0, downloaded 229, added 16
+#34 5.563 Progress: resolved 473, reused 0, downloaded 316, added 20
+#34 6.576 Progress: resolved 473, reused 0, downloaded 365, added 24
+#34 7.597 Progress: resolved 473, reused 0, downloaded 434, added 30
+#34 8.598 Progress: resolved 473, reused 0, downloaded 453, added 32
+#34 9.681 Progress: resolved 473, reused 0, downloaded 457, added 35
+#34 11.09 ✓ Lockfile passes supply-chain policies (617 entries in 8.7s)
+#34 11.09 Progress: resolved 473, reused 0, downloaded 458, added 35
+#34 12.00 Progress: resolved 473, reused 0, downloaded 460, added 473, done
+#34 12.58 
+#34 12.58 dependencies:
+#34 12.58 + @repo/core-kernel 0.1.0 <- packages/core/kernel
+#34 12.58 + @repo/core-runtime 0.1.0 <- packages/core/runtime
+#34 12.58 + @types/pg 8.23.1
+#34 12.58 + core-capability-registry 0.0.0 <- packages/core-capability-registry
+#34 12.58 + pg 8.23.0
+#34 12.58 + zod 3.25.76
+#34 12.58 
+#34 12.58 devDependencies:
+#34 12.58 + @eslint/js 9.39.5
+#34 12.58 + @next/eslint-plugin-next 16.3.5
+#34 12.58 + @playwright/test 1.63.0
+#34 12.58 + @tailwindcss/cli 4.3.3
+#34 12.58 + @types/jest 30.0.0
+#34 12.58 + @types/js-yaml 4.0.9
+#34 12.58 + @types/next 9.0.0
+#34 12.58 + @types/node 26.5.1
+#34 12.58 + @types/node-fetch 2.6.13
+#34 12.58 + @types/react 19.3.0
+#34 12.58 + @types/react-dom 19.3.0
+#34 12.58 + @types/yaml 1.9.7
+#34 12.58 + dotenv 17.4.2
+#34 12.58 + eslint 9.39.5
+#34 12.58 + eslint-config-prettier 10.1.8
+#34 12.58 + eslint-plugin-only-warn 1.2.1
+#34 12.58 + eslint-plugin-react 7.37.5
+#34 12.58 + eslint-plugin-react-hooks 5.2.0
+#34 12.58 + eslint-plugin-turbo 2.10.12
+#34 12.58 + globals 16.5.0
+#34 12.58 + js-yaml 5.4.2
+#34 12.58 + node-fetch 3.3.2
+#34 12.58 + playwright 1.63.0
+#34 12.58 + postcss 8.5.28
+#34 12.58 + prettier 3.9.6
+#34 12.58 + prettier-plugin-tailwindcss 0.7.4
+#34 12.58 + react 19.3.0
+#34 12.58 + react-dom 19.3.0
+#34 12.58 + tailwindcss 4.3.3
+#34 12.58 + tsx 4.23.13
+#34 12.58 + turbo 2.10.12
+#34 12.58 + typescript 6.0.3
+#34 12.58 + typescript-eslint 8.70.0
+#34 12.58 + vitest 3.2.7
+#34 12.58 
+#34 12.75 Done in 11.3s using pnpm v11.13.1
+#34 DONE 21.8s
+
+#35 [30/32] RUN pnpm build --filter @repo/*
+#35 1.548 $ turbo run build --filter '@repo/*'
+#35 1.612 
+#35 1.612 Attention:
+#35 1.612 Turborepo now collects completely anonymous telemetry regarding usage.
+#35 1.612 This information is used to shape the Turborepo roadmap and prioritize features.
+#35 1.612 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+#35 1.612 https://turborepo.dev/docs/telemetry
+#35 1.612 
+#35 1.633 
+#35 1.633    • Packages in scope: @repo/capabilities-agent-orchestration, @repo/capabilities-atomic-composition, @repo/capabilities-evidence-registry, @repo/capabilities-identity, @repo/capabilities-knowledge-graph, @repo/capabilities-legal-case, @repo/capabilities-requirement-management, @repo/config-eslint, @repo/config-tailwind, @repo/config-typescript, @repo/core-capability-registry, @repo/core-constitution, @repo/core-eir, @repo/core-kernel, @repo/core-predicate-registry, @repo/core-proof-ledger, @repo/core-realtime, @repo/core-registry-resolver, @repo/core-runtime, @repo/core-transformation-registry, @repo/presentation-config, @repo/presentation-entities, @repo/presentation-experience, @repo/presentation-features, @repo/presentation-foundation, @repo/presentation-hooks, @repo/presentation-templates, @repo/presentation-ui-system, @repo/presentation-widgets
+#35 1.633    • Running build in 29 packages
+#35 1.633    • Remote caching disabled
+#35 1.633 
+#35 1.708 @repo/core-realtime:build: cache miss, executing bee4fa60bdfb5a06
+#35 1.708 @repo/core-transformation-registry:build: cache miss, executing 1beddd15f4d257ce
+#35 1.708 @repo/core-runtime:build: cache miss, executing 9d557b84c57d57d3
+#35 1.709 @repo/presentation-foundation:build: cache miss, executing 4735fc5c52214e27
+#35 1.709 @repo/core-predicate-registry:build: cache miss, executing 229cac4021ad4c72
+#35 1.710 @repo/core-eir:build: cache miss, executing c160dc9bc51d3446
+#35 1.710 @repo/presentation-entities:build: cache miss, executing e6f657c6f43c33b0
+#35 1.712 @repo/core-capability-registry:build: cache miss, executing 41e8fb2cf53d3008
+#35 3.205 @repo/core-realtime:build: $ tsc
+#35 3.297 @repo/presentation-entities:build: $ tsc --build --force
+#35 3.311 @repo/core-eir:build: $ tsc
+#35 3.398 @repo/core-runtime:build: $ tsc
+#35 3.408 @repo/core-capability-registry:build: $ tsc
+#35 3.433 @repo/core-transformation-registry:build: $ tsc
+#35 3.486 @repo/core-predicate-registry:build: $ tsc
+#35 3.507 @repo/presentation-foundation:build: $ tsc --build
+#35 4.231 @repo/presentation-ui-system:build:styles: cache miss, executing d2ab86a92c45f747
+#35 6.678 @repo/presentation-ui-system:build:styles: $ tailwindcss -i ./src/styles.css -o ./dist/index.css --config ../../../apps/web/tailwind.config.js
+#35 8.012 @repo/presentation-ui-system:build:styles: [3m[1m[34m≈[39m[22m[23m tailwindcss [34mv4.3.3[39m
+#35 8.013 @repo/presentation-ui-system:build:styles: 
+#35 8.599 @repo/presentation-ui-system:build:styles: Done in [33m582ms[39m
+#35 8.615 @repo/core-kernel:build: cache miss, executing eafc80cb8d925844
+#35 8.632 @repo/presentation-ui-system:build: cache miss, executing 26f9e54c24aefadb
+#35 9.552 @repo/presentation-ui-system:build: $ pnpm run build:styles && tsc
+#35 9.789 @repo/core-kernel:build: $ tsc
+#35 10.31 @repo/presentation-ui-system:build: $ tailwindcss -i ./src/styles.css -o ./dist/index.css --config ../../../apps/web/tailwind.config.js
+#35 10.60 @repo/presentation-ui-system:build: [3m[1m[34m≈[39m[22m[23m tailwindcss [34mv4.3.3[39m
+#35 10.60 @repo/presentation-ui-system:build: 
+#35 10.77 @repo/presentation-ui-system:build: Done in [34m166ms[39m
+#35 12.45 @repo/capabilities-identity:build: cache miss, executing 2223acd3e1167a63
+#35 12.45 @repo/presentation-hooks:build: cache miss, executing eb0fda95f971f94e
+#35 12.45 @repo/presentation-config:build: cache miss, executing 5aa325c2bee1faa6
+#35 12.45 @repo/core-proof-ledger:build: cache miss, executing 2e33323bd9f62c81
+#35 12.45 @repo/core-constitution:build: cache miss, executing 63f34c64d26279fa
+#35 12.45 @repo/capabilities-agent-orchestration:build: cache miss, executing 4b1cfe6197e0463e
+#35 13.94 @repo/capabilities-agent-orchestration:build: $ tsc
+#35 14.05 @repo/capabilities-identity:build: $ tsc --build --force
+#35 14.06 @repo/presentation-config:build: $ tsc
+#35 14.09 @repo/presentation-hooks:build: $ tsc
+#35 14.09 @repo/core-proof-ledger:build: $ tsc
+#35 14.12 @repo/core-constitution:build: $ tsc
+#35 18.99 @repo/core-registry-resolver:build: cache miss, executing 0843cdc667400d29
+#35 19.14 @repo/capabilities-agent-orchestration:build: implementation/services/agent-orchestration.service.ts(1,39): error TS6059: File '/app/capabilities/workflow-engine/implementation/services/workflow-engine.service.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.14 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/package.json' has field "type" with value "module"
+#35 19.14 @repo/capabilities-agent-orchestration:build: implementation/services/agent-orchestration.service.ts(1,39): error TS6307: File '/app/capabilities/workflow-engine/implementation/services/workflow-engine.service.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.14 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/package.json' has field "type" with value "module"
+#35 19.14 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/contracts/index.ts(1,15): error TS6059: File '/app/capabilities/evidence-registry/implementation/contracts/evidence-registry.contracts.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.14 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.14 @repo/capabilities-agent-orchestration:build:     Imported via "./evidence-registry.contracts.js" from file '/app/capabilities/evidence-registry/implementation/contracts/index.ts'
+#35 19.14 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/evidence-registry.contracts.js" from file '/app/capabilities/evidence-registry/implementation/repository/evidence-postgres.repository.ts'
+#35 19.14 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.14 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/contracts/index.ts(1,15): error TS6307: File '/app/capabilities/evidence-registry/implementation/contracts/evidence-registry.contracts.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.14 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.14 @repo/capabilities-agent-orchestration:build:     Imported via "./evidence-registry.contracts.js" from file '/app/capabilities/evidence-registry/implementation/contracts/index.ts'
+#35 19.14 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/evidence-registry.contracts.js" from file '/app/capabilities/evidence-registry/implementation/repository/evidence-postgres.repository.ts'
+#35 19.14 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.14 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/queries/evidence-registry.queries.ts(12,85): error TS6059: File '/app/capabilities/evidence-registry/implementation/repository/index.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.14 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.14 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/evidence-registry/implementation/queries/evidence-registry.queries.ts'
+#35 19.14 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts'
+#35 19.14 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts'
+#35 19.14 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.14 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/queries/evidence-registry.queries.ts(12,85): error TS6307: File '/app/capabilities/evidence-registry/implementation/repository/index.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.14 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.14 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/evidence-registry/implementation/queries/evidence-registry.queries.ts'
+#35 19.14 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts'
+#35 19.14 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts'
+#35 19.14 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.14 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/queries/index.ts(1,15): error TS6059: File '/app/capabilities/evidence-registry/implementation/queries/evidence-registry.queries.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.14 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.14 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/queries/index.ts(1,15): error TS6307: File '/app/capabilities/evidence-registry/implementation/queries/evidence-registry.queries.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.14 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.14 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/repository/evidence-postgres.repository.ts(3,36): error TS6059: File '/app/capabilities/identity/implementation/repositories/base.repository.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.14 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/identity/package.json' has field "type" with value "module"
+#35 19.14 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/repository/evidence-postgres.repository.ts(3,36): error TS6307: File '/app/capabilities/identity/implementation/repositories/base.repository.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.14 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/identity/package.json' has field "type" with value "module"
+#35 19.14 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/repository/evidence-postgres.repository.ts(131,5): error TS2322: Type 'Date' is not assignable to type 'string'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/repository/index.ts(1,15): error TS6059: File '/app/capabilities/evidence-registry/implementation/repository/evidence-registry.repository.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/repository/index.ts(1,15): error TS6307: File '/app/capabilities/evidence-registry/implementation/repository/evidence-registry.repository.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/repository/index.ts(2,15): error TS6059: File '/app/capabilities/evidence-registry/implementation/repository/evidence-postgres.repository.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/repository/index.ts(2,15): error TS6307: File '/app/capabilities/evidence-registry/implementation/repository/evidence-postgres.repository.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/services/evidence-registry.service.ts(1,36): error TS6059: File '/app/capabilities/requirement-management/implementation/index.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/requirement-management/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/services/evidence-registry.service.ts(1,36): error TS6307: File '/app/capabilities/requirement-management/implementation/index.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/requirement-management/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/services/evidence-registry.service.ts(13,8): error TS6059: File '/app/capabilities/evidence-registry/implementation/contracts/index.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/evidence-registry/implementation/queries/evidence-registry.queries.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/evidence-registry/implementation/repository/evidence-registry.repository.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/services/evidence-registry.service.ts(13,8): error TS6307: File '/app/capabilities/evidence-registry/implementation/contracts/index.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/evidence-registry/implementation/queries/evidence-registry.queries.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/evidence-registry/implementation/repository/evidence-registry.repository.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/services/evidence-registry.service.ts(14,41): error TS6059: File '/app/capabilities/evidence-registry/implementation/queries/index.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../queries/index.js" from file '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../queries/index.js" from file '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../evidence-registry/implementation/services/evidence-registry.service.ts(14,41): error TS6307: File '/app/capabilities/evidence-registry/implementation/queries/index.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../queries/index.js" from file '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../queries/index.js" from file '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/commands/index.ts(10,8): error TS2307: Cannot find module './requirement.commands' or its corresponding type declarations.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/contracts/index.ts(1,15): error TS2307: Cannot find module './requirement.contracts' or its corresponding type declarations.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/index.ts(1,15): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './commands/index.js'?
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/index.ts(2,15): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './contracts/index.js'?
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/index.ts(3,15): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './repository/index.js'?
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/index.ts(4,15): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './queries/index.js'?
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/index.ts(5,15): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './service.js'?
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/index.ts(6,36): error TS2307: Cannot find module './services/requirement.service' or its corresponding type declarations.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/queries/index.ts(1,72): error TS2307: Cannot find module './requirement.queries' or its corresponding type declarations.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/repository/index.ts(10,8): error TS2307: Cannot find module './requirement.repository' or its corresponding type declarations.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(5,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'ApproveRequirementInput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(6,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'ApproveRequirementOutput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(7,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'AssessVerificationInput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(8,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'AssessVerificationOutput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(9,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'CreateRequirementInput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(10,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'CreateRequirementOutput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(11,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'GetRequirementInput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(12,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'GetRequirementOutput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(13,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'MarkRequirementImplementedInput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(14,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'MarkRequirementImplementedOutput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(15,3): error TS2305: Module '"../contracts/index.js"' has no exported member 'RequirementAggregate'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(16,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'SearchRequirementsInput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(17,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'SearchRequirementsOutput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(18,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'StartRequirementDeliveryInput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(19,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'StartRequirementDeliveryOutput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(20,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'UpdateRequirementInput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(21,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'UpdateRequirementOutput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(22,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'VerifyRequirementInput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(23,8): error TS2305: Module '"../contracts/index.js"' has no exported member 'VerifyRequirementOutput'.
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(24,8): error TS6059: File '/app/capabilities/requirement-management/implementation/contracts/index.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/requirement-management/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(24,8): error TS6307: File '/app/capabilities/requirement-management/implementation/contracts/index.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/requirement-management/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(32,8): error TS6059: File '/app/capabilities/requirement-management/implementation/commands/index.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../commands/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../commands/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/requirement-management/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(32,8): error TS6307: File '/app/capabilities/requirement-management/implementation/commands/index.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../commands/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../commands/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/requirement-management/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(33,52): error TS6059: File '/app/capabilities/requirement-management/implementation/queries/index.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../queries/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../queries/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/requirement-management/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(33,52): error TS6307: File '/app/capabilities/requirement-management/implementation/queries/index.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../queries/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../queries/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/requirement-management/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(34,46): error TS6059: File '/app/capabilities/requirement-management/implementation/repository/index.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/requirement-management/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../requirement-management/implementation/services/requirement.service.ts(34,46): error TS6307: File '/app/capabilities/requirement-management/implementation/repository/index.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/requirement-management/implementation/services/requirement.service.ts'
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/requirement-management/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/contracts/index.ts(1,15): error TS6059: File '/app/capabilities/workflow-engine/implementation/contracts/workflow-engine.contracts.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.15 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/package.json' has field "type" with value "module"
+#35 19.15 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/contracts/index.ts(1,15): error TS6307: File '/app/capabilities/workflow-engine/implementation/contracts/workflow-engine.contracts.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.16 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/package.json' has field "type" with value "module"
+#35 19.16 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/repository/index.ts(1,15): error TS6059: File '/app/capabilities/workflow-engine/implementation/repository/workflow-definition.repository.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.16 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/package.json' has field "type" with value "module"
+#35 19.16 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/repository/index.ts(1,15): error TS6307: File '/app/capabilities/workflow-engine/implementation/repository/workflow-definition.repository.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.16 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/package.json' has field "type" with value "module"
+#35 19.16 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/services/workflow-engine.service.ts(2,3): error TS2724: '"../../../requirement-management/implementation/services/requirement.service.js"' has no exported member named 'RequirementId'. Did you mean 'newRequirementId'?
+#35 19.16 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/services/workflow-engine.service.ts(4,8): error TS6059: File '/app/capabilities/requirement-management/implementation/services/requirement.service.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.16 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/requirement-management/package.json' has field "type" with value "module"
+#35 19.16 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/services/workflow-engine.service.ts(4,8): error TS6307: File '/app/capabilities/requirement-management/implementation/services/requirement.service.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.16 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/requirement-management/package.json' has field "type" with value "module"
+#35 19.16 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/services/workflow-engine.service.ts(5,41): error TS6059: File '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.16 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.16 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/services/workflow-engine.service.ts(5,41): error TS6307: File '/app/capabilities/evidence-registry/implementation/services/evidence-registry.service.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.16 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/capabilities/evidence-registry/package.json' has field "type" with value "module"
+#35 19.16 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/services/workflow-engine.service.ts(6,55): error TS2307: Cannot find module '../../../requirements-traceability-matrix/implementation/services/requirements-traceability-matrix.service.js' or its corresponding type declarations.
+#35 19.16 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/services/workflow-engine.service.ts(17,8): error TS6059: File '/app/capabilities/workflow-engine/implementation/contracts/index.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.16 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.16 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/workflow-engine/implementation/services/workflow-engine.service.ts'
+#35 19.16 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/workflow-engine/implementation/repository/workflow-definition.repository.ts'
+#35 19.16 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/workflow-engine/implementation/services/workflow-engine.service.ts'
+#35 19.16 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/package.json' has field "type" with value "module"
+#35 19.16 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/services/workflow-engine.service.ts(17,8): error TS6307: File '/app/capabilities/workflow-engine/implementation/contracts/index.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.16 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.16 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/workflow-engine/implementation/services/workflow-engine.service.ts'
+#35 19.16 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/workflow-engine/implementation/repository/workflow-definition.repository.ts'
+#35 19.16 @repo/capabilities-agent-orchestration:build:     Imported via "../contracts/index.js" from file '/app/capabilities/workflow-engine/implementation/services/workflow-engine.service.ts'
+#35 19.16 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/package.json' has field "type" with value "module"
+#35 19.16 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/services/workflow-engine.service.ts(18,54): error TS6059: File '/app/capabilities/workflow-engine/implementation/repository/index.ts' is not under 'rootDir' '/app/capabilities/agent-orchestration'. 'rootDir' is expected to contain all source files.
+#35 19.16 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.16 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/workflow-engine/implementation/services/workflow-engine.service.ts'
+#35 19.16 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/workflow-engine/implementation/services/workflow-engine.service.ts'
+#35 19.16 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/package.json' has field "type" with value "module"
+#35 19.16 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/services/workflow-engine.service.ts(18,54): error TS6307: File '/app/capabilities/workflow-engine/implementation/repository/index.ts' is not listed within the file list of project '/app/capabilities/agent-orchestration/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+#35 19.16 @repo/capabilities-agent-orchestration:build:   The file is in the program because:
+#35 19.16 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/workflow-engine/implementation/services/workflow-engine.service.ts'
+#35 19.16 @repo/capabilities-agent-orchestration:build:     Imported via "../repository/index.js" from file '/app/capabilities/workflow-engine/implementation/services/workflow-engine.service.ts'
+#35 19.16 @repo/capabilities-agent-orchestration:build:   File is ECMAScript module because '/app/package.json' has field "type" with value "module"
+#35 19.16 @repo/capabilities-agent-orchestration:build: ../workflow-engine/implementation/services/workflow-engine.service.ts(691,33): error TS2345: Argument of type '{ decision_id: string | undefined; product_id: string | undefined; workflow_id: string; run_id: string | undefined; }' is not assignable to parameter of type 'ExecutionContext & { context_trace_id?: string | undefined; is_reentry?: boolean | undefined; }'.
+#35 19.16 @repo/capabilities-agent-orchestration:build:   Type '{ decision_id: string | undefined; product_id: string | undefined; workflow_id: string; run_id: string | undefined; }' is missing the following properties from type 'ExecutionContext': context_trace_id, is_reentry
+#35 19.28 @repo/capabilities-agent-orchestration:build: [ELIFECYCLE] Command failed with exit code 2.
+#35 19.49 @repo/capabilities-identity:build: [ELIFECYCLE] Command failed.
+#35 19.50 @repo/presentation-config:build: [ELIFECYCLE] Command failed.
+#35 19.51 @repo/presentation-hooks:build: [ELIFECYCLE] Command failed.
+#35 19.52 @repo/presentation-ui-system:build: [ELIFECYCLE] Command failed.
+#35 19.62 @repo/capabilities-agent-orchestration#build:  ERROR  command (/app/capabilities/agent-orchestration) /usr/local/bin/pnpm run build exited (2)
+#35 19.62 
+#35 19.62  Tasks:    11 successful, 18 total
+#35 19.62 Cached:    0 cached, 18 total
+#35 19.63   Time:    18.012s 
+#35 19.63 Failed:    @repo/capabilities-agent-orchestration#build
+#35 19.63 
+#35 19.63  ERROR  run failed: command  exited (2)
+#35 19.66 [ELIFECYCLE] Command failed with exit code 2.
+#35 ERROR: process "/bin/sh -c pnpm build --filter @repo/*" did not complete successfully: exit code: 2
+------
+ > [30/32] RUN pnpm build --filter @repo/*:
+19.52 @repo/presentation-ui-system:build: [ELIFECYCLE] Command failed.
+19.62 @repo/capabilities-agent-orchestration#build:  ERROR  command (/app/capabilities/agent-orchestration) /usr/local/bin/pnpm run build exited (2)
+19.62 
+19.62  Tasks:    11 successful, 18 total
+19.62 Cached:    0 cached, 18 total
+19.63   Time:    18.012s 
+19.63 Failed:    @repo/capabilities-agent-orchestration#build
+19.63 
+19.63  ERROR  run failed: command  exited (2)
+19.66 [ELIFECYCLE] Command failed with exit code 2.
+------
+Dockerfile:41
+
+--------------------
+
+  39 |     RUN pnpm install --frozen-lockfile
+
+  40 |     # Build all workspace packages first to generate dist files (required for golden spine imports)
+
+  41 | >>> RUN pnpm build --filter @repo/*
+
+  42 |     # Build only golden spine routes (work/new + required APIs - core freeze compliant)
+
+  43 |     WORKDIR /app/apps/web
+
+--------------------
+
+failed to solve: process "/bin/sh -c pnpm build --filter @repo/*" did not complete successfully: exit code: 2
+

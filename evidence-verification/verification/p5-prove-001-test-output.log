@@ -1,0 +1,43 @@
+◇ injected env (6) from .env.local // tip: ⌘ override existing { override: true }
+DATABASE_URL set to: postgresql://eos_user:eos_pass123@localhost:5433/eos_identity
+[verify-test] Using PostgreSQL connection string (redacted): postgresql://eos_user:eos_pass...
+[verify-test] PostgreSQL pool initialized successfully
+
+🔄 [Process B] GOLDEN SPINE P5: RESUMING WORK FROM POSTGRES (PROCESS DEATH SIMULATED)
+=================================================================================
+Attempting to resolve golden work with ID: golden-work-1789686623408
+🔧 [Test] Initializing test database schema (isolated)...
+✅ [Test] Isolated test schema initialized
+
+✅ [Process B] SUCCESS: Work retrieved from PostgreSQL!
+
+✅ [Process B] SUCCESS: Communications retrieved from PostgreSQL!
+[Mock] Evidence registry listEvidenceByWorkId called for workId: golden-work-1789686623408
+
+✅ [Process B] SUCCESS: 1 work-specific evidence records retrieved via listEvidenceByWorkId!
+
+📊 GOLDEN SPINE PERSISTENCE ACCEPTANCE CRITERIA:
+  ✅ PASS: invocation (work created successfully)
+  ✅ PASS: authorization (tenant/workspace/actor preserved)
+  ✅ PASS: mutation (work persisted to DB)
+  ✅ PASS: evidence_created (evidence array preserved)
+  ✅ PASS: readback_before_restart (work existed pre-restart)
+  ✅ PASS: runtime_restart (fresh process executed)
+  ✅ PASS: readback_after_restart (work found post-restart)
+  ✅ PASS: evidence_survives_restart (evidence exists post-restart)
+  ✅ PASS: work_survives_restart (work exists post-restart)
+  ✅ PASS: communication_survives_restart (communications found post-restart)
+  ✅ PASS: communication_actor_preserved (communication actor matches work actor)
+  ✅ PASS: evidence_chain_preserved (evidence has actor/timestamp)
+  ✅ PASS: work_specific_evidence_readback (listEvidenceByWorkId returns records)
+  ✅ PASS: evidence_readback_matches_work_array (count consistency)
+
+🎉🎉🎉 GOLDEN SPINE DESTRUCTIVE PERSISTENCE TEST PASSED!
+All state preserved across simulated process death.
+G7/G8/G9/G11 now meet RELEASE CONSTITUTION requirements.
+
+📜 EOS FINAL VERDICT:
+   ✅ E2E_PROVEN = TRUE
+   ✅ PERSISTENCE_DURABILITY = PROVEN
+   ✅ ALL GOLDEN SPINE CRITERIA MET
+   Release Constitution: v1.2.0 FACE BASELINE

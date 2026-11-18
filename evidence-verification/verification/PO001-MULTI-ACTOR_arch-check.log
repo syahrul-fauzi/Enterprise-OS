@@ -1,0 +1,158 @@
+diff --git a/workspace/apps/api/app/api/(domain)/work/create/route.ts b/workspace/apps/api/app/api/(domain)/work/create/route.ts
+index 03d267a..905ff0d 100644
+--- a/workspace/apps/api/app/api/(domain)/work/create/route.ts
++++ b/workspace/apps/api/app/api/(domain)/work/create/route.ts
+@@ -9,6 +9,8 @@ import {
+ import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+ // Import work-core commands and register them directly in this route (REALITY PATH ONLY - no dynamic loading)
+ import { workCoreCommands } from "../../../../../../../capabilities/work-core/implementation/commands/work.commands";
++// Import atomic-composition commands to resolve INTEGRATION GAP: atomic-composition.composeTeamFromRequirements not found
++import { atomicCompositionCommands } from "../../../../../../../capabilities/atomic-composition/implementation/services/composition.service";
+ 
+ // Register work-core commands at route initialization to resolve capabilityRegistry command not found error
+ // This follows the existing reality-driven pattern where all commands are imported and registered locally
+@@ -23,6 +25,17 @@ for (const command of workCoreCommands) {
+   console.log(`[api/work/create] ✅ Registered command: work-core.${fullCommandName}`);
+ }
+ 
++// Register atomic-composition commands to fix INTEGRATION GAP for REAL-002-E governance path
++for (const [commandName, command] of Object.entries(atomicCompositionCommands)) {
++  const fullCommandName = `atomic-composition.${commandName}`;
++  capabilityRegistry.register({
++    ...command,
++    name: fullCommandName,
++    capability: "atomic-composition"
++  });
++  console.log(`[api/work/create] ✅ Registered command: atomic-composition.${commandName}`);
++}
++
+ export interface CanonicalWorkRecord {
+   workId: string;
+   id: string;
+diff --git a/workspace/capabilities/shared/implementation/database/migrations/migration.manager.ts b/workspace/capabilities/shared/implementation/database/migrations/migration.manager.ts
+index f2d598b..97bba00 100644
+--- a/workspace/capabilities/shared/implementation/database/migrations/migration.manager.ts
++++ b/workspace/capabilities/shared/implementation/database/migrations/migration.manager.ts
+@@ -399,16 +399,30 @@ const MIGRATIONS: DatabaseMigration[] = [
+         'LH-CASE-001: PT Pendirian - PT Kopi Nusantara Mandiri',
+         'LawyersHub Golden Slice: Klien membutuhkan pendirian PT untuk usaha kopi retail di Jakarta. Memerlukan proses legal lengkap dari konsultasi hingga sertifikat NIB. UAT Work item untuk real human testing.',
+         'active',
+-        '+62877777777777',
++        '+628777777777777',
+         'tenant.anonymous',
+         'professional-workspace.anonymous',
+-        '[{"actorId": "+62877777777777", "role": "customer", "addedAt": "2026-09-09T13:00:00.000Z", "addedBy": "+62877777777777"}, {"actorId": "lawyer.jakarta.001", "role": "professional", "addedAt": "2026-09-09T13:15:00.000Z", "addedBy": "lawyer.jakarta.001"}, {"actorId": "notary.jakarta.001", "role": "notary", "addedAt": "2026-09-09T13:30:00.000Z", "addedBy": "lawyer.jakarta.001"}]',
+-        '[{"status": "draft", "timestamp": "2026-09-09T13:00:00.000Z", "actorId": "+62877777777777", "note": "Work created - UAT initialization"}, {"status": "pending_assignment", "timestamp": "2026-09-09T13:10:00.000Z", "actorId": "lawyer.jakarta.001", "note": "Work assigned to PT establishment manager"}, {"status": "active", "timestamp": "2026-09-09T13:20:00.000Z", "actorId": "lawyer.jakarta.001", "note": "Work activated - ready for human UAT"}]',
++        '[{"actorId": "+628777777777777", "role": "customer", "addedAt": "2026-09-09T13:00:00.000Z", "addedBy": "+628777777777777"}, {"actorId": "lawyer.jakarta.001", "role": "professional", "addedAt": "2026-09-09T13:15:00.000Z", "addedBy": "lawyer.jakarta.001"}, {"actorId": "notary.jakarta.001", "role": "notary", "addedAt": "2026-09-09T13:30:00.000Z", "addedBy": "lawyer.jakarta.001"}]',
++        '[{"status": "draft", "timestamp": "2026-09-09T13:00:00.000Z", "actorId": "+628777777777777", "note": "Work created - UAT initialization"}, {"status": "pending_assignment", "timestamp": "2026-09-09T13:10:00.000Z", "actorId": "lawyer.jakarta.001", "note": "Work assigned to PT establishment manager"}, {"status": "active", "timestamp": "2026-09-09T13:20:00.000Z", "actorId": "lawyer.jakarta.001", "note": "Work activated - ready for human UAT"}]',
+         1,
+         '2026-09-09T13:00:00.000Z',
+         '2026-09-09T13:20:00.000Z'
+       ) ON CONFLICT (id) DO NOTHING;
+     `
++  },
++  {
++    version: "012",
++    name: "add_session_id_to_works_table",
++    description: "Add session_id column to works table to support work-core.work.create session tracking for REAL-002-E",
++    sql: `
++      -- Add missing session_id column to works table (required for work-postgres.repository.ts toRecord method)
++      ALTER TABLE IF EXISTS works ADD COLUMN IF NOT EXISTS session_id VARCHAR(255);
++      
++      -- Add indexes for performance on new columns if they don't exist
++      CREATE INDEX IF NOT EXISTS idx_works_session_id ON works(session_id);
++      CREATE INDEX IF NOT EXISTS idx_works_tenant_id ON works(tenant_id);
++      CREATE INDEX IF NOT EXISTS idx_works_workspace_id ON works(workspace_id);
++    `
+   }
+ 
+ ];
+diff --git a/workspace/capabilities/work-core/implementation/commands/work.commands.ts b/workspace/capabilities/work-core/implementation/commands/work.commands.ts
+index f8a32ec..d004dcb 100644
+--- a/workspace/capabilities/work-core/implementation/commands/work.commands.ts
++++ b/workspace/capabilities/work-core/implementation/commands/work.commands.ts
+@@ -29,6 +29,8 @@ export type CreateCoreWorkRequest = z.infer<typeof CreateCoreWorkRequestSchema>;
+ 
+ // Core Work aggregate implementation
+ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: string; workId: string; domainType: string }> {
++  // Debug log untuk verifikasi input yang diterima capabilityRegistry
++  console.log(`[createCoreWork] 🔍 Input received: tenantId=${input.tenantId}, workspaceId=${input.workspaceId}, actorId=${input.actorId}, sessionId=${input.sessionId}`);
+   const workRepository = getWorkRepositoryPostgres();
+   
+   // 1. Create core Work primitive first (EOS substrate)
+@@ -80,15 +82,24 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
+   const domainCapabilityMap: Record<string, { capability: string; command: string }> = {
+     "legal-case": { capability: "legal-case", command: "case.createFromWork" },
+     "service-request": { capability: "services-id", command: "service-request.createFromWork" },
+-    "consultation": { capability: "consultation", command: "consultation.createFromWork" },
++    "consultation": { capability: "consultation", command: "consultation.create" },
+   };
+   
+   const domainConfig = domainCapabilityMap[input.domainType];
+   if (domainConfig) {
++    console.log(`[createCoreWork] 🚀 Invoking ${domainConfig.capability}.${domainConfig.command} with workId=${savedWork.workId}`);
+     await capabilityRegistry.invoke(domainConfig.capability, domainConfig.command, {
+-      workId: savedWork.workId,
+-      coreWork: updatedWork, // Pass the updated work with ONLY compositionId (teamId removed)
+-      domainSpecificData: input.domainSpecificData,
++      // Map core work fields to consultation.create expected input
++      title: updatedWork.title,
++      description: updatedWork.description || "",
++      userNeed: input.domainSpecificData?.userNeed || updatedWork.title,
++      priority: updatedWork.priority,
++      sessionId: updatedWork.sessionId,
++      tenantId: updatedWork.tenantId,
++      workspaceId: updatedWork.workspaceId,
++      actorId: updatedWork.actorId,
++      linkedWorkItemId: savedWork.workId,
++      ...(input.domainSpecificData || {}),
+     });
+   }
+   
+diff --git a/workspace/capabilities/work-core/implementation/repository/work-postgres.repository.ts b/workspace/capabilities/work-core/implementation/repository/work-postgres.repository.ts
+index c321646..da02e67 100644
+--- a/workspace/capabilities/work-core/implementation/repository/work-postgres.repository.ts
++++ b/workspace/capabilities/work-core/implementation/repository/work-postgres.repository.ts
+@@ -34,13 +34,16 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
+     return super.find({ composition_id: institutionId } as any);
+   }
+ 
+-  protected toRecord(entity: WorkAggregate): Record<string, any> {
++  protected toRecord(entity: any): Record<string, any> {
+     return {
+       id: entity.id,
+       title: entity.title,
+       description: entity.description,
+       status: entity.status,
+       actor_id: entity.actorId,
++      tenant_id: entity.tenantId,
++      workspace_id: entity.workspaceId,
++      session_id: entity.sessionId,
+       participants: JSON.stringify(entity.participants || []),
+       version: entity.version || 1,
+       state_history: JSON.stringify(entity.stateHistory || []),
+@@ -61,6 +64,9 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
+       description: record.description,
+       status: record.status,
+       actorId: record.actor_id,
++      tenantId: record.tenant_id,
++      workspaceId: record.workspace_id,
++      sessionId: record.session_id,
+       participants,
+       version: record.version || 1,
+       stateHistory,
+diff --git a/workspace/verify-production-e2e-001.ts b/workspace/verify-production-e2e-001.ts
+index 6c47b32..2ecd0e3 100644
+--- a/workspace/verify-production-e2e-001.ts
++++ b/workspace/verify-production-e2e-001.ts
+@@ -7,8 +7,8 @@ dotenv.config({ path: path.join(__dirname, '.env.local') });
+ process.env.DATABASE_URL = 'postgresql://eos_user:eos_pass123@localhost:5433/eos_identity';
+ console.log('DATABASE_URL set to:', process.env.DATABASE_URL);
+ 
+-import { initIdentitySchema } from './capabilities/identity/implementation/repositories/base.repository';
+-import { getIntentRepositoryPostgres } from './capabilities/identity/implementation/repositories/intent.repository';
++import { initIdentitySchema } from './capabilities/identity/implementation/repositories/base.repository.js';
++import { getIntentRepositoryPostgres } from './capabilities/identity/implementation/repositories/intent.repository.js';
+ 
+ // ============================================================================
+ // PRODUCTION-E2E-001: DUAL SCENARIO VERIFICATION

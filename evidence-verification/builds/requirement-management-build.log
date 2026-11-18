@@ -1,0 +1,317 @@
+error TS6202: Project references may not form a circular graph. Cycle detected: /root/Enterprise-OS/workspace/capabilities/requirement-management/tsconfig.json
+/root/Enterprise-OS/workspace/capabilities/atomic-composition/tsconfig.json
+/root/Enterprise-OS/workspace/capabilities/evidence-registry/tsconfig.json
+../work-core/implementation/commands/work.commands.ts(38,5): error TS2353: Object literal may only specify known properties, and 'priority' does not exist in type 'Partial<WorkAggregate>'.
+../work-core/implementation/commands/work.commands.ts(97,5): error TS2322: Type 'WorkId | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+../work-core/implementation/commands/work.commands.ts(98,5): error TS2322: Type 'WorkId | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+../work-core/implementation/commands/work.commands.ts(162,25): error TS2339: Property 'push' does not exist on type 'readonly string[]'.
+../work-core/implementation/commands/work.commands.ts(219,48): error TS2339: Property 'role' does not exist on type 'string'.
+../work-inspection/implementation/index.ts(9,3): error TS2459: Module '"./contracts/work-inspection.contracts"' declares 'WorkId' locally, but it is not exported.
+../work-inspection/implementation/services/inspection.agent.service.ts(21,3): error TS2459: Module '"../contracts/work-inspection.contracts"' declares 'WorkId' locally, but it is not exported.
+../api-platform/implementation/services/api-platform.service.ts(16,44): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../api-platform/implementation/services/api-platform.service.ts(16,44): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../api-platform/implementation/services/api-platform.service.ts(268,11): error TS2322: Type '"transaction"' is not assignable to type '"event" | "expression" | "request" | "signal"'.
+../api-platform/implementation/services/api-platform.service.ts(298,19): error TS2304: Cannot find name 'requirementService'.
+../api-platform/implementation/services/api-platform.service.ts(333,21): error TS2304: Cannot find name 'requirementService'.
+../api-platform/implementation/services/api-platform.service.ts(334,27): error TS2304: Cannot find name 'RequirementId'.
+../api-platform/implementation/services/api-platform.service.ts(337,23): error TS2304: Cannot find name 'requirementsTraceabilityMatrixService'.
+../api-platform/implementation/services/api-platform.service.ts(358,25): error TS2304: Cannot find name 'requirementsTraceabilityMatrixService'.
+../api-platform/implementation/services/api-platform.service.ts(360,44): error TS2304: Cannot find name 'RequirementId'.
+../api-platform/implementation/services/api-platform.service.ts(395,29): error TS2304: Cannot find name 'evidenceRegistryService'.
+../api-platform/implementation/services/api-platform.service.ts(431,31): error TS2304: Cannot find name 'evidenceRegistryService'.
+../api-platform/implementation/services/api-platform.service.ts(436,33): error TS2304: Cannot find name 'workflowEngineService'.
+../api-platform/implementation/services/api-platform.service.ts(439,35): error TS2304: Cannot find name 'workflowEngineService'.
+../api-platform/implementation/services/api-platform.service.ts(444,37): error TS2304: Cannot find name 'workflowEngineService'.
+../api-platform/implementation/services/api-platform.service.ts(469,37): error TS2304: Cannot find name 'workflowEngineService'.
+../api-platform/implementation/services/constitution-gateway.service.ts(8,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/service.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "../../../governance-evidence/implementation/service.js" from file '/root/Enterprise-OS/workspace/capabilities/api-platform/implementation/services/constitution-gateway.service.ts'
+    Imported via "../../../governance-evidence/implementation/service.js" from file '/root/Enterprise-OS/workspace/capabilities/api-platform/implementation/services/governance-evidence-gateway.service.ts'
+    Imported via "../../../governance-evidence/implementation/service.js" from file '/root/Enterprise-OS/workspace/capabilities/api-platform/implementation/services/governance-evidence-gateway.service.ts'
+../api-platform/implementation/services/constitution-gateway.service.ts(8,8): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/service.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "../../../governance-evidence/implementation/service.js" from file '/root/Enterprise-OS/workspace/capabilities/api-platform/implementation/services/constitution-gateway.service.ts'
+    Imported via "../../../governance-evidence/implementation/service.js" from file '/root/Enterprise-OS/workspace/capabilities/api-platform/implementation/services/governance-evidence-gateway.service.ts'
+    Imported via "../../../governance-evidence/implementation/service.js" from file '/root/Enterprise-OS/workspace/capabilities/api-platform/implementation/services/governance-evidence-gateway.service.ts'
+../api-platform/implementation/services/governance-read-gateway.service.ts(8,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/governance-read-model/implementation/service.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "../../../governance-read-model/implementation/service.js" from file '/root/Enterprise-OS/workspace/capabilities/api-platform/implementation/services/governance-read-gateway.service.ts'
+    Imported via "../../../governance-read-model/implementation/service.js" from file '/root/Enterprise-OS/workspace/capabilities/api-platform/implementation/services/governance-read-gateway.service.ts'
+../api-platform/implementation/services/governance-read-gateway.service.ts(8,8): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/governance-read-model/implementation/service.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "../../../governance-read-model/implementation/service.js" from file '/root/Enterprise-OS/workspace/capabilities/api-platform/implementation/services/governance-read-gateway.service.ts'
+    Imported via "../../../governance-read-model/implementation/service.js" from file '/root/Enterprise-OS/workspace/capabilities/api-platform/implementation/services/governance-read-gateway.service.ts'
+../api-platform/implementation/services/requirement-delivery-gateway.service.ts(9,41): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/evidence-registry/implementation/contracts/index.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../api-platform/implementation/services/requirement-delivery-gateway.service.ts(9,41): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/evidence-registry/implementation/contracts/index.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../api-platform/implementation/services/requirement-delivery-gateway.service.ts(14,20): error TS2304: Cannot find name 'RequirementStatus'.
+../api-platform/implementation/services/requirement-delivery-gateway.service.ts(15,22): error TS2552: Cannot find name 'RequirementPriority'. Did you mean 'RequestPriority'?
+../api-platform/implementation/services/requirement-delivery-gateway.service.ts(16,32): error TS2304: Cannot find name 'RequirementVerificationStatus'.
+../api-platform/implementation/services/requirement-delivery-gateway.service.ts(38,33): error TS2304: Cannot find name 'RequirementVerificationStatus'.
+../api-platform/implementation/services/requirement-delivery-gateway.service.ts(79,18): error TS2304: Cannot find name 'requirementsTraceabilityMatrixService'.
+../api-platform/implementation/services/requirement-delivery-gateway.service.ts(97,13): error TS2304: Cannot find name 'evidenceRegistryService'.
+../api-platform/implementation/services/requirement-delivery-gateway.service.ts(106,32): error TS2304: Cannot find name 'evidenceRegistryService'.
+../api-platform/implementation/services/requirement-delivery-gateway.service.ts(159,45): error TS7006: Parameter 'item' implicitly has an 'any' type.
+../api-platform/implementation/services/requirement-delivery-gateway.service.ts(160,51): error TS7006: Parameter 'item' implicitly has an 'any' type.
+../api-platform/tsconfig.json(2,14): error TS6053: File '@repo/config-typescript/base.json' not found.
+../atomic-composition/implementation/contracts/execution-requirements.contracts.ts(2,29): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/work-core/contracts/work.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../atomic-composition/implementation/contracts/execution-requirements.contracts.ts(2,29): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/work-core/contracts/work.contracts.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../atomic-composition/implementation/repository/failure-intelligence.repository.ts(51,34): error TS6059: File '/root/Enterprise-OS/workspace/packages/core/runtime/src/execution-context.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via '../../../../packages/core/runtime/src/execution-context.js' from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.ts'
+    Imported via "./execution-context.js" from file '/root/Enterprise-OS/workspace/packages/core/runtime/src/execution-observability.ts'
+    Imported via "./execution-context.js" from file '/root/Enterprise-OS/workspace/packages/core/runtime/src/invocation-evidence.ts'
+    Imported via "./execution-context.js" from file '/root/Enterprise-OS/workspace/packages/core/runtime/src/execution-observability.ts'
+../atomic-composition/implementation/repository/failure-intelligence.repository.ts(51,34): error TS6307: File '/root/Enterprise-OS/workspace/packages/core/runtime/src/execution-context.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via '../../../../packages/core/runtime/src/execution-context.js' from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.ts'
+    Imported via "./execution-context.js" from file '/root/Enterprise-OS/workspace/packages/core/runtime/src/execution-observability.ts'
+    Imported via "./execution-context.js" from file '/root/Enterprise-OS/workspace/packages/core/runtime/src/invocation-evidence.ts'
+    Imported via "./execution-context.js" from file '/root/Enterprise-OS/workspace/packages/core/runtime/src/execution-observability.ts'
+../atomic-composition/implementation/services/capability-resolver.service.ts(35,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/execution-requirements.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "../contracts/execution-requirements.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/capability-resolver.service.ts'
+    Imported via "./execution-requirements.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/execution-requirements.contracts.ts'
+    Imported via "../contracts/execution-requirements.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/capability-resolver.service.ts'
+../atomic-composition/implementation/services/capability-resolver.service.ts(35,8): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/execution-requirements.contracts.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "../contracts/execution-requirements.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/capability-resolver.service.ts'
+    Imported via "./execution-requirements.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/execution-requirements.contracts.ts'
+    Imported via "../contracts/execution-requirements.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/capability-resolver.service.ts'
+../atomic-composition/implementation/services/capability-resolver.service.ts(546,39): error TS2345: Argument of type 'string & BRAND<"WorkId">' is not assignable to parameter of type 'WorkId'.
+  Type 'string & BRAND<"WorkId">' is not assignable to type '{ __brand: "WorkId"; }'.
+    Property '__brand' is missing in type 'String & BRAND<"WorkId">' but required in type '{ __brand: "WorkId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(667,47): error TS2322: Type 'string & BRAND<"ObservationId">' is not assignable to type 'ObservationId | undefined'.
+  Type 'string & BRAND<"ObservationId">' is not assignable to type 'ObservationId'.
+    Type 'string & BRAND<"ObservationId">' is not assignable to type '{ __brand: "ObservationId"; }'.
+      Property '__brand' is missing in type 'String & BRAND<"ObservationId">' but required in type '{ __brand: "ObservationId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(681,47): error TS2322: Type 'string & BRAND<"EvidenceId">' is not assignable to type 'EvidenceId | undefined'.
+  Type 'string & BRAND<"EvidenceId">' is not assignable to type 'EvidenceId'.
+    Type 'string & BRAND<"EvidenceId">' is not assignable to type '{ __brand: "EvidenceId"; }'.
+      Property '__brand' is missing in type 'String & BRAND<"EvidenceId">' but required in type '{ __brand: "EvidenceId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(692,7): error TS2322: Type 'ActionId' is not assignable to type 'string & BRAND<"ActionId">'.
+  Type 'ActionId' is not assignable to type 'BRAND<"ActionId">'.
+    Property '[BRAND]' is missing in type 'String & { __brand: "ActionId"; }' but required in type 'BRAND<"ActionId">'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(700,42): error TS2345: Argument of type 'string & BRAND<"WorkId">' is not assignable to parameter of type 'WorkId'.
+  Type 'string & BRAND<"WorkId">' is not assignable to type '{ __brand: "WorkId"; }'.
+    Property '__brand' is missing in type 'String & BRAND<"WorkId">' but required in type '{ __brand: "WorkId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(701,48): error TS2345: Argument of type 'string & BRAND<"WorkId">' is not assignable to parameter of type 'WorkId'.
+  Type 'string & BRAND<"WorkId">' is not assignable to type '{ __brand: "WorkId"; }'.
+    Property '__brand' is missing in type 'String & BRAND<"WorkId">' but required in type '{ __brand: "WorkId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(714,11): error TS2739: Type '{ startedAt: string; workId: ExecutionChain["workId"]; executionRequirements: (string & z.BRAND<"ExecutionRequirementId">)[]; actions: never[]; attempts: never[]; effects: never[]; observations: never[]; evidences: never[]; overallStatus: "pending"; runtimeProofs: { ...; }; }' is missing the following properties from type '{ workId: string & BRAND<"WorkId">; executionRequirements: (string & BRAND<"ExecutionRequirementId">)[]; actions: (string & BRAND<"ActionId">)[]; attempts: (string & BRAND<...>)[]; ... 8 more ...; readinessScore: number; }': readinessGate, readinessScore
+../atomic-composition/implementation/services/capability-resolver.service.ts(760,3): error TS2322: Type '{ effectId: string & BRAND<"EffectId">; actionId: string & BRAND<"ActionId">; targetEntityId: string; entityType: string; previousState?: string | undefined; newState?: string | undefined; stateChanged: boolean; observedAt: string; sourceAdapter?: string | undefined; verified: boolean; }' is not assignable to type 'EffectId'.
+  Type '{ effectId: string & BRAND<"EffectId">; actionId: string & BRAND<"ActionId">; targetEntityId: string; entityType: string; previousState?: string | undefined; newState?: string | undefined; stateChanged: boolean; observedAt: string; sourceAdapter?: string | undefined; verified: boolean; }' is not assignable to type 'string'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1390,61): error TS2345: Argument of type 'string' is not assignable to parameter of type 'WorkId'.
+  Type 'string' is not assignable to type '{ __brand: "WorkId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1435,77): error TS2352: Conversion of type '{ actionId: ActionId; targetEntityId: string; entityType: string; stateChanged: true; previousState: string; newState: string; observedAt: string; sourceAdapter: string; verified: false; }' to type 'Omit<{ effectId: string & BRAND<"EffectId">; actionId: string & BRAND<"ActionId">; targetEntityId: string; entityType: string; previousState?: string | undefined; newState?: string | undefined; stateChanged: boolean; observedAt: string; sourceAdapter?: string | undefined; verified: boolean; }, "effectId">' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Types of property 'actionId' are incompatible.
+    Type 'ActionId' is not comparable to type 'string & BRAND<"ActionId">'.
+      Type 'ActionId' is not comparable to type 'BRAND<"ActionId">'.
+        Property '[BRAND]' is missing in type 'String & { __brand: "ActionId"; }' but required in type 'BRAND<"ActionId">'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1450,43): error TS2345: Argument of type '{ effectId: string & BRAND<"EffectId">; actionId: string & BRAND<"ActionId">; targetEntityId: string; entityType: string; previousState?: string | undefined; newState?: string | undefined; stateChanged: boolean; observedAt: string; sourceAdapter?: string | undefined; verified: boolean; }' is not assignable to parameter of type 'string'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1452,10): error TS2322: Type 'EffectId' is not assignable to type 'string & BRAND<"EffectId">'.
+  Type 'EffectId' is not assignable to type 'BRAND<"EffectId">'.
+    Property '[BRAND]' is missing in type 'String & { __brand: "EffectId"; }' but required in type 'BRAND<"EffectId">'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1468,10): error TS2322: Type 'ActionId' is not assignable to type '(string & BRAND<"ActionId">) | undefined'.
+  Type 'ActionId' is not assignable to type 'string & BRAND<"ActionId">'.
+    Type 'ActionId' is not assignable to type 'BRAND<"ActionId">'.
+      Property '[BRAND]' is missing in type 'String & { __brand: "ActionId"; }' but required in type 'BRAND<"ActionId">'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1469,10): error TS2322: Type 'EffectId' is not assignable to type '(string & BRAND<"EffectId">) | undefined'.
+  Type 'EffectId' is not assignable to type 'string & BRAND<"EffectId">'.
+    Type 'EffectId' is not assignable to type 'BRAND<"EffectId">'.
+      Property '[BRAND]' is missing in type 'String & { __brand: "EffectId"; }' but required in type 'BRAND<"EffectId">'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1483,61): error TS2345: Argument of type 'string' is not assignable to parameter of type 'WorkId'.
+  Type 'string' is not assignable to type '{ __brand: "WorkId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1494,61): error TS2345: Argument of type 'string' is not assignable to parameter of type 'WorkId'.
+  Type 'string' is not assignable to type '{ __brand: "WorkId"; }'.
+../atomic-composition/implementation/services/composition.service.ts(25,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/atomic-composition.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "../contracts/atomic-composition.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/composition.service.ts'
+    Imported via "../contracts/atomic-composition.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/composition.service.ts'
+    Imported via "../contracts/atomic-composition.contracts.js" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/ai-agent.service.ts'
+    Imported via "../contracts/atomic-composition.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/work-formation.service.ts'
+../atomic-composition/implementation/services/composition.service.ts(25,8): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/atomic-composition.contracts.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "../contracts/atomic-composition.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/composition.service.ts'
+    Imported via "../contracts/atomic-composition.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/composition.service.ts'
+    Imported via "../contracts/atomic-composition.contracts.js" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/ai-agent.service.ts'
+    Imported via "../contracts/atomic-composition.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/work-formation.service.ts'
+../atomic-composition/implementation/services/composition.service.ts(38,41): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/ai-agent.service.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../atomic-composition/implementation/services/composition.service.ts(38,41): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/ai-agent.service.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../atomic-composition/implementation/services/intent-understanding.service.ts(29,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/intent-understanding.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "../contracts/intent-understanding.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+    Imported via '../contracts/intent-understanding.contracts' from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.ts'
+    Imported via "./intent-understanding.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/universal-intent.contracts.ts'
+    Imported via "../contracts/intent-understanding.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/gap-analysis.service.ts'
+../atomic-composition/implementation/services/intent-understanding.service.ts(29,8): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/intent-understanding.contracts.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "../contracts/intent-understanding.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+    Imported via '../contracts/intent-understanding.contracts' from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.ts'
+    Imported via "./intent-understanding.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/universal-intent.contracts.ts'
+    Imported via "../contracts/intent-understanding.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/gap-analysis.service.ts'
+../atomic-composition/implementation/services/intent-understanding.service.ts(30,47): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../atomic-composition/implementation/services/intent-understanding.service.ts(30,47): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../atomic-composition/implementation/services/intent-understanding.service.ts(40,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/universal-intent.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "../contracts/universal-intent.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+    Imported via "../contracts/universal-intent.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/gap-analysis.service.ts'
+    Imported via "../contracts/universal-intent.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/capability-resolver.service.ts'
+    Imported via "../contracts/universal-intent.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/work-formation.service.ts'
+../atomic-composition/implementation/services/intent-understanding.service.ts(40,8): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/universal-intent.contracts.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "../contracts/universal-intent.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+    Imported via "../contracts/universal-intent.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/gap-analysis.service.ts'
+    Imported via "../contracts/universal-intent.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/capability-resolver.service.ts'
+    Imported via "../contracts/universal-intent.contracts" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/work-formation.service.ts'
+../atomic-composition/implementation/services/intent-understanding.service.ts(42,36): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/gap-analysis.service.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../atomic-composition/implementation/services/intent-understanding.service.ts(42,36): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/gap-analysis.service.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../atomic-composition/implementation/services/intent-understanding.service.ts(43,43): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/capability-resolver.service.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "./capability-resolver.service" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+    Imported via "../services/capability-resolver.service.js" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/execution-requirements.contracts.ts'
+    Imported via "./capability-resolver.service" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/work-formation.service.ts'
+../atomic-composition/implementation/services/intent-understanding.service.ts(43,43): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/capability-resolver.service.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "./capability-resolver.service" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+    Imported via "../services/capability-resolver.service.js" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/execution-requirements.contracts.ts'
+    Imported via "./capability-resolver.service" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/work-formation.service.ts'
+../atomic-composition/implementation/services/intent-understanding.service.ts(449,87): error TS6059: File '/root/Enterprise-OS/workspace/packages/core/runtime/src/execution-observability.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via '../../../../packages/core/runtime/src/execution-observability.js' from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+    Imported via "./execution-observability.js" from file '/root/Enterprise-OS/workspace/packages/core/runtime/src/invocation-evidence.ts'
+    Imported via '../../../../packages/core/runtime/src/execution-observability.js' from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+    Imported via '../../../../packages/core/runtime/src/execution-observability.js' from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+../atomic-composition/implementation/services/intent-understanding.service.ts(449,87): error TS6307: File '/root/Enterprise-OS/workspace/packages/core/runtime/src/execution-observability.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via '../../../../packages/core/runtime/src/execution-observability.js' from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+    Imported via "./execution-observability.js" from file '/root/Enterprise-OS/workspace/packages/core/runtime/src/invocation-evidence.ts'
+    Imported via '../../../../packages/core/runtime/src/execution-observability.js' from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+    Imported via '../../../../packages/core/runtime/src/execution-observability.js' from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+../atomic-composition/implementation/services/intent-understanding.service.ts(1701,62): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/work-formation.service.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "./work-formation.service.js" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+    Imported via "./work-formation.service.js" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+../atomic-composition/implementation/services/intent-understanding.service.ts(1701,62): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/work-formation.service.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "./work-formation.service.js" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+    Imported via "./work-formation.service.js" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts'
+../atomic-composition/implementation/services/work-formation.service.ts(2,42): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/composition.service.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "./composition.service" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/work-formation.service.ts'
+    Imported via "./composition.service.js" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/ai-agent.service.ts'
+../atomic-composition/implementation/services/work-formation.service.ts(2,42): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/composition.service.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "./composition.service" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/work-formation.service.ts'
+    Imported via "./composition.service.js" from file '/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/ai-agent.service.ts'
+../evidence-registry/implementation/contracts/index.ts(1,15): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/evidence-registry/implementation/contracts/evidence-registry.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../evidence-registry/implementation/contracts/index.ts(1,15): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/evidence-registry/implementation/contracts/evidence-registry.contracts.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../governance-evidence/implementation/contracts/index.ts(1,15): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/contracts/governance-evidence.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../governance-evidence/implementation/contracts/index.ts(1,15): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/contracts/governance-evidence.contracts.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../governance-evidence/implementation/service.ts(8,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/contracts/index.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "./contracts/index.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/service.ts'
+    Imported via "../contracts/index.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/services/governance-evidence.service.ts'
+../governance-evidence/implementation/service.ts(8,8): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/contracts/index.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "./contracts/index.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/service.ts'
+    Imported via "../contracts/index.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/services/governance-evidence.service.ts'
+../governance-evidence/implementation/service.ts(12,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/services/governed-delivery-seam/index.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "./services/governed-delivery-seam/index.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/service.ts'
+    Imported via "./services/governed-delivery-seam/index.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/service.ts'
+    Imported via "./services/governed-delivery-seam/index.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/service.ts'
+    Imported via "./services/governed-delivery-seam/index.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/service.ts'
+../governance-evidence/implementation/service.ts(12,8): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/services/governed-delivery-seam/index.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "./services/governed-delivery-seam/index.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/service.ts'
+    Imported via "./services/governed-delivery-seam/index.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/service.ts'
+    Imported via "./services/governed-delivery-seam/index.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/service.ts'
+    Imported via "./services/governed-delivery-seam/index.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/service.ts'
+../governance-evidence/implementation/service.ts(28,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/services/governance-evidence.service.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../governance-evidence/implementation/service.ts(28,8): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/services/governance-evidence.service.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../governance-evidence/implementation/services/governance-evidence.service.ts(4,39): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/trust-framework/implementation/services/trust-framework.service.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../governance-evidence/implementation/services/governance-evidence.service.ts(4,39): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/trust-framework/implementation/services/trust-framework.service.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../governance-evidence/implementation/services/governed-delivery-seam/index.ts(7,48): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/services/governed-delivery-seam/delivery-decision-gateway.service.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "./delivery-decision-gateway.service.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/services/governed-delivery-seam/index.ts'
+    Imported via "./delivery-decision-gateway.service.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/services/governed-delivery-seam/index.ts'
+../governance-evidence/implementation/services/governed-delivery-seam/index.ts(7,48): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/services/governed-delivery-seam/delivery-decision-gateway.service.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "./delivery-decision-gateway.service.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/services/governed-delivery-seam/index.ts'
+    Imported via "./delivery-decision-gateway.service.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-evidence/implementation/services/governed-delivery-seam/index.ts'
+../governance-read-model/implementation/contracts/index.ts(1,15): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/governance-read-model/implementation/contracts/governance-read-model.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via "./governance-read-model.contracts.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-read-model/implementation/contracts/index.ts'
+    Imported via "../contracts/governance-read-model.contracts.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-read-model/implementation/services/governance-read-model.service.ts'
+../governance-read-model/implementation/contracts/index.ts(1,15): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/governance-read-model/implementation/contracts/governance-read-model.contracts.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+  The file is in the program because:
+    Imported via "./governance-read-model.contracts.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-read-model/implementation/contracts/index.ts'
+    Imported via "../contracts/governance-read-model.contracts.js" from file '/root/Enterprise-OS/workspace/capabilities/governance-read-model/implementation/services/governance-read-model.service.ts'
+../governance-read-model/implementation/service.ts(11,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/governance-read-model/implementation/contracts/index.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../governance-read-model/implementation/service.ts(11,8): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/governance-read-model/implementation/contracts/index.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../governance-read-model/implementation/service.ts(16,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/governance-read-model/implementation/services/governance-read-model.service.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../governance-read-model/implementation/service.ts(16,8): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/governance-read-model/implementation/services/governance-read-model.service.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../identity/dist/implementation/commands/index.d.ts(1,40): error TS2307: Cannot find module '../../../../packages/core/kernel/src/index.js' or its corresponding type declarations.
+../trust-framework/implementation/contracts/index.ts(1,15): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/trust-framework/implementation/contracts/trust-framework.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../trust-framework/implementation/contracts/index.ts(1,15): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/trust-framework/implementation/contracts/trust-framework.contracts.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../trust-framework/implementation/services/trust-framework.service.ts(13,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/trust-framework/implementation/contracts/index.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../trust-framework/implementation/services/trust-framework.service.ts(13,8): error TS6307: File '/root/Enterprise-OS/workspace/capabilities/trust-framework/implementation/contracts/index.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../trust-framework/implementation/services/trust-framework.service.ts(73,5): error TS2304: Cannot find name 'recordRuntimeInvocation'.
+../trust-framework/implementation/services/trust-framework.service.ts(103,5): error TS2304: Cannot find name 'recordRuntimeInvocation'.
+../trust-framework/implementation/services/trust-framework.service.ts(128,5): error TS2304: Cannot find name 'recordRuntimeInvocation'.
+../work-inspection/dist/implementation/index.d.ts(7,15): error TS2459: Module '"./contracts/work-inspection.contracts"' declares 'WorkId' locally, but it is not exported.
+../work-inspection/dist/implementation/services/inspection.agent.service.d.ts(7,55): error TS2459: Module '"../contracts/work-inspection.contracts"' declares 'WorkId' locally, but it is not exported.
+../../packages/core/runtime/src/execution-observability.ts(2,41): error TS6059: File '/root/Enterprise-OS/workspace/packages/core/runtime/src/invocation-evidence.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/capabilities/api-platform'. 'rootDir' is expected to contain all source files.
+../../packages/core/runtime/src/execution-observability.ts(2,41): error TS6307: File '/root/Enterprise-OS/workspace/packages/core/runtime/src/invocation-evidence.ts' is not listed within the file list of project '/root/Enterprise-OS/workspace/capabilities/api-platform/tsconfig.json'. Projects must list all files or use an 'include' pattern.
+../governance-read-model/implementation/services/governance-read-model.service.ts(1,21): error TS2591: Cannot find name 'node:fs'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+../governance-read-model/implementation/services/governance-read-model.service.ts(2,23): error TS2591: Cannot find name 'node:path'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+../governance-read-model/implementation/services/governance-read-model.service.ts(3,31): error TS2591: Cannot find name 'node:url'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+../governance-read-model/tsconfig.json(2,14): error TS6053: File '@repo/config-typescript/base.json' not found.
+../atomic-composition/implementation/services/capability-resolver.service.ts(546,39): error TS2345: Argument of type 'string & BRAND<"WorkId">' is not assignable to parameter of type 'WorkId'.
+  Type 'string & BRAND<"WorkId">' is not assignable to type '{ __brand: "WorkId"; }'.
+    Property '__brand' is missing in type 'String & BRAND<"WorkId">' but required in type '{ __brand: "WorkId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(667,47): error TS2322: Type 'string & BRAND<"ObservationId">' is not assignable to type 'ObservationId | undefined'.
+  Type 'string & BRAND<"ObservationId">' is not assignable to type 'ObservationId'.
+    Type 'string & BRAND<"ObservationId">' is not assignable to type '{ __brand: "ObservationId"; }'.
+      Property '__brand' is missing in type 'String & BRAND<"ObservationId">' but required in type '{ __brand: "ObservationId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(681,47): error TS2322: Type 'string & BRAND<"EvidenceId">' is not assignable to type 'EvidenceId | undefined'.
+  Type 'string & BRAND<"EvidenceId">' is not assignable to type 'EvidenceId'.
+    Type 'string & BRAND<"EvidenceId">' is not assignable to type '{ __brand: "EvidenceId"; }'.
+      Property '__brand' is missing in type 'String & BRAND<"EvidenceId">' but required in type '{ __brand: "EvidenceId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(692,7): error TS2322: Type 'ActionId' is not assignable to type 'string & BRAND<"ActionId">'.
+  Type 'ActionId' is not assignable to type 'BRAND<"ActionId">'.
+    Property '[BRAND]' is missing in type 'String & { __brand: "ActionId"; }' but required in type 'BRAND<"ActionId">'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(700,42): error TS2345: Argument of type 'string & BRAND<"WorkId">' is not assignable to parameter of type 'WorkId'.
+  Type 'string & BRAND<"WorkId">' is not assignable to type '{ __brand: "WorkId"; }'.
+    Property '__brand' is missing in type 'String & BRAND<"WorkId">' but required in type '{ __brand: "WorkId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(701,48): error TS2345: Argument of type 'string & BRAND<"WorkId">' is not assignable to parameter of type 'WorkId'.
+  Type 'string & BRAND<"WorkId">' is not assignable to type '{ __brand: "WorkId"; }'.
+    Property '__brand' is missing in type 'String & BRAND<"WorkId">' but required in type '{ __brand: "WorkId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(714,11): error TS2739: Type '{ startedAt: string; workId: ExecutionChain["workId"]; executionRequirements: (string & z.BRAND<"ExecutionRequirementId">)[]; actions: never[]; attempts: never[]; effects: never[]; observations: never[]; evidences: never[]; overallStatus: "pending"; runtimeProofs: { ...; }; }' is missing the following properties from type '{ workId: string & BRAND<"WorkId">; executionRequirements: (string & BRAND<"ExecutionRequirementId">)[]; actions: (string & BRAND<"ActionId">)[]; attempts: (string & BRAND<...>)[]; ... 8 more ...; readinessScore: number; }': readinessGate, readinessScore
+../atomic-composition/implementation/services/capability-resolver.service.ts(760,3): error TS2322: Type '{ effectId: string & BRAND<"EffectId">; actionId: string & BRAND<"ActionId">; targetEntityId: string; entityType: string; previousState?: string | undefined; newState?: string | undefined; stateChanged: boolean; observedAt: string; sourceAdapter?: string | undefined; verified: boolean; }' is not assignable to type 'EffectId'.
+  Type '{ effectId: string & BRAND<"EffectId">; actionId: string & BRAND<"ActionId">; targetEntityId: string; entityType: string; previousState?: string | undefined; newState?: string | undefined; stateChanged: boolean; observedAt: string; sourceAdapter?: string | undefined; verified: boolean; }' is not assignable to type 'string'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1390,61): error TS2345: Argument of type 'string' is not assignable to parameter of type 'WorkId'.
+  Type 'string' is not assignable to type '{ __brand: "WorkId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1435,77): error TS2352: Conversion of type '{ actionId: ActionId; targetEntityId: string; entityType: string; stateChanged: true; previousState: string; newState: string; observedAt: string; sourceAdapter: string; verified: false; }' to type 'Omit<{ effectId: string & BRAND<"EffectId">; actionId: string & BRAND<"ActionId">; targetEntityId: string; entityType: string; previousState?: string | undefined; newState?: string | undefined; stateChanged: boolean; observedAt: string; sourceAdapter?: string | undefined; verified: boolean; }, "effectId">' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Types of property 'actionId' are incompatible.
+    Type 'ActionId' is not comparable to type 'string & BRAND<"ActionId">'.
+      Type 'ActionId' is not comparable to type 'BRAND<"ActionId">'.
+        Property '[BRAND]' is missing in type 'String & { __brand: "ActionId"; }' but required in type 'BRAND<"ActionId">'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1450,43): error TS2345: Argument of type '{ effectId: string & BRAND<"EffectId">; actionId: string & BRAND<"ActionId">; targetEntityId: string; entityType: string; previousState?: string | undefined; newState?: string | undefined; stateChanged: boolean; observedAt: string; sourceAdapter?: string | undefined; verified: boolean; }' is not assignable to parameter of type 'string'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1452,10): error TS2322: Type 'EffectId' is not assignable to type 'string & BRAND<"EffectId">'.
+  Type 'EffectId' is not assignable to type 'BRAND<"EffectId">'.
+    Property '[BRAND]' is missing in type 'String & { __brand: "EffectId"; }' but required in type 'BRAND<"EffectId">'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1468,10): error TS2322: Type 'ActionId' is not assignable to type '(string & BRAND<"ActionId">) | undefined'.
+  Type 'ActionId' is not assignable to type 'string & BRAND<"ActionId">'.
+    Type 'ActionId' is not assignable to type 'BRAND<"ActionId">'.
+      Property '[BRAND]' is missing in type 'String & { __brand: "ActionId"; }' but required in type 'BRAND<"ActionId">'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1469,10): error TS2322: Type 'EffectId' is not assignable to type '(string & BRAND<"EffectId">) | undefined'.
+  Type 'EffectId' is not assignable to type 'string & BRAND<"EffectId">'.
+    Type 'EffectId' is not assignable to type 'BRAND<"EffectId">'.
+      Property '[BRAND]' is missing in type 'String & { __brand: "EffectId"; }' but required in type 'BRAND<"EffectId">'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1483,61): error TS2345: Argument of type 'string' is not assignable to parameter of type 'WorkId'.
+  Type 'string' is not assignable to type '{ __brand: "WorkId"; }'.
+../atomic-composition/implementation/services/capability-resolver.service.ts(1494,61): error TS2345: Argument of type 'string' is not assignable to parameter of type 'WorkId'.
+  Type 'string' is not assignable to type '{ __brand: "WorkId"; }'.

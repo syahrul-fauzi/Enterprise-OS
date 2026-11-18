@@ -1,0 +1,645 @@
+ Image staging-web Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 531B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 2.74kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:22-alpine
+#3 DONE 0.9s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [ 1/33] FROM docker.io/library/node:22-alpine@sha256:b6f26b36c8ff49624cfdac716b8ea1138d606df02586a77d364bb5536a634f85
+#5 resolve docker.io/library/node:22-alpine@sha256:b6f26b36c8ff49624cfdac716b8ea1138d606df02586a77d364bb5536a634f85 0.0s done
+#5 DONE 0.0s
+
+#6 [ 2/33] WORKDIR /app
+#6 CACHED
+
+#7 [internal] load build context
+#7 transferring context: 629.72kB 0.2s done
+#7 DONE 0.2s
+
+#8 [ 3/33] RUN corepack enable
+#8 DONE 0.5s
+
+#9 [ 4/33] COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+#9 DONE 0.1s
+
+#10 [ 5/33] COPY apps ./apps
+#10 DONE 3.5s
+
+#11 [ 6/33] COPY packages/presentation/config ./packages/presentation/config
+#11 DONE 0.1s
+
+#12 [ 7/33] COPY packages/presentation/entities ./packages/presentation/entities
+#12 DONE 0.1s
+
+#13 [ 8/33] COPY packages/presentation/ui-system ./packages/presentation/ui-system
+#13 DONE 0.1s
+
+#14 [ 9/33] COPY packages/presentation/foundation ./packages/presentation/foundation
+#14 DONE 0.1s
+
+#15 [10/33] COPY packages/presentation/experience ./packages/presentation/experience
+#15 DONE 0.1s
+
+#16 [11/33] COPY packages/presentation/hooks ./packages/presentation/hooks
+#16 DONE 0.1s
+
+#17 [12/33] COPY packages/presentation/templates ./packages/presentation/templates
+#17 DONE 0.1s
+
+#18 [13/33] COPY packages/presentation/widgets ./packages/presentation/widgets
+#18 DONE 0.1s
+
+#19 [14/33] COPY packages/presentation/features ./packages/presentation/features
+#19 DONE 0.1s
+
+#20 [15/33] COPY packages/core ./packages/core
+#20 DONE 0.1s
+
+#21 [16/33] COPY packages/composition ./packages/composition
+#21 DONE 0.1s
+
+#22 [17/33] COPY capabilities ./capabilities
+#22 DONE 0.3s
+
+#23 [18/33] COPY config ./config
+#23 DONE 0.1s
+
+#24 [19/33] COPY apps/web/app/(eos)/work/new ./apps/web/app/(eos)/work/new
+#24 DONE 0.1s
+
+#25 [20/33] COPY apps/web/app/(eos)/enter ./apps/web/app/(eos)/enter
+#25 DONE 0.1s
+
+#26 [21/33] COPY apps/web/app/(eos)/my-reality ./apps/web/app/(eos)/my-reality
+#26 DONE 0.1s
+
+#27 [22/33] COPY apps/web/app/(auth)/login ./apps/web/app/(auth)/login
+#27 DONE 0.1s
+
+#28 [23/33] COPY apps/web/app/api/health ./apps/web/app/api/health
+#28 DONE 0.1s
+
+#29 [24/33] COPY apps/web/app/api/work/create ./apps/web/app/api/work/create
+#29 DONE 0.1s
+
+#30 [25/33] COPY apps/web/app/api/capabilities/[cap]/[commandName] ./apps/web/app/api/capabilities/[cap]/[commandName]
+#30 DONE 0.1s
+
+#31 [26/33] COPY apps/web/app/api/governance/decisions ./apps/web/app/api/governance/decisions
+#31 DONE 0.1s
+
+#32 [27/33] COPY apps/web/next.config.js ./apps/web/next.config.js
+#32 DONE 0.1s
+
+#33 [28/33] COPY apps/web/tsconfig.json ./apps/web/tsconfig.json
+#33 DONE 0.1s
+
+#34 [29/33] RUN pnpm install --frozen-lockfile
+#34 0.339 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-11.13.1.tgz
+#34 2.397 Scope: all 37 workspace projects
+#34 2.534 ? Verifying lockfile against supply-chain policies (617 entries)...
+#34 2.552 Lockfile is up to date, resolution step is skipped
+#34 2.725 Progress: resolved 1, reused 0, downloaded 0, added 0
+#34 2.805 Packages: +472
+#34 2.805 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#34 3.740 Progress: resolved 472, reused 0, downloaded 54, added 0
+#34 4.751 Progress: resolved 472, reused 0, downloaded 244, added 16
+#34 5.753 Progress: resolved 472, reused 0, downloaded 334, added 24
+#34 6.781 Progress: resolved 472, reused 0, downloaded 362, added 24
+#34 7.791 Progress: resolved 472, reused 0, downloaded 439, added 32
+#34 8.795 Progress: resolved 472, reused 0, downloaded 454, added 32
+#34 9.826 Progress: resolved 472, reused 0, downloaded 457, added 36
+#34 11.01 ✓ Lockfile passes supply-chain policies (617 entries in 8.4s)
+#34 11.01 Progress: resolved 472, reused 0, downloaded 458, added 36
+#34 11.75 Progress: resolved 472, reused 0, downloaded 460, added 472, done
+#34 12.47 
+#34 12.47 dependencies:
+#34 12.47 + @repo/core-kernel 0.1.0 <- packages/core/kernel
+#34 12.47 + @repo/core-runtime 0.1.0 <- packages/core/runtime
+#34 12.47 + @types/pg 8.23.1
+#34 12.47 + core-capability-registry 0.0.0 <- packages/core-capability-registry
+#34 12.47 + pg 8.23.0
+#34 12.47 + zod 3.25.76
+#34 12.47 
+#34 12.47 devDependencies:
+#34 12.47 + @eslint/js 9.39.5
+#34 12.47 + @next/eslint-plugin-next 16.3.5
+#34 12.47 + @playwright/test 1.63.0
+#34 12.47 + @repo/composition 0.1.0-alpha.6 <- packages/composition
+#34 12.47 + @repo/config-typescript 0.0.0 <- config/typescript
+#34 12.47 + @tailwindcss/cli 4.3.3
+#34 12.47 + @types/jest 30.0.0
+#34 12.47 + @types/js-yaml 4.0.9
+#34 12.47 + @types/next 9.0.0
+#34 12.47 + @types/node 26.5.1
+#34 12.47 + @types/node-fetch 2.6.13
+#34 12.47 + @types/react 19.3.0
+#34 12.47 + @types/react-dom 19.3.0
+#34 12.47 + @types/yaml 1.9.7
+#34 12.47 + dotenv 17.4.2
+#34 12.47 + eslint 9.39.5
+#34 12.47 + eslint-config-prettier 10.1.8
+#34 12.47 + eslint-plugin-only-warn 1.2.1
+#34 12.47 + eslint-plugin-react 7.37.5
+#34 12.47 + eslint-plugin-react-hooks 5.2.0
+#34 12.47 + eslint-plugin-turbo 2.10.12
+#34 12.47 + globals 16.5.0
+#34 12.47 + js-yaml 5.4.2
+#34 12.47 + node-fetch 3.3.2
+#34 12.47 + playwright 1.63.0
+#34 12.47 + postcss 8.5.28
+#34 12.47 + prettier 3.9.6
+#34 12.47 + prettier-plugin-tailwindcss 0.7.4
+#34 12.47 + react 19.3.0
+#34 12.47 + react-dom 19.3.0
+#34 12.47 + tailwindcss 4.3.3
+#34 12.47 + tsx 4.23.13
+#34 12.47 + turbo 2.10.12
+#34 12.47 + typescript 6.0.3
+#34 12.47 + typescript-eslint 8.70.0
+#34 12.47 + vitest 3.2.7
+#34 12.47 
+#34 12.66 Done in 11s using pnpm v11.13.1
+#34 DONE 22.7s
+
+#35 [30/33] RUN cd packages/composition && pnpm build
+#35 1.609 $ tsc
+#35 DONE 3.5s
+
+#36 [31/33] RUN pnpm build --filter @repo/core-kernel --filter @capabilities/work-core --filter @repo/presentation-ui-system
+#36 1.024 $ turbo run build --filter @repo/core-kernel --filter @capabilities/work-core --filter @repo/presentation-ui-system
+#36 1.083 
+#36 1.083 Attention:
+#36 1.083 Turborepo now collects completely anonymous telemetry regarding usage.
+#36 1.083 This information is used to shape the Turborepo roadmap and prioritize features.
+#36 1.083 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+#36 1.083 https://turborepo.dev/docs/telemetry
+#36 1.083 
+#36 1.098 
+#36 1.099    • Packages in scope: @capabilities/work-core, @repo/core-kernel, @repo/presentation-ui-system
+#36 1.099    • Running build in 3 packages
+#36 1.099    • Remote caching disabled
+#36 1.099 
+#36 1.137 @repo/core-runtime:build: cache miss, executing 9d557b84c57d57d3
+#36 1.137 @repo/presentation-foundation:build: cache miss, executing 4735fc5c52214e27
+#36 1.903 @repo/core-runtime:build: $ tsc
+#36 1.916 @repo/presentation-foundation:build: $ tsc --build
+#36 2.204 @repo/presentation-ui-system:build:styles: cache miss, executing d2ab86a92c45f747
+#36 3.003 @repo/presentation-ui-system:build:styles: $ tailwindcss -i ./src/styles.css -o ./dist/index.css --config ../../../apps/web/tailwind.config.js
+#36 3.325 @repo/presentation-ui-system:build:styles: [3m[1m[34m≈[39m[22m[23m tailwindcss [34mv4.3.3[39m
+#36 3.326 @repo/presentation-ui-system:build:styles: 
+#36 3.513 @repo/presentation-ui-system:build:styles: Done in [34m186ms[39m
+#36 3.541 @repo/presentation-ui-system:build: cache miss, executing 26f9e54c24aefadb
+#36 4.081 @repo/core-kernel:build: cache miss, executing eafc80cb8d925844
+#36 4.346 @repo/presentation-ui-system:build: $ pnpm run build:styles && tsc
+#36 4.815 @repo/core-kernel:build: $ tsc
+#36 5.097 @repo/presentation-ui-system:build: $ tailwindcss -i ./src/styles.css -o ./dist/index.css --config ../../../apps/web/tailwind.config.js
+#36 5.405 @repo/presentation-ui-system:build: [3m[1m[34m≈[39m[22m[23m tailwindcss [34mv4.3.3[39m
+#36 5.405 @repo/presentation-ui-system:build: 
+#36 5.607 @repo/presentation-ui-system:build: Done in [34m200ms[39m
+#36 8.066 @repo/capabilities-identity:build: cache miss, executing 2223acd3e1167a63
+#36 8.863 @repo/capabilities-identity:build: $ tsc --build --force
+#36 13.84 @capabilities/work-core:build: cache miss, executing 685974f3fffdb13b
+#36 14.57 @capabilities/work-core:build: $ tsc
+#36 16.89 
+#36 16.89  Tasks:    7 successful, 7 total
+#36 16.89 Cached:    0 cached, 7 total
+#36 16.89   Time:    15.809s 
+#36 16.89 
+#36 DONE 17.0s
+
+#37 [32/33] WORKDIR /app/apps/web
+#37 DONE 0.1s
+
+#38 [33/33] RUN pnpm next build
+#38 1.606 ⚠ `eslint` configuration in next.config.js is no longer supported. See more info here: https://nextjs.org/docs/app/api-reference/cli/next#next-lint-options
+#38 1.615 ⚠ Invalid next.config.js options detected: 
+#38 1.615 ⚠     Unrecognized key(s) in object: 'eslint'
+#38 1.615 ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+#38 1.752 ▲ Next.js 16.2.0 (Turbopack)
+#38 1.752 - Environments: .env.local
+#38 1.752 
+#38 1.811   Creating an optimized production build ...
+#38 9.154 Turbopack build encountered 2 warnings:
+#38 9.154 ./apps/web/app/(eos)/work/new/page.tsx:19:71
+#38 9.154 Module not found: Can't resolve '@repo/identity-capability/repositories'
+#38 9.154   [90m17 |[0m   [36mtry[0m {
+#38 9.154   [90m18 |[0m     [90m// Import canonical intent repository (lazy import to avoid circular dependencies)[0m
+#38 9.154 [31m[1m>[0m [90m19 |[0m     [36mconst[0m { getIntentRepositoryPostgres, initIdentitySchema } = [36mawait[0m [36mimport[0m(
+#38 9.154   [90m   |[0m                                                                       [31m[1m^^^^^^[0m
+#38 9.154 [31m[1m>[0m [90m20 |[0m       [32m"@repo/identity-capability/repositories"[0m
+#38 9.154   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.154 [31m[1m>[0m [90m21 |[0m     );
+#38 9.154   [90m   |[0m [31m[1m^^^^^[0m
+#38 9.154   [90m22 |[0m
+#38 9.154   [90m23 |[0m     [36mawait[0m initIdentitySchema();
+#38 9.154   [90m24 |[0m     [36mconst[0m intentRepository = getIntentRepositoryPostgres();
+#38 9.154 
+#38 9.154 Import map: aliased to relative './@repo/identity-capability/repositories' inside of [project]/apps/web
+#38 9.154 
+#38 9.154 
+#38 9.154 Import trace:
+#38 9.154   App Route:
+#38 9.154     ./apps/web/app/(eos)/work/new/page.tsx
+#38 9.154     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.154     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.154     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.154 
+#38 9.154 https://nextjs.org/docs/messages/module-not-found
+#38 9.154 
+#38 9.154 
+#38 9.154 ./apps/web/next.config.js
+#38 9.154 Encountered unexpected file in NFT list
+#38 9.154 A file was traced that indicates that the whole project was traced unintentionally. Somewhere in the import trace below, there are:
+#38 9.154 - filesystem operations (like path.join, path.resolve or fs.readFile), or
+#38 9.154 - very dynamic requires (like require('./' + foo)).
+#38 9.154 To resolve this, you can
+#38 9.154 - remove them if possible, or
+#38 9.154 - only use them in development, or
+#38 9.154 - make sure they are statically scoped to some subfolder: path.join(process.cwd(), 'data', bar), or
+#38 9.154 - add ignore comments: path.join(/*turbopackIgnore: true*/ process.cwd(), bar)
+#38 9.154 
+#38 9.154 Import trace:
+#38 9.154   App Route:
+#38 9.154     ./apps/web/next.config.js
+#38 9.154     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.154     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.154     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.154 
+#38 9.154 
+#38 9.238 
+#38 9.238 > Build error occurred
+#38 9.246 Error: Turbopack build failed with 14 errors:
+#38 9.246 ./apps/web/app/(eos)/notifications/page.tsx:51:5
+#38 9.246 Expression expected
+#38 9.246   [90m49 |[0m [90m//         </ErrorBoundary>[0m
+#38 9.246   [90m50 |[0m [90m//       </div>[0m
+#38 9.246 [31m[1m>[0m [90m51 |[0m     </[33mGlobalNavigation[0m>
+#38 9.246   [90m   |[0m     [31m[1m^[0m
+#38 9.246   [90m52 |[0m   );
+#38 9.246   [90m53 |[0m }
+#38 9.246 
+#38 9.246 Parsing ecmascript source code failed
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   App Route:
+#38 9.246     ./apps/web/app/(eos)/notifications/page.tsx
+#38 9.246     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.246     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.246     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.246 
+#38 9.246 
+#38 9.246 ./apps/web/app/api/external-webhooks/ilc/route.ts:26:1
+#38 9.246 Expression expected
+#38 9.246   [90m24 |[0m   [90m// Additional ILC community members can be mapped to other cases as needed[0m
+#38 9.246   [90m25 |[0m [90m//   "ilc-community-member-003": "case-004",[0m
+#38 9.246 [31m[1m>[0m [90m26 |[0m };
+#38 9.246   [90m   |[0m [31m[1m^[0m
+#38 9.246   [90m27 |[0m
+#38 9.246   [90m28 |[0m [90m// Resolve work ID from ILC community user ID - implements conversation→Work grounding[0m
+#38 9.246   [90m29 |[0m [36mfunction[0m resolveWorkIdFromIlcUserId(userId: string): string | [36mnull[0m {
+#38 9.246 
+#38 9.246 Parsing ecmascript source code failed
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   App Route:
+#38 9.246     ./apps/web/app/api/external-webhooks/ilc/route.ts
+#38 9.246     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.246     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.246     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.246 
+#38 9.246 
+#38 9.246 ./apps/web/app/(eos)/notifications/page.tsx:51:6
+#38 9.246 Unterminated regexp literal
+#38 9.246   [90m49 |[0m [90m//         </ErrorBoundary>[0m
+#38 9.246   [90m50 |[0m [90m//       </div>[0m
+#38 9.246 [31m[1m>[0m [90m51 |[0m     </[33mGlobalNavigation[0m>
+#38 9.246   [90m   |[0m      [31m[1m^^^^^^^^^^^^^^^^^^[0m
+#38 9.246   [90m52 |[0m   );
+#38 9.246   [90m53 |[0m }
+#38 9.246 
+#38 9.246 Parsing ecmascript source code failed
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   App Route:
+#38 9.246     ./apps/web/app/(eos)/notifications/page.tsx
+#38 9.246     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.246     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.246     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.246 
+#38 9.246 
+#38 9.246 ./apps/web/app/(eos)/work/[id]/trace/page.tsx:114:18
+#38 9.246 Unterminated regexp literal
+#38 9.246   [90m112 |[0m                     <path strokeLinecap=[32m"round"[0m strokeLinejoin=[32m"round"[0m d=[32m"M12 9v3.75m-9.3...[0m
+#38 9.246   [90m113 |[0m                   </svg>
+#38 9.246 [31m[1m>[0m [90m114 |[0m                 </div>
+#38 9.246   [90m    |[0m                  [31m[1m^^^^^[0m
+#38 9.246   [90m115 |[0m                 <div className=[32m"space-y-2"[0m>
+#38 9.246   [90m116 |[0m                   <h1 className=[32m"text-xl font-bold text-slate-900 m-0"[0m>[33mTrace[0m [33mTidak[0m [33mDitemu...[0m
+#38 9.246   [90m117 |[0m                   <p className=[32m"text-sm text-slate-600 leading-relaxed m-0"[0m>
+#38 9.246 
+#38 9.246 Parsing ecmascript source code failed
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   App Route:
+#38 9.246     ./apps/web/app/(eos)/work/[id]/trace/page.tsx
+#38 9.246     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.246     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.246     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.246 
+#38 9.246 
+#38 9.246 ./capabilities/legal-case/implementation/repository/case-postgres.repository.js:3:1
+#38 9.246 Module not found: Can't resolve '../../../shared/dist/database/migrations/migration.manager.js'
+#38 9.246   [90m1 |[0m ... [33mPool[0m } [36mfrom[0m [32m"pg"[0m;
+#38 9.246   [90m2 |[0m ... [33mPostgresRepository[0m } [36mfrom[0m [32m"../../../identity/dist/implementation/repositories/base.repo...[0m
+#38 9.246 [31m[1m>[0m [90m3 |[0m ... [33mDatabaseMigrationManager[0m } [36mfrom[0m [32m"../../../shared/dist/database/migrations/migration.man...[0m
+#38 9.246   [90m  |[0m    [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.246   [90m4 |[0m ... [33mCaseId[0m, } [36mfrom[0m [32m"../../contracts/index.js"[0m;
+#38 9.246   [90m5 |[0m ...[90mate required environment variables in production - matches communication.postgres.reposi...[0m
+#38 9.246   [90m6 |[0m ...[90mTION: Skip during Next.js build phase (phase-production-build) because build-time static...[0m
+#38 9.246 
+#38 9.246 
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   App Route:
+#38 9.246     ./capabilities/legal-case/implementation/repository/case-postgres.repository.js
+#38 9.246     ./capabilities/legal-case/implementation/commands/get-case-by-id.command.ts
+#38 9.246     ./apps/web/app/api/domain/[aggregateId]/route.ts
+#38 9.246 
+#38 9.246 https://nextjs.org/docs/messages/module-not-found
+#38 9.246 
+#38 9.246 
+#38 9.246 ./packages/presentation/ui-system/dist/layouts/GlobalNavigation.js:6:1
+#38 9.246 Module not found: Can't resolve '@repo/composition/navigation'
+#38 9.246   [90m4 |[0m [36mimport[0m [33mLink[0m [36mfrom[0m [32m"next/link"[0m;
+#38 9.246   [90m5 |[0m [90m// Import directly from composition package's source to fix module resolution[0m
+#38 9.246 [31m[1m>[0m [90m6 |[0m [36mimport[0m { createWorkspaceNavigation } [36mfrom[0m [32m"@repo/composition/navigation"[0m;
+#38 9.246   [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.246   [90m7 |[0m [36mimport[0m { [33mBreadcrumb[0m } [36mfrom[0m [32m"../molecules/Breadcrumb"[0m;
+#38 9.246   [90m8 |[0m /**
+#38 9.246   [90m9 |[0m  * [33mGlobal[0m shared navigation component extracted [36mfrom[0m [33mMyRealityLayout[0m and [33mWorkRealitySurface[0m
+#38 9.246 
+#38 9.246 Import map: aliased to relative '../../packages/composition/dist/navigation/index.js' inside of [project]/apps/web
+#38 9.246 
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   Server Component:
+#38 9.246     ./packages/presentation/ui-system/dist/layouts/GlobalNavigation.js
+#38 9.246     ./apps/web/app/(eos)/work/new/page.tsx
+#38 9.246 
+#38 9.246 https://nextjs.org/docs/messages/module-not-found
+#38 9.246 
+#38 9.246 
+#38 9.246 ./apps/web/app/(auth)/signup/page.tsx:6:1
+#38 9.246 Module not found: Can't resolve '@repo/presentation-features'
+#38 9.246   [90m4 |[0m [36mimport[0m [33mLink[0m [36mfrom[0m [32m"next/link"[0m;
+#38 9.246   [90m5 |[0m [36mimport[0m { [33mButton[0m } [36mfrom[0m [32m"@repo/presentation-ui-system"[0m;
+#38 9.246 [31m[1m>[0m [90m6 |[0m [36mimport[0m { [33mSignupPage[0m } [36mfrom[0m [32m"@repo/presentation-features"[0m;
+#38 9.246   [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.246   [90m7 |[0m [36mimport[0m { [33mWORKSPACE_SESSION_COOKIE[0m, decodeWorkspaceSession } [36mfrom[0m [32m"@repo/core-kernel"[0m;
+#38 9.246   [90m8 |[0m
+#38 9.246   [90m9 |[0m [36minterface[0m [33mSignupRouteProps[0m {}
+#38 9.246 
+#38 9.246 Import map: aliased to relative '../../packages/presentation/features/dist' inside of [project]/apps/web
+#38 9.246 
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   App Route:
+#38 9.246     ./apps/web/app/(auth)/signup/page.tsx
+#38 9.246     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.246     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.246     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.246 
+#38 9.246 https://nextjs.org/docs/messages/module-not-found
+#38 9.246 
+#38 9.246 
+#38 9.246 ./apps/web/app/(eos)/ai-tasks/page.tsx:6:1
+#38 9.246 Module not found: Can't resolve '@repo/presentation-features'
+#38 9.246   [90m4 |[0m [36mimport[0m { redirect } [36mfrom[0m [32m"next/navigation"[0m;
+#38 9.246   [90m5 |[0m [36mimport[0m [33mReact[0m, { useMemo, [33mSuspense[0m } [36mfrom[0m [32m"react"[0m;
+#38 9.246 [31m[1m>[0m [90m6 |[0m [36mimport[0m { [33mAITaskCard[0m } [36mfrom[0m [32m"@repo/presentation-features"[0m;
+#38 9.246   [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.246   [90m7 |[0m [36mimport[0m { [33mWorkSummaryCards[0m } [36mfrom[0m [32m"@repo/presentation-features"[0m;
+#38 9.246   [90m8 |[0m [36mimport[0m { [33mGlobalNavigation[0m } [36mfrom[0m [32m"@repo/presentation-ui-system/layouts"[0m;
+#38 9.246   [90m9 |[0m [36mimport[0m { [33mButton[0m, [33mErrorBoundary[0m } [36mfrom[0m [32m"@repo/presentation-ui-system"[0m;
+#38 9.246 
+#38 9.246 Import map: aliased to relative '../../packages/presentation/features/dist' inside of [project]/apps/web
+#38 9.246 
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   App Route:
+#38 9.246     ./apps/web/app/(eos)/ai-tasks/page.tsx
+#38 9.246     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.246     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.246     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.246 
+#38 9.246 https://nextjs.org/docs/messages/module-not-found
+#38 9.246 
+#38 9.246 
+#38 9.246 ./apps/web/app/(eos)/ai-tasks/page.tsx:7:1
+#38 9.246 Module not found: Can't resolve '@repo/presentation-features'
+#38 9.246   [90m 5 |[0m [36mimport[0m [33mReact[0m, { useMemo, [33mSuspense[0m } [36mfrom[0m [32m"react"[0m;
+#38 9.246   [90m 6 |[0m [36mimport[0m { [33mAITaskCard[0m } [36mfrom[0m [32m"@repo/presentation-features"[0m;
+#38 9.246 [31m[1m>[0m [90m 7 |[0m [36mimport[0m { [33mWorkSummaryCards[0m } [36mfrom[0m [32m"@repo/presentation-features"[0m;
+#38 9.246   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.246   [90m 8 |[0m [36mimport[0m { [33mGlobalNavigation[0m } [36mfrom[0m [32m"@repo/presentation-ui-system/layouts"[0m;
+#38 9.246   [90m 9 |[0m [36mimport[0m { [33mButton[0m, [33mErrorBoundary[0m } [36mfrom[0m [32m"@repo/presentation-ui-system"[0m;
+#38 9.246   [90m10 |[0m [36mimport[0m {
+#38 9.246 
+#38 9.246 Import map: aliased to relative '../../packages/presentation/features/dist' inside of [project]/apps/web
+#38 9.246 
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   App Route:
+#38 9.246     ./apps/web/app/(eos)/ai-tasks/page.tsx
+#38 9.246     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.246     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.246     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.246 
+#38 9.246 https://nextjs.org/docs/messages/module-not-found
+#38 9.246 
+#38 9.246 
+#38 9.246 ./apps/web/app/(eos)/intent/[intentId]/page.tsx:8:1
+#38 9.246 Module not found: Can't resolve '@repo/presentation-features'
+#38 9.246   [90m 6 |[0m } [36mfrom[0m [32m"@repo/core-kernel"[0m;
+#38 9.246   [90m 7 |[0m [36mimport[0m { [33mGlobalNavigation[0m } [36mfrom[0m [32m"@repo/presentation-ui-system/layouts"[0m;
+#38 9.246 [31m[1m>[0m [90m 8 |[0m [36mimport[0m { [33mIntentRefinementPage[0m } [36mfrom[0m [32m"@repo/presentation-features"[0m;
+#38 9.246   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.246   [90m 9 |[0m
+#38 9.246   [90m10 |[0m [90m// EOS Face intent detail page - thin server adapter[0m
+#38 9.246   [90m11 |[0m [90m// BOUNDARY COMPLIANCE: apps/web = ROUTE ADAPTER only, no UI composition, no business logic[0m
+#38 9.246 
+#38 9.246 Import map: aliased to relative '../../packages/presentation/features/dist' inside of [project]/apps/web
+#38 9.246 
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   App Route:
+#38 9.246     ./apps/web/app/(eos)/intent/[intentId]/page.tsx
+#38 9.246     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.246     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.246     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.246 
+#38 9.246 https://nextjs.org/docs/messages/module-not-found
+#38 9.246 
+#38 9.246 
+#38 9.246 ./packages/presentation/experience/src/intent/IntentExperience.tsx:4:1
+#38 9.246 Module not found: Can't resolve '@repo/presentation-features'
+#38 9.246   [90m2 |[0m [36mimport[0m { useRouter } [36mfrom[0m [32m"next/navigation"[0m;
+#38 9.246   [90m3 |[0m [36mimport[0m { useIntentController } [36mfrom[0m [32m"./IntentController"[0m;
+#38 9.246 [31m[1m>[0m [90m4 |[0m [36mimport[0m { [33mIntentNeedInput[0m } [36mfrom[0m [32m"@repo/presentation-features"[0m;
+#38 9.246   [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.246   [90m5 |[0m [36mimport[0m [36mtype[0m { [33mIntentSource[0m, [33mIntentContext[0m } [36mfrom[0m [32m"@repo/presentation-features"[0m;
+#38 9.246   [90m6 |[0m
+#38 9.246   [90m7 |[0m /**
+#38 9.246 
+#38 9.246 Import map: aliased to relative '../../packages/presentation/features/dist' inside of [project]/apps/web
+#38 9.246 
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   Server Component:
+#38 9.246     ./packages/presentation/experience/src/intent/IntentExperience.tsx
+#38 9.246     ./apps/web/app/(eos)/intent/new/page.tsx
+#38 9.246 
+#38 9.246 https://nextjs.org/docs/messages/module-not-found
+#38 9.246 
+#38 9.246 
+#38 9.246 ./apps/web/app/(eos)/work/[id]/page.tsx:9:1
+#38 9.246 Module not found: Can't resolve '@repo/presentation-templates'
+#38 9.246   [90m 7 |[0m   decodeWorkspaceSession,
+#38 9.246   [90m 8 |[0m } [36mfrom[0m [32m"@repo/core-kernel"[0m;
+#38 9.246 [31m[1m>[0m [90m 9 |[0m [36mimport[0m { [33mWorkRealityTemplate[0m } [36mfrom[0m [32m"@repo/presentation-templates"[0m;
+#38 9.246   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.246   [90m10 |[0m [36mimport[0m { [33mButton[0m } [36mfrom[0m [32m"@repo/presentation-ui-system"[0m;
+#38 9.246   [90m11 |[0m [36mimport[0m { [33mGlobalNavigation[0m } [36mfrom[0m [32m"@repo/presentation-ui-system/layouts"[0m;
+#38 9.246   [90m12 |[0m [36mimport[0m { buildWorkRealityModel } [36mfrom[0m [32m"./getWorkRealityModel"[0m;
+#38 9.246 
+#38 9.246 Import map: aliased to relative '../../packages/presentation/templates/dist' inside of [project]/apps/web
+#38 9.246 
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   App Route:
+#38 9.246     ./apps/web/app/(eos)/work/[id]/page.tsx
+#38 9.246     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.246     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.246     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.246 
+#38 9.246 https://nextjs.org/docs/messages/module-not-found
+#38 9.246 
+#38 9.246 
+#38 9.246 ./apps/web/app/(eos)/enter/page.tsx:7:1
+#38 9.246 Module not found: Can't resolve '@repo/presentation-templates/authentication'
+#38 9.246   [90m 5 |[0m } [36mfrom[0m [32m"@repo/core-kernel"[0m;
+#38 9.246   [90m 6 |[0m
+#38 9.246 [31m[1m>[0m [90m 7 |[0m [36mimport[0m { [33mAuthenticationTemplate[0m } [36mfrom[0m [32m"@repo/presentation-templates/authentication"[0m;
+#38 9.246   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.246   [90m 8 |[0m [36mimport[0m { [33mEnterForm[0m } [36mfrom[0m [32m"./EnterForm"[0m;
+#38 9.246   [90m 9 |[0m
+#38 9.246   [90m10 |[0m [36mexport[0m [36mdefault[0m [36masync[0m [36mfunction[0m [33mEnterPage[0m() {
+#38 9.246 
+#38 9.246 Import map: aliased to relative '../../packages/presentation/templates/dist/authentication-template' inside of [project]/apps/web
+#38 9.246 
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   App Route:
+#38 9.246     ./apps/web/app/(eos)/enter/page.tsx
+#38 9.246     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.246     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.246     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.246 
+#38 9.246 https://nextjs.org/docs/messages/module-not-found
+#38 9.246 
+#38 9.246 
+#38 9.246 ./apps/web/app/api/capabilities/[cap]/[commandName]/route.ts:3:1
+#38 9.246 Export capabilityRegistry doesn't exist in target module
+#38 9.246   [90m 1 |[0m [36mimport[0m { [33mNextResponse[0m } [36mfrom[0m [32m"next/server"[0m;
+#38 9.246   [90m 2 |[0m [90m// Force re-check[0m
+#38 9.246 [31m[1m>[0m [90m 3 |[0m [36mimport[0m {
+#38 9.246   [90m   |[0m [31m[1m^^^^^^^[0m
+#38 9.246 [31m[1m>[0m [90m 4 |[0m   capabilityRegistry,
+#38 9.246   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.246 [31m[1m>[0m [90m 5 |[0m   [33mWORKSPACE_SESSION_COOKIE[0m,
+#38 9.246   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.246 [31m[1m>[0m [90m 6 |[0m   decodeWorkspaceSession,
+#38 9.246   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.246 [31m[1m>[0m [90m 7 |[0m } [36mfrom[0m [32m"@repo/core-kernel"[0m;
+#38 9.246   [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+#38 9.246   [90m 8 |[0m
+#38 9.246   [90m 9 |[0m [36mexport[0m [36mconst[0m runtime = [32m"nodejs"[0m;
+#38 9.246   [90m10 |[0m
+#38 9.246 
+#38 9.246 The export capabilityRegistry was not found in module [project]/packages/core/kernel/dist/index.js [app-route] (ecmascript).
+#38 9.246 Did you mean to import CapabilityManifestSchema?
+#38 9.246 All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+#38 9.246 
+#38 9.246 Import trace:
+#38 9.246   App Route:
+#38 9.246     ./apps/web/app/api/capabilities/[cap]/[commandName]/route.ts
+#38 9.246     ./capabilities/atomic-composition/implementation/repository/failure-intelligence.repository.js
+#38 9.246     ./capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+#38 9.246     ./apps/web/app/api/external/services-id/intake/route.ts
+#38 9.246 
+#38 9.246 
+#38 9.246     at <unknown> (./apps/web/app/(eos)/notifications/page.tsx:51:5)
+#38 9.246     at <unknown> (./apps/web/app/api/external-webhooks/ilc/route.ts:26:1)
+#38 9.246     at <unknown> (./apps/web/app/(eos)/notifications/page.tsx:51:6)
+#38 9.246     at <unknown> (./apps/web/app/(eos)/work/[id]/trace/page.tsx:114:18)
+#38 9.246     at <unknown> (./capabilities/legal-case/implementation/repository/case-postgres.repository.js:3:1)
+#38 9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+#38 9.246     at <unknown> (./packages/presentation/ui-system/dist/layouts/GlobalNavigation.js:6:1)
+#38 9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+#38 9.246     at <unknown> (./apps/web/app/(auth)/signup/page.tsx:6:1)
+#38 9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+#38 9.246     at <unknown> (./apps/web/app/(eos)/ai-tasks/page.tsx:6:1)
+#38 9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+#38 9.246     at <unknown> (./apps/web/app/(eos)/ai-tasks/page.tsx:7:1)
+#38 9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+#38 9.246     at <unknown> (./apps/web/app/(eos)/intent/[intentId]/page.tsx:8:1)
+#38 9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+#38 9.246     at <unknown> (./packages/presentation/experience/src/intent/IntentExperience.tsx:4:1)
+#38 9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+#38 9.246     at <unknown> (./apps/web/app/(eos)/work/[id]/page.tsx:9:1)
+#38 9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+#38 9.246     at <unknown> (./apps/web/app/(eos)/enter/page.tsx:7:1)
+#38 9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+#38 9.246     at <unknown> (./apps/web/app/api/capabilities/[cap]/[commandName]/route.ts:3:1)
+#38 ERROR: process "/bin/sh -c pnpm next build" did not complete successfully: exit code: 1
+------
+ > [33/33] RUN pnpm next build:
+9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+9.246     at <unknown> (./apps/web/app/(eos)/intent/[intentId]/page.tsx:8:1)
+9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+9.246     at <unknown> (./packages/presentation/experience/src/intent/IntentExperience.tsx:4:1)
+9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+9.246     at <unknown> (./apps/web/app/(eos)/work/[id]/page.tsx:9:1)
+9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+9.246     at <unknown> (./apps/web/app/(eos)/enter/page.tsx:7:1)
+9.246     at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+9.246     at <unknown> (./apps/web/app/api/capabilities/[cap]/[commandName]/route.ts:3:1)
+------
+Dockerfile:49
+
+--------------------
+
+  47 |     # Build only golden spine routes (work/new + required APIs - core freeze compliant)
+
+  48 |     WORKDIR /app/apps/web
+
+  49 | >>> RUN pnpm next build
+
+  50 |     
+
+  51 |     EXPOSE 3000
+
+--------------------
+
+failed to solve: process "/bin/sh -c pnpm next build" did not complete successfully: exit code: 1
+
