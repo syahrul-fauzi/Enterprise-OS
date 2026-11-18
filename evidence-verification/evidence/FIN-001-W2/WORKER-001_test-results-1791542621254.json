@@ -1,0 +1,36 @@
+{
+  "completedAt": "2026-10-09T10:43:41.254Z",
+  "workId": "WORKER-001",
+  "scope": "FIN-001-W2",
+  "results": [
+    {
+      "testId": "TEST2",
+      "passed": false,
+      "apiAccepted": true,
+      "businessExecutionCount": 0,
+      "evidence": "5 identical webhooks sent, business logic executed once"
+    },
+    {
+      "testId": "TEST3",
+      "passed": true,
+      "staleItemRecovered": true,
+      "removedFromProcessing": true
+    },
+    {
+      "testId": "TEST1",
+      "status": "READY_TO_RUN",
+      "reason": "Requires API server running"
+    },
+    {
+      "testId": "TEST4",
+      "status": "READY_TO_RUN",
+      "reason": "Requires Redis failure simulation"
+    },
+    {
+      "testId": "TEST5",
+      "status": "READY_TO_RUN",
+      "reason": "Requires API server running for burst load"
+    }
+  ],
+  "workerVersion": "1.0.0"
+}

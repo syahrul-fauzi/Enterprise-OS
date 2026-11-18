@@ -1,0 +1,104 @@
+{
+  "work_id": "W06-A2-A9",
+  "execution_started_at": "2026-11-14T17:14:34.157Z",
+  "gates": [
+    {
+      "gate_id": "A2-AUTH",
+      "description": "Authorization Gate Verification",
+      "executed_at": "2026-11-14T17:14:34.173Z",
+      "status": "PASS",
+      "verification_checks": [
+        {
+          "check": "HostEnvironment.permissions exists",
+          "result": true
+        }
+      ]
+    },
+    {
+      "gate_id": "A3-HANDLER",
+      "description": "Handler Gate Verification",
+      "executed_at": "2026-11-14T17:14:34.196Z",
+      "status": "PASS",
+      "verification_checks": [
+        {
+          "check": "Runtime.mount() exists",
+          "result": true
+        }
+      ]
+    },
+    {
+      "gate_id": "A4-DOMAIN",
+      "description": "Domain Gate Verification",
+      "executed_at": "2026-11-14T17:14:34.215Z",
+      "status": "PASS",
+      "verification_checks": [
+        {
+          "check": "Execution context exists",
+          "result": true
+        }
+      ]
+    },
+    {
+      "gate_id": "A5-PERSISTENCE",
+      "description": "Persistence Gate Verification",
+      "executed_at": "2026-11-14T17:14:34.231Z",
+      "status": "PASS",
+      "verification_checks": [
+        {
+          "check": "Persistence ownership defined",
+          "result": true
+        }
+      ]
+    },
+    {
+      "gate_id": "A6-EVIDENCE",
+      "description": "Evidence Gate Verification",
+      "executed_at": "2026-11-14T17:14:34.253Z",
+      "status": "PASS",
+      "verification_checks": [
+        {
+          "check": "Invocation evidence exists",
+          "result": true
+        }
+      ]
+    },
+    {
+      "gate_id": "A7-REPLAY",
+      "description": "Replay Gate Verification",
+      "executed_at": "2026-11-14T17:14:34.276Z",
+      "status": "PASS",
+      "verification_checks": [
+        {
+          "check": "Work continuity exists",
+          "result": true
+        }
+      ]
+    },
+    {
+      "gate_id": "A8-RECOVERY",
+      "description": "Recovery Gate Verification",
+      "executed_at": "2026-11-14T17:14:34.298Z",
+      "status": "PASS",
+      "verification_checks": [
+        {
+          "check": "Execution status exists",
+          "result": true
+        }
+      ]
+    },
+    {
+      "gate_id": "A9-ISOLATION",
+      "description": "Isolation Gate Verification",
+      "executed_at": "2026-11-14T17:14:34.319Z",
+      "status": "PASS",
+      "verification_checks": [
+        {
+          "check": "Runtime isolation enforced",
+          "result": true
+        }
+      ]
+    }
+  ],
+  "execution_completed_at": "2026-11-14T17:14:34.345Z",
+  "overall_verdict": "ALL_GATES_PASSED"
+}

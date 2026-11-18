@@ -1,0 +1,36 @@
+{
+  "work_id": "W-011",
+  "execution_timestamp": "2026-11-14T17:40:18.095Z",
+  "replacement_initiated": {
+    "replacementId": "replacement-1794678018096",
+    "fromRuntimeVersion": "1.0.0",
+    "toRuntimeVersion": "1.1.0",
+    "initiatedAt": "2026-11-14T17:40:18.096Z",
+    "status": "PENDING",
+    "rollbackAvailable": true,
+    "evidence": []
+  },
+  "replacement_executed": {
+    "replacementId": "replacement-1794678018096",
+    "fromRuntimeVersion": "1.0.0",
+    "toRuntimeVersion": "1.1.0",
+    "initiatedAt": "2026-11-14T17:40:18.096Z",
+    "status": "COMPLETED",
+    "rollbackAvailable": true,
+    "evidence": [
+      "evidence-replacement-1794678018096-1",
+      "evidence-replacement-1794678018096-2"
+    ]
+  },
+  "replacement_verified": {
+    "valid": true,
+    "checks": [
+      "runtime_version_matches",
+      "state_preserved",
+      "work_continuity_maintained",
+      "evidence_chain_complete"
+    ]
+  },
+  "evidence_count": 3,
+  "status": "ALL_CHECKS_PASSED"
+}

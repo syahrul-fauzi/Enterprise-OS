@@ -1,0 +1,37 @@
+{
+  "work_id": "W-022",
+  "execution_timestamp": "2026-11-14T18:09:21.317Z",
+  "authorization_session_created": {
+    "sessionId": "auth-session-actor-001-W-022",
+    "actorId": "actor-001",
+    "workItemId": "W-022",
+    "status": "ACTIVE",
+    "authorizationHash": "auth-hash-actor-001-1794683000000",
+    "createdAt": "2026-11-14T18:09:21.317Z"
+  },
+  "authorization_session_suspended": {
+    "suspended": true,
+    "sessionId": "auth-session-actor-001-W-022",
+    "suspendReason": "authorization-audit"
+  },
+  "authorization_session_resumed": {
+    "sessionId": "auth-session-actor-001-W-022",
+    "actorId": "actor-001",
+    "workItemId": "W-022",
+    "status": "RESUMED",
+    "authorizationHash": "auth-hash-resumed-1794683010000",
+    "createdAt": "2026-11-14T18:09:21.317Z",
+    "lastResumedAt": "2026-11-14T18:09:21.317Z"
+  },
+  "authorization_boundary_verified": {
+    "valid": true,
+    "checks": [
+      "authorization_boundary_enforced",
+      "no_unauthorized_access",
+      "permission_scope_valid",
+      "invocation_proof_preserved"
+    ]
+  },
+  "evidence_count": 4,
+  "status": "ALL_CHECKS_PASSED"
+}

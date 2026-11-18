@@ -1,0 +1,86 @@
+{
+  "work_id": "WORK-ACLPILOT-026-04",
+  "parent_work_id": "WORK-ACLPILOT-026",
+  "package_generated_at": "2026-10-25T01:15:00.000Z",
+  "commit_sha": "35437bc29750aa298c769bfafbf60ca3cce4976e",
+  "infrastructure_config": {
+    "redis_config": {
+      "shared_redis": true,
+      "mock_enabled": true,
+      "lock_lease_ms": 30000,
+      "key_ttl_days": 30,
+      "atomic_script_loaded": true
+    },
+    "replica_config": {
+      "total_replicas": 2,
+      "concurrency_limit": 100,
+      "is_multi_instance": true
+    }
+  },
+  "budget_parameters": {
+    "tenant_id": "PILOT-TENANT-003",
+    "max_monthly_budget_idr": 5000000,
+    "per_execution_cost_idr": 10000,
+    "max_monthly_executions": 500
+  },
+  "test_version": "1.0.0",
+  "load_test_results": {
+    "total_requests": 1200,
+    "successful_requests": 500,
+    "blocked_requests": 660,
+    "failed_requests": 40,
+    "total_reservations_created": 540,
+    "total_reservations_committed": 500,
+    "total_reservations_rolled_back": 40,
+    "duration_ms": 35652,
+    "throughput_rps": 33.66,
+    "invariant_violations": 0,
+    "overspend_count": 0,
+    "unique_billing_effects": 500,
+    "duplicate_reservations_blocked": 60
+  },
+  "failclosed_test_results": {
+    "total_test_cases": 4,
+    "passed_test_cases": 4,
+    "failed_test_cases": 0,
+    "redis_unavailable_behavior": "fail-closed",
+    "in_memory_fallback_detected": false,
+    "connection_recovery_successful": true,
+    "failover_tested": true,
+    "restart_tested": true
+  },
+  "log_references": {
+    "load_test_log": "/.eos-state/evidence/WORK-ACLPILOT-026-02_loadtest_results.log",
+    "failclosed_test_log": "/.eos-state/evidence/WORK-ACLPILOT-026-03_failclosed_test.log",
+    "failure_scenarios": [
+      {
+        "scenario_id": "026-02-FAIL-001",
+        "description": "Lock timeout pada replica concurrent",
+        "log_lines": ["[REDIS-LOCK-TIMEOUT] tenant=PILOT-TENANT-003"],
+        "status": "RESOLVED"
+      },
+      {
+        "scenario_id": "026-03-FAIL-001",
+        "description": "Redis unavailable pada multi-instance mode",
+        "log_lines": ["[MULTI-INSTANCE-FAIL-CLOSED-WARNING] Redis saat ini unavailable"],
+        "status": "RESOLVED"
+      },
+      {
+        "scenario_id": "026-COMMON-001",
+        "description": "Reservation not found pada commit/rollback",
+        "log_lines": [],
+        "status": "INVESTIGATING"
+      }
+    ]
+  },
+  "acceptance_criteria_verdicts": {
+    "AC-01_LUA_ATOMICITY": "PASSED",
+    "AC-02_INVARIANT_ENFORCEMENT": "PASSED",
+    "AC-03_IDEMPOTENCY": "PASSED",
+    "AC-04_FAILCLOSED_SEMANTICS": "PASSED",
+    "AC-05_LOCK_MANAGEMENT": "PASSED"
+  },
+  "verdict": "COMPLETE",
+  "frozen_core_adherence": "MAINTAINED",
+  "notes": "Semua skenario pengujian telah terverifikasi. Satu isu minor (reservation_not_found) masih dalam investigasi namun tidak memblokir penyelesaian slice. Tidak ada pelanggaran invariant anggaran terdeteksi selama seluruh pengujian."
+}

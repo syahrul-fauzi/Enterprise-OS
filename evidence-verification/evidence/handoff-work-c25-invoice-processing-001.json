@@ -1,0 +1,29 @@
+{
+  "work_id": "work-c25-invoice-processing-001",
+  "timestamp": "2026-10-01T00:36:16.603Z",
+  "source_actor_id": "actor-ai-invoice-agent",
+  "target_actor_id": "actor-accountant-sarah",
+  "tenant_id": "tenant-acme-corp",
+  "workspace_id": "workspace-finance-team",
+  "source_domain": "finance",
+  "target_domain": "finance",
+  "state_path": "/states/finance/ai-processing-complete",
+  "evidence_chain": [
+    "agent-processing-complete",
+    "actor-capabilities-projected-back-to-human"
+  ],
+  "metadata": {
+    "source_actor_type": "agent",
+    "target_actor_type": "human",
+    "transition_type": "agent-to-human",
+    "product_id": "finance-operations-platform",
+    "projected_capabilities": [
+      "human.finance.process",
+      "human.invoice.scan"
+    ],
+    "ai_processing_results": {
+      "exceptions_flagged": 2,
+      "data_extraction_accuracy": 0.98
+    }
+  }
+}

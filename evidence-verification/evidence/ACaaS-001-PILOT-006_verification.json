@@ -1,0 +1,20 @@
+{
+  "submission_id": "ACaaS-001-PILOT-006",
+  "tenant_id": "PILOT-TENANT-002",
+  "document_type": "ppn-invoice",
+  "processed_at": "2026-10-23T08:40:00.000Z",
+  "evaluator_result": "PASS",
+  "reviewer_decision": "APPROVED",
+  "policy_version": "PPN-Invoice-v1.0.0",
+  "evidence_path": "/.eos-state/evidence/ACaaS-001-PILOT-006_verification.json",
+  "usage_cost_recorded": true,
+  "work_id": "ACaaS-001-PILOT-THIRD-WORK-001",
+  "p2_verification": {
+    "status": "PASS",
+    "false_positives": 0,
+    "false_negatives": 0,
+    "reviewer_accuracy": "100%",
+    "notes": "Submission dari PILOT-TENANT-002 lulus semua aturan PPN, reviewer ahli mengonfirmasi hasil evaluator 100% akurat. Tidak ada kesalahan keputusan compliance untuk submission ini."
+  },
+  "canonical_metrics_recorded": true
+}

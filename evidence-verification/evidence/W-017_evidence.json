@@ -1,0 +1,50 @@
+{
+  "work_id": "W-017",
+  "status": "SHIPPED",
+  "shipped_at": "2026-10-11T00:00:00Z",
+  "evidence": {
+    "commits": [
+      "Fix module not found in compliance-cases/[id]/close/route.ts with @repo/capabilities-identity alias",
+      "Fix module not found in deliveries/[id]/complete/route.ts with @repo/capabilities-identity alias",
+      "Refactor auth/callback/route.ts to resolve Turbopack return statement error",
+      "Update infrastructure/route.ts dynamic imports to use monorepo aliases",
+      "Update db/route.ts dynamic imports to use monorepo aliases"
+    ],
+    "test_results": {
+      "smoke_test": "VERIFIED",
+      "gate_a": "VERIFIED",
+      "gate_b": "VERIFIED",
+      "gate_c": "VERIFIED",
+      "pnpm_status_output": "governance terverifikasi, baseline terkunci"
+    },
+    "build_logs": {
+      "production_build_exit_code": 0,
+      "total_routes_compiled": 44,
+      "server_startup_status": "SUCCESS",
+      "server_url": "http://localhost:3000"
+    },
+    "runtime_evidence": {
+      "workflows_registered": 4,
+      "postgresql_pool_initialized": true,
+      "work_core_commands_registered": 10,
+      "non_blocking_warnings": ["Turbopack NFT warnings (6 items)", "workspace-standard hook registration error"]
+    }
+  },
+  "acceptance_criteria": {
+    "all_six_criteria_met": true,
+    "dependency_readiness_complete": true,
+    "build_errors_resolved": true
+  },
+  "governance": {
+    "architecture_freeze_maintained": true,
+    "no_new_primitives_added": true,
+    "duplicate_work_zero": true,
+    "scope_expansion_avoided": true
+  },
+  "deployment_status": {
+    "eos_cli_status": "DEPLOYED",
+    "deployed_at": "2026-10-11T00:00:00Z",
+    "runtime_verification_complete": true,
+    "blockers": []
+  }
+}

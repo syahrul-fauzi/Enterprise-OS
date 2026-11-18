@@ -1,0 +1,39 @@
+{
+  "work_id": "W-012",
+  "execution_timestamp": "2026-11-14T17:42:25.814Z",
+  "manifest_generated": {
+    "manifestId": "manifest-1794678145815",
+    "packageName": "eos-runtime",
+    "version": "1.0.0",
+    "dependencies": {
+      "core": "1.0.0",
+      "runtime": "1.0.0"
+    },
+    "integrityHash": "hash-eos-runtime-1.0.0-1794678145815",
+    "generatedAt": "2026-11-14T17:42:25.815Z",
+    "status": "GENERATED"
+  },
+  "manifest_verified": {
+    "valid": true,
+    "checks": [
+      "integrity_hash_valid",
+      "dependencies_resolved",
+      "version_format_correct",
+      "manifest_complete"
+    ]
+  },
+  "manifest_published": {
+    "manifestId": "manifest-1794678145815",
+    "packageName": "eos-runtime",
+    "version": "1.0.0",
+    "dependencies": {
+      "core": "1.0.0",
+      "runtime": "1.0.0"
+    },
+    "integrityHash": "hash-valid",
+    "generatedAt": "2026-11-14T17:42:25.815Z",
+    "status": "PUBLISHED"
+  },
+  "evidence_count": 3,
+  "status": "ALL_CHECKS_PASSED"
+}

@@ -1,0 +1,81 @@
+{
+  "work_id": "WORK-ACLPILOT-027-RELEASE-RECON-001",
+  "work_item": "001-01-RUNTIME-VERIFY",
+  "verification_started_at": "2026-10-26T03:27:37.436Z",
+  "verification_completed_at": "2026-10-26T03:27:37.440Z",
+  "canary_activation_result": true,
+  "pre_activation_state": {
+    "enabled": false,
+    "traffic_percentage": 10,
+    "baseline_replication_lag_ms": 200,
+    "baseline_latency_p95_ms": 150,
+    "termination_threshold_lag_ms": 2000,
+    "termination_threshold_error_rate": 0.02,
+    "warning_threshold_lag_ms": 1000,
+    "warning_threshold_error_rate": 0.01,
+    "activated_at_utc": null,
+    "terminated_at_utc": null,
+    "termination_reason": null,
+    "target_tenant_id": "PILOT-TENANT-003"
+  },
+  "post_activation_state": {
+    "enabled": true,
+    "traffic_percentage": 10,
+    "target_tenant_id": "PILOT-TENANT-003",
+    "activated_at_utc": "2026-10-26T03:27:37.437Z",
+    "baseline_replication_lag_ms": 200,
+    "warning_threshold_lag_ms": 1000,
+    "termination_threshold_lag_ms": 2000
+  },
+  "stored_state": {
+    "enabled": true,
+    "traffic_percentage": 10,
+    "baseline_replication_lag_ms": 200,
+    "baseline_latency_p95_ms": 150,
+    "termination_threshold_lag_ms": 2000,
+    "termination_threshold_error_rate": 0.02,
+    "warning_threshold_lag_ms": 1000,
+    "warning_threshold_error_rate": 0.01,
+    "activated_at_utc": "2026-10-26T03:27:37.437Z",
+    "terminated_at_utc": null,
+    "termination_reason": null,
+    "target_tenant_id": "PILOT-TENANT-003"
+  },
+  "post_restart_state": {
+    "enabled": true,
+    "traffic_percentage": 10,
+    "baseline_replication_lag_ms": 200,
+    "baseline_latency_p95_ms": 150,
+    "termination_threshold_lag_ms": 2000,
+    "termination_threshold_error_rate": 0.02,
+    "warning_threshold_lag_ms": 1000,
+    "warning_threshold_error_rate": 0.01,
+    "activated_at_utc": "2026-10-26T03:27:37.437Z",
+    "terminated_at_utc": null,
+    "termination_reason": null,
+    "target_tenant_id": "PILOT-TENANT-003"
+  },
+  "all_checks_passed": true,
+  "checks": [
+    {
+      "name": "Canary enabled = true",
+      "result": true
+    },
+    {
+      "name": "Traffic percentage = 10%",
+      "result": true
+    },
+    {
+      "name": "Target tenant = PILOT-TENANT-003",
+      "result": true
+    },
+    {
+      "name": "activated_at_utc terisi (bukan null)",
+      "result": true
+    },
+    {
+      "name": "Baseline dan threshold sesuai konfigurasi",
+      "result": true
+    }
+  ]
+}

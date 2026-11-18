@@ -1,0 +1,18 @@
+{
+  "work_id": "work-c22-legal-review-001",
+  "timestamp": "2026-10-01T00:03:03.411Z",
+  "source_actor_id": "actor-lawyer-john",
+  "target_actor_id": "actor-ai-compliance-agent",
+  "tenant_id": "tenant-acme-corp",
+  "workspace_id": "workspace-legal-team",
+  "state_path": "/states/legal-review/in-progress",
+  "evidence_chain": [
+    "web-face-execution-complete"
+  ],
+  "metadata": {
+    "source_surface": "web",
+    "target_surface": "agent",
+    "transition_type": "human-to-ai",
+    "product_id": "investment-compliance"
+  }
+}

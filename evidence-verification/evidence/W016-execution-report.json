@@ -1,0 +1,26 @@
+{
+  "work_id": "W-016",
+  "execution_timestamp": "2026-11-14T17:53:05.984Z",
+  "isolation_created": {
+    "runtimeId": "runtime-tenant-123",
+    "tenantId": "tenant-123",
+    "status": "CREATED",
+    "isolationHash": "isolation-tenant-123-runtime-1794678624000",
+    "createdAt": "2026-11-14T17:53:05.984Z"
+  },
+  "isolation_verified": {
+    "valid": true,
+    "checks": [
+      "tenant_boundary_enforced",
+      "no_cross_tenant_access",
+      "resource_quota_enforced",
+      "isolation_hash_valid"
+    ]
+  },
+  "isolation_terminated": {
+    "terminated": true,
+    "runtimeId": "runtime-tenant-123"
+  },
+  "evidence_count": 4,
+  "status": "ALL_CHECKS_PASSED"
+}

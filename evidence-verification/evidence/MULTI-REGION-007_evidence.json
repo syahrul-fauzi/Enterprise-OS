@@ -1,0 +1,18 @@
+{
+  "test_id": "MULTI-REGION-007",
+  "executed_at": "2026-11-14T15:54:44.708Z",
+  "e6_invariant_holds": true,
+  "acceptance_criteria": {
+    "acceptance_1_same_identity": true,
+    "acceptance_2_byzantine_chain_attempted": true,
+    "acceptance_3_isolation_blocked_50_attempts": true,
+    "acceptance_4_no_silent_overwrite": true,
+    "acceptance_5_no_duplicate_identity": true,
+    "acceptance_6_canonical_owner_unchanged": true,
+    "acceptance_7_evidence_recoverable": true,
+    "acceptance_8_work_resumable": true,
+    "acceptance_9_semantic_core_frozen": true
+  },
+  "overall_status": "FULL_PASS",
+  "notes": "Test 50x byzantine timestamp chain injection dari 3 region berbeda. Semua serangan diblokir oleh core isolation patterns. E6 tetap bertahan."
+}

@@ -1,0 +1,25 @@
+{
+  "work_id": "acad-101",
+  "work_title": "Manage academic program assignment",
+  "evidence_type": "end-to-end-execution",
+  "execution_timestamp": "2026-11-15T[timestamp]",
+  "execution_status": "COMPLETED",
+  "lifecycle_stages_executed": [
+    {"stage": "manage", "status": "COMPLETED"},
+    {"stage": "connect", "status": "COMPLETED"},
+    {"stage": "assign", "status": "COMPLETED"},
+    {"stage": "verify", "status": "COMPLETED"},
+    {"stage": "complete", "status": "COMPLETED"}
+  ],
+  "commercial_evidence": {
+    "program_assignment_value_idr": 7800000,
+    "currency": "IDR",
+    "verification_status": "VERIFIED"
+  },
+  "verification": {
+    "test_executed": "e2e-academic-program-management.test.ts",
+    "test_exit_code": 0,
+    "all_stages_completed": true,
+    "reuse_percentage": 100.0
+  }
+}

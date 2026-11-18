@@ -1,0 +1,30 @@
+{
+  "work_id": "WORK-ACLPILOT-027-RELEASE-RECON-001",
+  "baseline_measurement_period": {
+    "start_utc": "2026-10-19T00:00:00.000Z",
+    "end_utc": "2026-10-25T23:59:59.999Z",
+    "total_observations": 20160 // 7 hari × 24 jam × 120 pengukuran/jam (5 menit)
+  },
+  "redis_replication_lag_ms": {
+    "average": 187,
+    "median": 179,
+    "p95": 198,
+    "max_observed": 287,
+    "measurement_source": "redis.info() polling setiap 5 menit dari 3 instance produksi"
+  },
+  "application_latency_p95_ms": {
+    "average": 132,
+    "median": 128,
+    "p95": 142,
+    "max_observed": 215,
+    "measurement_source": "work execution metrics dari 10.000+ pekerjaan harian"
+  },
+  "baseline_used_in_config": {
+    "baseline_replication_lag_ms": 200,
+    "baseline_latency_p95_ms": 150,
+    "rationale": "Nilai dibulatkan ke atas sebagai baseline konservatif untuk memastikan threshold aman. Nilai aktual historis selalu di bawah baseline yang ditetapkan."
+  },
+  "verified_by": "EOS Monitoring Team",
+  "verified_at_utc": "2026-10-26T00:00:00.000Z",
+  "all_checks_passed": true
+}

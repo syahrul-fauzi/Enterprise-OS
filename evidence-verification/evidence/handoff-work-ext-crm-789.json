@@ -1,0 +1,36 @@
+{
+  "work_id": "work-ext-crm-789",
+  "timestamp": "2026-10-01T00:56:56.451Z",
+  "source_actor_id": "actor-hubspot-crm",
+  "target_actor_id": "actor-zendesk-ticketing",
+  "tenant_id": "tenant-legalcorp-001",
+  "workspace_id": "ws-customer-success",
+  "source_domain": "crm",
+  "target_domain": "support",
+  "source_actor_type": "system",
+  "target_actor_type": "system",
+  "state_path": "/ops/customer-support/active-tickets/",
+  "evidence_chain": [
+    "hubspot-deal-created",
+    "eos-imported"
+  ],
+  "metadata": {
+    "source_system": "HubSpot",
+    "target_system": "Zendesk",
+    "source_external_id": "deal-12345",
+    "target_external_id": "ticket-67890",
+    "projected_semantics": {
+      "boundaryType": "domain",
+      "primaryIntent": "Manage customer deal lifecycle in HubSpot. Track support ticket resolution in Zendesk",
+      "requiredCapabilities": [
+        "support:ticket:create",
+        "support:ticket:update",
+        "eos:sync:cross-system"
+      ],
+      "contextMetadata": {
+        "system": "Zendesk",
+        "version": "v2"
+      }
+    }
+  }
+}

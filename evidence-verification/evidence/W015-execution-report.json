@@ -1,0 +1,38 @@
+{
+  "work_id": "W-015",
+  "execution_timestamp": "2026-11-14T17:50:58.315Z",
+  "chain_created": {
+    "chainId": "chain-W-015",
+    "created": true
+  },
+  "links_added": [
+    {
+      "linkId": "link-1",
+      "evidenceType": "state_persisted"
+    },
+    {
+      "linkId": "link-2",
+      "evidenceType": "state_verified"
+    },
+    {
+      "linkId": "link-3",
+      "evidenceType": "state_restored"
+    },
+    {
+      "linkId": "link-4",
+      "evidenceType": "execution_completed"
+    }
+  ],
+  "chain_verified": {
+    "valid": true,
+    "linkCount": 4,
+    "checks": [
+      "chain_continuous",
+      "all_links_hashed",
+      "actor_authorization_valid",
+      "timestamp_sequence_valid"
+    ]
+  },
+  "evidence_count": 5,
+  "status": "ALL_CHECKS_PASSED"
+}

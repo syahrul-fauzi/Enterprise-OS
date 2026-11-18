@@ -1,0 +1,39 @@
+{
+  "work_id": "W-014",
+  "execution_timestamp": "2026-11-14T17:48:44.778Z",
+  "state_persisted": {
+    "stateId": "state-1794678524778",
+    "entityType": "work-item",
+    "entityId": "W-014",
+    "stateData": {
+      "status": "READY",
+      "progress": 100
+    },
+    "persistedAt": "2026-11-14T17:48:44.778Z",
+    "integrityHash": "hash-work-item-W-014-1794678524778",
+    "status": "PERSISTED"
+  },
+  "state_verified": {
+    "valid": true,
+    "checks": [
+      "integrity_hash_valid",
+      "state_data_complete",
+      "entity_type_matches",
+      "persistence_timestamp_valid"
+    ]
+  },
+  "state_restored": {
+    "stateId": "state-1794678524778",
+    "entityType": "work-item",
+    "entityId": "W-014",
+    "stateData": {
+      "status": "READY",
+      "progress": 100
+    },
+    "persistedAt": "2026-11-14T17:48:44.778Z",
+    "integrityHash": "hash-valid",
+    "status": "RESTORED"
+  },
+  "evidence_count": 3,
+  "status": "ALL_CHECKS_PASSED"
+}

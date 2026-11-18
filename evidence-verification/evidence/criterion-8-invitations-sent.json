@@ -1,0 +1,68 @@
+{
+  "sent_at": "2026-09-08T09:28:11.548Z",
+  "recipients": [
+    {
+      "name": "Andi Prasetyo (Pengusaha)",
+      "email": "andi@example.com",
+      "sent": true
+    },
+    {
+      "name": "Budi Susanto (Advokat)",
+      "email": "budi@lawfirm.example.com",
+      "sent": true
+    }
+  ],
+  "composition_id": "composition-work-rea-1788856600432",
+  "session_id": "real-human-session-1788856600432",
+  "checklist": {
+    "title": "Checklist Testing BETTER-EOS-GOLDEN-PATH-001",
+    "description": "Silakan tandai poin yang berhasil Anda selesaikan selama testing:",
+    "checklist_items": [
+      {
+        "id": "A",
+        "description": "Saya berhasil masuk dan berpartisipasi dalam hyper-relationship",
+        "status": "pending"
+      },
+      {
+        "id": "B",
+        "description": "Saya melihat shared reality yang sama dengan participant lain",
+        "status": "pending"
+      },
+      {
+        "id": "C",
+        "description": "Saya hanya dapat melakukan action yang sesuai dengan otoritas saya",
+        "status": "pending"
+      },
+      {
+        "id": "D",
+        "description": "Action yang diizinkan berhasil dieksekusi",
+        "status": "pending"
+      },
+      {
+        "id": "E",
+        "description": "Action yang tidak diizinkan ditolak oleh sistem",
+        "status": "pending"
+      },
+      {
+        "id": "F",
+        "description": "Hubungan Work/Product tetap konsisten selama testing",
+        "status": "pending"
+      },
+      {
+        "id": "G",
+        "description": "Semua perubahan tercatat dengan jelas siapa yang melakukannya",
+        "status": "pending"
+      },
+      {
+        "id": "H",
+        "description": "Setelah reload, state hyper-relationship tetap terjaga",
+        "status": "pending"
+      },
+      {
+        "id": "I",
+        "description": "Saya dapat menyelesaikan seluruh end-to-end flow tanpa error",
+        "status": "pending"
+      }
+    ]
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "work_id": "case-101",
+  "evidence_timestamp": "2026-11-15T04:15:12.000Z",
+  "product": "lawyershub",
+  "execution_summary": {
+    "total_stages_executed": 6,
+    "all_stages_successful": true,
+    "total_capability_invocations": 7
+  },
+  "stage_execution": [
+    {
+      "stage": "case_draft",
+      "capability_invoked": "connector-ecosystem.connector.ingest",
+      "status": "success",
+      "timestamp": "2026-11-15T04:15:12.100Z"
+    },
+    {
+      "stage": "case_processing",
+      "capability_invoked": "legal-case.create",
+      "status": "success",
+      "timestamp": "2026-11-15T04:15:12.110Z"
+    },
+    {
+      "stage": "resolution_delivered",
+      "capability_invoked": "legal-document.upload",
+      "status": "success",
+      "timestamp": "2026-11-15T04:15:12.120Z"
+    },
+    {
+      "stage": "client_confirmed",
+      "capability_invoked": "governance-approval.approveSettlement",
+      "status": "success",
+      "timestamp": "2026-11-15T04:15:12.130Z"
+    },
+    {
+      "stage": "case_completed",
+      "capability_invoked": "payment-processing.payment.process",
+      "status": "success",
+      "timestamp": "2026-11-15T04:15:12.140Z"
+    },
+    {
+      "stage": "case_archived",
+      "capability_invoked": "governance-evidence.archive",
+      "status": "success",
+      "timestamp": "2026-11-15T04:15:12.150Z"
+    }
+  ],
+  "commercial_evidence": {
+    "total_revenue_idr": 15000000,
+    "transaction_count": 1,
+    "client_count": 1,
+    "transaction_details": [
+      {
+        "transaction_id": "MIDTRANS-20261101-00002",
+        "amount_idr": 15000000,
+        "client_name": "PT Teknologi Indonesia",
+        "case_type": "Corporate Litigation"
+      }
+    ]
+  },
+  "capability_usage": {
+    "shared_capabilities_used": 7,
+    "new_capabilities_created": 0,
+    "reuse_percentage": 100.0
+  },
+  "test_result": {
+    "test_file": "workspace/products/lawyershub/tests/e2e-legal-case-management.test.ts",
+    "test_name": "should complete full legal case lifecycle",
+    "test_status": "passed",
+    "test_duration_ms": 21
+  }
+}

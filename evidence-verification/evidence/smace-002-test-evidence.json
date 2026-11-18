@@ -1,0 +1,66 @@
+{
+  "workId": "work-smace-002-comfyui-001",
+  "tenantId": "tenant-001",
+  "actorId": "actor-verification-001",
+  "workspaceId": "workspace-001",
+  "gates": [
+    {
+      "gateId": "G1",
+      "evidenceId": "ev-smace002-g1-001",
+      "correlationId": "eos-smace002-correlation-001",
+      "executionJobId": "job-smace002-exec-001",
+      "tenantCheck": "PASS",
+      "checksum": "a9993e364706816aba3e25717850c26c9cd0d89d",
+      "status": "PASS"
+    },
+    {
+      "gateId": "G2",
+      "evidenceId": "ev-smace002-g2-001",
+      "correlationId": "eos-smace002-correlation-002",
+      "executionJobId": "job-smace002-exec-002",
+      "tenantCheck": "PASS",
+      "checksum": "a9993e364706816aba3e25717850c26c9cd0d89d",
+      "status": "PASS"
+    },
+    {
+      "gateId": "G3",
+      "evidenceId": "ev-smace002-g3-001",
+      "correlationId": "eos-smace002-correlation-003",
+      "executionJobId": "job-smace002-exec-003",
+      "tenantCheck": "PASS",
+      "checksum": "a9993e364706816aba3e25717850c26c9cd0d89d",
+      "status": "PASS"
+    },
+    {
+      "gateId": "G4",
+      "evidenceId": "ev-smace002-g4-001",
+      "correlationId": "eos-smace002-correlation-004",
+      "executionJobId": "job-smace002-exec-004",
+      "tenantCheck": "PASS",
+      "checksum": "a9993e364706816aba3e25717850c26c9cd0d89d",
+      "status": "PASS"
+    },
+    {
+      "gateId": "G5",
+      "evidenceId": "ev-smace002-g5-001",
+      "correlationId": "eos-smace002-correlation-005",
+      "executionJobId": "job-smace002-exec-005",
+      "tenantCheck": "PASS",
+      "checksum": "a9993e364706816aba3e25717850c26c9cd0d89d",
+      "status": "PASS"
+    },
+    {
+      "gateId": "G6",
+      "evidenceId": "ev-smace002-g6-001",
+      "correlationId": "eos-smace002-correlation-006",
+      "executionJobId": "job-smace002-exec-006",
+      "tenantCheck": "PASS",
+      "checksum": "a9993e364706816aba3e25717850c26c9cd0d89d",
+      "status": "PENDING"
+    }
+  ],
+  "injectedAt": "2026-10-29T10:15:00Z",
+  "injectedBy": "eos-command-center",
+  "environment": "test/sandbox",
+  "note": "Test evidence injected untuk verifikasi script SMACE-002-EVIDENCE-RECON. Semua data adalah dummy untuk environment non-produksi."
+}

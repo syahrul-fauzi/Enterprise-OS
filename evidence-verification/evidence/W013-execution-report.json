@@ -1,0 +1,47 @@
+{
+  "work_id": "W-013",
+  "execution_timestamp": "2026-11-14T17:45:01.497Z",
+  "schema_generated": {
+    "schemaId": "schema-1794678301497",
+    "schemaName": "eos-runtime-config",
+    "version": "1.0.0",
+    "properties": {
+      "logLevel": "string",
+      "maxWorkers": "number",
+      "timeout": "number"
+    },
+    "required": [
+      "logLevel",
+      "maxWorkers"
+    ],
+    "generatedAt": "2026-11-14T17:45:01.497Z",
+    "status": "GENERATED"
+  },
+  "schema_verified": {
+    "valid": true,
+    "checks": [
+      "schema_structure_valid",
+      "required_fields_present",
+      "property_types_correct",
+      "schema_format_complete"
+    ]
+  },
+  "schema_applied": {
+    "schemaId": "schema-1794678301497",
+    "schemaName": "eos-runtime-config",
+    "version": "1.0.0",
+    "properties": {
+      "logLevel": "string",
+      "maxWorkers": "number",
+      "timeout": "number"
+    },
+    "required": [
+      "logLevel",
+      "maxWorkers"
+    ],
+    "generatedAt": "2026-11-14T17:45:01.497Z",
+    "status": "APPLIED"
+  },
+  "evidence_count": 3,
+  "status": "ALL_CHECKS_PASSED"
+}

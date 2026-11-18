@@ -1,0 +1,27 @@
+{
+  "tenant_id": "PILOT-TENANT-003",
+  "generated_at_utc": "2026-10-24T02:33:14.124Z",
+  "economic_evidence": {
+    "volume": 2635,
+    "revenue": 26350,
+    "variable_costs": 15810,
+    "contribution_margin": 10540,
+    "margin_percentage": 40,
+    "sample_count": 4,
+    "period_start_utc": "2026-10-01T02:33:14.034Z",
+    "period_end_utc": "2026-10-31T02:33:14.034Z",
+    "billable_units_total": 2635,
+    "average_price_unit": 10,
+    "average_actual_cost": 6,
+    "total_human_review_minutes": 610,
+    "average_human_review_per_unit": 0.2314990512333966,
+    "total_corrections": 65,
+    "average_corrections_per_unit": 0.024667931688804556,
+    "average_customer_value_score": 9,
+    "has_pilot_pricing": true
+  },
+  "high_risk_scenarios_processed": 4,
+  "total_high_risk_scenarios": 16,
+  "margin_target_achieved": true,
+  "notes": "Bukti penggunaan pelanggan ketiga sesuai prioritas War Room"
+}

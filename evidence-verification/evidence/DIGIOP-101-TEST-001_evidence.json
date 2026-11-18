@@ -1,0 +1,9 @@
+{
+  "work_id": "DIGIOP-101-TEST-001",
+  "service_request_id": "request-hnjrb4",
+  "journey_completed_at": "2026-11-06T13:58:13.834Z",
+  "all_layers_passed": true,
+  "package_id": "digital-care",
+  "customer_name": "Kafe Nusantara Jakarta",
+  "evidence_notes": "Evidence recorded by schedule-onboarding command in evidence-registry"
+}

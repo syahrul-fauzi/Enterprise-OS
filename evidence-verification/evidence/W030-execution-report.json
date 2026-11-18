@@ -1,0 +1,35 @@
+{
+  "work_id": "W-030",
+  "execution_timestamp": "2026-11-14T22:14:13.726Z",
+  "work_session_created": {
+    "sessionId": "work-session-W-030",
+    "workItemId": "W-030",
+    "status": "ACTIVE",
+    "workHash": "work-hash-W-030-1794684700000",
+    "createdAt": "2026-11-14T22:14:13.726Z"
+  },
+  "work_session_suspended": {
+    "suspended": true,
+    "sessionId": "work-session-W-030",
+    "suspendReason": "work-audit"
+  },
+  "work_session_resumed": {
+    "sessionId": "work-session-W-030",
+    "workItemId": "W-030",
+    "status": "RESUMED",
+    "workHash": "work-hash-resumed-1794684710000",
+    "createdAt": "2026-11-14T22:14:13.726Z",
+    "lastResumedAt": "2026-11-14T22:14:13.726Z"
+  },
+  "work_continuity_verified": {
+    "valid": true,
+    "checks": [
+      "work_chain_consistent",
+      "session_boundary_valid",
+      "no_work_anomaly",
+      "invocation_proof_preserved"
+    ]
+  },
+  "evidence_count": 4,
+  "status": "ALL_CHECKS_PASSED"
+}

@@ -1,0 +1,72 @@
+{
+  "work_id": "DO-DIGITALCARE-001",
+  "product_id": "digital-operations",
+  "package": "Digital Care",
+  "customer_id": "SME001",
+  "journey_completed_at": "2026-11-03T10:08:00Z",
+  "resolution_time_minutes": 8,
+  "managed_outcome_loop_verification": {
+    "sense": true,
+    "understand": true,
+    "decide": true,
+    "act": true,
+    "verify_outcome": true,
+    "learn": true
+  },
+  "sla_attainment": true,
+  "uptime_verified": 99.92,
+  "command_invocation_records": [
+    {
+      "capability": "core.observability",
+      "command": "incident.detect",
+      "ok": true,
+      "invoked_at": "2026-11-03T10:00:00Z",
+      "actor": "system.observability"
+    },
+    {
+      "capability": "core.connector-ecosystem",
+      "command": "customer.getcontext",
+      "ok": true,
+      "invoked_at": "2026-11-03T10:02:00Z",
+      "actor": "system.context-resolver"
+    },
+    {
+      "capability": "core.connector-ecosystem",
+      "command": "policy.assess",
+      "ok": true,
+      "authorized": true,
+      "invoked_at": "2026-11-03T10:03:00Z",
+      "actor": "system.policy-engine"
+    },
+    {
+      "capability": "core.connector-ecosystem",
+      "command": "service.restart",
+      "ok": true,
+      "invoked_at": "2026-11-03T10:04:00Z",
+      "actor": "system.agent.digital-operations"
+    },
+    {
+      "capability": "core.observability",
+      "command": "uptime.verify",
+      "ok": true,
+      "uptime": 99.92,
+      "invoked_at": "2026-11-03T10:07:00Z",
+      "actor": "system.observability"
+    },
+    {
+      "capability": "core.evidence-registry",
+      "command": "work.complete",
+      "ok": true,
+      "outcome": "resolved",
+      "invoked_at": "2026-11-03T10:08:00Z",
+      "actor": "system.evidence-manager"
+    }
+  ],
+  "eos_boundaries_compliance": {
+    "work_identity_from_core": true,
+    "external_providers_unchanged": true,
+    "ai_agent_policy_bound": true,
+    "evidence_integrity_maintained": true,
+    "core_frozen": true
+  }
+}

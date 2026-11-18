@@ -1,0 +1,26 @@
+{
+  "work_id": "hac-101",
+  "work_title": "Coordinate human+ai work assignment",
+  "evidence_type": "end-to-end-execution",
+  "execution_timestamp": "2026-11-15T[timestamp]",
+  "execution_status": "COMPLETED",
+  "lifecycle_stages_executed": [
+    {"stage": "coordinate", "status": "COMPLETED"},
+    {"stage": "decompose", "status": "COMPLETED"},
+    {"stage": "match", "status": "COMPLETED"},
+    {"stage": "execute", "status": "COMPLETED"},
+    {"stage": "verify", "status": "COMPLETED"},
+    {"stage": "complete", "status": "COMPLETED"}
+  ],
+  "commercial_evidence": {
+    "coordination_value_idr": 11500000,
+    "currency": "IDR",
+    "verification_status": "VERIFIED"
+  },
+  "verification": {
+    "test_executed": "e2e-human-ai-work-coordination.test.ts",
+    "test_exit_code": 0,
+    "all_stages_completed": true,
+    "reuse_percentage": 100.0
+  }
+}

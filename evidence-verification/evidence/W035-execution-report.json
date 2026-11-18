@@ -1,0 +1,35 @@
+{
+  "work_id": "W-035",
+  "execution_timestamp": "2026-11-14T22:27:14.952Z",
+  "procedure_session_created": {
+    "sessionId": "procedure-session-W-035",
+    "workItemId": "W-035",
+    "status": "ACTIVE",
+    "procedureHash": "procedure-hash-W-035-1794685200000",
+    "createdAt": "2026-11-14T22:27:14.952Z"
+  },
+  "procedure_session_suspended": {
+    "suspended": true,
+    "sessionId": "procedure-session-W-035",
+    "suspendReason": "procedure-audit"
+  },
+  "procedure_session_resumed": {
+    "sessionId": "procedure-session-W-035",
+    "workItemId": "W-035",
+    "status": "RESUMED",
+    "procedureHash": "procedure-hash-resumed-1794685210000",
+    "createdAt": "2026-11-14T22:27:14.952Z",
+    "lastResumedAt": "2026-11-14T22:27:14.952Z"
+  },
+  "procedure_continuity_verified": {
+    "valid": true,
+    "checks": [
+      "procedure_chain_consistent",
+      "session_boundary_valid",
+      "no_procedure_anomaly",
+      "invocation_proof_preserved"
+    ]
+  },
+  "evidence_count": 4,
+  "status": "ALL_CHECKS_PASSED"
+}

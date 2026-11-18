@@ -1,0 +1,37 @@
+{
+  "work_id": "W-021",
+  "execution_timestamp": "2026-11-14T18:06:51.818Z",
+  "tenant_session_created": {
+    "sessionId": "tenant-session-tenant-001-W-021",
+    "tenantId": "tenant-001",
+    "workItemId": "W-021",
+    "status": "ACTIVE",
+    "tenantHash": "tenant-hash-tenant-001-1794682000000",
+    "createdAt": "2026-11-14T18:06:51.818Z"
+  },
+  "tenant_session_suspended": {
+    "suspended": true,
+    "sessionId": "tenant-session-tenant-001-W-021",
+    "suspendReason": "tenant-audit"
+  },
+  "tenant_session_resumed": {
+    "sessionId": "tenant-session-tenant-001-W-021",
+    "tenantId": "tenant-001",
+    "workItemId": "W-021",
+    "status": "RESUMED",
+    "tenantHash": "tenant-hash-resumed-1794682010000",
+    "createdAt": "2026-11-14T18:06:51.818Z",
+    "lastResumedAt": "2026-11-14T18:06:51.818Z"
+  },
+  "tenant_isolation_verified": {
+    "valid": true,
+    "checks": [
+      "tenant_boundary_enforced",
+      "no_cross_tenant_leak",
+      "data_isolation_valid",
+      "invocation_proof_preserved"
+    ]
+  },
+  "evidence_count": 4,
+  "status": "ALL_CHECKS_PASSED"
+}

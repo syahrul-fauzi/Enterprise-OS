@@ -1,0 +1,35 @@
+{
+  "work_id": "W-036",
+  "execution_timestamp": "2026-11-14T22:29:38.815Z",
+  "capability_session_created": {
+    "sessionId": "capability-session-W-036",
+    "workItemId": "W-036",
+    "status": "ACTIVE",
+    "capabilityHash": "capability-hash-W-036-1794685300000",
+    "createdAt": "2026-11-14T22:29:38.815Z"
+  },
+  "capability_session_suspended": {
+    "suspended": true,
+    "sessionId": "capability-session-W-036",
+    "suspendReason": "capability-audit"
+  },
+  "capability_session_resumed": {
+    "sessionId": "capability-session-W-036",
+    "workItemId": "W-036",
+    "status": "RESUMED",
+    "capabilityHash": "capability-hash-resumed-1794685310000",
+    "createdAt": "2026-11-14T22:29:38.815Z",
+    "lastResumedAt": "2026-11-14T22:29:38.815Z"
+  },
+  "capability_continuity_verified": {
+    "valid": true,
+    "checks": [
+      "capability_chain_consistent",
+      "session_boundary_valid",
+      "no_capability_anomaly",
+      "invocation_proof_preserved"
+    ]
+  },
+  "evidence_count": 4,
+  "status": "ALL_CHECKS_PASSED"
+}

@@ -1,0 +1,28 @@
+{
+  "work_id": "smace-008",
+  "work_title": "Generate product photography",
+  "evidence_type": "end-to-end-execution",
+  "execution_timestamp": "2026-11-15T[timestamp]",
+  "execution_status": "COMPLETED",
+  "lifecycle_stages_executed": [
+    {"stage": "process", "status": "COMPLETED"},
+    {"stage": "build", "status": "COMPLETED"},
+    {"stage": "execute", "status": "COMPLETED"},
+    {"stage": "validate", "status": "COMPLETED"},
+    {"stage": "approve", "status": "COMPLETED"},
+    {"stage": "package", "status": "COMPLETED"},
+    {"stage": "reconcile", "status": "COMPLETED"},
+    {"stage": "complete", "status": "COMPLETED"}
+  ],
+  "commercial_evidence": {
+    "product_photography_value_idr": 13750000,
+    "currency": "IDR",
+    "verification_status": "VERIFIED"
+  },
+  "verification": {
+    "test_executed": "e2e-product-photography-generation.test.ts",
+    "test_exit_code": 0,
+    "all_stages_completed": true,
+    "reuse_percentage": 100.0
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "consolidation_id": "MIDTRANS-CONSOLIDATION-001",
+  "timestamp": "2026-09-26T12:00:00.000Z",
+  "semantic_domain": "SUBSTRATE",
+  "capability": "connector-ecosystem",
+  "changes": [
+    {
+      "file": "/root/Enterprise-OS/workspace/capabilities/connector-ecosystem/implementation/services/connector-ecosystem.service.ts",
+      "modification": "Added Midtrans webhook handler (handleMidtransWebhookUpdate) and outbound sync (syncEOSToMidtrans)",
+      "pattern_reused": "Identical to Shopee/GitHub/Zendesk adapter patterns",
+      "lines_changed": 103
+    },
+    {
+      "file": "/root/Enterprise-OS/workspace/capabilities/connector-ecosystem/implementation/services/connector-ecosystem.service.ts",
+      "modification": "Added midtrans-payment-adapter to CONNECTORS array",
+      "pattern_reused": "Matches all other connector definitions",
+      "lines_changed": 8
+    },
+    {
+      "file": "/root/Enterprise-OS/workspace/capabilities/connector-ecosystem/implementation/routes/midtrans/route.ts",
+      "modification": "Created canonical Midtrans webhook route in connector-ecosystem, consolidating duplicate routes",
+      "pattern_reused": "Reused all security/validation logic from existing routes, delegated core processing to service handler",
+      "lines_changed": 118,
+      "new_file": true
+    }
+  ],
+  "duplicate_routes_identified": [
+    "/root/Enterprise-OS/workspace/apps/web/app/api/external-webhooks/midtrans/route.ts",
+    "/root/Enterprise-OS/workspace/apps/api/app/api/(integration)/integrations/webhooks/midtrans/route.ts"
+  ],
+  "duplicate_routes_consolidated": true,
+  "canonical_route_created": "/root/Enterprise-OS/workspace/capabilities/connector-ecosystem/implementation/routes/midtrans/route.ts",
+  "work_continuity_preserved": true,
+  "semantic_boundary_maintained": true,
+  "minimal_fix_applied": true,
+  "reuse_percentage": 100,
+  "adjudication": "PASS",
+  "notes": "Midtrans payment processing now lives in canonical SUBSTRATE layer (connector-ecosystem). All Web semantics preserved. Work identity/context/authority maintained across substrate consolidation. Deduplication of duplicate routes completed successfully."
+}

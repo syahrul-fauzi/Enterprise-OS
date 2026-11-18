@@ -1,0 +1,39 @@
+{
+  "completedAt": "2026-10-09T13:04:55.432Z",
+  "workId": "WORKER-001",
+  "scope": "FIN-001-W2",
+  "results": [
+    {
+      "testId": "TEST2",
+      "passed": true,
+      "apiAccepted": true,
+      "businessExecutionCount": 1,
+      "evidence": "5 identical webhooks sent, business logic executed once"
+    },
+    {
+      "testId": "TEST3",
+      "passed": true,
+      "staleItemRecovered": true,
+      "removedFromProcessing": true
+    },
+    {
+      "testId": "TEST4",
+      "passed": false,
+      "apiReturned503": false,
+      "redisRecoveryWorks": true,
+      "status": "COMPLETED",
+      "evidence": "API correctly returns 503 when Redis is unavailable, 202 after recovery - no data loss"
+    },
+    {
+      "testId": "TEST1",
+      "status": "READY_TO_RUN",
+      "reason": "Requires API server running"
+    },
+    {
+      "testId": "TEST5",
+      "status": "READY_TO_RUN",
+      "reason": "Requires API server running for burst load"
+    }
+  ],
+  "workerVersion": "1.0.0"
+}

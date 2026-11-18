@@ -1,0 +1,30 @@
+{
+  "work_id": "work-c26-new-customer-onboarding-001",
+  "timestamp": "2026-10-01T00:46:08.416Z",
+  "source_actor_id": "actor-product-specialist-mike",
+  "target_actor_id": "actor-ops-engineer-rita",
+  "tenant_id": "tenant-acme-corp",
+  "workspace_id": "workspace-customer-operations",
+  "source_domain": "product-onboarding",
+  "target_domain": "customer-operations",
+  "source_actor_type": "human",
+  "target_actor_type": "human",
+  "state_path": "/states/operations/implementation-pending",
+  "evidence_chain": [
+    ".eos-state/evidence/product_onboarding_init.json"
+  ],
+  "metadata": {
+    "source_product_id": "acme-customer-platform",
+    "target_operational_id": "customer-ops-execution-engine",
+    "projected_semantics": {
+      "domain": "customer-operations",
+      "primaryIntent": "Execute operational implementation for: Onboard new enterprise customer ACME Corp",
+      "workType": "customer-onboarding-implementation",
+      "requirements": [
+        "ops:implement:activate-slack-channel",
+        "ops:implement:provision-aws-account",
+        "ops:implement:schedule-kickoff-call"
+      ]
+    }
+  }
+}

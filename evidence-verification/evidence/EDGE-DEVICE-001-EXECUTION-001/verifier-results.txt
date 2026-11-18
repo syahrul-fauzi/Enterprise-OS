@@ -1,0 +1,1 @@
+TypeScript compilation check passed (unrelated errors in mqtt-adapter.service.ts existed before changes)

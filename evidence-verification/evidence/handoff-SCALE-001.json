@@ -1,0 +1,19 @@
+{
+  "work_id": "SCALE-001",
+  "timestamp": "2026-09-27T06:47:17.285Z",
+  "source_actor_id": "eos-core-agent",
+  "target_actor_id": "human-payment-operator",
+  "tenant_id": "tenant-scale-001",
+  "workspace_id": "ws-scale-001-infra",
+  "state_path": "/.eos-state/current-journey.yaml",
+  "evidence_chain": [
+    "/.eos-state/proofs/EOS-JOURNEY-007-W02-verification-complete.json",
+    "/.eos-state/proofs/EOS-COMM-002-2026-09-24.json",
+    "/.eos-state/proofs/EOS-JOURNEY-007-state-mutation-1790256374946.json"
+  ],
+  "metadata": {
+    "work_title": "Migrate in-memory production stores to persistent PostgreSQL",
+    "next_work_id": "PAY-001",
+    "verification_summary": "SCALE-001 full end-to-end validation PASSED"
+  }
+}

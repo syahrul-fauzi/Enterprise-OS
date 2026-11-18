@@ -1,0 +1,24 @@
+{
+  "work_id": "WORK-ACLPILOT-027-04",
+  "event": "canary_rollout_activated",
+  "timestamp_utc": "2026-10-25T14:15:00Z",
+  "canary_config": {
+    "enabled": true,
+    "traffic_percentage": 10,
+    "target_tenant_id": "PILOT-TENANT-003",
+    "baseline_replication_lag_ms": 500,
+    "baseline_latency_p95_ms": 200,
+    "termination_threshold_lag_ms": 5000,
+    "termination_threshold_error_rate": 0.05,
+    "activated_at_utc": "2026-10-25T14:15:00Z"
+  },
+  "monitoring_plan": {
+    "duration_hours": 72,
+    "metrics_tracked": ["replication_lag_ms", "error_rate", "budget_adherence", "reservation_success_rate"],
+    "next_checkpoint_utc": "2026-10-28T14:15:00Z",
+    "planned_traffic_increase": 30,
+    "final_general_rollout_utc": "2026-11-01T14:15:00Z"
+  },
+  "evidence_type": "activation_audit",
+  "verification_status": "PENDING_MONITORING"
+}

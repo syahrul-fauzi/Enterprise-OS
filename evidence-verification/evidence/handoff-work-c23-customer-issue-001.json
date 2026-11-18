@@ -1,0 +1,31 @@
+{
+  "work_id": "work-c23-customer-issue-001",
+  "timestamp": "2026-10-01T00:23:13.706Z",
+  "source_actor_id": "actor-cs-agent-jane",
+  "target_actor_id": "actor-engineering-bob",
+  "tenant_id": "tenant-acme-corp",
+  "workspace_id": "workspace-customer-support",
+  "source_domain": "customer-support",
+  "target_domain": "engineering",
+  "state_path": "/states/customer-support/triage-pending",
+  "evidence_chain": [
+    "source-domain-execution-complete",
+    "semantic-projection-validated"
+  ],
+  "metadata": {
+    "source_domain": "customer-support",
+    "target_domain": "engineering",
+    "transition_type": "cs-to-engineering",
+    "product_id": "customer-support-platform",
+    "projected_boundary": {
+      "domain": "engineering",
+      "primaryIntent": "Execute engineering resolution for: Triage customer reported issue",
+      "workType": "engineering-bug-resolution",
+      "requirements": [
+        "engineering:issue-capture",
+        "engineering:priority-assessment",
+        "engineering:initial-triage"
+      ]
+    }
+  }
+}

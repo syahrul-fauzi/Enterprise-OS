@@ -1,0 +1,73 @@
+{
+  "work_id": "ecom-101",
+  "evidence_generated_at": "2026-11-15T00:00:00.000Z",
+  "lifecycle_execution": {
+    "total_stages": 7,
+    "stages_completed": 7,
+    "terminal_state_reached": true,
+    "stage_timestamps": {
+      "order_received": "2026-11-15T00:01:00.000Z",
+      "payment_verified": "2026-11-15T00:02:00.000Z",
+      "inventory_checked": "2026-11-15T00:03:00.000Z",
+      "fulfilled": "2026-11-15T00:04:00.000Z",
+      "in_transit": "2026-11-15T00:05:00.000Z",
+      "reconciled": "2026-11-15T00:06:00.000Z",
+      "completed": "2026-11-15T00:07:00.000Z"
+    }
+  },
+  "capability_invocations": [
+    {
+      "capability": "connector-ecosystem",
+      "command": "connector.ingest",
+      "ok": true,
+      "invokedAt": "2026-11-15T00:01:00.000Z"
+    },
+    {
+      "capability": "payment-processing",
+      "command": "payment.verify",
+      "ok": true,
+      "invokedAt": "2026-11-15T00:02:00.000Z"
+    },
+    {
+      "capability": "workflow-engine",
+      "command": "workflow.transition",
+      "ok": true,
+      "invokedAt": "2026-11-15T00:03:00.000Z"
+    },
+    {
+      "capability": "requirement-management",
+      "command": "requirement.resolve",
+      "ok": true,
+      "invokedAt": "2026-11-15T00:04:00.000Z"
+    },
+    {
+      "capability": "observability",
+      "command": "observability.monitor",
+      "ok": true,
+      "invokedAt": "2026-11-15T00:05:00.000Z"
+    },
+    {
+      "capability": "governance-approval",
+      "command": "approval.confirm",
+      "ok": true,
+      "invokedAt": "2026-11-15T00:06:00.000Z"
+    },
+    {
+      "capability": "governance-evidence",
+      "command": "evidence.archive",
+      "ok": true,
+      "invokedAt": "2026-11-15T00:07:00.000Z"
+    }
+  ],
+  "commercial_evidence": {
+    "total_revenue_idr": 350000,
+    "total_transactions": 1,
+    "unique_clients": 1,
+    "revenue_entry_recorded": true
+  },
+  "test_results": {
+    "e2e_shopee_order_fulfillment": "PASS",
+    "test_executed_at": "2026-11-15T00:08:00.000Z",
+    "test_coverage": 100
+  }
+}

@@ -1,0 +1,1 @@
+Security scan: PASSED - validatedActorId trust boundary fixed, sessionId mandatory in schema, iot hardcode removed, no atomicClaim duplication, command/evidence failures separated

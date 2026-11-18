@@ -1,0 +1,35 @@
+{
+  "work_id": "W-020",
+  "execution_timestamp": "2026-11-14T18:04:51.683Z",
+  "evidence_session_created": {
+    "sessionId": "evidence-session-W-020",
+    "workItemId": "W-020",
+    "status": "ACTIVE",
+    "evidenceHash": "evidence-hash-W-020-1794681000000",
+    "createdAt": "2026-11-14T18:04:51.683Z"
+  },
+  "evidence_session_suspended": {
+    "suspended": true,
+    "sessionId": "evidence-session-W-020",
+    "suspendReason": "evidence-audit"
+  },
+  "evidence_session_resumed": {
+    "sessionId": "evidence-session-W-020",
+    "workItemId": "W-020",
+    "status": "RESUMED",
+    "evidenceHash": "evidence-hash-resumed-1794681010000",
+    "createdAt": "2026-11-14T18:04:51.683Z",
+    "lastResumedAt": "2026-11-14T18:04:51.683Z"
+  },
+  "evidence_continuity_verified": {
+    "valid": true,
+    "checks": [
+      "evidence_chain_consistent",
+      "session_boundary_valid",
+      "no_evidence_gap",
+      "invocation_proof_preserved"
+    ]
+  },
+  "evidence_count": 4,
+  "status": "ALL_CHECKS_PASSED"
+}

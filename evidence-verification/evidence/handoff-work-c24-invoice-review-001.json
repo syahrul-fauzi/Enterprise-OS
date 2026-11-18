@@ -1,0 +1,25 @@
+{
+  "work_id": "work-c24-invoice-review-001",
+  "timestamp": "2026-10-01T00:36:06.341Z",
+  "source_actor_id": "actor-accountant-sarah",
+  "target_actor_id": "actor-ai-invoice-agent",
+  "tenant_id": "tenant-acme-corp",
+  "workspace_id": "workspace-finance-team",
+  "source_domain": "finance",
+  "target_domain": "finance",
+  "state_path": "/states/finance/invoice-submitted",
+  "evidence_chain": [
+    "source-actor-execution-complete",
+    "actor-capabilities-projected"
+  ],
+  "metadata": {
+    "source_actor_type": "human",
+    "target_actor_type": "agent",
+    "transition_type": "human-to-agent",
+    "product_id": "finance-operations-platform",
+    "projected_capabilities": [
+      "agent.automated.finance.review",
+      "agent.automated.invoice.approve"
+    ]
+  }
+}

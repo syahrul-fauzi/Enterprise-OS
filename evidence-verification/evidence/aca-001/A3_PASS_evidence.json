@@ -1,0 +1,7 @@
+{
+  "gateId": "A3_PASS",
+  "recordedAt": "2026-10-07T03:04:52.713Z",
+  "workId": "aca-work-1791342292655",
+  "unauthorizedTransitionBlocked": true,
+  "errorMessage": "Actor regular-staff-no-roles-001 lacks required roles for step paper-submitted"
+}

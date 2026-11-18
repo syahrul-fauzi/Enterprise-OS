@@ -1,0 +1,17 @@
+{
+  "work_id": "work-427cc8f7-45d2-4190-8601-abeb3e1d9297",
+  "timestamp": "2026-09-27T07:57:55.604Z",
+  "source_actor_id": "cloud-runtime",
+  "target_actor_id": "edge-runtime",
+  "tenant_id": "tenant-001",
+  "workspace_id": "workspace-001",
+  "state_path": "./.eos-state/execution/cloud-work-123.json",
+  "evidence_chain": [
+    "cloud-created-1790495875604",
+    "handoff-initiated-1790495875604"
+  ],
+  "metadata": {
+    "reason": "edge-offline-test",
+    "original_runtime": "cloud"
+  }
+}

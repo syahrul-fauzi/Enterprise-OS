@@ -1,0 +1,35 @@
+{
+  "work_id": "W-023",
+  "execution_timestamp": "2026-11-14T18:11:23.163Z",
+  "state_session_created": {
+    "sessionId": "state-session-W-023",
+    "workItemId": "W-023",
+    "status": "ACTIVE",
+    "stateHash": "state-hash-W-023-1794684000000",
+    "createdAt": "2026-11-14T18:11:23.163Z"
+  },
+  "state_session_suspended": {
+    "suspended": true,
+    "sessionId": "state-session-W-023",
+    "suspendReason": "state-audit"
+  },
+  "state_session_resumed": {
+    "sessionId": "state-session-W-023",
+    "workItemId": "W-023",
+    "status": "RESUMED",
+    "stateHash": "state-hash-resumed-1794684010000",
+    "createdAt": "2026-11-14T18:11:23.163Z",
+    "lastResumedAt": "2026-11-14T18:11:23.163Z"
+  },
+  "state_continuity_verified": {
+    "valid": true,
+    "checks": [
+      "state_chain_consistent",
+      "session_boundary_valid",
+      "no_state_gap",
+      "invocation_proof_preserved"
+    ]
+  },
+  "evidence_count": 4,
+  "status": "ALL_CHECKS_PASSED"
+}

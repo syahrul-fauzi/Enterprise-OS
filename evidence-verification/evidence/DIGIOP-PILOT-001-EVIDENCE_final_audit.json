@@ -1,0 +1,72 @@
+{
+  "work_id": "DIGIOP-PILOT-001",
+  "processed_at": "2026-11-07T05:10:00.000000Z",
+  "evidence_paths": [
+    "/root/Enterprise-OS/.eos-state/intake/DIGIOP-PILOT-001-WORK-RECEIVE_intake.json",
+    "/root/Enterprise-OS/.eos-state/dependency/DIGIOP-PILOT-001-ANALYSIS_impact.json",
+    "/root/Enterprise-OS/.eos-state/command-center/DIGIOP-PILOT-001-ORCHESTRATION_manifest.json",
+    "/root/Enterprise-OS/.eos-state/verification/DIGIOP-PILOT-001-VERIFICATION_verification.json"
+  ],
+  "requirements": ["WR-G1", "WR-G2", "WR-G3", "WR-G4", "WR-G5", "WR-G6"],
+  "governance_verdict": {
+    "WR-G1": {
+      "verified": true,
+      "evidence": "Kebutuhan bisnis nyata diterima: Pengelolaan Permintaan Layanan Internal TI"
+    },
+    "WR-G2": {
+      "verified": true,
+      "evidence": "Tujuan dan hasil yang diharapkan jelas: mengurangi waktu resolusi permintaan TI 30%"
+    },
+    "WR-G3": {
+      "verified": true,
+      "evidence": "Identitas Work stabil: logicalWorkId DIGIOP-PILOT-001 konsisten di semua fase"
+    },
+    "WR-G4": {
+      "verified": true,
+      "evidence": "Pihak dan kewenangan teridentifikasi: Owner = Head of IT Operations, Decision Authority = IT Director"
+    },
+    "WR-G5": {
+      "verified": true,
+      "evidence": "Input dan batasan tercatat: Input = permintaan layanan dari karyawan, Constraints = hanya untuk tenant internal"
+    },
+    "WR-G6": {
+      "verified": true,
+      "evidence": "Work siap dianalisis: handoff ke tahap EVIDENCE selesai, semua kriteria terpenuhi"
+    }
+  },
+  "confidence_score": 1.0,
+  "audit_trail": [
+    {
+      "timestamp": "2026-11-07T05:10:00.000000Z",
+      "action": "evidence_verified",
+      "actor": "eos-evidence-engine",
+      "details": "Validated evidence file: /root/Enterprise-OS/.eos-state/intake/DIGIOP-PILOT-001-WORK-RECEIVE_intake.json"
+    },
+    {
+      "timestamp": "2026-11-07T05:10:00.000000Z",
+      "action": "evidence_verified",
+      "actor": "eos-evidence-engine",
+      "details": "Validated evidence file: /root/Enterprise-OS/.eos-state/dependency/DIGIOP-PILOT-001-ANALYSIS_impact.json"
+    },
+    {
+      "timestamp": "2026-11-07T05:10:00.000000Z",
+      "action": "evidence_verified",
+      "actor": "eos-evidence-engine",
+      "details": "Validated evidence file: /root/Enterprise-OS/.eos-state/command-center/DIGIOP-PILOT-001-ORCHESTRATION_manifest.json"
+    },
+    {
+      "timestamp": "2026-11-07T05:10:00.000000Z",
+      "action": "evidence_verified",
+      "actor": "eos-evidence-engine",
+      "details": "Validated evidence file: /root/Enterprise-OS/.eos-state/verification/DIGIOP-PILOT-001-VERIFICATION_verification.json"
+    },
+    {
+      "timestamp": "2026-11-07T05:10:00.000000Z",
+      "action": "evidence_processing_complete",
+      "actor": "eos-evidence-engine",
+      "details": "Processed 4 evidence files, confidence score: 1.0"
+    }
+  ],
+  "final_status": "PILOT_EXECUTING",
+  "all_requirements_met": true
+}

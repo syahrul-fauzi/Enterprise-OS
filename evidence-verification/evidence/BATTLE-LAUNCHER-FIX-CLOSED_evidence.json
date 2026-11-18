@@ -1,0 +1,76 @@
+{
+  "work_id": "BATTLE-LAUNCHER-FIX-CLOSURE",
+  "battle_closed_at": "2026-08-17T07:05:00.000Z",
+  "classification": "REALITY_FRICTION_MINIMAL_FIX",
+  "commander_verdict": "CLOSED",
+  "battle_name": "EOS Engine Launcher PYTHONPATH Friction Removal",
+  "truth_ladder_level_achieved": "L3 (Engineering + Operational Truth) — L4/L5 WORLD TRUTH TIDAK DIKLAIM",
+  "epistemic_discipline_enforced": [
+    "OBS-005 TIDAK BOLEH dijadikan bukti real-world outcome (bukan L4).",
+    "L5 leverage 10× TIDAK DIKLAIM (belum ada measurement real work N≥2).",
+    "Launcher fix = corrective patch BELANDA, BUKAN capaian product/capability.",
+    "TIDAK ADA refactor Python package / launcher framework / runtime baru (FORBIDDEN oleh doctrine minimal fix)."
+  ],
+  "battle_process_compliant_with_SMALLEST_FIX_FLOW": {
+    "ERROR": "ModuleNotFoundError: No module named 'eos'",
+    "LOCALIZE": "package.json scripts tidak set PYTHONPATH → sys.path[0] ke folder engine bukan folder source package",
+    "CLASSIFY": "launcher/runtime friction (BUKAN: existing primitive defect / architecture blocker / real-work capability gap)",
+    "SMALLEST_FIX": "PYTHONPATH=implementation prepend ke 5 scripts di root package.json",
+    "VERIFY": "5/5 npm launchers PASS via npm run (TIDAK di-test command manual)",
+    "CLOSE": "Battle ditutup TANPA new work / new capability / new architecture change"
+  },
+  "delta_evidence": {
+    "files_changed": 1,
+    "file_path": "package.json",
+    "lines_edited": 5,
+    "architecture_mutation": 0,
+    "new_capabilities": 0,
+    "new_dependencies": 0,
+    "kernel_mutation_count": 0,
+    "frozen_architecture_31_compliant": true
+  },
+  "verification_chain_artifacts": [
+    "OBS-003 (manual PYTHONPATH)",
+    "OBS-004 (post-fix run #1)",
+    "OBS-005 (npm run eos:observe — via package.json launcher POST-FIX)",
+    "validation-report-20260817_070039.yaml (3 observations: OBS-003/004/005 = SCORE 100% ALL VALIDATED)",
+    "status-reader output: gate_b=true, gate_c=true, governance=VERIFIED",
+    "pattern-candidate-report-20260817_070058.yaml (Pattern Engine OK)",
+    "health-report-20260817_070100.md + doctor-decisions DEC-001..DEC-007 (Doctor Engine OK)"
+  ],
+  "operational_truth_chain_PROVEN_POSTFIX": {
+    "OBSERVE → VALIDATE → STATUS → PATTERN → DOCTOR": "SEMUA LANGKAH FULL CHAIN OK END-TO-END",
+    "status_evidence": "gate_b=true, gate_c=true, governance=VERIFIED"
+  },
+  "evolution_loop_activation": "EVOLUTION LOOP (OBSERVATION → VALIDATION → PATTERN → DOCTOR / DECISION → REAL WORK) SEKARANG BISA BERJALAN OTONOM MELALUI npm run (bukan command manual)",
+  "forbidden_next_steps_closed_battle": [
+    "DILARANG: refactor Python package structure (e.g. setup.py/pyproject.toml) — ini akan membesar battle dengan alasan hanya demi 'kebersihan' padahal launcher sudah OK",
+    "DILARANG: membuat launcher abstraction/framework (bash script / python main entry) — overengineering minimal fix",
+    "DILARANG: menaikkan Evidence Ladder L4/L5 hanya karena machinery jalan (L4/L5 butuh B4 real human + external action)",
+    "DILARANG: menambah capability apapun untuk launcher ini — tidak perlu test unit / tidak perlu registry",
+    "DILARANG: commit/push action apa pun tanpa explicit order"
+  ],
+  "commanders_priority_recentered_BACK_TO_F1_REALITY": {
+    "#1 🔴 P0-PT-001 / B4": "Jalankan manusia nyata — BUKAN membuat test/synthetic observer baru",
+    "#2 🟠 F2 Project Context": "Tetap knowledge/experiment seam (bukan service)",
+    "#3 🟠 F3 Execution Contract": "Tetap thin reversible adapter (bukan framework)",
+    "#4 🟠 F4 Professional Work Package": "Tetap projection dari existing Work + Context (BUKAN capability)",
+    "#5 🟢 F5 Leverage Measurement": "Mulai ukur TNA / CR / HR / MWC / RR untuk pertama kalinya lewat real work"
+  },
+  "immutable_commander_status_snapshot_at_battle_close": {
+    "FOUNDATION": "🟢 LOCKED",
+    "L3": "🟢 PROVEN",
+    "OBSERVABILITY": "🟢 OPERATIONAL",
+    "LAUNCHER_BLOCKER": "🟢 RESOLVED (this battle)",
+    "P0_PT_001": "🔴 ACTIVE (next move = real human, BUKAN coding)",
+    "B4": "🔴 PENDING REAL HUMAN",
+    "REAL_PROFESSIONAL": "🔴 PENDING",
+    "EXTERNAL_ACTION": "🔴 PENDING",
+    "WORLD_OUTCOME": "🔴 PENDING",
+    "PROJECT_CONTEXT_F2": "🟠 EXPERIMENT",
+    "EXECUTION_CONTRACT_F3": "🟠 EXPERIMENT",
+    "PROFESSIONAL_HANDOFF_F4": "🟠 EXPERIMENT",
+    "REPEATABILITY": "⚪ NOT YET MEASURED",
+    "L5_LEVERAGE": "⚪ NOT CLAIMED"
+  }
+}

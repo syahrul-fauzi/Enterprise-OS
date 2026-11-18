@@ -1,0 +1,36 @@
+{
+  "staging_readonly_checks": {
+    "executed_at": "2026-10-30T03:13:53.968Z",
+    "works_duplicate_keys": [],
+    "work_payments_duplicate_keys": [],
+    "work_payments_constraints": [
+      {
+        "conname": "work_payments_pkey",
+        "definition": "PRIMARY KEY (id)"
+      },
+      {
+        "conname": "work_payments_unique_tenant_idempotency_key",
+        "definition": "UNIQUE (tenant_id, idempotency_key)"
+      },
+      {
+        "conname": "work_payments_unique_work_payment",
+        "definition": "UNIQUE (work_id, payment_id)"
+      }
+    ],
+    "all_checks_passed": true
+  },
+  "updated_at": "2026-10-30T03:13:54.024Z",
+  "staging_rls_checks": {
+    "role_superuser": false,
+    "role_bypassrls": false,
+    "policies": [
+      {
+        "tablename": "work_payments",
+        "policyname": "tenant_isolation_work_payments",
+        "using_clause": "(((tenant_id)::text = current_setting('app.current_tenant'::text, true)) AND (((workspace_id)::text = current_setting('app.current_workspace'::text, true)) OR ((work_id)::text = current_setting('app.current_work'::text, true))))",
+        "with_check_clause": null
+      }
+    ],
+    "all_checks_passed": true
+  }
+}

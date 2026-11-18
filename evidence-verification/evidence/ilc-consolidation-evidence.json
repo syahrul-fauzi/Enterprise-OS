@@ -1,0 +1,25 @@
+{
+  "migration_id": "ECSYS-CONSOLIDATION-002",
+  "platform": "ilc",
+  "timestamp": "2026-09-26T12:40:00Z",
+  "reuse_percentage": 99.7,
+  "files_migrated": [
+    "/workspace/capabilities/connector-ecosystem/implementation/routes/ilc/route.ts",
+    "/workspace/capabilities/connector-ecosystem/implementation/services/connector-ecosystem.service.ts"
+  ],
+  "legacy_files_deleted": [
+    "/workspace/apps/web/app/api/external-webhooks/ilc/route.ts"
+  ],
+  "compliance_audit": {
+    "canonical_pattern_implemented": true,
+    "work_identity_preserved": true,
+    "semantic_authority_single": true,
+    "evidence_field_enabled": true,
+    "minimal_fixes_applied": true
+  },
+  "thesis_alignment": {
+    "work_continuity_maintained": true,
+    "substrate_independent_identity": true,
+    "no_work_context_lost": true
+  }
+}

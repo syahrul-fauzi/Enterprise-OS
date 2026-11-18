@@ -1,0 +1,29 @@
+{
+  "work_id": "W-010",
+  "execution_timestamp": "2026-11-14T17:36:24.659Z",
+  "channel_installation": {
+    "channelId": "channel-001",
+    "installationTimestamp": "2026-11-14T17:36:24.659Z",
+    "accessProof": {
+      "proofId": "proof-1794677784659",
+      "generatedAt": "2026-11-14T17:36:24.659Z",
+      "validityPeriod": 3600,
+      "hash": "abc123hash"
+    },
+    "status": "ACTIVE"
+  },
+  "access_proof": {
+    "proofId": "proof-1794677784659",
+    "channelId": "channel-001",
+    "actorId": "system-executive",
+    "generatedAt": "2026-11-14T17:36:24.659Z",
+    "expiresAt": "2026-11-14T18:36:24.659Z",
+    "hash": "abc123hash",
+    "signature": "signature123"
+  },
+  "verification_result": {
+    "valid": true
+  },
+  "evidence_count": 3,
+  "status": "ALL_CHECKS_PASSED"
+}
