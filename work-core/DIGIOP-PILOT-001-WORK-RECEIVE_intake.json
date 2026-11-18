@@ -1,0 +1,62 @@
+{
+  "logicalWorkId": "DIGIOP-PILOT-001",
+  "inputEvidence": [
+    {
+      "type": "business_request_source",
+      "source": "IT Service Management Team (Internal Digital Operations)",
+      "timestamp": "2026-11-07T00:00:00.000Z",
+      "verified": true
+    }
+  ],
+  "outputEvidence": [
+    {
+      "type": "intake_report",
+      "path": "/ios-id/eos/.eos-state/intake/DIGIOP-PILOT-001-intake-report.md",
+      "timestamp": "2026-11-07T00:00:00.000Z",
+      "hashed": true
+    },
+    {
+      "type": "work_identity_record",
+      "path": "/ios-id/eos/.eos-state/work/DIGIOP-PILOT-001-identity.json",
+      "timestamp": "2026-11-07T00:00:00.000Z"
+    }
+  ],
+  "decision": "READY_FOR_ANALYSIS",
+  "status": "PILOT_EXECUTING",
+  "nextAction": "Execute DIGIOP-PILOT-001-ANALYSIS with eos-recon and eos-dependency-engine",
+  "blockers": [],
+  "acceptanceCriteriaVerification": {
+    "WR-G1": true,
+    "WR-G2": true,
+    "WR-G3": true,
+    "WR-G4": true,
+    "WR-G5": true,
+    "WR-G6": true
+  },
+  "businessCase": {
+    "name": "Pengelolaan Permintaan Layanan Internal TI",
+    "description": "Menerima, mengklasifikasikan, dan memproses permintaan layanan dari karyawan internal kepada tim IT support (akses sistem, perangkat keras, software, dan masalah teknis lainnya).",
+    "objective": "Mengurangi waktu proses permintaan layanan dari 48 jam menjadi 24 jam, meningkatkan visibilitas status permintaan, dan mencatat seluruh siklus hidup Work sebagai bukti audit.",
+    "measurableOutcomes": [
+      "Waktu rata-rata pemrosesan permintaan <24 jam",
+      "100% permintaan memiliki evidence trail lengkap",
+      "0 Work yang terputus selama transisi antaraktor",
+      "Tingkat kepuasan pengguna >90%",
+      "Semua locked boundaries EOS tetap terjaga"
+    ],
+    "owner": "IT Service Management Lead",
+    "decisionAuthority": "IT Department Head",
+    "inputManifest": [
+      "Formulir permintaan layanan karyawan",
+      "Data identitas karyawan dan departemen",
+      "Daftar inventaris perangkat keras dan lunak",
+      "SLA (Service Level Agreement) yang berlaku"
+    ],
+    "constraints": [
+      "Data karyawan bersifat sensitif, harus mengikuti aturan isolasi tenant",
+      "Hanya tim IT yang memiliki otoritas memproses permintaan",
+      "Tidak boleh memodifikasi packages/eos-core/foundations/ atau src/eos/semantics/",
+      "logicalWorkId harus stabil sepanjang seluruh siklus hidup Work"
+    ]
+  }
+}

@@ -1,0 +1,90 @@
+canonical_ownership_map:
+  version: "1.0"
+  created: "2026-11-14"
+  bounded_contexts:
+    - id: BC-01
+      name: MEMORY & CONTINUITY
+      description: Engineering Memory - Journey history, milestones, experiments, historical records
+      folders:
+        - pilots/
+        - reports/
+        - w003-p7-03/
+      status: tentatively_mapped
+
+    - id: BC-02
+      name: DECISION & ARCHITECTURE
+      description: Architecture Governance - Decisions, baselines, boundaries, dependencies
+      folders:
+        - dependency/
+        - dependency-engine/
+      status: tentatively_mapped
+
+    - id: BC-03
+      name: EVIDENCE & VERIFICATION
+      description: Evidence Integrity - Proofs, verification, audits, acceptance
+      folders:
+        - audit/
+        - builds/
+        - deploy/
+        - evidence/
+        - proofs/
+        - verification/
+      status: tentatively_mapped
+
+    - id: BC-04
+      name: GOVERNANCE & AUTHORITY
+      description: Governance Control - Policies, authorization, approvals, exceptions
+      folders:
+        - authorization/
+        - governance/
+        - sla/
+      status: tentatively_mapped
+
+    - id: BC-05
+      name: COORDINATION
+      description: Coordination - Command center, handoffs
+      folders:
+        - command-center/
+        - war-room/
+      status: tentatively_mapped
+
+    - id: BC-06
+      name: CONTRACTS
+      description: Contracts - Schemas, domain references
+      folders:
+        - contracts/
+      status: tentatively_mapped
+
+    - id: BC-07
+      name: WORK CORE
+      description: Work Core - Execution, work items
+      folders:
+        - execution/
+        - work/
+        - work-items/
+        - workitems/
+      status: tentatively_mapped
+
+    - id: BC-08
+      name: OBSERVABILITY
+      description: Observability - Metrics, health checks
+      folders:
+        - metrics/
+      status: tentatively_mapped
+
+  unassigned_folders:
+    - commercial/
+    - edge/
+    - face/
+    - inspect-checklists/
+    - intake/
+    - intelligence/
+    - observation/
+    - operations/
+    - recon/
+    status: requires_adjudication
+
+  notes:
+    - "Folders marked tentatively_mapped require validation before reorganization"
+    - "Folders marked requires_adjudication need ownership decision"
+    - "No file movement has been performed yet - this is a discovery map only"

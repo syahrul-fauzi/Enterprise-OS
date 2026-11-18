@@ -1,0 +1,23 @@
+{
+  "work_id": "C17-REJECTION-TRANSITION",
+  "product": "EOS Core",
+  "user_job": "Execute rejection transition (A requests review from B, B rejects and returns to A) on W1 to extend Work continuity hypothesis to rejection flows",
+  "acceptance_criteria": [
+    "reuse 100% of existing C13-X wrong actor rejection pattern",
+    "≤3 lines of code changes per file (minimal fix principle)",
+    "maintain all invariants: W1, tenant, workspace, ownership, artifact lineage unchanged",
+    "verify wrong actor rejection: only assigned reviewer can reject review",
+    "verify state transition: only in_review can become review_rejected",
+    "owner can resume control after rejection to rework or resubmit"
+  ],
+  "dependencies": ["C13-X authorization predicate", "requirement management session validation logic", "PostgreSQL requirement schema"],
+  "assigned_agents": {
+    "recon": "eos-recon",
+    "implementation": "eos-product-slice",
+    "verification": "eos-verification",
+    "evidence": "eos-evidence-engine"
+  },
+  "status": "READY",
+  "created_at": "2026-08-20T00:00:00Z",
+  "priority": "HIGH"
+}

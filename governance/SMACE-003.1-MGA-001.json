@@ -1,0 +1,43 @@
+{
+  "decision_id": "SMACE-003.1-MGA-001",
+  "subject": "Approval of SMACE-003.1 Observability slice",
+  "decision": "APPROVED",
+  "scope": "Dependency gate release for SMACE-003.2 controlled execution",
+  "approval_timestamp": "2026-11-01T14:00:00Z",
+  "basis_of_approval": [
+    "SMACE-003.1 staging deployment reported PASS",
+    "Read-only verification reported PASS",
+    "PostgreSQL staging durability and read-back reported PASS",
+    "Tenant isolation verification reported PASS",
+    "logicalWorkId continuity and runtimeJobId correlation verified",
+    "Work lifecycle, runtime execution, approval, and evidence persistence remain separate",
+    "No unauthorized Work Core primitive or locked-core modification reported"
+  ],
+  "authorization": {
+    "SMACE-003.1": "APPROVED",
+    "SMACE-003.2": "AUTHORIZED TO ENTER CONTROLLED EXECUTION",
+    "auto_promotion": "DISABLED",
+    "further_dependency_transitions": "MANUAL APPROVAL ONLY",
+    "work_core": "FROZEN"
+  },
+  "execution_constraints": {
+    "SMACE-003.2_requirements": [
+      "Validate 80% budget alert including retries and failed attempts",
+      "Do not treat budget alerts as proof of actual expenditure",
+      "Reconcile actual cost against provider usage and persistent execution evidence",
+      "No new Work primitive, parallel registry, or unnecessary core refactor authorized"
+    ],
+    "SMACE-003.2_acceptance_criteria": [
+      "BUD-001: Alert muncul ketika penggunaan mencapai 80%",
+      "BUD-002: Retry ikut diperhitungkan",
+      "BUD-003: Failed attempt tetap masuk perhitungan biaya jika provider mengenakan biaya",
+      "BUD-004: Tidak terjadi double counting",
+      "BUD-005: Budget state bertahan setelah restart",
+      "BUD-006: Tenant tidak dapat membaca budget tenant lain",
+      "BUD-007: Kill switch / budget limit benar-benar mencegah side effect berikutnya",
+      "BUD-008: Actual cost direkonsiliasi dengan bukti penggunaan provider"
+    ],
+    "cost_separation_requirement": "Pisahkan estimatedCost, reservedCost, dan actualCost. Jangan menganggap reservation sebagai pengeluaran aktual."
+  },
+  "approval_semantics": "This approval opens the next execution gate; it does not declare SMACE-003.2 shipped or production-ready."
+}

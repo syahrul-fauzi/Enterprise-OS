@@ -1,0 +1,20 @@
+{
+  "work_id": "CR006-OWNER-AUTHORIZATION-001",
+  "tenant_id": "tenant-next-002",
+  "workspace_id": "workspace-next-002",
+  "authorization_scope": "CR006-CONTROLLED-ACTIVATION - Canary transaction eksekusi payroll",
+  "authorization_limits": {
+    "max_transaction_amount": "",
+    "allowed_payment_methods": [],
+    "expiry_date": ""
+  },
+  "approver": {
+    "name": "",
+    "role": "TENANT_OWNER",
+    "email": "",
+    "signature": ""
+  },
+  "timestamp": "",
+  "status": "PENDING_APPROVAL",
+  "eos_evidence_reference": "/.eos-state/verification/CR006-RLS-RUNTIME-001_evidence.json"
+}

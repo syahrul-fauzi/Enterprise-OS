@@ -1,0 +1,141 @@
+{
+  "work_id": "EOS-SKILL-ASSURANCE-001",
+  "objective": "Membuktikan bahwa 10 EOS skills bukan sekadar terstandarisasi dan dapat dikomposisikan, tetapi juga reliable, compliant, reproducible, dan aman digunakan dalam Digital Operations Pilot.",
+  "scope": "10 existing skills. Tidak menambah skill baru.",
+  "status": "IN_PROGRESS",
+  "workstreams": [
+    {
+      "id": "WS-01",
+      "name": "Skill Health Baseline",
+      "focus": "Inventarisasi, metadata, dependency, host compatibility",
+      "output": "Health report 10/10",
+      "status": "COMPLETED",
+      "agent": "eos-recon"
+    },
+    {
+      "id": "WS-02",
+      "name": "Contract Compliance",
+      "focus": "Trigger, exclusion, input/output, precondition, risk, authority",
+      "output": "Compliance matrix",
+      "status": "IN_PROGRESS",
+      "agent": "eos-verification",
+      "recon_completed_at": "2026-11-07T00:24:07.123142",
+      "compliance_matrix_generated_at": "2026-11-07T00:26:51.935429",
+      "compliance_matrix_path": ".eos-state/verification/EOS-SKILL-ASSURANCE-001_compliance_matrix.json",
+      "recon_report_path": ".eos-state/recon/EOS-SKILL-ASSURANCE-001_recon.json",
+      "reuse_percentage": 100.0,
+      "verification_started_at": "2026-11-07T00:17:54.184590"
+    },
+    {
+      "id": "WS-03",
+      "name": "Functional Evaluation",
+      "focus": "Invocation, correctness, golden cases, edge cases",
+      "output": "Evaluation report",
+      "status": "NOT_STARTED",
+      "agent": "eos-verification"
+    },
+    {
+      "id": "WS-04",
+      "name": "Regression Assurance",
+      "focus": "Perubahan skill dan dampaknya terhadap workflow",
+      "output": "Regression suite",
+      "status": "NOT_STARTED",
+      "agent": "eos-dependency-engine"
+    },
+    {
+      "id": "WS-05",
+      "name": "Reliability & SLA",
+      "focus": "Latency, timeout, failure rate, recovery, availability",
+      "output": "Reliability baseline",
+      "status": "NOT_STARTED",
+      "agent": "eos-self-execution"
+    },
+    {
+      "id": "WS-06",
+      "name": "Security & Governance",
+      "focus": "Least privilege, secret handling, mutation boundary, approval",
+      "output": "Security and governance report",
+      "status": "NOT_STARTED",
+      "agent": "eos-verification"
+    }
+  ],
+  "acceptance_gates": [
+    {
+      "id": "G1",
+      "name": "Inventory Integrity",
+      "criteria": "Seluruh 10 skill ditemukan dan identitasnya konsisten",
+      "status": "VERIFIED"
+    },
+    {
+      "id": "G2",
+      "name": "Contract Compliance",
+      "criteria": "Seluruh skill memenuhi kontrak dan metadata wajib",
+      "status": "IN_PROGRESS",
+      "verification_report": ".eos-state/verification/EOS-SKILL-ASSURANCE-001_verification.json"
+    },
+    {
+      "id": "G3",
+      "name": "Invocation Reliability",
+      "criteria": "Skill dapat ditemukan dan dipanggil oleh host yang ditargetkan",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "G4",
+      "name": "Functional Correctness",
+      "criteria": "Golden cases menghasilkan output sesuai acceptance criteria",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "G5",
+      "name": "Governance Compliance",
+      "criteria": "Tidak ada pelanggaran authority, ownership, atau mutation policy",
+      "status": "NOT_STARTED",
+      "hard_gate": true
+    },
+    {
+      "id": "G6",
+      "name": "Regression Safety",
+      "criteria": "Perubahan tidak merusak skill maupun workflow yang bergantung padanya",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "G7",
+      "name": "Failure & Recovery",
+      "criteria": "Timeout, invalid input, dependency failure, dan recovery teruji",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "G8",
+      "name": "Security Assurance",
+      "criteria": "Tidak ada temuan kritis terkait secrets, permission, atau eksekusi",
+      "status": "NOT_STARTED",
+      "hard_gate": true
+    },
+    {
+      "id": "G9",
+      "name": "Pilot Readiness",
+      "criteria": "Workflow Digital Operations dapat dijalankan dengan evidence end-to-end",
+      "status": "NOT_STARTED"
+    }
+  ],
+  "execution_order": [
+    "RECON",
+    "HEALTH BASELINE",
+    "CONTRACT COMPLIANCE",
+    "FUNCTIONAL EVALUATION",
+    "REGRESSION & SECURITY",
+    "RELIABILITY / SLA BASELINE",
+    "INDEPENDENT VERIFICATION",
+    "EVIDENCE REGISTRATION",
+    "PILOT READINESS DECISION"
+  ],
+  "created_at": "2026-11-07T00:00:00.000Z",
+  "last_updated": "2026-11-07T00:27:00.000Z",
+  "acceptance": [
+    "contract_triggers_defined",
+    "input_output_schema_valid",
+    "preconditions_specified",
+    "risk_assessment_complete",
+    "authority_boundaries_defined"
+  ]
+}

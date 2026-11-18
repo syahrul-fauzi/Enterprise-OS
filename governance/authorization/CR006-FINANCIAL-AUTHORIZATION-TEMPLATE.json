@@ -1,0 +1,33 @@
+{
+  "work_id": "CR006-FINANCIAL-AUTHORIZATION-001",
+  "tenant_id": "tenant-next-002",
+  "workspace_id": "workspace-next-002",
+  "authorization_scope": "CR006-CONTROLLED-ACTIVATION - Canary transaction eksekusi payroll",
+  "financial_details": {
+    "transaction_amount": "",
+    "funding_source": "",
+    "beneficiary": {
+      "name": "",
+      "bank_account": "",
+      "bank_name": ""
+    },
+    "payment_schedule": "",
+    "currency": "IDR"
+  },
+  "compliance": {
+    "pjk_requirement_met": false,
+    "bpr_verified": false,
+    "internal_audit_approved": false
+  },
+  "approver": {
+    "name": "",
+    "role": "TENANT_FINANCE_DIRECTOR",
+    "email": "",
+    "signature": "",
+    "approval_date": ""
+  },
+  "timestamp": "",
+  "status": "PENDING_APPROVAL",
+  "eos_evidence_reference": "/.eos-state/verification/CR006-RLS-RUNTIME-001_evidence.json",
+  "owner_authorization_reference": "/.eos-state/authorization/CR006-OWNER-AUTHORIZATION-TEMPLATE.json"
+}

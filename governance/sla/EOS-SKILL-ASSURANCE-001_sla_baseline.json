@@ -1,0 +1,88 @@
+{
+  "measurement_timestamp": "2026-11-07T01:47:03.219576",
+  "work_id": "EOS-SKILL-ASSURANCE-001",
+  "phase": "WS-05 SLA Baseline Measurement (Tahap A)",
+  "overall_metrics": {
+    "invocation_success_rate": 50.0,
+    "timeout_failure_rate": 50.0,
+    "median_execution_latency_ms": 55.35,
+    "p95_execution_latency_ms": 64.26,
+    "governance_violation_count": 0,
+    "regression_pass_rate": 100.0,
+    "evidence_completeness_score": 50.0,
+    "recovery_success_rate": null,
+    "task_correctness_rate": null
+  },
+  "skill_details": {
+    "eos-recon": {
+      "manifest_valid": true,
+      "invocation_success": true,
+      "execution_latency_ms": 55.35,
+      "has_all_contract_fields": true,
+      "evidence_fields_complete": false
+    },
+    "eos-dependency-engine": {
+      "manifest_valid": true,
+      "invocation_success": true,
+      "execution_latency_ms": 56.08,
+      "has_all_contract_fields": true,
+      "evidence_fields_complete": false
+    },
+    "eos-evidence-engine": {
+      "manifest_valid": true,
+      "invocation_success": false,
+      "execution_latency_ms": 0.06,
+      "has_all_contract_fields": true,
+      "evidence_fields_complete": false
+    },
+    "eos-face-capability": {
+      "manifest_valid": true,
+      "invocation_success": false,
+      "execution_latency_ms": 0.04,
+      "has_all_contract_fields": true,
+      "evidence_fields_complete": false
+    },
+    "eos-face": {
+      "manifest_valid": true,
+      "invocation_success": false,
+      "execution_latency_ms": 0.04,
+      "has_all_contract_fields": true,
+      "evidence_fields_complete": false
+    },
+    "eos-face-verification": {
+      "manifest_valid": true,
+      "invocation_success": false,
+      "execution_latency_ms": 0.03,
+      "has_all_contract_fields": true,
+      "evidence_fields_complete": false
+    },
+    "eos-product-slice": {
+      "manifest_valid": true,
+      "invocation_success": false,
+      "execution_latency_ms": 0.03,
+      "has_all_contract_fields": true,
+      "evidence_fields_complete": false
+    },
+    "eos-self-execution": {
+      "manifest_valid": true,
+      "invocation_success": true,
+      "execution_latency_ms": 64.26,
+      "has_all_contract_fields": true,
+      "evidence_fields_complete": false
+    },
+    "eos-command-center": {
+      "manifest_valid": true,
+      "invocation_success": true,
+      "execution_latency_ms": 53.28,
+      "has_all_contract_fields": true,
+      "evidence_fields_complete": false
+    },
+    "eos-verification": {
+      "manifest_valid": true,
+      "invocation_success": true,
+      "execution_latency_ms": 53.95,
+      "has_all_contract_fields": true,
+      "evidence_fields_complete": false
+    }
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "work_id": "DIGIOP-PILOT-002-WORK-RECEIVE",
+  "logicalWorkId": "DIGIOP-PILOT-002",
+  "parent_work_id": "DIGIOP-PILOT-002",
+  "assigned_skill": "eos-face",
+  "intake_completed_at": "2026-11-07T13:15:00Z",
+  "business_request": {
+    "source": "Tim Fasilitas & Asset Management",
+    "request_origin": "Operasional internal kantor",
+    "objective": "Pengelolaan Inventaris Perangkat Kantor",
+    "description": "Mengelola siklus hidup inventaris perangkat kantor (laptop, printer, perangkat jaringan) mulai dari permintaan, penugasan, pemeliharaan, hingga penghapusan aset. Membutuhkan proses yang terstandarisasi untuk mengurangi waktu audit tahunan dan meningkatkan visibilitas aset perusahaan.",
+    "measurable_outcomes": [
+      {
+        "target": "Pengurangan 25% waktu audit inventaris tahunan",
+        "current_baseline": "14 hari kerja",
+        "target_baseline": "<10 hari kerja"
+      },
+      {
+        "target": "Peningkatan 90% akurasi data inventaris",
+        "current_baseline": "70% akurasi manual",
+        "target_baseline": ">90% akurasi terotomasi"
+      },
+      {
+        "target": "Pengurangan 40% waktu proses permintaan perangkat baru",
+        "current_baseline": "5 hari kerja",
+        "target_baseline": "<3 hari kerja"
+      }
+    ]
+  },
+  "stakeholders": {
+    "owner": "Tim Fasilitas & Asset Management",
+    "decision_authority": "Manajer Fasilitas",
+    "actor": "face-agent",
+    "tenant_id": "tenant-eos-indonesia",
+    "workspace_id": "workspace-digital-ops"
+  },
+  "inputs": {
+    "source_data": "Spreadsheet inventaris saat ini (Google Sheets) dengan 250+ aset tercatat",
+    "existing_process": "Proses manual dengan email dan formulir Google",
+    "constraints": [
+      "Data aset sensitif (nomor seri, lokasi) hanya dapat diakses oleh tim fasilitas dan keuangan",
+      "Harus terintegrasi dengan sistem pengadaan perusahaan yang sudah ada",
+      "Audit trail harus tercatat untuk setiap perubahan status aset"
+    ],
+    "assumptions": [
+      "Capability service-directory dapat diadaptasi untuk mengelola aset inventaris",
+      "Dapat reuse identity dan authorization yang sudah ada dari pilot pertama",
+      "Tidak memerlukan perubahan pada packages/eos-core/foundations/ atau src/eos/semantics/"
+    ]
+  },
+  "acceptance_criteria": [
+    "WR-G1: Kebutuhan bisnis nyata diterima - Bukti: Permintaan resmi dari Manajer Fasilitas tertanggal 07-Nov-2026",
+    "WR-G2: Tujuan dan hasil yang diharapkan jelas - Bukti: Target pengurangan 25% waktu audit terdefinisi",
+    "WR-G3: Identitas Work stabil - logicalWorkId: DIGIOP-PILOT-002",
+    "WR-G4: Pihak dan kewenangan teridentifikasi - Owner: Tim Fasilitas, Decision Authority: Manajer Fasilitas",
+    "WR-G5: Input dan batasan tercatat - Semua constraint dan assumption terdokumentasi",
+    "WR-G6: Work siap dianalisis - Handoff record ke DIGIOP-PILOT-002-ANALYSIS dibuat"
+  ],
+  "capability_reuse_plan": [
+    {
+      "capability_id": "service-directory",
+      "purpose": "Reuse service-request-lifecycle untuk mengelola permintaan penambahan aset",
+      "modifications_required": "Minimal - mapping status aset ke service request status yang ada"
+    },
+    {
+      "capability_id": "services-id",
+      "purpose": "Reuse identity dan authorization framework untuk kontrol akses",
+      "modifications_required": "Tambah role baru 'asset-manager' untuk tim fasilitas"
+    }
+  ],
+  "architectural_locks_verified": true,
+  "locked_boundaries_checked": [
+    "packages/eos-core/foundations/",
+    "src/eos/semantics/"
+  ],
+  "handoff": {
+    "decision": "READY_FOR_ANALYSIS",
+    "next_work_id": "DIGIOP-PILOT-002-ANALYSIS",
+    "assigned_skills": ["eos-recon", "eos-dependency-engine"],
+    "blockers": [],
+    "status": "COMPLETED"
+  },
+  "evidence": [
+    "/ios-id/eos/.eos-state/intake/DIGIOP-PILOT-002-WORK-RECEIVE_intake.json",
+    "/ios-id/eos/.eos-state/face/service-directory_mapping.json"
+  ]
+}

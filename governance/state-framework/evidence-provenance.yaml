@@ -1,0 +1,43 @@
+evidence_provenance_framework:
+  version: "1.0"
+  created: "2026-11-14"
+
+  evidence_identity:
+    naming_convention:
+      pattern: "{DOMAIN}-{ENTITY}-{SEQUENCE}-{TYPE}"
+      description: "Every evidence artifact must follow this naming convention"
+
+    provenance_fields:
+      - "author: Who produced this evidence"
+      - "timestamp: When this evidence was produced"
+      - "tool: What tool produced this evidence"
+      - "input: What state or artifact this evidence was derived from"
+      - "output: What state change this evidence justifies"
+
+  schema_evolution:
+    compatibility_rules:
+      - rule: "All future schema changes must preserve read access by current readers"
+        description: "Schema changes cannot break existing tools that read the state"
+
+      - rule: "Schema changes must be documented with migration path"
+        description: "Every schema change must include how existing data will be migrated"
+
+      - rule: "Schema changes require evidence of backward compatibility"
+        description: "Evidence must exist that the new schema can read old data"
+
+  evidence_categories:
+    - category: "Execution Evidence"
+      description: "Logs, outputs, and results from execution runs"
+
+    - category: "Verification Evidence"
+      description: "Test results, audit reports, and verification outputs"
+
+    - category: "Decision Evidence"
+      description: "Architecture decisions, trade-off analyses, and rationale"
+
+    - category: "Acceptance Evidence"
+      description: "Sign-offs, approvals, and acceptance criteria fulfillment"
+
+  notes:
+    - "This file is part of EOS-STATE-NEXT-003 implementation"
+    - "No provenance enforcement has been implemented yet - this is the framework definition"

@@ -1,0 +1,36 @@
+document:
+  title: "SAGE-LINEN-001-NEG-002 Work Item"
+  classification: "UNCLASSIFIED"
+  retention_period_days: 365
+  proposer_identity_ref: "actor:human:sage-factory-owner-01"
+  body: "Test case NEG-002: Unauthorized material (silk), expecting authorization denial."
+  metadata:
+    work_id: "SAGE-LINEN-001-NEG-002"
+    parent_slice: "SAGE-LINEN-001"
+    test_type: "GOVERNANCE_NEGATIVE"
+    experiment: "EOS_HYBRID_ACTOR_PLAYGROUND_v0.1"
+    mode: "VIRTUAL"
+    external_dependencies: "NONE"
+    architecture_changes: "NONE"
+    created_at: "2026-09-12T05:00:00.000Z"
+    user_job: "Test case NEG-002: Unauthorized material (silk), expecting authorization denial."
+    acceptance_criteria:
+      criterion_1:
+        description: "Policy engine menolak AUTO_AUTHORIZE dengan error: UNAUTHORIZED_MATERIAL"
+        status: "NOT_STARTED"
+        evidence: null
+    actors:
+      initiator: "actor:human:sage-factory-owner-01"
+      decision_actor: "actor:ai:market-analyzer-bot-07"
+      execution_actor: "actor:business:procurement-node-03"
+      economic_principal: "actor:business:sage-linen-factory-node-01"
+    transaction:
+      amount: 450
+      material_category: "silk"
+      requested_quantity: 10
+    policy:
+      max_auto_approved_settlement: 500
+      approved_categories: ["linen", "canvas", "cotton"]
+    domain: "Manufacturing"
+    domainType: "manufacturing"
+    state: "READY_TO_EXECUTE"
