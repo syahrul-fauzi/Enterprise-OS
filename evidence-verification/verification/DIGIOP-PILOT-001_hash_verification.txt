@@ -1,0 +1,9 @@
+0f5503e694f0356189775a022e2904dd2b50488bf2fac209e4a9b8916b88c20e  .eos-state/pilots/DIGIOP-PILOT-001_g0.json
+ab14af564df3b5f39e7bca042b21d6c89236dddabb805759c49e4325a0b6d092  .eos-state/pilots/DIGIOP-PILOT-001_g1.json
+7b9cd66dae7425d3c1bb83592821cab4a61763927b02a4417e82d255f2566dfe  .eos-state/pilots/DIGIOP-PILOT-001_g2.json
+fef837b35ddbea0cf9f921b8b6b3bea6093bdaca3a508410ad5601410131945e  .eos-state/pilots/DIGIOP-PILOT-001_g3.json
+588033118d24b7c6433e18446e2bebd4e66d63b2826d4bcc18f904a57a62cbac  .eos-state/pilots/DIGIOP-PILOT-001_g4.json
+35cc5ff1fe673fbf46dbffa6537d7a4501aab84c3f157b884cdd1c210f28692f  .eos-state/pilots/DIGIOP-PILOT-001_g5.json
+da69191112ddb2ed0d89dcc19310dd6ab323f557efc0ecf0a6a4c71b2d2f45bd  .eos-state/pilots/DIGIOP-PILOT-001_g6.json
+a1bd911af7587c1b747c6beb3919cdde90725a5aab3e481a271ab9b531cbfc69  .eos-state/pilots/DIGIOP-PILOT-001_gp1.json
+a1bd911af7587c1b747c6beb3919cdde90725a5aab3e481a271ab9b531cbfc69  .eos-state/pilots/DIGIOP-PILOT-001_gp1.json

@@ -1,0 +1,58 @@
+{
+  "work_id": "SLICE-004",
+  "verified_at": "2026-10-13T10:15:00Z",
+  "acceptance_criteria": {
+    "criterion_1": {
+      "passed": true,
+      "evidence": "legal-case.close command successfully registered in capability registry - registerLegalCaseCapability() executed without errors, command present in registry"
+    },
+    "criterion_2": {
+      "passed": true,
+      "evidence": "Session validation works correctly: invalid/revoked session throws authentication violation error (tested with sessionId='revoked-session-123')"
+    },
+    "criterion_3": {
+      "passed": true,
+      "evidence": "Core Work ownership verified: caseExists.workId correctly linked to coreWork in work-core repository, CORE-001 compliance maintained"
+    },
+    "criterion_4": {
+      "passed": true,
+      "evidence": "Cross-tenant isolation enforced: attempt to close case from different tenant/workspace throws 'Cross-tenant access blocked' error - boundary security intact"
+    },
+    "criterion_5": {
+      "passed": true,
+      "evidence": "Case status persists correctly: after command execution, caseRepository.byId(caseId) returns status='closed' with valid closedAt timestamp"
+    },
+    "criterion_6": {
+      "passed": true,
+      "evidence": "Core Work state updated: work-core 'update' command invoked successfully, coreWork.status set to 'completed' with closedAt timestamp"
+    },
+    "criterion_7": {
+      "passed": true,
+      "evidence": "Evidence chain recorded: safeRecordEvidence() called 3x during execution, all evidence artifacts present in .eos-state/evidence/ with correct work_id/tenant_id/requirement_id bindings"
+    },
+    "criterion_8": {
+      "passed": true,
+      "evidence": "Full legal-case lifecycle E2E passes: create-case → assign-lawyer-to-case → add-evidence-to-case → legal-case.close completes end-to-end with all state transitions preserved"
+    }
+  },
+  "all_passed": true,
+  "total_passed": 8,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["criterion_1", "criterion_2", "criterion_3", "criterion_4", "criterion_5", "criterion_6", "criterion_7", "criterion_8"],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0,
+    "notes": "No injection risks, no hardcoded credentials, cross-tenant boundary enforcement verified"
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": [],
+    "notes": "Only legal-case capability modified; all core frozen directories (enterprise/, governance/) unchanged - architecture freeze maintained"
+  },
+  "reuse_verification": {
+    "passed": true,
+    "reuse_percentage_achieved": 100.0,
+    "notes": "100% of implementation reused existing close-case pattern from requirement.archive, no new logic written - aligns with SLICE-004_recon.json analysis"
+  }
+}

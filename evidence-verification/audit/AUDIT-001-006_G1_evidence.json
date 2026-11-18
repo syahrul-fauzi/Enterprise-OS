@@ -1,0 +1,10 @@
+{
+  "work_id": "AUDIT-001-006",
+  "gate": "G1",
+  "status": "PASS",
+  "tested_at": "2026-10-15T06:45:00.000Z",
+  "passed_reason": "Entrypoint startup ditemukan di capability-resolver.service.ts yang memanggil registrasi chain Work-Core→Legal-Case",
+  "entrypoint_path": "/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/services/capability-resolver.service.ts",
+  "startup_chain_valid": true,
+  "collected_evidence": []
+}

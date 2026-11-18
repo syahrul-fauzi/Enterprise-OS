@@ -1,0 +1,109 @@
+{
+  "work_id": "SREQ-001",
+  "verification_agent": "eos-verification",
+  "verification_timestamp": "2026-08-09T02:11:45.674322",
+  "verdict": "ALL_PASSED",
+  "gate_framework_3_state": "PASS",
+  "test_suite_result": {
+    "runner": "node --import tsx --test products/lawyershub/tests/lawyershub.test.ts products/services-id/tests/services-id.test.ts products/ilc/tests/ilc.test.ts",
+    "run_cwd": "/root/Enterprise-OS/workspace",
+    "duration_ms": 478.66,
+    "tests": 25,
+    "suites": 7,
+    "pass": 25,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "per_product": {
+      "services-id.test.ts": "8/8 PASS (6 SREQ-001 lifecycle + 2 health checks)",
+      "lawyershub.test.ts": "8/8 PASS (3 LH-CASE-001 + 3 LH-CASE-002 + 2 health checks)",
+      "ilc.test.ts": "9/9 PASS (7 DISC-001 lifecycle + 2 health checks)"
+    },
+    "aggregate_25_25": true,
+    "zero_failures": true,
+    "zero_regression": true
+  },
+  "acceptance_criteria_individual_checks": [
+    {
+      "id": "SREQ-ACC-1",
+      "description": "DISCOVER providers verified",
+      "passed": true,
+      "evidence": "ServiceProviderRepositoryInMemory.list total=6; Cybersecurity=1 verified sp-003; listByCategory works"
+    },
+    {
+      "id": "SREQ-ACC-2",
+      "description": "createServiceRequest → draft, sreq-* id",
+      "passed": true,
+      "evidence": "5 createServiceRequest invocations × 3 acceptance tests = 15 total, SEMUA status=draft, id.startsWith(\"sreq-\")"
+    },
+    {
+      "id": "SREQ-ACC-3",
+      "description": "acceptServiceRequest → accepted + providerId",
+      "passed": true,
+      "evidence": "6 acceptServiceRequest, 6/6 status=accepted + providerId echo + repo.byId().providerId match"
+    },
+    {
+      "id": "SREQ-ACC-4",
+      "description": "markServiceDelivered → delivered + deliveredAt",
+      "passed": true,
+      "evidence": "6 markServiceDelivered, 6/6 status=delivered instanceof Date + repo terminal status match"
+    },
+    {
+      "id": "SREQ-ACC-5",
+      "description": "3 ledger records format ok:true + ISO invokedAt",
+      "passed": true,
+      "evidence": "6 tests × 3 records = 18 ledger total; 100% (18/18) record.ok=true, commandKey contains expectedKeys, Date.parseable invokedAt"
+    },
+    {
+      "id": "SREQ-ACC-6",
+      "description": "persistency field match (budget/category/requester/providerId/deliveredAt)",
+      "passed": true,
+      "evidence": "Budget values tested: 85M, 180M, 325M, 750M, 125M — ALL exact === comparisons PASS. Categories Cybersecurity/IT Support/Infrastructure/SoftwareDev all tested."
+    },
+    {
+      "id": "SREQ-ACC-7",
+      "description": "Services.ID 8/8 PASS",
+      "passed": true,
+      "evidence": "node test runner output '✔ SREQ-001 · Services.ID Lifecycle E2E' 6/6 + '✔ Services.ID Product Health Checks' 2/2"
+    },
+    {
+      "id": "SREQ-ACC-8",
+      "description": "Regression 25/25 aggregate 3 products",
+      "passed": true,
+      "evidence": "Runner summary: ℹ tests 25 · ℹ pass 25 · ℹ fail 0"
+    },
+    {
+      "id": "SREQ-ACC-9",
+      "description": "Evidence JSON artifacts tersimpan permanen",
+      "passed": true,
+      "evidence": "3 files created: recon/SREQ-001_recon.json, verification/SREQ-001_verification.json, evidence/SREQ-001_evidence.json"
+    }
+  ],
+  "architecture_compliance": {
+    "lock_preserved": true,
+    "no_new_framework": true,
+    "no_new_registry_keys": true,
+    "no_schema_mutations": true,
+    "single_truth_source_capability_registry": true,
+    "thin_app_one_surface_semantics_verified": true
+  },
+  "security_compliance": {
+    "scan_passed": true,
+    "no_secret_exposed_in_tests": true
+  },
+  "observability": {
+    "command_invocation_records_ledger": 18,
+    "repository_read_back_points": 6 × 3 stage points = 18
+  },
+  "deployment_readiness": {
+    "tenant_contracted": true,
+    "infrastructure_agnostic_in_memory_repo_reused": true
+  },
+  "evidence_chain": [
+    "test_node_result_output",
+    "capabilityRegistry invocations ok:true×18",
+    "repository roundtrip persistencies 18 points",
+    "ledger format 3-keys per lifecycle"
+  ],
+  "failed_items": []
+}

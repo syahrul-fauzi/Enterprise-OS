@@ -1,0 +1,101 @@
+{
+  "audit_id": "EDGE-001",
+  "audit_date": "2026-09-26T20:00:00.000Z",
+  "parent_audit": "AUDIT-005",
+  "thesis_reference": "API serves EOS. Web presents EOS. Edge accompanies EOS into the environment. Core defines the semantics. Work Continuity connects them.",
+  "contract_version": "1.0.0",
+  "surface_identity": {
+    "directory": "/apps/edge",
+    "official_name": "EOS Edge Runtime Surface",
+    "role": "Device-side execution/runtime surface (not Experience Face)",
+    "semantic_authority": "edge-runtime-domain (execution-only, tidak memiliki semantic authority untuk Work)",
+    "official_surface_classification": "EXECUTION / RUNTIME SURFACE"
+  },
+  "surface_boundaries": {
+    "allowed_inbound": [
+      "Work state snapshot dari apps/api (canonical state)",
+      "Continuity handoff token dari apps/web",
+      "Capability manifest dari packages/core/capability-registry",
+      "Work identity/context terverifikasi dari work-core",
+      "Offline sync policy dari governance-evidence",
+      "Connector API keys dari connector-ecosystem"
+    ],
+    "allowed_outbound": [
+      "Local device context ke apps/api untuk Work state update",
+      "Execution evidence dari edge runtime ke evidence-registry",
+      "Local state delta untuk sinkronisasi ke canonical state di apps/api",
+      "Device capability availability ke capability-registry",
+      "Offline execution log untuk audit trail",
+      "Continuity resume token untuk reentry Work ke apps/web/api"
+    ],
+    "forbidden_inbound": [
+      "Raw semantic Work definition (hanya boleh menerima snapshot terverifikasi)",
+      "Governance rule modification (hanya boleh mengkonsumsi rule yang sudah ada)",
+      "Capability definition baru (tidak boleh mendaftarkan capability baru)",
+      "Semantic mutation authority (tidak boleh mengubah makna Work)",
+      "Direct database access (semua state sync lewat apps/api)"
+    ],
+    "forbidden_outbound": [
+      "Canonical Work state mutation langsung (selalu lewat apps/api)",
+      "Semantic Work redefinition (tidak boleh mengubah model Work)",
+      "Evidence chain modification (hanya boleh menambah, tidak boleh menghapus/ubah)",
+      "Authorization bypass (selalu mengikuti authz dari core)",
+      "Unsynced state sharing ke pihak ketiga"
+    ]
+  },
+  "allowed_dependencies": {
+    "packages_allowed": [
+      "packages/core/kernel (hanya golden invariants, tidak modify)",
+      "packages/core/runtime (execution context utilities)",
+      "packages/core/platform (platform-specific utilities saja)",
+      "packages/presentation/entities (hanya read-only semantic entities)",
+      "workspace/capabilities/work-core (hanya Work identity utilities)",
+      "workspace/capabilities/connector-ecosystem (hanya client SDK untuk sync)",
+      "workspace/capabilities/governance-evidence (hanya audit log client)"
+    ],
+    "other_surfaces_allowed": [
+      "apps/api (hanya sync endpoints yang terdaftar)",
+      "apps/web (hanya handoff/resume API)",
+      "TIDAK ADA surface lain yang boleh dikonsumsi langsung"
+    ]
+  },
+  "forbidden_authorities": [
+    "TIDAK BOLEH memiliki semantic authority untuk Work model",
+    "TIDAK BOLEH mengubah canonical state Work selain lewat mutation boundary apps/api",
+    "TIDAK BOLEH mendefinisikan capability baru (semua capability dari capability-registry)",
+    "TIDAK BOLEH mengubah governance rules atau policy",
+    "TIDAK BOLEH menyimpan canonical state sebagai source of truth (hanya local cache)",
+    "TIDAK BOLEH melewati authorization layer dari core",
+    "TIDAK BOLEH mendefinisikan Work type baru",
+    "TIDAK BOLEH memodifikasi evidence chain yang sudah ada (hanya append-only)"
+  },
+  "inter_surface_connections": {
+    "apps_api_edge": {
+      "protocol": "REST + GraphQL sync endpoint",
+      "authz": "Device OAuth2 + Work-specific token",
+      "state_flow": "Canonical state → edge local cache → delta sync → canonical state",
+      "continuity_guarantee": "context_loss_rate = 0 selama sync"
+    },
+    "apps_web_edge": {
+      "protocol": "Handoff API via shared cloud storage",
+      "authz": "User session token + Work continuity token",
+      "state_flow": "Work context dari web → edge execution → resume token kembali ke web",
+      "continuity_guarantee": "handoff_success_rate = 0.99"
+    },
+    "edge_packages": {
+      "protocol": "Import statis (tidak ada runtime call antar package)",
+      "authz": "Capability verification sebelum import",
+      "state_flow": "Hanya read-only access ke package utilities, tidak ada mutable state sharing",
+      "continuity_guarantee": "Tidak ada dependency drift antar versi package"
+    }
+  },
+  "compliance_metrics": {
+    "baseline_compliance_score": 1.0,
+    "continuity_impact": "Edge tidak mempengaruhi invariant Work, semua transisi state tetap terjaga",
+    "context_loss_rate_target": 0,
+    "evidence_recovery_rate_target": 1,
+    "handoff_success_rate_target": 0.99
+  },
+  "adjudication": "CONTRACT APPROVED",
+  "next_step": "Implementasi edge runtime harus selalu merujuk ke kontrak ini. Setiap perubahan pada boundary harus melewati audit ulang EDGE-001 sebelum di-merge."
+}

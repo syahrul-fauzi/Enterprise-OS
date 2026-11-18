@@ -1,0 +1,8 @@
+{
+  "verified_at": "2026-10-29T13:12:47.619Z",
+  "work_id": "PAYROLL-IDEMPOTENCY-001",
+  "staging_checks": {},
+  "errors": [
+    "SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string"
+  ]
+}

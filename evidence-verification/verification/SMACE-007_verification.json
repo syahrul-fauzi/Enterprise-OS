@@ -1,0 +1,29 @@
+{
+  "work_id": "SMACE-007",
+  "verified_at": "2026-11-04T16:16:02.000Z",
+  "acceptance_criteria": {
+    "canonical_work_id_validation": {
+      "passed": true,
+      "evidence": "Test passed: Canonical Work ID validation memblokir transaksi tanpa workId"
+    },
+    "no_double_deduction": {
+      "passed": false,
+      "evidence": "Test failed: Reconciliation gagal mencegah double deduction - pemanggilan deductBudget.execute melebihi batas yang diizinkan"
+    },
+    "no_silent_deduction_failures": {
+      "passed": false,
+      "evidence": "Test failed: Kegagalan deduction masih ditelan/diabaikan - status PENDING_RETRY tidak terdeteksi pada reconciliation record"
+    },
+    "rollback_mechanism_working": {
+      "passed": false,
+      "evidence": "Test failed: Rollback reservasi tidak berjalan ketika deduction gagal - actual cost tidak tercatat dengan benar sebagai economic fact"
+    }
+  },
+  "all_passed": false,
+  "total_passed": 1,
+  "total_failed": 3,
+  "failed_criteria": ["no_double_deduction", "no_silent_deduction_failures", "rollback_mechanism_working"],
+  "passed_criteria": ["canonical_work_id_validation"],
+  "security_scan": {"passed": true, "vulnerabilities_found": 0},
+  "architecture_verification": {"passed": true, "locked_files_modified": []}
+}

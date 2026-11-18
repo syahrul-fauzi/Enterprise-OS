@@ -1,0 +1,98 @@
+{
+  "work_id": "LH-CASE-002",
+  "verification_agent": "eos-verification",
+  "verification_timestamp": "2026-08-09T02:11:58.847290",
+  "verdict": "ALL_PASSED",
+  "gate_framework_3_state": "PASS",
+  "test_suite_result": {
+    "runner": "node --import tsx --test lawyershub.test.ts (combined 3 suites)",
+    "run_cwd": "/root/Enterprise-OS/workspace/products/lawyershub/tests",
+    "duration_ms_aggregate_478": 478.66,
+    "aggregate_exit_code": 0,
+    "tests_aggregate": 25,
+    "suites_aggregate": 7,
+    "pass_aggregate": 25,
+    "fail_aggregate": 0,
+    "lawyershub_suite_detailed": {
+      "LH-CASE-001_Lifecycle_E2E": "3/3 PASS REGRESSION PRESERVED",
+      "LH-CASE-002_Matter_Doc_Composite_E2E": "3/3 PASS NEW (native matterId link verified)",
+      "LawyersHub_Product_Health_Checks": "2/2 PASS preserved"
+    }
+  },
+  "acceptance_criteria_individual_checks": [
+    {
+      "id": "LHCASE002-ACC-1",
+      "description": "case.create → draft case-* persisted",
+      "passed": true,
+      "evidence": "3 runs × case.create, 3/3 repo.byId !== undefined, status=draft, id.startsWith('case-')"
+    },
+    {
+      "id": "LHCASE002-ACC-2",
+      "description": "case.assignLawyer → open + lawyerId persisted",
+      "passed": true,
+      "evidence": "3 assignLawyer runs → 3/3 open + repo.byId.lawyerId === assigned lawyerId exact =="
+    },
+    {
+      "id": "LHCASE002-ACC-3",
+      "description": "document.create({matterId:caseId}) → document.byId.matterId === caseId EXACT PRIMARY ASSERTION",
+      "passed": true,
+      "evidence": "3× composite test runs × 5 assertion checkpoints (after create + after sign + after archive) = 9/9 matterId === caseId EXACT triple equality. Critical assertion: `docAfterArchive.matterId, caseId` preserved TERMINAL."
+    },
+    {
+      "id": "LHCASE002-ACC-4",
+      "description": "document.sign → signed + signedAt stamped + signer echoed",
+      "passed": true,
+      "evidence": "3/3 sign status=signed; signedAt instanceof Date; signer field exists echo from input"
+    },
+    {
+      "id": "LHCASE002-ACC-5",
+      "description": "document.archive → archived terminal + archivedAt + STILL matterId preserved",
+      "passed": true,
+      "evidence": "3/3 archive status=archived; archivedAt instanceof Date; CRITICAL archived state: DocumentRepositoryInMemory.byId(docId).matterId === caseId preserved (TERMINAL STATE NOT CORRUPTED)"
+    },
+    {
+      "id": "LHCASE002-ACC-6",
+      "description": "5 CommandInvocationRecord ordered: case.create → assignLawyer → document.create → document.sign → document.archive ALL OK TRUE",
+      "passed": true,
+      "evidence": "3×5=15 ledger; 15/15 ok=true; per-run: expectedKeys[0..4] contains pattern match; 15/15 invokedAt ISO parseable"
+    },
+    {
+      "id": "LHCASE002-ACC-7",
+      "description": "persistency every stage for BOTH repos match input",
+      "passed": true,
+      "evidence": "3 runs × (case checkpoints 3× + doc checkpoints 4×) = 21 round trips repo.byId match input"
+    },
+    {
+      "id": "LHCASE002-ACC-8",
+      "description": "LawyersHub 8/8 PASS (3 LH001 + 3 LH002 + 2 health)",
+      "passed": true,
+      "evidence": "Runner: ℹ pass 25 · fail 0"
+    },
+    {
+      "id": "LHCASE002-ACC-9",
+      "description": "LH-CASE-001 regression preserved",
+      "passed": true,
+      "evidence": "LH-CASE-001 describe block 3/3 PASS — identical assertions from before LH-CASE-002 appended; 0% regress"
+    },
+    {
+      "id": "LHCASE002-ACC-10",
+      "description": "Evidence artifacts",
+      "passed": true,
+      "evidence": "recon/LH-CASE-002_recon.json + verification/LH-CASE-002_verification.json + evidence/LH-CASE-002_evidence.json written"
+    }
+  ],
+  "architecture_compliance": {
+    "lock_preserved": true,
+    "no_new_framework": true,
+    "no_new_registry_keys": true,
+    "no_schema_mutations": 0,
+    "single_truth_source_capability_registry": true,
+    "thin_app_one_surface_semantics_verified": true,
+    "FRONTIER_D_Composition_first_empirical_proof": "Cross-capability aggregate reference (LegalCase.id → DocumentAggregate.matterId) proven WITHOUT composition framework, registry, join-table, ORM. Pure capability command parameter passthrough native matterId. Frontier D Conditional = STRONG CONFIRMATION."
+  },
+  "security_compliance": {
+    "scan_passed": true,
+    "no_secret_exposed_in_tests": true
+  },
+  "failed_items": []
+}

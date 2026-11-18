@@ -1,0 +1,134 @@
+work_id: SMACE-001
+status: SHIPPED
+shipped: 1
+completion: VERIFIED
+locked_at: 2026-10-27T00:00:00.000Z
+shipped_at: 2026-10-27T16:30:00.000Z
+gate_classification: "SMACE-001 / REDIS POLLING LIFECYCLE GATE"
+description: "SMACE Core Capability Ecosystem Intake Verification — CLOSING PROOF for Redis metrics polling lifecycle and core Work continuity. Validates all acceptance criteria including polling start/stop, error handling, tenant isolation, atomic budget reservation, fail-closed architecture, evidence integrity, idempotency, and domain classification. 100% primitive reuse achieved, no work-core modifications, aligned with eos-recon mandate."
+
+proof_scope:
+  positive_cases: 13
+  negative_cases: 0
+  total_fixtures: 13
+  core_work_id: "W-SMACE-001"
+  boundary_traversals: 0 # Maintains single-context execution without cross-surface mutations
+
+positive:
+  SM001-AC2-001:
+    fixture_id: POS-AC2-001
+    test_name: "Polling tidak dimulai ketika NODE_ENV=test atau DISABLE_REDIS=true (guard clause works)"
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: SM001-001
+    acceptance_status: ACCEPTED
+  SM001-AC2-002:
+    fixture_id: POS-AC2-002
+    test_name: "Polling dapat dimulai dan dihentikan dengan benar ketika environment dioverride"
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: SM001-002
+    acceptance_status: ACCEPTED
+  SM001-AC2-003:
+    fixture_id: POS-AC2-003
+    test_name: "Pemanggilan stopRedisMetricsPolling() berulang tidak menyebabkan error"
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: SM001-003
+    acceptance_status: ACCEPTED
+  SM001-AC2-004:
+    fixture_id: POS-AC2-004
+    test_name: "Timer dibersihkan meskipun terjadi error saat polling"
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: SM001-004
+    acceptance_status: ACCEPTED
+  SM001-AC2-005:
+    fixture_id: POS-AC2-005
+    test_name: "Tidak ada inisialisasi canary atau Redis produksi di test environment"
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: SM001-005
+    acceptance_status: ACCEPTED
+  SM001-CORE-001:
+    fixture_id: POS-CORE-001
+    test_name: "AC1: Valid intake menerima input dan mengembalikan workId kanonis"
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: SM001-006
+    acceptance_status: ACCEPTED
+  SM001-CORE-002:
+    fixture_id: POS-CORE-002
+    test_name: "AC2: logicalWorkId berasal dari mekanisme kanonis work-core bukan dibuat SMACE"
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: SM001-007
+    acceptance_status: ACCEPTED
+  SM001-CORE-003:
+    fixture_id: POS-CORE-003
+    test_name: "AC3: Tenant isolation — work tidak bisa diakses tenant lain"
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: SM001-008
+    acceptance_status: ACCEPTED
+  SM001-CORE-004:
+    fixture_id: POS-CORE-004
+    test_name: "AC4: Budget enforcement — anggaran ter-reservasi secara atomik"
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: SM001-009
+    acceptance_status: ACCEPTED
+  SM001-CORE-005:
+    fixture_id: POS-CORE-005
+    test_name: "AC5: Fail-closed — input invalid tidak membuat Work apapun"
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: SM001-010
+    acceptance_status: ACCEPTED
+  SM001-CORE-006:
+    fixture_id: POS-CORE-006
+    test_name: "AC6: Evidence tercatat dengan SHA-256 checksum"
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: SM001-011
+    acceptance_status: ACCEPTED
+  SM001-CORE-007:
+    fixture_id: POS-CORE-007
+    test_name: "AC7: Tidak ada perluasan core primitive domainType hanya klasifikasi"
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: SM001-012
+    acceptance_status: ACCEPTED
+  SM001-CORE-008:
+    fixture_id: POS-CORE-008
+    test_name: "Idempotency: idempotencyKey yang sama tidak membuat Work duplikat"
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: SM001-013
+    acceptance_status: ACCEPTED

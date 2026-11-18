@@ -1,0 +1,70 @@
+{
+  "work_id": "EOS-JOURNEY-007-W01",
+  "phase": "RECOVERY",
+  "verdict": "IN_PROGRESS",
+  "recovery_milestones_completed": [
+    "w01-r1_id_model_reconciled",
+    "w01-r2_regex_pattern_updated",
+    "w01-r3_canonical_state_transition_prepared",
+    "w01-r4_proof_artifact_updated"
+  ],
+  "completed_milestones": [
+    "next_work_id_validation_implemented",
+    "context_anchor_ttl_verified",
+    "golden_spine_invariants_strengthened",
+    "typecheck_discrepancy_classified",
+    "id_format_validation_fixed",
+    "work_id_pattern_supports_w01_w02_format"
+  ],
+  "checks_passed": [
+    "All placeholders blocked in next_work_id",
+    "Self-references rejected in next_work_id",
+    "Golden Spine AUTHORIZE→VALIDATE→MUTATE→PROVE flow maintained",
+    "9564 pre-existing typecheck errors classified",
+    "0 regression errors detected",
+    "W01/W02 ID format (EOS-JOURNEY-007-W01) now supported",
+    "Regex pattern matches journey and work ID models",
+    "ID model reconciled: Journey=EOS-JOURNEY-007, Work=EOS-JOURNEY-007-W01/W02"
+  ],
+  "checks_in_progress": [
+    "30-minute TTL cache working observably (PENDING: observasional proof)",
+    "EOS-JOURNEY-007-W01 registered in repository (PENDING: createCoreWork() execution)"
+  ],
+  "checks_failed": []
+  "evidence_artifacts": [
+    "/.eos-state/proofs/typecheck-classification.json",
+    "/.eos-state/proofs/cache-metrics.json",
+    "/.eos-state/proofs/EOS-JOURNEY-007-W01-recovery-evidence.json"
+  ],
+  "id_validation_fixes": {
+    "old_pattern": "^EOS-JOURNEY-\\d{3}$",
+    "new_pattern": "^EOS-JOURNEY-\\d{3}(-W\\d{2})?$",
+    "supports_journey_ids": true,
+    "supports_work_ids": true,
+    "EOS-JOURNEY-007-W01_validation": "PASS",
+    "EOS-JOURNEY-007-W02_validation": "PASS",
+    "EOS-JOURNEY-007_validation": "PASS"
+  },
+  "cache_metrics": {
+    "loadCalls": 4,
+    "cacheHits": 3,
+    "cacheMisses": 1,
+    "parseCount": 2,
+    "totalParseTimeMs": 89,
+    "lastParseTimeMs": 44,
+    "averageParseTimeMs": 44.5
+  },
+  "typecheck_classification": {
+    "pre_existing_errors": 9564,
+    "regression_errors": 0,
+    "zero_regression": true
+  },
+  "canonical_state_transition": {
+    "previous_work_id": "EOS-JOURNEY-006",
+    "target_work_id": "EOS-JOURNEY-007-W01",
+    "transition_ready": true,
+    "requires_authorization": true
+  },
+  "generated_at": "2026-09-23T17:30:00.000Z",
+  "generated_by": "journey-engine (JOURNEY_ENGINE_ID)"
+}

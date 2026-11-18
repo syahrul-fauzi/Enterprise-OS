@@ -1,0 +1,52 @@
+{
+  "work_id": "SMACE-001",
+  "verified_at": "2026-10-26T14:30:00.000Z",
+  "acceptance_criteria": {
+    "AC1": {
+      "passed": true,
+      "evidence": "node --test exit ok: AC1 lulus verifikasi independen, duration_ms: 10.386, workId disimpan dan dapat diambil kembali dari repository canonical, domainType: smace-creative-request terverifikasi",
+      "log_file": "smace-001-ac1-only.log"
+    },
+    "AC2": {
+      "passed": false,
+      "evidence": "BLOCKED: canary monitoring Redis polling menyebabkan test suite hanging sebelum eksekusi AC2, memerlukan disable observability worker untuk test environment",
+      "blocker": "Redis/canary observability polling background process"
+    },
+    "AC3": {
+      "passed": false,
+      "evidence": "PENDING - belum dieksekusi karena AC2 terblokir"
+    },
+    "AC4": {
+      "passed": false,
+      "evidence": "PENDING - belum dieksekusi"
+    },
+    "AC5": {
+      "passed": false,
+      "evidence": "PENDING - belum dieksekusi"
+    },
+    "AC6": {
+      "passed": true,
+      "evidence": "safeRecordEvidence fallback lokal berjalan, menghasilkan checksum SHA-256 valid meskipun capabilityRegistry tidak tersedia, evidence tercatat dengan benar",
+      "log_snippet": "[safeRecordEvidence] ✅ Evidence recorded locally with checksum: smace.intake.accepted"
+    },
+    "AC7": {
+      "passed": true,
+      "evidence": "Frozen Core BASELINE_LOCK.yaml tidak berubah (git diff exit 0), domainType: smace-creative-request adalah klasifikasi yang diizinkan di CreateCoreWorkRequestSchema, tidak ada perluasan primitive Work",
+      "git_verification": "git diff governance/BASELINE_LOCK.yaml → no changes"
+    }
+  },
+  "all_passed": false,
+  "total_passed": 3,
+  "total_failed": 0,
+  "blocked_criteria": ["AC2"],
+  "pending_criteria": ["AC3", "AC4", "AC5"],
+  "passed_criteria": ["AC1", "AC6", "AC7"],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": []
+  }
+}

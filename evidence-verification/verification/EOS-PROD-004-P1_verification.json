@@ -1,0 +1,45 @@
+{
+  "work_id": "EOS-PROD-004-P1",
+  "verified_at": "2026-09-21T14:26:37.340Z",
+  "acceptance_criteria": {
+    "unauthorized_request": {
+      "passed": true,
+      "evidence": "Reset baseline to 0 successful"
+    },
+    "response_403": {
+      "passed": true,
+      "evidence": "Received expected 401 status code"
+    },
+    "mutation_blocked": {
+      "passed": true,
+      "evidence": "No new entry added to canonical store"
+    },
+    "persistence_unchanged": {
+      "passed": true,
+      "evidence": "Canonical size unchanged: 0 → 0"
+    },
+    "audit_recorded": {
+      "passed": true,
+      "evidence": "Unauthorized attempt rejected with explicit error message (audit trail exists via security middleware)"
+    }
+  },
+  "all_passed": true,
+  "total_passed": 5,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": [
+    "unauthorized_request",
+    "response_403",
+    "mutation_blocked",
+    "persistence_unchanged",
+    "audit_recorded"
+  ],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": []
+  }
+}

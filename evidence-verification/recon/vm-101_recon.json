@@ -1,0 +1,22 @@
+{
+  "work_id": "vm-101",
+  "work_title": "Track and report AI/API/cloud usage consumption",
+  "product": "value-metering",
+  "recon_timestamp": "2026-11-15T[timestamp]",
+  "reuse_percentage": 100.0,
+  "required_capabilities": [
+    "work-core.identity",
+    "usage-tracking.discover",
+    "metering-plan.create",
+    "metric-validation.validate",
+    "data-collection.execute",
+    "consumption-monitor.monitor",
+    "evidence-collection.evidence",
+    "report-generation.complete"
+  ],
+  "existing_capabilities_available": true,
+  "blockers": [],
+  "recon_verdict": "MINIMAL_FIX",
+  "workflow_validated": true,
+  "lifecycle_stages": ["discover", "create", "validate", "execute", "monitor", "evidence", "complete"]
+}

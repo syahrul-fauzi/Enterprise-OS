@@ -1,0 +1,51 @@
+{
+  "work_id": "W-004",
+  "recon_completed_at": "2026-10-29T00:00:00.000Z",
+  "locked_boundaries_verified": {
+    "work_core_unchanged": true,
+    "no_new_primitives": true,
+    "connector_boundary_respected": true
+  },
+  "existing_capabilities_found": [
+    "connector-ecosystem (WhatsApp channel pattern)",
+    "communication capability adapter framework",
+    "work-core persistence layer",
+    "evidence recording mechanism",
+    "capability-command-registry",
+    "atomic-composition authorization model"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "WhatsApp webhook pattern (universal adapter contract)",
+      "CommunicationAdapter interface",
+      "canonical WorkAggregate creation",
+      "lazy repository initialization",
+      "IP whitelisting security pattern",
+      "payload validation with Zod",
+      "signature verification mechanism",
+      "bidirectional sync pattern (inbound webhook + outbound sync)",
+      "capability registry invocation pattern",
+      "evidence recording pattern"
+    ],
+    "required_new": [
+      "Telegram-specific Bot API payload schema",
+      "Telegram official IP whitelist ranges",
+      "Telegram Bot API secret verification header",
+      "Telegram adapter to communication capability's getAdapter() switch case",
+      "Telegram Channel Pack manifest (eos-capability.json)"
+    ],
+    "reuse_percentage": 87.5
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Add 'telegram' to CommunicationAdapterTypes array in communication.contracts.ts",
+    "Implement TelegramAdapter class in communication.commands.ts following WhatsAppAdapter pattern",
+    "Add 'telegram' case to getAdapter() function in communication.commands.ts",
+    "Run verification tests for both inbound webhook handling and outbound sync",
+    "Complete installation lifecycle steps: configure → bind → authorize → verify-enable"
+  ]
+}

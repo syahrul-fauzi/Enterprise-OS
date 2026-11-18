@@ -1,0 +1,90 @@
+version: "1.0.0"
+status: DRAFT
+work_id: W-BETTER-003
+title: "CI Pipeline for Semantic Invariants Verification"
+description: "Draft pipeline to automate BETTER EOS semantic invariants verification in every commit, aligned with CONSTITUTIONAL-VERIFIER.pipeline.yaml specification"
+
+pipeline_stages:
+  # Stage 0: Checkout & Environment Preparation
+  - stage_id: CI-STAGE-0
+    stage_name: Repository Checkout & Dependency Install
+    operations:
+      - operation: Checkout repository code to workspace
+      - operation: Install Node.js dependencies (npm ci)
+      - operation: Verify `eos-verif-constitution` CLI availability
+      - operation: Create output directory build/governance/verifier-reports/ (if not exists)
+      - operation: Set required Postgres environment variables
+        environment_config:
+          POSTGRES_CONNECTION_STRING: ${{ secrets.POSTGRES_CONNECTION_STRING }}
+          POSTGRES_WRITE_CONNECTION_STRING: ${{ secrets.POSTGRES_WRITE_CONNECTION_STRING }}
+          DATABASE_URL: ${{ secrets.POSTGRES_CONNECTION_STRING }}
+    pass_criteria:
+      - All dependencies installed successfully
+      - CLI `eos-verif-constitution` accessible with --version check
+      - POSTGRES_CONNECTION_STRING environment variable configured
+      - DATABASE_URL environment variable configured
+
+  # Stage 1: Execute Semantic Invariants Falsification Test
+  - stage_id: CI-STAGE-1
+    stage_name: Run Work Continuity Falsification Test
+    operations:
+      - operation: Start Postgres test container for dual repository testing
+      - command: docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=eos_test postgres:15-alpine
+      - operation: Wait for Postgres container to be ready
+      - command: sleep 5
+      - operation: Verify Postgres connection with test script
+      - command: node workspace/capabilities/shared/implementation/database/health.check.js
+      - operation: Execute full Wave 2 pressure test suite (in-memory + Postgres)
+      - command: npm test workspace/capabilities/work-core/w2a-pressure-test.ts workspace/capabilities/work-core/w2b-pressure-test.ts workspace/capabilities/work-core/w2c-pressure-test.ts -- --verbose --postgres
+      - operation: Stop Postgres test container
+      - operation: Save raw test output to build/governance/verifier-reports/SEMANTIC-INVARIANTS-TEST-RAW-$(date +%s).log
+    pass_criteria:
+      - All 7 semantic invariants pass (workIdentityPreserved, intentPreserved, authorityPreserved, capabilityEnforced, statePreserved, provenancePreserved, evidencePreserved)
+      - Test exit code = 0 (no failures)
+      - No unhandled exceptions in test execution
+
+  # Stage 2: Run Constitutional Verifier (CONST-VERIF)
+  - stage_id: CI-STAGE-2
+    stage_name: Execute Full Constitutional Compliance Check
+    operations:
+      - operation: Run full CONST-VERIF pipeline
+      - command: eos-verif-constitution verify
+      - operation: Verify pipeline determinism by running twice and comparing report hashes
+    pass_criteria:
+      - CONST-VERIF exit code = 0
+      - Both consecutive runs produce identical report_content_hash
+      - Overall conformance verdict = PASS for Gate_E (strict mode)
+      - No type errors, DAG violations, or boundary violations reported
+
+  # Stage 3: Generate Final Report & Artifacts
+  - stage_id: CI-STAGE-3
+    stage_name: Aggregate Results & Publish Evidence
+    operations:
+      - operation: Merge test results and CONST-VERIF reports into single evidence bundle
+      - operation: Calculate overall semantic continuity score (100% if all invariants pass)
+      - operation: Upload report bundle to observability dashboard (if configured)
+    output_artifacts:
+      - path: build/governance/verifier-reports/W-BETTER-003-FINAL-REPORT-$(date +%Y%m%d-%H%M%S).yaml
+        content:
+          - work_id: W-BETTER-003
+          - commit_hash: $(git rev-parse HEAD)
+          - semantic_invariants_pass: true
+          - constitutional_verifier_pass: true
+          - continuity_score: 100
+          - report_generated_at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# Blocking Rules (Enforced)
+blocking_failures:
+  - Any semantic invariant test failure → pipeline BLOCKED
+  - Any CONST-VERIF Gate_E failure → pipeline BLOCKED
+  - Mismatch in consecutive CONST-VERIF report hashes → pipeline BLOCKED
+  - Missing required artifacts in final report → pipeline BLOCKED
+
+# Alignment with User Requirements
+user_requirement_mapping:
+  - "Automate invariant verification": ✓ Implemented in CI-STAGE-1
+  - "All failures flagged as blocking": ✓ Implemented in blocking_failures section
+  - "Results sent to observability": ✓ Implemented in CI-STAGE-3
+  - "Every release has verification evidence": Output artifacts stored with timestamp
+  - "W2-COMMON-001: Configure POSTGRES_CONNECTION_STRING for CI/CD": ✓ Implemented in CI-STAGE-0
+  - "Wave 2 pressure tests executed in CI (in-memory + Postgres)": ✓ Implemented in CI-STAGE-1

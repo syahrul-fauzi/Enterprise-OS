@@ -1,0 +1,306 @@
+{
+  "work_id": "W06-A2",
+  "verified_at": "2026-11-11T02:22:31.055Z",
+  "source_commit_verification": {
+    "requested_source_commit": "a1b2c3d4e5f6",
+    "actual_git_head": "9aa1308c8ea7d6692a4f2463018057ba77aef1c9",
+    "discrepancy_note": "Discrepansi hanya pada commit hash, bukan implementasi command"
+  },
+  "total_tests": 36,
+  "total_passed": 30,
+  "total_failed": 6,
+  "all_passed": false,
+  "command_inventory_reconciled": true,
+  "authorization_design_clarified": true,
+  "results": [
+    {
+      "testId": "value-metering.cost-attribution.execute | Owner dengan permission valid",
+      "passed": false,
+      "duration": 0,
+      "expected": "ALLOW",
+      "actual": "ERROR",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363750990-uu5kie2"
+    },
+    {
+      "testId": "value-metering.cost-attribution.execute | Admin non-owner tanpa delegated permission",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363750993-weacuus"
+    },
+    {
+      "testId": "value-metering.cost-attribution.execute | Session revoked",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363750997-0kkb3qj"
+    },
+    {
+      "testId": "value-metering.cost-attribution.execute | Cross-tenant",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363750999-t14uqk3"
+    },
+    {
+      "testId": "value-metering.cost-attribution.execute | Invalid / spoofed actor",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751003-wowkcah"
+    },
+    {
+      "testId": "value-metering.cost-attribution.execute | Unauthorized mutation",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY+zero_side_effect",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751005-8cwb94i"
+    },
+    {
+      "testId": "value-metering.usage-metering.execute | Owner dengan permission valid",
+      "passed": false,
+      "duration": 0,
+      "expected": "ALLOW",
+      "actual": "ERROR",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751011-bb5inep"
+    },
+    {
+      "testId": "value-metering.usage-metering.execute | Admin non-owner tanpa delegated permission",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751013-s6aljti"
+    },
+    {
+      "testId": "value-metering.usage-metering.execute | Session revoked",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751014-uqyqqfo"
+    },
+    {
+      "testId": "value-metering.usage-metering.execute | Cross-tenant",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751016-8iyn4qn"
+    },
+    {
+      "testId": "value-metering.usage-metering.execute | Invalid / spoofed actor",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751017-fah7yhu"
+    },
+    {
+      "testId": "value-metering.usage-metering.execute | Unauthorized mutation",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY+zero_side_effect",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751018-u2zv5fq"
+    },
+    {
+      "testId": "value-metering.legal-service-metering.execute | Owner dengan permission valid",
+      "passed": false,
+      "duration": 0,
+      "expected": "ALLOW",
+      "actual": "ERROR",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751019-dbp4roz"
+    },
+    {
+      "testId": "value-metering.legal-service-metering.execute | Admin non-owner tanpa delegated permission",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751020-5yj4b8n"
+    },
+    {
+      "testId": "value-metering.legal-service-metering.execute | Session revoked",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751022-h6e34qe"
+    },
+    {
+      "testId": "value-metering.legal-service-metering.execute | Cross-tenant",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751023-sw38uod"
+    },
+    {
+      "testId": "value-metering.legal-service-metering.execute | Invalid / spoofed actor",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751024-ok6m21g"
+    },
+    {
+      "testId": "value-metering.legal-service-metering.execute | Unauthorized mutation",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY+zero_side_effect",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751025-fiks3jz"
+    },
+    {
+      "testId": "deal-coordinator.cross-org-agreement.execute | Owner dengan permission valid",
+      "passed": false,
+      "duration": 0,
+      "expected": "ALLOW",
+      "actual": "ERROR",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751028-yshtg8b"
+    },
+    {
+      "testId": "deal-coordinator.cross-org-agreement.execute | Admin non-owner tanpa delegated permission",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751029-yvbzuc7"
+    },
+    {
+      "testId": "deal-coordinator.cross-org-agreement.execute | Session revoked",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751035-er0zwe9"
+    },
+    {
+      "testId": "deal-coordinator.cross-org-agreement.execute | Cross-tenant",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751036-sds28cj"
+    },
+    {
+      "testId": "deal-coordinator.cross-org-agreement.execute | Invalid / spoofed actor",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751037-adfe8ce"
+    },
+    {
+      "testId": "deal-coordinator.cross-org-agreement.execute | Unauthorized mutation",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY+zero_side_effect",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751040-pp91wqa"
+    },
+    {
+      "testId": "deal-coordinator.payment-reconciliation.execute | Owner dengan permission valid",
+      "passed": false,
+      "duration": 0,
+      "expected": "ALLOW",
+      "actual": "ERROR",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751041-uivxwk7"
+    },
+    {
+      "testId": "deal-coordinator.payment-reconciliation.execute | Admin non-owner tanpa delegated permission",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751042-9czqfdf"
+    },
+    {
+      "testId": "deal-coordinator.payment-reconciliation.execute | Session revoked",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751045-ga1ymtm"
+    },
+    {
+      "testId": "deal-coordinator.payment-reconciliation.execute | Cross-tenant",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751046-8ouq477"
+    },
+    {
+      "testId": "deal-coordinator.payment-reconciliation.execute | Invalid / spoofed actor",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751047-2gjdajw"
+    },
+    {
+      "testId": "deal-coordinator.payment-reconciliation.execute | Unauthorized mutation",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY+zero_side_effect",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751048-ftq01uf"
+    },
+    {
+      "testId": "deal-coordinator.reconciliation.execute | Owner dengan permission valid",
+      "passed": false,
+      "duration": 0,
+      "expected": "ALLOW",
+      "actual": "ERROR",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751048-ln80t0k"
+    },
+    {
+      "testId": "deal-coordinator.reconciliation.execute | Admin non-owner tanpa delegated permission",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751050-tidcxx8"
+    },
+    {
+      "testId": "deal-coordinator.reconciliation.execute | Session revoked",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751052-a0rrd0f"
+    },
+    {
+      "testId": "deal-coordinator.reconciliation.execute | Cross-tenant",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751053-eajyq8u"
+    },
+    {
+      "testId": "deal-coordinator.reconciliation.execute | Invalid / spoofed actor",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751054-xz5noso"
+    },
+    {
+      "testId": "deal-coordinator.reconciliation.execute | Unauthorized mutation",
+      "passed": true,
+      "duration": 0,
+      "expected": "DENY+zero_side_effect",
+      "actual": "DENY (thrown)",
+      "error": "unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: test-1794363751055-xmrppnt"
+    }
+  ],
+  "verdict": "PENDING_INDEPENDENT_VERIFICATION"
+}

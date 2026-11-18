@@ -1,0 +1,69 @@
+{
+  "work_id": "EOS-JOURNEY-004",
+  "phase": "INTEGRATE / OBSERVE",
+  "verdict": "IN_PROGRESS",
+  "completed_milestones": [
+    "ej004_w01",
+    "ej004_w02"
+  ],
+  "checks_passed": [
+    "Context Anchor loads successfully in Journey Engine",
+    "Cache metrics are measurable (loadCalls/cacheHits/cacheMisses/parseCount)",
+    "Metrics exported to canonical proofs directory",
+    "Cache invalidation only authorized for Journey Engine",
+    "Current journey reloads successfully after invalidation",
+    "Canonical state files remain unmodified",
+    "Single next_work_id invariant maintained"
+  ],
+  "checks_failed": [],
+  "evidence_artifacts": [
+    "/.eos-state/proofs/EOS-JOURNEY-004-cache-metrics.yaml",
+    "/.eos-state/proofs/EOS-JOURNEY-004-machine-validation-complete.json"
+  ],
+  "generated_at": "2026-09-24T07:31:48.408Z",
+  "generated_by": "journey-engine",
+  "cache_metrics": {
+    "loadCalls": 3,
+    "cacheHits": 1,
+    "cacheMisses": 2,
+    "parseCount": 2,
+    "totalParseTimeMs": 23.95957900000002,
+    "lastParseTimeMs": 4.560077000000007,
+    "averageParseTimeMs": 11.97978950000001,
+    "saveCalls": 0,
+    "write_latency": {
+      "min_ms": 0,
+      "avg_ms": 0,
+      "p95_ms": 0,
+      "max_ms": 0,
+      "last_ms": 0
+    },
+    "read_latency": {
+      "min_ms": 4.560077000000007,
+      "avg_ms": 1.520025666666669,
+      "ewma_ms": 0.22800385000000034,
+      "max_ms": 4.560077000000007,
+      "last_ms": 4.560077000000007
+    },
+    "payload_size": {
+      "total_bytes": 0,
+      "last_bytes": 0,
+      "average_bytes": 0
+    },
+    "concurrency": {
+      "current_concurrent": 0,
+      "max_concurrent_observed": 0
+    },
+    "mutation_frequency": {
+      "average_interval_ms": 0,
+      "total_mutations": 0
+    },
+    "cache": {
+      "hit_rate": 0.3333333333333333,
+      "miss_rate": 0.6666666666666666
+    },
+    "stat_overhead": {
+      "last_ms": 0
+    }
+  }
+}

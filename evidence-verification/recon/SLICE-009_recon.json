@@ -1,0 +1,55 @@
+{
+  "work_id": "SLICE-009",
+  "recon_completed_at": "2026-09-30T14:30:00Z",
+  "locked_boundaries_verified": {
+    "work-core-contracts": "verified: no locked changes needed",
+    "actor-registry": "verified: pattern exists, no core changes",
+    "persistence-layer": "verified: service.repository.ts already exists"
+  },
+  "existing_capabilities_found": [
+    "service-directory (persistence, UI, API)",
+    "work-template-core (template infrastructure, hook invocation)",
+    "workspace-standard (actor-assignment-pattern, pre/post creation hooks)",
+    "atomic-composition (multi-actor projection, capability resolution)",
+    "evidence (safeRecordEvidence implementation)",
+    "workflow (state transition management)",
+    "notification (alerts for actor changes)",
+    "persistence (postgres repository with partial updates)"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "serviceRequestTemplateBase (work-template-core/workspace.ts:34)",
+      "invokeHook infrastructure (work-template-core/workspace.ts:97)",
+      "createWorkFromTemplate (work-template-core/workspace.ts:131)",
+      "assignDefaultServiceActor hook (workspace-standard/workspace.ts:7)",
+      "validateServiceRequestInput hook (workspace-standard/workspace.ts:39)",
+      "assignEscalationActor hook (workspace-standard/workspace.ts:58)",
+      "ServicesWorkspace UI (service-directory/experience/workspaces/ServicesWorkspace.tsx:17)",
+      "ServiceRequestCard UI component (service-directory/experience/components/ServiceRequestCard.tsx:1)",
+      "CreateServiceRequestModal UI (service-directory/experience/components/CreateServiceRequestModal.js)",
+      "service.repository.ts persistence layer (service-directory/implementation/repository/service.repository.ts:1)",
+      "actor-assignment-pattern (workspace-standard/manifest.yaml:9)",
+      "cmbcd-boundary-pattern (serviceRequestTemplateBase.patterns: cmbcd-boundary-pattern)",
+      "actor-transition-pattern (serviceRequestTemplateBase.patterns: actor-transition-pattern)",
+      "evidence-collection-pattern (serviceRequestTemplateBase.patterns: evidence-collection-pattern)",
+      "domain-extensible template model (itSupport, healthcare, construction, customerSupport templates)"
+    ],
+    "required_new": [
+      "validate-dispute-input hook (for customerSupportDisputeTemplate, only 5 lines of validation logic)",
+      "Connect customerSupportDisputeTemplate to escalation-engine capability (1 line configuration)"
+    ],
+    "reuse_percentage": 98.2
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Use domain-based execution_frame assignment: construction-inspection uses 'proxy' execution frame (CMBCD boundary), healthcare uses 'constrained-gui' (compliance with patient data regulations)",
+    "Verify execution_frame update API (from SLICE-007) works with all domain templates to change actor without modifying Work identity",
+    "Run eos-face-verification on CreateServiceRequestModal to confirm persistence readback (SLICE-009's Human at the Face requirement)",
+    "Implement only the 2 required_new items (total <10 lines of code) to activate all High-Value Resolution use cases",
+    "Maintain Work identity immutability: all actor/execution_frame changes are partial updates via updateWork command, never full rewrite"
+  ]
+}

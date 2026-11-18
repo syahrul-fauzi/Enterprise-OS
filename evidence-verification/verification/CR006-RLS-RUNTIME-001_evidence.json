@@ -1,0 +1,34 @@
+{
+  "work_id": "CR006-RLS-RUNTIME-001",
+  "verified_at": "2026-10-31T17:14:30.000Z",
+  "verification_type": "runtime-rls-actual-app-user",
+  "connection_user": "app_user",
+  "connection_role_verified": true,
+  "role_info": {
+    "app_user": "app_user",
+    "is_superuser": false,
+    "passwd": "********",
+    "valuntil": null,
+    "has_bypassrls": false
+  },
+  "test_tenants": ["tenant-pilot-001", "tenant-next-002"],
+  "test_workspaces": ["workspace-pilot-001", "workspace-next-002"],
+  "tables_tested": ["works", "work_payments"],
+  "test_results": {
+    "test0_role_verification": "PASS",
+    "test1_valid_tenant_context": "PASS",
+    "test2_own_tenant_access": "PASS",
+    "test3_cross_tenant_read_blocked": "PASS",
+    "test4_cross_tenant_insert_blocked": "PASS",
+    "test5_context_switch_works": "PASS",
+    "test6_mutual_isolation": "PASS",
+    "test7_empty_context_blocked": "PASS",
+    "test8_invalid_tenant_blocked": "PASS",
+    "test9_workspace_isolation": "PASS",
+    "test10_work_payments_isolation": "PASS"
+  },
+  "all_passed": true,
+  "passed_tests": 11,
+  "failed_tests": 0,
+  "war_room_acceptance_criteria_met": true
+}

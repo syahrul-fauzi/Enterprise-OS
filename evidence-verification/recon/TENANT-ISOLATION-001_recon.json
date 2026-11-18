@@ -1,0 +1,60 @@
+{
+  "work_id": "TENANT-ISOLATION-001",
+  "recon_completed_at": "2026-09-27T08:15:00.000Z",
+  "locked_boundaries_verified": {
+    "enterprise/": "no changes",
+    "governance/": "no changes",
+    "core kernel version": "B7.19"
+  },
+  "existing_capabilities_found": [
+    {
+      "capability": "updateWork command in work-core",
+      "location": "/root/Enterprise-OS/workspace/capabilities/work-core/implementation/commands/work.commands.ts",
+      "purpose": "permission checks before allowing mutation",
+      "checks": ["owner/participant/workspace role validation", "throws permission_denied if unauthorized"]
+    },
+    {
+      "capability": "PostgreSQL RLS policies",
+      "location": "/root/Enterprise-OS/workspace/capabilities/shared/implementation/database/migrations/migration.manager.ts",
+      "purpose": "database-level tenant isolation",
+      "checks": ["tenant_id = current_setting('app.current_tenant')", "enforced at database layer for all operations"]
+    },
+    {
+      "capability": "In-memory repository tenant checks",
+      "location": "multiple repository implementations (case.repository.ts, document.repository.ts)",
+      "purpose": "development-mode tenant isolation",
+      "checks": ["blocks cross-tenant byId access", "blocks cross-tenant save attempts", "logs violations with recordRuntimeInvocation"]
+    },
+    {
+      "capability": "recordRuntimeInvocation",
+      "location": "shared runtime utilities",
+      "purpose": "evidence logging for all operations",
+      "checks": ["captures success/failure", "logs tenant_id, actorId, and reason for failure", "preserves immutable evidence chain"]
+    }
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "updateWork permission checks",
+      "RLS policies for production enforcement",
+      "in-memory tenant isolation for test environment",
+      "recordRuntimeInvocation for evidence logging",
+      "existing capabilityRegistry to invoke updateWork command"
+    ],
+    "required_new": [
+      "test script that exercises cross-tenant mutation attempt (no new primitives, only test code)"
+    ],
+    "reuse_percentage": 95.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Reuse all existing primitives for TENANT-ISOLATION-001 test",
+    "No new semantic primitives needed (anti-drift principle compliant)",
+    "Test must capture before/after state of canonical Work",
+    "Verify that DENY is logged in evidence chain",
+    "Use same test template as CONTINUITY-EDGE-001 for consistency"
+  ]
+}

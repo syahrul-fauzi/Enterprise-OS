@@ -1,0 +1,52 @@
+{
+  "work_id": "digiop-101",
+  "work_name": "Purchase & onboard Digital Care package",
+  "recon_timestamp": "2026-11-15T00:00:00.000Z",
+  "product_context": {
+    "product_id": "digital-operations",
+    "phase": "D.2",
+    "status": "ACTIVE"
+  },
+  "capability_requirements": [
+    "midtrans-payment-source-of-truth",
+    "package-installation-automation",
+    "eos-work-creation",
+    "service-directory.schedule-onboarding"
+  ],
+  "existing_capabilities_found": [
+    {
+      "capability_id": "atomic-composition",
+      "status": "stable",
+      "version": "1.0.0"
+    },
+    {
+      "capability_id": "agent-orchestration",
+      "status": "stable",
+      "version": "1.0.0"
+    },
+    {
+      "capability_id": "observability",
+      "status": "stable",
+      "version": "1.0.0"
+    },
+    {
+      "capability_id": "incident-management",
+      "status": "stable",
+      "version": "1.0.0"
+    },
+    {
+      "capability_id": "governance-evidence",
+      "status": "stable",
+      "version": "1.0.0"
+    },
+    {
+      "capability_id": "subscription-management",
+      "status": "stable",
+      "version": "1.0.0"
+    }
+  ],
+  "reuse_percentage": 100.0,
+  "blockers": [],
+  "recon_verdict": "MINIMAL_FIX",
+  "notes": "All required capabilities already exist and are stable. Workflow is fully validated against core-kernel specification. No new primitives needed."
+}

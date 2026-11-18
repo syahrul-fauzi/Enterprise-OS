@@ -1,0 +1,125 @@
+{
+  "work_id": "P0-PT-001",
+  "recon_completed_at": "2026-08-17T00:00:00.000Z",
+  "locked_boundaries_verified": {
+    "tenant_isolation": true,
+    "session_validation": true,
+    "no_cross_contamination": true,
+    "rule_of_two_compliance": true
+  },
+  "existing_capabilities_found": [
+    "consultation",
+    "evidence-registry",
+    "workflow-engine",
+    "legal-case",
+    "service-directory",
+    "legal-community",
+    "identity",
+    "requirement-management"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      {
+        "id": "ctx-001",
+        "name": "Consultation Cumulative Context Pattern",
+        "source": "consultation/implementation/contracts/consultation.contracts.ts",
+        "purpose": "Knowledge contract storage with epistemic status tracking",
+        "reuse_for": "Project Context experiment",
+        "modifications_needed": 0
+      },
+      {
+        "id": "ctx-002",
+        "name": "EpistemicStatus Type System",
+        "source": "consultation/implementation/contracts/consultation.contracts.ts#L343",
+        "purpose": "Verified fact statusing (CLAIMED/OBSERVED/EVIDENCED/VERIFIED)",
+        "reuse_for": "Project Context knowledge contract",
+        "modifications_needed": 0
+      },
+      {
+        "id": "exec-001",
+        "name": "Core Runtime ExecutionContext",
+        "source": "packages/core/runtime/src/execution-context.ts",
+        "purpose": "Minimal execution context tracking (decision_id, product_id, run_id)",
+        "reuse_for": "Execution Contract thin adapter",
+        "modifications_needed": 1
+      },
+      {
+        "id": "exec-002",
+        "name": "Workflow Engine Execution Pipeline",
+        "source": "capabilities/workflow-engine/implementation/services/workflow-engine.service.ts",
+        "purpose": "Existing workflow execution chain with traceability",
+        "reuse_for": "Execution Contract adapter orchestration",
+        "modifications_needed": 0
+      },
+      {
+        "id": "handoff-001",
+        "name": "Work Seed Handoff Context Pattern",
+        "source": "products/commsme/work-seeds/pt-establishment.workseed.json#L233",
+        "purpose": "Structured human handoff with 100% context retention guarantee",
+        "reuse_for": "Professional Work Package projection",
+        "modifications_needed": 0
+      },
+      {
+        "id": "handoff-002",
+        "name": "Consultation LinkedWorkItem Pattern",
+        "source": "consultation/implementation/commands/consultation.commands.ts#L2950",
+        "purpose": "Cross-domain work item linking with evidence tracking",
+        "reuse_for": "Professional Work Package assembly",
+        "modifications_needed": 0
+      },
+      {
+        "id": "lev-001",
+        "name": "Evidence Registry Invocation Tracking",
+        "source": "capabilities/evidence-registry/implementation/commands/evidence-registry.commands.ts",
+        "purpose": "Runtime invocation logging with session validation",
+        "reuse_for": "Leverage metrics (MWC, Reuse Ratio, TNA)",
+        "modifications_needed": 0
+      },
+      {
+        "id": "lev-002",
+        "name": "Execution Chain Projection",
+        "source": "packages/core/capability-registry/src/repository-registry.ts#L2853",
+        "purpose": "Chain digest and status tracking for reuse analysis",
+        "reuse_for": "Leverage measurement automation",
+        "modifications_needed": 0
+      }
+    ],
+    "required_new": [
+      {
+        "id": "exp-001",
+        "name": "Project Context Knowledge Contract Adapter",
+        "purpose": "Wrap existing consultation cumulative context into P0-PT-001 specific projection",
+        "est_lines": 3,
+        "activation_condition": "Context loss >20% OR reconstruction >3 items"
+      },
+      {
+        "id": "exp-002",
+        "name": "Execution Contract Thin Adapter",
+        "purpose": "Extend ExecutionContext with workflow step boundary tracking for TNA measurement",
+        "est_lines": 2,
+        "activation_condition": "Ambiguity score >3/10"
+      },
+      {
+        "id": "exp-003",
+        "name": "Professional Work Package UI Projection Component",
+        "purpose": "Render structured handoff context for human professional dashboard",
+        "est_lines": 15,
+        "activation_condition": "Handoff friction observed in B4"
+      }
+    ],
+    "reuse_percentage": 92.3
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "All experiments can be implemented as thin wrappers around existing primitives - no new core capabilities needed",
+    "Activate experiments ONLY after real friction is observed in B4/P0 execution (enforce activation gates)",
+    "ExecutionContext needs only 1 field addition (step_boundary_timestamp) to support Time-to-Next-Action tracking",
+    "Project Context can reuse existing EpistemicStatus system without modification - no new type system needed",
+    "Professional Work Package can reuse the work seed's handoffContext structure - already proven in pt-establishment.workseed.json",
+    "Leverage metrics can be fully computed from existing evidence registry and execution chain data - no new tracking infrastructure needed"
+  ]
+}

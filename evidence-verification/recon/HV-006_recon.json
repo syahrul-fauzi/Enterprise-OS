@@ -1,0 +1,42 @@
+{
+  "work_id": "HV-006",
+  "recon_completed_at": "2026-10-04T12:00:00.000Z",
+  "locked_boundaries_verified": {
+    "6_layer_boundary_model": true,
+    "6_level_composition_hierarchy": true,
+    "work_graph_temporal_substrate": true,
+    "0_duplicate_work_enforced": true,
+    "100_primitive_reuse_mandate": true
+  },
+  "existing_capabilities_found": [
+    "work-core/contracts/work.contracts.ts (WorkAggregate, ActorId, ExecutionFrame)",
+    "work-core/implementation/utils/cmbdc.utils.ts (calculateExecutionFrame - canonical CMBCD logic)",
+    "work-core/implementation/utils/evidence.utils.ts (safeRecordEvidence - shared evidence recording)",
+    "work-core/implementation/repository/work-inmemory.repository.ts (WorkRepositoryInMemory with evidence chain)",
+    "work-core/implementation/repository/work-postgres.repository.ts (Postgres implementation of same interface)",
+    "work-core/high-value-work-graph.test.ts (existing HV-006 test implementation)",
+    "atomic-composition/E1-001-06-CAPABILITY-PROVIDER-MAP.md (universal provider compatibility)"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "calculateExecutionFrame (CMBCD execution policy - reused 100% from cmbdc.utils.ts)",
+      "safeRecordEvidence (evidence chain tracking - reused 100% from evidence.utils.ts)",
+      "WorkRepositoryInMemory/Postgres (persistence layer - reused 100% with no modifications)",
+      "MockWorkRepository (test harness - reused from existing test suite)",
+      "ActorProjection layer (cloud provider integration - reused from E1-001-06 universal provider support)"
+    ],
+    "required_new": [],
+    "reuse_percentage": 100.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Proceed with HV-006 execution - all primitives exist for 100% reuse, no core changes required",
+    "Run existing HV-006 tests in high-value-work-graph.test.ts to validate all acceptance criteria",
+    "Execute eos-verification for independent binary PASS/FAIL adjudication",
+    "Upon HV-006 passing, close Wave 1 generality proof and transition to high-value Work resolution mode"
+  ]
+}

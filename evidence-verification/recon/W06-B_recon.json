@@ -1,0 +1,53 @@
+{
+  "work_id": "W06-B",
+  "recon_started_at": "2026-11-14T17:16:10.880Z",
+  "primitive_reuse_checks": [
+    {
+      "primitive_path": "/home/ios-id/eos/workspace/packages/core/runtime/src/runtime.ts",
+      "description": "Runtime mount capability",
+      "exists": true,
+      "can_reuse": true
+    },
+    {
+      "primitive_path": "/home/ios-id/eos/workspace/packages/core/runtime/src/execution-context.ts",
+      "description": "Execution context",
+      "exists": true,
+      "can_reuse": true
+    },
+    {
+      "primitive_path": "/home/ios-id/eos/workspace/packages/core/runtime/src/execution-status.ts",
+      "description": "Execution status",
+      "exists": true,
+      "can_reuse": true
+    },
+    {
+      "primitive_path": "/home/ios-id/eos/workspace/packages/core/runtime/src/invocation-evidence.ts",
+      "description": "Invocation evidence",
+      "exists": true,
+      "can_reuse": true
+    },
+    {
+      "primitive_path": "/home/ios-id/eos/workspace/packages/core/runtime/src/work-continuity.ts",
+      "description": "Work continuity",
+      "exists": true,
+      "can_reuse": true
+    },
+    {
+      "primitive_path": "/home/ios-id/eos/.eos-state/coordination/command-center/war-room-dashboard.json",
+      "description": "War Room Dashboard",
+      "exists": true,
+      "can_reuse": true
+    },
+    {
+      "primitive_path": "/home/ios-id/eos/workspace/.eos/evidence/business-leverage-scoreboard.json",
+      "description": "Business leverage scoreboard",
+      "exists": true,
+      "can_reuse": true
+    }
+  ],
+  "dependencies_satisfied": true,
+  "architecture_freeze_compliance": true,
+  "overall_recommendation": "REUSE",
+  "reuse_percentage": 100,
+  "recon_completed_at": "2026-11-14T17:16:10.884Z"
+}

@@ -1,0 +1,10 @@
+workspace/.eos-state/recon/ACADEMIC-001_recon.json
+workspace/apps/web/app/workspace/page.tsx
+workspace/apps/web/tsconfig.tsbuildinfo
+workspace/apps/web/workspace.manifest.ts
+workspace/capabilities/connector-ecosystem/implementation/services/connector-ecosystem.service.ts
+workspace/capabilities/legal-case/implementation/repository/case.repository.ts
+workspace/packages/presentation/widgets/src/case-detail-page/CaseDetailPage.tsx
+workspace/packages/presentation/widgets/src/product-cases-page/ProductCasesPage.tsx
+workspace/packages/presentation/widgets/tsconfig.tsbuildinfo
+workspace/tsconfig.json

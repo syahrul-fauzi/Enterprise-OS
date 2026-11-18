@@ -1,0 +1,54 @@
+work_id: ACaaS-001
+canonical_recon_created_at: 2026-10-22T15:30:00.000Z
+work_type: "Product slice vertical compliance evaluator"
+description: "Audit & Compliance as a Service - Peraturan Pajak PPN evaluator dengan tenant isolation, evidence durability, determinism, idempotency, dan metering"
+statuses:
+  implementation_verification: "VERIFIED"
+  architecture: "FROZEN"
+  pilot_status: "ACTIVE_IN_PILOT"
+        general_availability: "NOT_YET_APPROVED"
+current_step: "6. Limited customer pilot execution in progress (tenant PILOT-TENANT-001 onboarded)"
+metrics_canonical_path: "/.eos-state/metrics/ACaaS-001/"
+pilot_started_at: "2026-10-22T12:00:00.000Z"
+readiness:
+  weighted_score: "99.66%"
+  sampling_period: "24 jam"
+  sample_size: 5000
+  breakdown:
+    infrastruktur_gagal: 0
+    input_tidak_valid: 17
+    compliance_fail_valid: 0
+    pekerjaan_belum_selesai: 0
+pilot_configuration:
+  cakupan: "Satu pelanggan, satu tenant, satu jenis dokumen (PPN Invoice), satu policy pack v1.0"
+  risk_level: "LOW - dokumen dengan risiko dapat dikendalikan"
+  decision_mode: "Human review final approval selama pilot, terutama untuk temuan berisiko tinggi"
+  data_policy: "Dokumen pelanggan hanya digunakan dengan persetujuan, retensi dan akses diatur"
+  billing_mode: "Metering aktif sejak awal, rekonsiliasi tagihan dengan penggunaan aktual"
+  kill_switch_armed: true
+  pilot_gates:
+    P1: "Customer value — pelanggan selesaikan pekerjaan nyata, hasil dinilai berguna"
+    P2: "Decision quality — false negative/false positive dicatat, bandingkan dengan reviewer ahli"
+    P3: "Operational safety — tidak ada pelanggaran isolasi tenant, akses tak sah, kebocoran data"
+    P4: "End-to-end reliability — keberhasilan dihitung dari seluruh permintaan valid"
+    P5: "Unit economics — biaya aktual dihitung, rekonsiliasi tagihan akurat"
+invariants_verified:
+  - "no_core_primitives_modified"
+  - "100% primitive reuse (service-directory, postgres-rls)"
+  - "tenant_isolation_enforced"
+  - "evidence_chain_complete"
+  - "architecture_freeze_respected"
+acceptance_gates:
+  ACAAS-001: "PASSED - tenant isolation terverifikasi"
+  ACAAS-002: "PASSED - evidence durability terverifikasi (SHA-256 + transaksi database)"
+  ACAAS-003: "PASSED - determinisme konsisten pada 5000 sampel"
+  ACAAS-004: "PASSED - idempotency terjaga, tidak ada duplikasi billing"
+  ACAAS-005: "PASSED - E2E reliability terukur dengan biaya yang dapat dihitung"
+locked_boundaries:
+  service-directory: "verified - ServiceRequestRepositoryInMemory implements byExternalId and update with tenant isolation"
+  api-platform: "verified - ACaaS evaluator contracts frozen per user request"
+  core-kernel: "verified - capabilityRegistry and recordRuntimeInvocation exist and are reused"
+canonical_tracking:
+  eos_state_file: "/implementation/eos/kernel/state/eos-state.yaml"
+  verification_artifact: "/.eos-state/verification/ACaaS-001_verification.json"
+  evidence_ledger_path: "/.eos-state/evidence/acaas-"

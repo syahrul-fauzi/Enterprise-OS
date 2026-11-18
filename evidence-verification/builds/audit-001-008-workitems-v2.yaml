@@ -1,0 +1,94 @@
+---
+audit_id: AUDIT-001-008
+stage: STAGE C VERIFY
+product: lawyershub
+objective: Selesaikan end-to-end legal-case workflow: Create → Persist → Submit → Review → Approve/Reject → Close → Retrieve Evidence
+work_items:
+  # Error 1: work_not_found di persistence test (root cause: id/workId mismatch di work-inmemory.repository.ts)
+  - work_id: LH-TEST-001
+    user_job: "Perbaiki mismatch id/workId di work-inmemory.repository.ts"
+    root_cause: >
+      work-inmemory.repository.ts menyimpan work di mockWorks Map dengan key=entity.id,
+      tetapi getWork() dan atomicClaim() mencari work dengan w.workId === workId.
+      Meskipun work.create() mengembalikan id dan workId sama, kita perlu memastikan
+      logika pencarian selalu konsisten.
+    acceptance: >
+      Test "should fetch created case from repository" lulus. work-core.get dapat
+      menemukan work yang dibuat create-case tanpa error work_not_found.
+    dependencies: []
+    owner: eos-verification
+    status: READY
+    blocker: none
+    files_impacted:
+      - /root/Enterprise-OS/workspace/capabilities/work-core/implementation/repository/work-inmemory.repository.ts
+    constraints:
+      - Hanya perbaiki logika pencarian, tidak ubah struktur penyimpanan (frozen architecture)
+      - Jangan buat repository baru, reuse yang sudah ada
+
+  # Error 2: Cannot read properties of undefined (reading 'workId') di IDENTITY test (root cause: case not found)
+  - work_id: LH-TEST-002
+    user_job: "Perbaiki case not found di IDENTITY test"
+    root_cause: >
+      Di test IDENTITY, setelah membuat case dengan create-case, saat memanggil
+      case.getById untuk lawyerSession, case tidak ditemukan. Ini mungkin karena
+      session lawyer belum disimpan ke repository dengan benar, atau case repository
+      tidak menyimpan case yang dibuat.
+    acceptance: >
+      Test "IDENTITY: workId remains invariant across actor transitions (client→lawyer→judge)" lulus.
+      lawyerFetched.workId dan judgeFetched.workId sama dengan originalWorkId.
+    dependencies: [LH-TEST-001]
+    owner: eos-verification
+    status: BLOCKED
+    blocker: LH-TEST-001
+    files_impacted:
+      - /root/Enterprise-OS/workspace/capabilities/legal-case/test/lh-case-001.test.ts
+      - /root/Enterprise-OS/workspace/capabilities/legal-case/implementation/repository/case-inmemory.repository.ts
+
+  # Error 3: Invalid or revoked session di AI-001 test (root cause: session AI tidak disimpan)
+  - work_id: LH-TEST-003
+    user_job: "Perbaiki invalid session di AI-001 test"
+    root_cause: >
+      Session AI judge yang dibuat di test AI-001 tidak disimpan ke SessionRepositoryInMemory
+      sebelum memanggil create-case, sehingga case.commands.ts menolak session sebagai invalid/revoked.
+    acceptance: >
+      Test "AI-001: workId invariant preserved across AI judge → human lawyer transition" lulus.
+      create-case menerima session AI yang valid.
+    dependencies: [LH-TEST-002]
+    owner: eos-verification
+    status: BLOCKED
+    blocker: LH-TEST-002
+    files_impacted:
+      - /root/Enterprise-OS/workspace/capabilities/legal-case/test/lh-case-001.test.ts
+
+  # Error 4: Missing work-core.atomic-claim command di FULL STRESS TEST (root cause: command tidak terdaftar)
+  - work_id: LH-TEST-004
+    user_job: "Hapus semua referensi atomic-claim yang tidak ada di test"
+    root_cause: >
+      FULL STRESS TEST masih mencoba memanggil work-core.atomic-claim yang tidak pernah
+      didaftarkan di work.commands.ts. Implementasi atomic claim ada di claimWorkCommand
+      (work-core.claimWork), bukan atomic-claim command terpisah.
+    acceptance: >
+      Test "FULL STRESS TEST: Work melewati seluruh chain CLIENT NEED → SETTLEMENT tanpa primitive baru" lulus.
+      Tidak ada lagi error command not found untuk atomic-claim.
+    dependencies: [LH-TEST-003]
+    owner: eos-verification
+    status: BLOCKED
+    blocker: LH-TEST-003
+    files_impacted:
+      - /root/Enterprise-OS/workspace/capabilities/legal-case/test/lh-case-001.test.ts
+
+next_highest_leverage: LH-TEST-001
+dashboard_snapshot:
+  active_slices: 1
+  blocked: 3
+  in_review: 0
+  ready: 1
+  shipped: 0
+  arch_delta: LOW
+  primitive_reuse: 100%
+  duplicate_work: 0
+  failed_replay: 0
+  lawyershub_slices: 1
+evidence_paths:
+  - /ios-id/eos/.eos-state/audit-001-008-workitems-v2.yaml
+  - /ios-id/eos/.eos-state/lh-case-001-test-results.log

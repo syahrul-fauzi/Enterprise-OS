@@ -1,0 +1,11 @@
+{
+  "work_id": "EOS-COMM-002",
+  "next_work_id": "EOS-COMM-002",
+  "executed_command": "eos verify-foundation",
+  "execution_timestamp": "2026-09-24T13:26:14.939Z",
+  "exit_code": 0,
+  "stdout": "\nℹ️  No attribution records found for prepare_release procedure\nFoundation verification complete\nActive products verified: 0/1\nDeclared products verified: 0/3\nEvidence directory: /root/Enterprise-OS/workspace/foundation/evidence/verification\nFoundation status: UNVERIFIED_BASELINE\nFitness status: STABLE\nArchitecture trend: IMPROVING\nConstitution status: PASS\nProof determinism: PASS\nGraph fitness: BLOCKED\nDocumentation-only specs: 19\n",
+  "stderr": "",
+  "actor": "nexus-dispatch",
+  "authorization_used": "journey-engine"
+}

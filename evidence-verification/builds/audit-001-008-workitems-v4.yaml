@@ -1,0 +1,122 @@
+---
+# AUDIT-001-008 WORK ITEMS (FINAL ITERATION - EOS WAR ROOM COMMANDER
+# Diatur oleh eos-command-center sesuai hard rules
+# Arsitektur FROZEN, tidak ada primitive baru, 100% reuse
+work_items:
+：：：：：：
+:
+:
+:
+:
+---
+# WORK ITEM: LH-TEST-001
+work_id: LH-TEST-001
+product: LawyersHub Legal-Case
+user_job: "Perbaiki error work_not_found di persistence test
+description: >
+  Test "should fetch created case from repository" masih gagal work_not_found.
+  Root cause sudah teridentifikasi: getWork() di work.commands.ts sudah menggunakan byWorkId(),
+  tetapi perlu memastikan bahwa work.save() di work-inmemory.repository.ts menyimpan work dengan
+  key yang sama (id = workId, dan byWorkId() benar-benar menemukan work yang disimpan.
+acceptance_criteria:
+  - Test "should fetch created case from repository" lulus 100%
+  - work-core.get command dapat menemukan work yang dibuat create-case
+  - Tidak ada perubahan arsitektur, hanya fix minimal
+owner: execution-agent
+status: READY_TO_EXECUTE
+priority: HIGHEST
+dependencies: []
+tags:
+  - bug-fix
+  - persistence
+  - audit-001-008
+---
+# WORK ITEM: LH-TEST-002
+work_id: LH-TEST-002
+product: LawyersHub Legal-Case
+user_job: "Perbaiki error invalid session di AI-001 test
+description: >
+  Test "AI-001: workId invariant preserved across AI judge → human lawyer transition
+  gagal dengan error "[legal-case.create-case] Invalid or revoked session". Root cause:
+  session yang dibuat di test tidak menyertakan field productId yang diperlukan oleh
+  SessionAggregate (lihat seed sessions di session.inmemory.ts. Semua session yang dibuat
+  di test harus menambahkan productId: "lawyershub" untuk kompatibel dengan identity repository.
+acceptance_criteria:
+  - Semua session di lh-case-001.test.ts menyertakan productId saat disimpan ke SessionRepositoryInMemory
+  - Test AI-001 lulus tanpa error invalid/revoked session
+  - Semua session actor (client/lawyer/judge/AI) dapat membuat case tanpa error autentikasi
+owner: execution-agent
+status: READY_TO_EXECUTE
+priority: HIGH
+dependencies:
+  - LH-TEST-001
+tags:
+  - bug-fix
+  - identity
+  - session
+  - audit-001-008
+---
+# WORK ITEM: LH-TEST-003
+work_id: LH-TEST-003
+product: LawyersHub Legal-Case
+user_job: "Hapus SEMUA referensi atomic-command dari test yang tidak perlu
+description: >
+  Test "FULL STRESS TEST masih mencoba memanggil work-core.atomic-claim yang tidak pernah ada.
+  Semua referensi atomic-claim yang masih tersisa di lh-case-001.test.ts harus dihapus atau
+  di-comment dengan benar untuk menghindari error "Command not found".
+acceptance_criteria:
+  - Tidak ada lagi error "[capabilityRegistry] Command not found: work-core.atomic-claim
+  - Semua command yang dipanggil di test benar-benar terdaftar di capabilityRegistry
+  - FULL STRESS TEST lulus tanpa error command not found
+owner: execution-agent
+status: READY_TO_EXECUTE
+priority: MEDIUM
+dependencies:
+  - LH-TEST-002
+tags:
+  - cleanup
+  - test-maintenance
+  - audit-001-008
+---
+# WORK ITEM: LH-WORKFLOW-001
+work_id: LH-WORKFLOW-001
+product: LawyersHub Legal-Case
+user_job: "Selesaikan full end-to-end legal case journey AUDIT-001-008
+description: >
+  Setelah semua test lulus, eksekusi full workflow: Create → Persist → Submit → Review → Approve → Close → Retrieve Evidence.
+  Semua state transition harus memiliki actor/authority yang sesuai, otorisasi yang benar, dan evidence yang dapat ditelusuri.
+acceptance_criteria:
+  - Semua 8 test di lh-case-001.test.ts LULUS SEMUA
+  - Evidence dari seluruh transisi dapat diambil dan terverifikasi
+  - Work legal-case dapat berjalan dari awal sampai akhir tanpa primitive baru
+  - Semua 6 boundary (IDENTITY/SEMANTIC/AUTHORITY/EXECUTION/EVIDENCE/PRESENTATION) terjaga
+owner:
+  - execution-agent
+  - verification-agent
+status: BLOCKED
+priority: HIGHEST:READY_TO_EXECUTE (setelah semua test lulus
+tags:
+  - e2e
+  - workflow
+  - legal-case
+  - audit-001-008
+---
+# WAR ROOM DASHBOARD (CURRENT SNAPSHOT)
+dashboard:
+  active_slices: 1 # LawyersHub legal-case slice
+  blocked: 1 # LH-WORKFLOW-001
+  in_review: 0
+  ready: 3 # LH-TEST-001, LH-TEST-002, LH-TEST-003
+  shipped: 0
+  ARCH_DELTA: LOW # Hanya fix minimal, tidak ada primitive baru
+  PRIMITIVE_REUSE: 99% # 100% reuse semua existing capability
+  DUPLICATE_WORK: 0 # Tidak ada work yang duplikat
+  FAILED_REPLAY: 0
+  NEXT_HIGHEST_LEVERAGE: LH-TEST-001 # Execute FIRST
+  # Legal-case specific metrics
+  lawyershub_passed_tests: 4/8
+  lawyershub_blocking_audits:
+    - work_not_found (LH-TEST-001
+    - invalid_session (LH-TEST-002)
+    - atomic-command_not_found (LH-TEST-003)
+# VERDICT: Semua blocker terdefinisi dengan jelas, prioritas terurut, tidak ada arsitektur baru

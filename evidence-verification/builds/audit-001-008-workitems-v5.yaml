@@ -1,0 +1,106 @@
+work_items:
+  - work_id: LH-TEST-001
+    product: LawyersHub Legal-Case
+    user_job: "Perbaiki error work_not_found di persistence test (FINAL)"
+    description: >
+      Test "should fetch created case from repository" masih gagal work_not_found.
+      Root cause teridentifikasi: getWork() di work.commands.ts memerlukan workId, actorId, workspaceId, sessionId, tenantId (semua required oleh GetWorkRequestSchema).
+      Di lh-case-001.test.ts, pemanggilan work-core.get harus menyertakan SEMUA parameter ini, bukan hanya workId dan sessionId.
+      Sudah diuji di work-inmemory.repository.ts: byWorkId() bekerja jika work.id = work.workId (sudah terpenuhi dari work.create()).
+    acceptance_criteria:
+      - Test "should fetch created case from repository" lulus 100%
+      - work-core.get command dapat menemukan work yang dibuat create-case
+      - Semua parameter GetWorkRequestSchema terpenuhi dalam pemanggilan
+      - Tidak ada perubahan arsitektur, hanya fix minimal pada test
+    owner: execution-agent
+    status: READY_TO_EXECUTE
+    priority: HIGHEST
+    dependencies: []
+    tags:
+      - bug-fix
+      - persistence
+      - audit-001-008
+  - work_id: LH-TEST-002
+    product: LawyersHub Legal-Case
+    user_job: "Perbaiki error invalid session di AI-001 test (FINAL)"
+    description: >
+      Test "AI-001: workId invariant preserved across AI judge → human lawyer transition"
+      gagal dengan error "[legal-case.create-case] Invalid or revoked session". Root cause final:
+      1. Semua session yang disimpan ke SessionRepositoryInMemory di lh-case-001.test.ts TIDAK memiliki productId,
+         padahal session.inmemory.ts (line 31) mendefinisikan SessionAggregate dengan productId yang wajib ada.
+      2. Seed sessions di session.inmemory.ts semuanya memiliki productId: "lawyershub".
+      3. Perlu menambahkan productId: "lawyershub" ke SEMUA panggilan SessionRepositoryInMemory.save() di test.
+    acceptance_criteria:
+      - Semua session di lh-case-001.test.ts menyertakan productId: "lawyershub" saat disimpan
+      - Test AI-001 lulus tanpa error invalid/revoked session
+      - Semua session actor (client/lawyer/judge/AI) dapat membuat case tanpa error autentikasi
+      - TIDAK ada perubahan pada identity core, hanya fix test
+    owner: execution-agent
+    status: READY_TO_EXECUTE
+    priority: HIGH
+    dependencies:
+      - LH-TEST-001
+    tags:
+      - bug-fix
+      - identity
+      - session
+      - audit-001-008
+  - work_id: LH-TEST-003
+    product: LawyersHub Legal-Case
+    user_job: "Hapus SEMUA referensi atomic-claim dari lh-case-001.test.ts"
+    description: >
+      Masih ada sisa pemanggilan dan komentar yang mencoba memanggil work-core.atomic-claim yang tidak pernah ada.
+      command atomic-claim hanya ada di worker process, bukan di work.commands.ts register. Semua referensi harus dihapus
+      agar test tidak mencoba memanggil command yang tidak terdaftar. Hapus SEMUA baris yang menyebutkan atomic-claim.
+    acceptance_criteria:
+      - Tidak ada lagi string "atomic-claim" di seluruh file lh-case-001.test.ts
+      - Tidak ada lagi error "[capabilityRegistry] Command not found or is not executable: work-core.atomic-claim"
+      - Semua test yang sebelumnya gagal karena atomic-claim sekarang ter-skip dengan benar atau dihapus
+    owner: execution-agent
+    status: READY_TO_EXECUTE
+    priority: MEDIUM
+    dependencies:
+      - LH-TEST-002
+    tags:
+      - cleanup
+      - test-maintenance
+      - audit-001-008
+  - work_id: LH-WORKFLOW-001
+    product: LawyersHub Legal-Case
+    user_job: "Selesaikan full end-to-end legal case journey AUDIT-001-008"
+    description: >
+      Setelah semua test error diperbaiki, eksekusi full journey: Create → Persist → Submit → Review → Approve → Close → Retrieve Evidence.
+      Setiap transisi harus memiliki actor/authority yang sesuai, otorisasi terpenuhi, state transition valid, dan evidence chain utuh.
+      Verifikasi bahwa semua command yang dibutuhkan (case.submit, case.review, case.approve, case.close) sudah terdaftar dan bekerja.
+    acceptance_criteria:
+      - Full journey lulus end-to-end tanpa error
+      - Setiap state transition (draft→open→submitted→reviewed→approved→closed) terekam dengan benar
+      - Evidence dapat di-retrieve dari work-core.evidence.getByWorkId dan sesuai dengan urutan transisi
+      - Semua actor memiliki otorisasi yang sesuai untuk melakukan transisi
+    owner: product-slice-agent
+    status: BLOCKED
+    priority: HIGH
+    dependencies:
+      - LH-TEST-003
+    tags:
+      - e2e
+      - workflow
+      - audit-001-008
+dashboard:
+  active_slices: 1 # LawyersHub legal-case slice
+  blocked: 1 # LH-WORKFLOW-001 (menunggu test fixes)
+  in_review: 0
+  ready: 3 # LH-TEST-001, LH-TEST-002, LH-TEST-003
+  shipped: 0
+  ARCH_DELTA: LOW # Hanya fix test, tidak ada perubahan core/arsitektur
+  PRIMITIVE_REUSE: 100% # Semua existing capability digunakan kembali, 0 primitive baru
+  DUPLICATE_WORK: 0 # Tidak ada work yang duplikat
+  FAILED_REPLAY: 0
+  NEXT_HIGHEST_LEVERAGE: LH-TEST-001 # Execute segera untuk unblock pipeline
+audit_metadata:
+  audit_id: AUDIT-001-008
+  stage: STAGE C VERIFY - EXECUTION
+  last_updated: 2026-10-15T12:30:00Z
+  frozen_architecture_compliance: true
+  registry_reuse_compliance: true
+  atomic_composition_usage: canonical

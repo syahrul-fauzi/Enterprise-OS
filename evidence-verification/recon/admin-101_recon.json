@@ -1,0 +1,21 @@
+{
+  "work_id": "admin-101",
+  "work_title": "Zendesk IT ticket resolution lifecycle",
+  "product": "admin-support",
+  "recon_timestamp": "2026-11-15T[timestamp]",
+  "reuse_percentage": 100.0,
+  "required_capabilities": [
+    "connector-ecosystem.ingest",
+    "work-formation.create",
+    "triage.classify",
+    "assignment.assign",
+    "resolution.resolve",
+    "verification.verify",
+    "governance-evidence.archive"
+  ],
+  "existing_capabilities_available": true,
+  "blockers": [],
+  "recon_verdict": "MINIMAL_FIX",
+  "workflow_validated": true,
+  "lifecycle_stages": ["ticket_created", "triage", "assign", "resolve", "verify", "complete"]
+}

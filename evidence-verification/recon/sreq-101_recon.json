@@ -1,0 +1,21 @@
+{
+  "work_id": "sreq-101",
+  "work_title": "Find/request a service",
+  "product": "services-id",
+  "recon_timestamp": "2026-11-15T[timestamp]",
+  "reuse_percentage": 100.0,
+  "required_capabilities": [
+    "work-core.identity",
+    "service-directory.discover",
+    "service-request.create",
+    "service-execution.execute",
+    "service-progress.update",
+    "governance-evidence.collect",
+    "work-completion.complete"
+  ],
+  "existing_capabilities_available": true,
+  "blockers": [],
+  "recon_verdict": "MINIMAL_FIX",
+  "workflow_validated": true,
+  "lifecycle_stages": ["discover", "create", "execute", "progress", "evidence", "complete"]
+}

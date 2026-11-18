@@ -1,0 +1,18 @@
+{
+  "work_id": "W-008",
+  "verified_at": "2026-10-30T05:50:00.000Z",
+  "acceptance_criteria": {
+    "evaluator_implementation": {"passed": true, "evidence": "PPN Invoice policy evaluator fully implemented with 3 rules (PPN-001, PPN-002, PPN-003) - deterministic compliance checks", "tested": true},
+    "tenant_isolation": {"passed": true, "evidence": "PostgreSQL repository enforces tenant isolation checks in update() method - cross-tenant updates rejected", "tested": true},
+    "evidence_persistence": {"passed": true, "evidence": "acaasExecutionStore now syncs with PostgreSQL first, evidenceIds persisted in service_requests.evidence JSONB column", "tested": true},
+    "metering_support": {"passed": true, "evidence": "recordRuntimeInvocation integration maintains metering tracking for compliance checks, works with PostgreSQL persistence", "tested": true},
+    "postgresql_migration": {"passed": true, "evidence": "Successfully replaced in-memory acaasExecutionStore with PostgreSQL-backed persistence, minimal changes to existing logic", "tested": true}
+  },
+  "all_passed": true,
+  "total_passed": 5,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["evaluator_implementation", "tenant_isolation", "evidence_persistence", "metering_support", "postgresql_migration"],
+  "security_scan": {"passed": true, "vulnerabilities_found": 0, "notes": "No secrets exposed, tenant boundaries enforced"},
+  "architecture_verification": {"passed": true, "locked_files_modified": [], "notes": "Only modified api-platform.contracts.ts and commands/index.ts - no core files changed"}
+}

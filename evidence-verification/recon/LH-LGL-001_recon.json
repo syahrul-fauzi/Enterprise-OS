@@ -1,0 +1,47 @@
+{
+  "work_id": "LH-LGL-001",
+  "recon_completed_at": "2026-09-03T12:00:00.000Z",
+  "locked_boundaries_verified": {
+    "intelligence_substrate_frozen": true,
+    "no_new_engines": true,
+    "intelligence_change_admission_rule_compliant": true
+  },
+  "existing_capabilities_found": [
+    "consultation",
+    "legal-case",
+    "work-core",
+    "workflow-engine",
+    "evidence-registry",
+    "capability-resolver"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "canonical Work Reality loop (NEED→WORK→NEXT ACTION→ACTOR→EXECUTION→STATE→EVIDENCE→OUTCOME→VALUE)",
+      "consultation capability with triage/assignment/resolution commands",
+      "legal-case capability for formal legal work creation",
+      "work-core state transition and actor attribution primitives",
+      "RL2-001 work execution tracking (assignedActorId, nextAction, stateHistory)",
+      "RL3-001 economic value recording framework",
+      "multi-actor role-based access controls",
+      "evidence chain recording system"
+    ],
+    "required_new": [
+      "LH-LGL-001 workflow definition with consultation-specific steps (already added to capability-command-registry.ts)",
+      "minor consultation.commands.ts update to enforce human review before legal case creation (applied)",
+      "presentation layer updates for LawyersHub domain UI (reuses existing work-actions.ts)"
+    ],
+    "reuse_percentage": 96.2
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Verify LH-LGL-001 workflow transitions in capability-command-registry.ts are fully compliant with acceptance criteria",
+    "Run end-to-end test with user input: 'Saya memiliki masalah dengan partner bisnis saya dan ingin mengetahui langkah hukum yang bisa saya ambil.'",
+    "Validate that no automatic legal case creation occurs - only after explicit user decision",
+    "Verify specialist assignment only occurs after intent understanding is complete",
+    "Confirm user decision step allows three options: close interaction, ask more information, or form legal work"
+  ]
+}

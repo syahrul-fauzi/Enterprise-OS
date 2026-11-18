@@ -1,0 +1,39 @@
+{
+  "work_id": "SLIC-003",
+  "verified_at": "2026-10-13T12:00:00Z",
+  "acceptance_criteria": {
+    "remove_deprecated_command": {
+      "passed": true,
+      "evidence": "list-cases-for-tenant command successfully removed from case.commands.ts and index.ts. Only remaining references are comments in route files: /root/Enterprise-OS/workspace/apps/api/app/api/(domain)/cases/list/route.ts and /root/Enterprise-OS/workspace/apps/web/app/api/cases/list/route.ts"
+    },
+    "listByWorkIds_implementation": {
+      "passed": true,
+      "evidence": "listByWorkIds implemented with context filtering (tenantId > workId > workspaceId) across all repositories: case-postgres.repository.ts and case.repository.ts (in-memory). Both enforce cross-workspace isolation by filtering cases based on provided context."
+    },
+    "api_route_enforcement": {
+      "passed": true,
+      "evidence": "Web and API routes (/api/cases/list) properly pass session.tenantId and session.workspaceId to listByWorkIds, ensuring only cases from the current user's workspace are returned. TypeScript validation (pnpm check-types) passes with no errors in legal-case modified files."
+    },
+    "cross_workspace_access_blocked": {
+      "passed": true,
+      "evidence": "Repository-level filtering blocks cross-workspace access attempts. In-memory repository logs error and filters out cases from other tenants/workspaces. Postgres repository adds WHERE clauses to SQL queries to enforce isolation at the database level."
+    },
+    "architecture_frozen_compliance": {
+      "passed": true,
+      "evidence": "No locked files (enterprise/, governance/) modified. All changes are limited to legal-case capability and web/api routes, maintaining frozen architecture per user mandate."
+    }
+  },
+  "all_passed": true,
+  "total_passed": 5,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["remove_deprecated_command", "listByWorkIds_implementation", "api_route_enforcement", "cross_workspace_access_blocked", "architecture_frozen_compliance"],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": []
+  }
+}

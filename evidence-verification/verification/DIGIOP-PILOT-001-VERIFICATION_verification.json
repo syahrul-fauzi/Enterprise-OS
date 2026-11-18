@@ -1,0 +1,80 @@
+{
+  "work_id": "DIGIOP-PILOT-001",
+  "verified_at": "2026-11-07T05:06:51.731152Z",
+  "acceptance_criteria": {
+    "evidence_DIGIOP-PILOT-001-WORK-RECEIVE_intake.json": {
+      "passed": true,
+      "evidence": "File exists dan JSON valid: /root/Enterprise-OS/.eos-state/intake/DIGIOP-PILOT-001-WORK-RECEIVE_intake.json"
+    },
+    "evidence_DIGIOP-PILOT-001-ANALYSIS_impact.json": {
+      "passed": true,
+      "evidence": "File exists dan JSON valid: /root/Enterprise-OS/.eos-state/dependency/DIGIOP-PILOT-001-ANALYSIS_impact.json"
+    },
+    "evidence_DIGIOP-PILOT-001-ORCHESTRATION_manifest.json": {
+      "passed": true,
+      "evidence": "File exists dan JSON valid: /root/Enterprise-OS/.eos-state/command-center/DIGIOP-PILOT-001-ORCHESTRATION_manifest.json"
+    },
+    "architecture_locks": {
+      "passed": true,
+      "evidence": "Locked boundaries verified: 0 modified files"
+    },
+    "mandatory_field_logicalWorkId": {
+      "passed": true,
+      "evidence": "Field logicalWorkId exists dan terisi"
+    },
+    "mandatory_field_inputEvidence": {
+      "passed": true,
+      "evidence": "Field inputEvidence exists dan terisi"
+    },
+    "mandatory_field_outputEvidence": {
+      "passed": true,
+      "evidence": "Field outputEvidence exists dan terisi"
+    },
+    "mandatory_field_decision": {
+      "passed": true,
+      "evidence": "Field decision exists dan terisi"
+    },
+    "mandatory_field_status": {
+      "passed": true,
+      "evidence": "Field status exists dan terisi"
+    },
+    "mandatory_field_nextAction": {
+      "passed": true,
+      "evidence": "Field nextAction exists dan terisi"
+    },
+    "mandatory_field_blockers": {
+      "passed": true,
+      "evidence": "Field blockers exists dan terisi"
+    },
+    "security_scan": {
+      "passed": true,
+      "evidence": "Security scan: 0 potensi vulnerabilities ditemukan"
+    }
+  },
+  "all_passed": true,
+  "total_passed": 12,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": [
+    "evidence_DIGIOP-PILOT-001-WORK-RECEIVE_intake.json",
+    "evidence_DIGIOP-PILOT-001-ANALYSIS_impact.json",
+    "evidence_DIGIOP-PILOT-001-ORCHESTRATION_manifest.json",
+    "architecture_locks",
+    "mandatory_field_logicalWorkId",
+    "mandatory_field_inputEvidence",
+    "mandatory_field_outputEvidence",
+    "mandatory_field_decision",
+    "mandatory_field_status",
+    "mandatory_field_nextAction",
+    "mandatory_field_blockers",
+    "security_scan"
+  ],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": []
+  }
+}

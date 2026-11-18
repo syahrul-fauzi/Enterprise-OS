@@ -1,0 +1,138 @@
+{
+  "work_id": "CR006-CONTROLLED-ACTIVATION",
+  "reported_at": "2026-10-31T17:15:00.000Z",
+  "workflow_status": "ACTIVE",
+  "blockers": ["owner_authorization_pending", "financial_authorization_pending"],
+  "war_room_verdict": {
+    "cr006_expansion_preflight": "CLOSED — PASS (REPORTED)",
+    "cr006_rls_runtime_001": "CLOSED — PASS (ALL TESTS PASSED)",
+    "rls_verification_evidence": "/root/Enterprise-OS/.eos-state/verification/CR006-RLS-RUNTIME-001_evidence.json",
+    "role_verification_passed": "app_user is_superuser=false, has_bypassrls=false",
+    "tables_tested": ["works", "work_payments"],
+    "all_isolation_tests_passed": true,
+    "financial_activation": "PENDING",
+    "frozen_architecture_compliance": "PRESERVED — REPORTED",
+    "primitive_reuse_maintained": "CONFIRMED",
+    "workflow_configuration": "ACCEPTED",
+    "rls_test_script_updated": "COMPLETED — role verification + work_payments RLS added"
+  },
+  "completed_verifications": [
+    {
+      "verification_id": "PROD-SECURITY-001",
+      "name": "Mock RLS Isolation Testing",
+      "status": "PASSED",
+      "verified_at": "2026-10-31T15:40:00.000Z",
+      "evidence_path": "/root/Enterprise-OS/workspace/verify-prod-security-001.ts",
+      "findings": [
+        "RLS memblokir akses cross-tenant read/write",
+        "Isolasi mutual terjaga (tenant-pilot-001 ↔ tenant-next-002)",
+        "app_user tidak memiliki bypassrls/superuser privilege",
+        "Idempotensi pembayaran terverifikasi",
+        "Konsep allowlist vs RLS dibedakan dengan jelas"
+      ]
+    },
+    {
+      "verification_id": "ARCH-CHECK-001",
+      "name": "Architecture Lock Compliance",
+      "status": "PASSED",
+      "verified_at": "2026-10-31T15:42:00.000Z",
+      "evidence_path": "/root/Enterprise-OS/.eos-state/verification/CR006-EXPANSION_verification.json",
+      "findings": [
+        "Tidak ada perubahan pada direktori enterprise/core",
+        "Tidak ada perubahan pada direktori governance/",
+        "Semua primitive yang digunakan adalah canonical/reused",
+        "work-core tetap menjadi satu-satunya otoritas semantik Work"
+      ]
+    },
+    {
+      "verification_id": "MIG-CHECKSUM-002",
+      "name": "Migration SHA256 Validation",
+      "status": "PASSED",
+      "verified_at": "2026-10-31T15:43:00.000Z",
+      "evidence_path": "/root/Enterprise-OS/workspace/.eos-state/verification/MIG-002-UPDATED-CHECKSUM_verification.json",
+      "findings": [
+        "Migrasi 023, 024, 025 terverifikasi SHA256-nya",
+        "Tidak ada pola berulang pada checksum",
+        "Tidak ada modifikasi tidak terotorisasi pada file migrasi"
+      ]
+    },
+    {
+      "verification_id": "SECRET-INJECT-001",
+      "name": "Credential Security Check",
+      "status": "PASSED",
+      "verified_at": "2026-10-31T15:44:00.000Z",
+      "findings": [
+        "app_user credentials tidak hardcoded",
+        "Menggunakan secret injection dari environment variable",
+        "Tidak ada eksposur kredensial produksi dalam kode"
+      ]
+    }
+  ],
+  "pending_verifications": [
+    {
+      "verification_id": "CR006-RLS-RUNTIME-001",
+      "name": "CR006-RLS-RUNTIME-001 - Actual app_user Runtime RLS Testing",
+      "status": "READY_TO_RUN",
+      "prerequisites": ["database_connection_approval"],
+      "script_path": "/root/Enterprise-OS/workspace/verify-runtime-rls-001.ts",
+      "description": "Menjalankan pengujian RLS dengan koneksi app_user aktual ke database produksi (aman tanpa efek finansial)",
+      "criteria_penutupan": [
+        "app_user terkonfirmasi bukan superuser dan tidak memiliki BYPASSRLS",
+        "Cross-tenant SELECT/INSERT/UPDATE/DELETE ditolak",
+        "Cross-workspace access ditolak",
+        "Missing atau invalid tenant/workspace context ditolak",
+        "Pengujian mencakup works dan work_payments",
+        "Evidence tersimpan di .eos-state/verification/"
+      ],
+      "authorized_operations": [
+        "RLS runtime verification",
+        "Tenant/workspace isolation testing",
+        "Missing-context rejection",
+        "Evidence capture",
+        "Retry dan idempotency testing menggunakan data uji"
+      ],
+      "forbidden_operations": [
+        "Transfer atau pembayaran aktual",
+        "Pemanggilan gateway yang menimbulkan efek finansial",
+        "Perubahan status menjadi PAID tanpa konfirmasi gateway valid",
+        "Ekspansi transaksi ke tenant berikutnya"
+      ]
+    },
+    {
+      "verification_id": "CANARY-TRANSCATION-001",
+      "name": "Canary Payment Transaction",
+      "status": "BLOCKED",
+      "prerequisites": ["owner_authorization", "financial_authorization", "runtime_rls_passed"]
+    },
+    {
+      "verification_id": "FAILURE-PATH-001",
+      "name": "Failure Path Validation",
+      "status": "BLOCKED",
+      "prerequisites": ["canary_transaction_passed"]
+    }
+  ],
+  "workflow_steps": {
+    "1_runtime_verification": "READY_TO_RUN",
+    "2_owner_authorization": "PENDING",
+    "3_payment_authorization": "PENDING",
+    "4_canary_transaction": "NOT_STARTED",
+    "5_reconciliation": "NOT_STARTED",
+    "6_failure_path_validation": "NOT_STARTED",
+    "7_expansion_decision": "NOT_STARTED"
+  },
+  "frozen_architecture_authorities_confirmed": [
+    "work-core: tetap satu-satunya otoritas semantik Work",
+    "Membership: tetap sumber kompensasi",
+    "Payment gateway: tetap sumber konfirmasi pembayaran eksternal",
+    "work_payments: tetap catatan transaksi dan rekonsiliasi",
+    "Evidence: tetap membuktikan transisi",
+    "Tidak ada primitive/state machine/capability baru"
+  ],
+  "summary": {
+    "technical_readiness": "READY",
+    "all_technical_checks_passed": true,
+    "blockers_only_authorization": true,
+    "estimated_activation_time_post_authorization": "4 hours",
+    "war_room_final_statement": "CR006-EXPANSION_PREFLIGHT dapat ditutup. Tenant-next-002 siap memasuki tahap controlled activation, tetapi belum berwenang menjalankan transaksi finansial."
+  }
+}

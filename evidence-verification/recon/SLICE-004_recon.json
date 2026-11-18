@@ -1,0 +1,41 @@
+{
+  "work_id": "SLICE-004",
+  "recon_completed_at": "2026-10-13T09:00:00Z",
+  "locked_boundaries_verified": {
+    "work-core_ownership": true,
+    "architecture_frozen": true,
+    "no_duplicate_logic": true,
+    "rule_of_two_compliant": true
+  },
+  "existing_capabilities_found": [
+    {
+      "capability_id": "legal-case",
+      "command_name": "legal-case.close",
+      "source_file": "/workspace/capabilities/legal-case/implementation/commands/case.commands.ts",
+      "pattern_reused": "archiveRequirement from requirement.archive (requirement-management v2.0.0)",
+      "compliance": {
+        "core_001": true,
+        "session_validation": true,
+        "cross_tenant_block": true,
+        "evidence_recording": true,
+        "work_continuity": true
+      }
+    }
+  ],
+  "reuse_analysis": {
+    "reusable_existing": ["close-case implementation", "session validation", "work-core integration", "safeRecordEvidence pattern", "requirement graph traversal"],
+    "required_new": [],
+    "reuse_percentage": 100.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "REUSE existing close-case implementation - rename command to legal-case.close (already done)",
+    "Run E2E verification for legal-case lifecycle (S4-004-VERIFY)",
+    "Validate multi-tenant isolation for case closure",
+    "No new code required - only verification and shipping"
+  ]
+}

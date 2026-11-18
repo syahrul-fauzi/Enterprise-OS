@@ -1,0 +1,76 @@
+work_items:
+  - work_id: LH-TEST-001-FINAL
+    product: LawyersHub Legal-Case
+    user_job: "FIX FINAL: Perbaiki mockWorks.size = 0 yang menyebabkan work_not_found"
+    description: >
+      Test "should fetch created case from repository" masih gagal. Root cause teridentifikasi:
+      Meskipun createCoreWork() memanggil workRepository.save(), log dari WorkRepositoryInMemory.save() tidak pernah muncul.
+      Ini menandakan bahwa WorkRepositoryInMemory yang digunakan oleh test BUKAN instans yang sama yang dibuat di getWorkRepositoryLazy() karena _workRepo singleton tidak di-reset antar-invokasi atau test.
+    acceptance_criteria:
+      - Log "[work-inmemory.repository] ✅ Menyimpan work..." muncul di test output
+      - mockWorks.size > 0 saat byWorkId() dipanggil
+      - Test "should fetch created case from repository" lulus 100%
+    owner: execution-agent
+    status: READY_TO_EXECUTE
+    priority: HIGHEST
+    dependencies: []
+
+  - work_id: LH-SESSION-002
+    product: LawyersHub Legal-Case
+    user_job: "Verifikasi SEMUA SessionRepositoryInMemory.save() memiliki productId: 'lawyershub'"
+    description: >
+      Error AI-001 "invalid or revoked session" masih bisa terjadi jika ada pemanggilan SessionRepositoryInMemory.save() yang tidak memiliki productId.
+      Audit semua 12 pemanggilan di lh-case-001.test.ts dan pastikan SEMUA memiliki productId.
+    acceptance_criteria:
+      - Semua pemanggilan SessionRepositoryInMemory.save() memiliki productId: "lawyershub"
+      - Tidak ada lagi error "invalid or revoked session" di test output
+    owner: execution-agent
+    status: READY_TO_EXECUTE
+    priority: HIGH
+    dependencies: [LH-TEST-001-FINAL]
+
+  - work_id: LH-EVIDENCE-003
+    product: LawyersHub Legal-Case
+    user_job: "Tambahkan command legal-case.add-case-evidence yang hilang"
+    description: >
+      Test menampilkan error "Command not found: legal-case.add-case-evidence". Buat command ini di case.commands.ts
+      sesuai dengan pola command yang sudah ada, dengan Zod schema validation dan authorization check.
+    acceptance_criteria:
+      - Command legal-case.add-case-evidence terdaftar di globalThis.capabilityCommands
+      - Command dapat diinvoke via capabilityRegistry.invoke()
+      - Evidence disimpan ke Work.evidence array
+    owner: execution-agent
+    status: READY_TO_EXECUTE
+    priority: MEDIUM
+    dependencies: [LH-TEST-001-FINAL, LH-SESSION-002]
+
+  - work_id: LH-WORKFLOW-004
+    product: LawyersHub Legal-Case
+    user_job: "Selesaikan end-to-end legal-case workflow AUDIT-001-008"
+    description: >
+      Jalankan full journey: Create → Persist → Submit → Review → Approve/Reject → Close → Retrieve Evidence.
+      Verifikasi setiap transisi memiliki actor/authority yang sesuai, state transition valid, dan evidence tercatat.
+    acceptance_criteria:
+      - Semua transisi state bekerja: draft → open → under_review → approved → closed
+      - Setiap transisi memiliki evidence yang sesuai di Work.evidence
+      - Otorisasi terpenuhi (client tidak bisa approve, hanya lawyer/judge yang bisa)
+      - Evidence akhir dapat di-retrieve dari repository
+    owner: eos-product-slice
+    status: BLOCKED
+    priority: HIGH
+    dependencies: [LH-TEST-001-FINAL, LH-SESSION-002, LH-EVIDENCE-003]
+---
+eos_command_center_dashboard:
+  active_slices: 4
+  blocked: 1
+  in_review: 0
+  ready: 3
+  shipped: 0
+  arch_delta: LOW
+  primitive_reuse: 95%
+  duplicate_work: 0
+  failed_replay: 0
+  products:
+    lawyershub: 4 slices
+  next_highest_leverage: LH-TEST-001-FINAL
+  verification_status: G1-G4 LULUS, G5-G7 IN_PROGRESS

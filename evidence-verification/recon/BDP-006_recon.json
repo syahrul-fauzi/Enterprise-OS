@@ -1,0 +1,83 @@
+{
+  "work_id": "BDP-006",
+  "recon_completed_at": "2026-11-14T09:00:00Z",
+  "locked_boundaries_verified": {
+    "work_core": "frozen - no modification required",
+    "capability_registry": "frozen - no modification required",
+    "identity": "frozen - no modification required",
+    "evidence_registry": "frozen - no modification required"
+  },
+  "existing_capabilities_found": [
+    "work-core",
+    "identity",
+    "evidence-registry",
+    "legal-case",
+    "agent-orchestration",
+    "connector-ecosystem"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      {
+        "primitive": "Work Core",
+        "path": "workspace/capabilities/work-core/",
+        "status": "REUSE",
+        "description": "Full createWork, getWork, updateWorkStatus implementation with boundary checks"
+      },
+      {
+        "primitive": "Identity Capability",
+        "path": "workspace/capabilities/identity/",
+        "status": "REUSE",
+        "description": "Full session, tenant, workspace, membership management with authenticated context"
+      },
+      {
+        "primitive": "Evidence Registry",
+        "path": "workspace/capabilities/evidence-registry/",
+        "status": "REUSE",
+        "description": "Full evidence storage, query, and validation implementation"
+      },
+      {
+        "primitive": "Legal Case Capability",
+        "path": "workspace/capabilities/legal-case/",
+        "status": "REUSE",
+        "description": "Full end-to-end legal case capability with LH-CASE-001 test coverage"
+      },
+      {
+        "primitive": "Capability Command Registry",
+        "path": "workspace/packages/core/kernel/src/registry/capability-command-registry.ts",
+        "status": "REUSE",
+        "description": "Full invoke/register pattern with kill switch, correlation ID, authenticated context"
+      },
+      {
+        "primitive": "Paperclip Execution Adapter",
+        "path": "workspace/products/agentic-work/runtime/paperclip-adapter/",
+        "status": "REUSE",
+        "description": "Fully extracted adapter with durable deduplication, crash recovery, retry mechanism"
+      },
+      {
+        "primitive": "Agentic Work Runtime",
+        "path": "workspace/products/agentic-work/runtime/",
+        "status": "REUSE",
+        "description": "Full product context, execution provider selection, workflow definition"
+      },
+      {
+        "primitive": "Agent Orchestration",
+        "path": "workspace/capabilities/agent-orchestration/",
+        "status": "REUSE",
+        "description": "Full orchestration plan, agent assignment, coordination implementation"
+      }
+    ],
+    "required_new": [],
+    "reuse_percentage": 100.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Proceed with BDP-006 vertical slice validation - all primitives exist and are working",
+    "Run LH-CASE-001 end-to-end test to confirm full journey",
+    "Verify execution provider switch test confirms runtime replaceability",
+    "No new core primitives required - 100% reuse of existing EOS capabilities"
+  ]
+}

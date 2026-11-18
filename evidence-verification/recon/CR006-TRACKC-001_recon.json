@@ -1,0 +1,56 @@
+{
+  "work_id": "CR006-TRACKC-001",
+  "recon_completed_at": "2026-11-01T01:00:00.000Z",
+  "locked_boundaries_verified": {
+    "core_frozen": true,
+    "no_new_registry": true,
+    "rule_of_two_compliant": true,
+    "tenant_isolation_verified": true
+  },
+  "existing_capabilities_found": [
+    {
+      "capability_id": "CAP-PAYROLL-001",
+      "name": "payroll.canary.execute",
+      "location": "/workspace/capabilities/work-core/test/payroll-integration.test.ts",
+      "status": "READY_TO_USE",
+      "reuse_possible": true
+    },
+    {
+      "capability_id": "CAP-GATEWAY-007",
+      "name": "gateway.callback.verify",
+      "location": "/workspace/capabilities/work-core/test/payroll-integration.test.ts#L519",
+      "status": "READY_TO_USE",
+      "reuse_possible": true
+    },
+    {
+      "capability_id": "CAP-EVIDENCE-003",
+      "name": "evidence.store.append",
+      "location": "/workspace/capabilities/evidence-registry/implementation/repository/evidence-postgres.repository.ts",
+      "status": "READY_TO_USE",
+      "reuse_possible": true
+    },
+    {
+      "capability_id": "CAP-RECON-002",
+      "name": "reconciliation.execute",
+      "location": "/workspace/capabilities/work-core/test/payroll-integration.test.ts#L496",
+      "status": "READY_TO_USE",
+      "reuse_possible": true
+    }
+  ],
+  "reuse_analysis": {
+    "reusable_existing": ["payroll.canary.execute", "gateway.callback.verify", "evidence.store.append", "reconciliation.execute"],
+    "required_new": [],
+    "reuse_percentage": 100.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "REQ-011 vertical slice siap dieksekusi 100% reuse primitive yang sudah ada",
+    "Tidak ada modifikasi core yang diperlukan",
+    "Dapat langsung menjalankan test harness untuk REQ-011",
+    "Sambil menunggu konfirmasi pemilik tenant untuk tenant-next-002, eksekusi REQ-011 untuk menjaga momentum"
+  ]
+}

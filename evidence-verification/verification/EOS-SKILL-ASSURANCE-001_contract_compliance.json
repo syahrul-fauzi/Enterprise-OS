@@ -1,0 +1,174 @@
+{
+  "work_id": "EOS-SKILL-ASSURANCE-001",
+  "verified_at": "2026-11-07T00:14:44.884074",
+  "g2_criteria": {
+    "passed": false,
+    "total_skills": 10,
+    "passed_skills": 0,
+    "failed_skills": [
+      "eos-command-center",
+      "eos-dependency-engine",
+      "eos-evidence-engine",
+      "eos-face",
+      "eos-face-capability",
+      "eos-face-verification",
+      "eos-product-slice",
+      "eos-recon",
+      "eos-self-execution",
+      "eos-verification"
+    ],
+    "evidence": ".eos-state/verification/EOS-SKILL-ASSURANCE-001_contract_compliance.json"
+  },
+  "all_passed": false,
+  "compliance_matrix": {
+    "eos-command-center": {
+      "manifest_valid": true,
+      "has_all_required_fields": false,
+      "missing_fields": [
+        "risk_level",
+        "exclusions",
+        "required_authorities",
+        "preconditions",
+        "triggers"
+      ],
+      "risk_level_valid": false,
+      "triggers_not_empty": false,
+      "preconditions_defined": false,
+      "passed": false
+    },
+    "eos-dependency-engine": {
+      "manifest_valid": true,
+      "has_all_required_fields": false,
+      "missing_fields": [
+        "risk_level",
+        "exclusions",
+        "required_authorities",
+        "preconditions",
+        "triggers"
+      ],
+      "risk_level_valid": false,
+      "triggers_not_empty": false,
+      "preconditions_defined": false,
+      "passed": false
+    },
+    "eos-evidence-engine": {
+      "manifest_valid": true,
+      "has_all_required_fields": false,
+      "missing_fields": [
+        "risk_level",
+        "exclusions",
+        "required_authorities",
+        "preconditions",
+        "triggers"
+      ],
+      "risk_level_valid": false,
+      "triggers_not_empty": false,
+      "preconditions_defined": false,
+      "passed": false
+    },
+    "eos-face": {
+      "manifest_valid": false,
+      "has_all_required_fields": false,
+      "missing_fields": [
+        "Invalid JSON: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+      ],
+      "risk_level_valid": false,
+      "triggers_not_empty": false,
+      "preconditions_defined": false,
+      "passed": false
+    },
+    "eos-face-capability": {
+      "manifest_valid": true,
+      "has_all_required_fields": false,
+      "missing_fields": [
+        "risk_level",
+        "exclusions",
+        "required_authorities",
+        "preconditions",
+        "triggers"
+      ],
+      "risk_level_valid": false,
+      "triggers_not_empty": false,
+      "preconditions_defined": false,
+      "passed": false
+    },
+    "eos-face-verification": {
+      "manifest_valid": true,
+      "has_all_required_fields": false,
+      "missing_fields": [
+        "risk_level",
+        "exclusions",
+        "required_authorities",
+        "preconditions",
+        "triggers"
+      ],
+      "risk_level_valid": false,
+      "triggers_not_empty": false,
+      "preconditions_defined": false,
+      "passed": false
+    },
+    "eos-product-slice": {
+      "manifest_valid": true,
+      "has_all_required_fields": false,
+      "missing_fields": [
+        "risk_level",
+        "exclusions",
+        "required_authorities",
+        "preconditions",
+        "triggers"
+      ],
+      "risk_level_valid": false,
+      "triggers_not_empty": false,
+      "preconditions_defined": false,
+      "passed": false
+    },
+    "eos-recon": {
+      "manifest_valid": true,
+      "has_all_required_fields": false,
+      "missing_fields": [
+        "risk_level",
+        "exclusions",
+        "required_authorities",
+        "preconditions",
+        "triggers"
+      ],
+      "risk_level_valid": false,
+      "triggers_not_empty": false,
+      "preconditions_defined": false,
+      "passed": false
+    },
+    "eos-self-execution": {
+      "manifest_valid": false,
+      "has_all_required_fields": false,
+      "missing_fields": [
+        "Invalid JSON: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+      ],
+      "risk_level_valid": false,
+      "triggers_not_empty": false,
+      "preconditions_defined": false,
+      "passed": false
+    },
+    "eos-verification": {
+      "manifest_valid": true,
+      "has_all_required_fields": false,
+      "missing_fields": [
+        "risk_level",
+        "exclusions",
+        "required_authorities",
+        "preconditions",
+        "triggers"
+      ],
+      "risk_level_valid": false,
+      "triggers_not_empty": false,
+      "preconditions_defined": false,
+      "passed": false
+    }
+  },
+  "architecture_verification": {
+    "locked_files_modified": [
+      "enterprise/science/gate-c/products/ilc/tests/ilc-ins-001.test.d.ts",
+      "enterprise/science/gate-c/products/ilc/tests/ilc-ins-001.test.d.ts.map",
+      "enterprise/specifications/PRODUCT-PORTFOLIO.yaml"
+    ]
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "auditId": "AUDIT-001-006",
+  "stage": "STAGE C VERIFY",
+  "timestamp": "2026-10-16T02:33:01.513Z",
+  "gatesCompleted": [
+    "G1",
+    "G2"
+  ],
+  "gateEvidence": {
+    "G1": {
+      "entrypoint": "apps/api/app/api/capabilities/[cap]/[commandName]/route.ts",
+      "initializationTrigger": "getGlobalCapabilityRegistry() called on first API request",
+      "sourceFile": "capabilities/atomic-composition/implementation/services/capability-resolver.service.ts",
+      "verified": true
+    },
+    "G2": {
+      "chain": [
+        "Work-Core",
+        "Identity-Core",
+        "Security-Hardening",
+        "Governance-Evidence",
+        "Legal-Case"
+      ],
+      "failFast": true,
+      "exitOnFailure": true,
+      "chainImplementationFile": "capabilities/atomic-composition/implementation/services/capability-resolver.service.ts:1013",
+      "evidenceRecording": true,
+      "verified": true
+    }
+  },
+  "reconciledCapabilities": {
+    "totalReported": 18,
+    "listedInFile": 13,
+    "unaccountedFor": 5,
+    "found": 14,
+    "reconciledList": [
+      "registerAtomicCompositionCapability",
+      "registerCommerceProductCapability",
+      "registerGovernanceEvidenceCapability",
+      "registerIdentityCoreCapability",
+      "registerInvestmentComplianceCapability",
+      "registerLegalCaseCapability",
+      "registerProductDeliveryCapability",
+      "registerRetailInventoryCapability",
+      "registerSecurityHardeningCapability",
+      "registerServiceDirectoryCapability",
+      "registerServiceRequestCapability",
+      "registerTrustFrameworkCapability",
+      "registerWorkCoreCapability",
+      "registerConnectorEcosystemCapability"
+    ],
+    "remainingMissingFromReport": [
+      "registerAgentOrchestrationCapability",
+      "registerEvidenceRegistryCapability",
+      "registerPaymentProcessingCapability",
+      "registerInvoiceGenerationCapability"
+    ]
+  },
+  "currentStatus": "IN_PROGRESS",
+  "nextGate": "G3 - Duplicate registration testing"
+}

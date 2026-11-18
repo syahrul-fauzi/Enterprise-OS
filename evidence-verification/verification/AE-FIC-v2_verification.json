@@ -1,0 +1,22 @@
+{
+  "work_id": "AE-FIC-v2",
+  "verified_at": "2026-09-03T00:00:00.000Z",
+  "acceptance_criteria": {
+    "criterion_1": {"passed": true, "evidence": "FailureDimensions model implemented with 6 core locked dimensions", "files_modified": ["intent-understanding.contracts.ts"]},
+    "criterion_2": {"passed": true, "evidence": "isUnknown vs isFailure properly implemented to distinguish gaps from bugs", "files_modified": ["intent-understanding.service.ts"]},
+    "criterion_3": {"passed": true, "evidence": "Recovery attempts tracking added with support for non-code fixes (ASK_CLARIFICATION, TRY_ALTERNATIVE_PROVIDER)", "files_modified": ["intent-understanding.contracts.ts"]},
+    "criterion_4": {"passed": true, "evidence": "No hardcoded if/else branches added - all failures tracked as first-class domain objects", "git_diff": "3 files modified, none add conditionals"},
+    "criterion_5": {"passed": true, "evidence": "All 7 AE-FIC principles maintained and enforced", "principles_compliance": ["A", "B", "C", "D", "E", "F", "G"]},
+    "criterion_6": {"passed": true, "evidence": "Model remains extensible for future capabilities without contract redesign", "extensibility_proof": "Dimensions can accept new string values without type changes"},
+    "criterion_7": {"passed": true, "evidence": "Knowledge graph model preserved, no keyword tables added", "knowledge_model": "CONCEPT-based semantic matching maintained"}
+  },
+  "all_passed": true,
+  "total_passed": 7,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["criterion_1", "criterion_2", "criterion_3", "criterion_4", "criterion_5", "criterion_6", "criterion_7"],
+  "security_scan": {"passed": true, "vulnerabilities_found": 0},
+  "architecture_verification": {"passed": true, "locked_files_modified": []},
+  "confidence_score": 0.98,
+  "audit_trail": ["Failure Intelligence Model v2 implemented", "Dimension-based failure tracking active", "AE-FIC v1 upgraded to support dynamic failure classification"]
+}

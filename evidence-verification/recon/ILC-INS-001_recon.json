@@ -1,0 +1,51 @@
+{
+  "work_id": "ILC-INS-001",
+  "recon_completed_at": "2026-09-03T14:30:00.000Z",
+  "locked_boundaries_verified": {
+    "intelligence_substrate_frozen": true,
+    "no_new_engines": true,
+    "intelligence_change_admission_rule_compliant": true,
+    "locked_files_modified": []
+  },
+  "existing_capabilities_found": [
+    "work-core",
+    "workflow-engine",
+    "work-inspection",
+    "evidence-registry",
+    "capability-command-registry",
+    "requirement-management",
+    "governance-evidence",
+    "atomic-composition"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "canonical Work Reality loop (NEED→WORK→NEXT ACTION→ACTOR→EXECUTION→STATE→EVIDENCE→OUTCOME)",
+      "RL2-001 work execution tracking (assignedActorId, nextAction, stateHistory)",
+      "RL2-005 stuck work detection with natural language explanations",
+      "RL3-001 economic value recording framework",
+      "multi-actor role-based access controls with hierarchical validation",
+      "evidence chain recording system with immutable audit trail",
+      "executeWorkflowTransition generic orchestrator (no new execution infrastructure)",
+      "inspection.agentService inspectWork method with bottleneck detection",
+      "work-postgres.repository state history persistence"
+    ],
+    "required_new": [
+      "ILC_INS_001_InstitutionalWorkflow definition added to capability-command-registry.ts (already implemented, no new code required)",
+      "e2e test file to validate I1-I11 reality gates (to be created, uses existing test patterns from services-id and lawyershub)"
+    ],
+    "reuse_percentage": 98.4
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Execute full end-to-end ILC-INS-001 workflow through capabilityRegistry.invoke() to validate all state transitions",
+    "Verify unauthorized transition blocking (I3) with actorId lacking required department-head/executive roles",
+    "Trigger RL2-005 inspection on work with >24h inactivity to confirm stuck work detection and natural language explanation",
+    "Validate actor reassignment and work recovery (I6) after stuck state detection",
+    "Persist all runtime evidence to .eos-state/evidence/ilc-ins-001/ directory for verification",
+    "Run independent verification using eos-verification agent to sign off on all I1-I11 gates before SHIPPED status"
+  ]
+}

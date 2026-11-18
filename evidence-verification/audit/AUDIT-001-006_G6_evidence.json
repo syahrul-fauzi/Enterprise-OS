@@ -1,0 +1,15 @@
+{
+  "work_id": "AUDIT-001-006",
+  "gate": "G6",
+  "status": "FAIL",
+  "tested_at": "2026-10-15T10:50:59.099Z",
+  "workflow_steps": [],
+  "persistence_verified": false,
+  "evidence_retrievable": false,
+  "logs": [
+    "🚀 Starting legal-case workflow verification...",
+    "❌ Legal-case workflow failed: Cannot find module '/root/Enterprise-OS/workspace/legal-case/implementation/commands/case.commands.js' imported from /root/Enterprise-OS/workspace/capabilities/atomic-composition/test-legal-case-regression.js",
+    "⏱️ Total test duration: 626ms"
+  ],
+  "log_source": "/root/Enterprise-OS/.eos-state/chain-verification-audit001006-g6.log"
+}

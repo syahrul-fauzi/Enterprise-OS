@@ -1,0 +1,69 @@
+{
+  "work_id": "SMACE-BUSINESS-001",
+  "recon_completed_at": "2026-11-01T20:00:00.000Z",
+  "locked_boundaries_verified": {
+    "work-core-frozen": true,
+    "no-new-primitives": true,
+    "tenant-isolation-maintained": true,
+    "kill-switch-compliance": true,
+    "cost-separation-enforced": true
+  },
+  "existing_capabilities_found": [
+    {
+      "original_capability": "commerce-product.product-listing.create",
+      "reused_as": "customer-intake.create",
+      "location": "workspace/capabilities/commerce-product/implementation/commands/product-listing.commands.ts",
+      "modification_type": "MINIMAL FIX (alias, 1 line added)"
+    },
+    {
+      "original_capability": "service-directory.markServiceVerified",
+      "reused_as": "quality-review.approve",
+      "location": "workspace/capabilities/service-directory/implementation/commands/service.commands.ts",
+      "modification_type": "MINIMAL FIX (alias, 1 line added)"
+    },
+    {
+      "original_capability": "legal-case.capability-generate-invoice.execute",
+      "reused_as": "atomic-composition.billing.generate",
+      "location": "workspace/capabilities/atomic-composition/implementation/commands/atomic-composition.commands.ts",
+      "modification_type": "MINIMAL FIX (alias, 2 lines added)"
+    },
+    {
+      "reused_budget_capability": "budget.reserve",
+      "location": "workspace/capabilities/budget/implementation/commands/budget.commands.ts"
+    },
+    {
+      "reused_budget_capability": "budget.commit",
+      "location": "workspace/capabilities/budget/implementation/commands/budget.commands.ts"
+    },
+    {
+      "reused_comfyui_capability": "comfyui.execute",
+      "location": "workspace/capabilities/comfyui-adapter/implementation/commands/comfyui.commands.ts"
+    }
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "commerce-product.customer-intake.create",
+      "budget.reserve",
+      "comfyui.execute",
+      "service-directory.quality-review.approve",
+      "client-approval.confirm",
+      "content.deliver",
+      "budget.commit",
+      "atomic-composition.billing.generate"
+    ],
+    "required_new": [],
+    "reuse_percentage": 100.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "SMACE-BUSINESS-001 dapat dilanjutkan tanpa perlu membuat primitive baru",
+    "Semua capability yang dibutuhkan sudah terpenuhi melalui reuse dan MINIMAL FIX",
+    "Lanjutkan ke verifikasi end-to-end workflow SMACE_COMMERCIAL_WORKFLOW",
+    "Verifikasi bahwa semua command terdaftar di capabilityRegistry dengan benar",
+    "Lakukan pengujian kill switch pada environment staging sebelum produksi"
+  ]
+}

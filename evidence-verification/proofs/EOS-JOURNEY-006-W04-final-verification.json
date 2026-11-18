@@ -1,0 +1,57 @@
+{
+  "work_id": "EOS-JOURNEY-006-W04",
+  "name": "Commercial Work Type Finalization",
+  "completed_at": "2026-09-24T04:30:00Z",
+  "executed_by": "JOURNEY_ENGINE_ID",
+  "changes": [
+    {
+      "file": "/workspace/capabilities/atomic-composition/implementation/services/capability-resolver.service.ts",
+      "change_type": "MODIFY",
+      "description": "Extended legal-document-preparation.domainRestrictions with 'commercial-trademark' to support trademark registration use cases",
+      "line_numbers": [934]
+    },
+    {
+      "file": "/workspace/capabilities/service-directory/implementation/contracts/service.contracts.ts",
+      "change_type": "MODIFY",
+      "description": "Added 'Payment Processing' and 'Trademark Registration' to ServiceProviderCategory type",
+      "line_numbers": [20, 21]
+    },
+    {
+      "file": "/workspace/capabilities/service-directory/implementation/validation/batch-validator.ts",
+      "change_type": "MODIFY",
+      "description": "Updated VALID_SERVICE_CATEGORIES array to include new commercial categories",
+      "line_numbers": [12, 13]
+    },
+    {
+      "file": "/workspace/packages/presentation/features/src/product-creation/ProductCreateForm.tsx",
+      "change_type": "MODIFY",
+      "description": "Updated readServiceProviderCategories() to include new categories in UI form",
+      "line_numbers": [30]
+    },
+    {
+      "file": "/workspace/packages/presentation/widgets/src/product-preview-shell/ProductPreviewShell.tsx",
+      "change_type": "MODIFY",
+      "description": "Updated local ServiceProviderCategory type in preview widget to match core contracts",
+      "line_numbers": [29, 30]
+    }
+  ],
+  "acceptance_criteria_verified": [
+    "Payment dan trademark work types 100% reuse existing capabilities",
+    "Substrate freeze tetap terjaga (no new primitives, only extensions)",
+    "Passes Rule of Two verification (payment-processing and commercial-trademark use cases verified)",
+    "Tidak ada state store baru yang dibuat"
+  ],
+  "guardrails_maintained": [
+    "No new state store created",
+    "No next-work registry modified",
+    "No new architecture layer added",
+    "Mutation authority boundaries preserved",
+    "Golden Spine invariant maintained",
+    "cache-work-contracts remains untouched",
+    "No parallel work execution"
+  ],
+  "verdict": "PASS",
+  "next_work_id": "EOS-JOURNEY-006-W05",
+  "next_work_title": "Mutation Authority Enforcement",
+  "next_work_description": "Implement JOURNEY_ENGINE_ID-only saveCurrentJourney() mutation flow with AUTHORIZE→VALIDATE→MUTATE→PROVE sequence"
+}

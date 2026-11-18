@@ -1,0 +1,134 @@
+{
+  "generated_at": "2026-11-07T00:50:13.835009",
+  "work_id": "EOS-SKILL-ASSURANCE-001",
+  "workstream": "WS-02 - Contract Compliance",
+  "gate": "G2 - Contract Compliance",
+  "total_skills": 10,
+  "skills": {
+    "eos-face": {
+      "manifest_loaded": true,
+      "contract_checks": {
+        "trigger_defined": true,
+        "input_output_specified": true,
+        "preconditions_documented": true,
+        "risk_assessment_present": true,
+        "authority_boundaries_defined": true
+      },
+      "skill_version": "1.0.0",
+      "skill_description": "Expose EOS capabilities through FACE surface, map Work actions to UI affordances, and preserve EOS continuity principles."
+    },
+    "eos-recon": {
+      "manifest_loaded": true,
+      "contract_checks": {
+        "trigger_defined": true,
+        "input_output_specified": true,
+        "preconditions_documented": true,
+        "risk_assessment_present": true,
+        "authority_boundaries_defined": true
+      },
+      "skill_version": "1.0.0",
+      "skill_description": "Recon Agent role. Before ANY coding: search existing code, capabilities, procedures, DB schemas, tests, evidence, previous decisions. Output: REUSE | MINIMAL FIX | MISSING | BLOCKED. Prevents legacy accumulation and duplicate work."
+    },
+    "eos-dependency-engine": {
+      "manifest_loaded": true,
+      "contract_checks": {
+        "trigger_defined": true,
+        "input_output_specified": true,
+        "preconditions_documented": true,
+        "risk_assessment_present": true,
+        "authority_boundaries_defined": true
+      },
+      "skill_version": "1.0.0",
+      "skill_description": "Analyzes codebase dependencies and computes impact for changes. Invoke when running impact analysis or identifying high-leverage next tasks."
+    },
+    "eos-self-execution": {
+      "manifest_loaded": true,
+      "contract_checks": {
+        "trigger_defined": true,
+        "input_output_specified": true,
+        "preconditions_documented": true,
+        "risk_assessment_present": true,
+        "authority_boundaries_defined": true
+      },
+      "skill_version": "1.0.0",
+      "skill_description": "Manages EOS self-execution loop: requirement processing, impact analysis, execution planning, verification, and evidence collection. Invoke when starting EOS self-orchestration work."
+    },
+    "eos-command-center": {
+      "manifest_loaded": true,
+      "contract_checks": {
+        "trigger_defined": true,
+        "input_output_specified": true,
+        "preconditions_documented": true,
+        "risk_assessment_present": true,
+        "authority_boundaries_defined": true
+      },
+      "skill_version": "1.0.0",
+      "skill_description": "War Room Commander role. Decompose objectives into work items, assign agents, monitor dependencies, prevent duplicate work, decide next highest-leverage work. Invoke when launching the EOS Development Operating System to orchestrate multi-agent execution of product slices."
+    },
+    "eos-evidence-engine": {
+      "manifest_loaded": true,
+      "contract_checks": {
+        "trigger_defined": true,
+        "input_output_specified": true,
+        "preconditions_documented": true,
+        "risk_assessment_present": true,
+        "authority_boundaries_defined": true
+      },
+      "skill_version": "1.0.0",
+      "skill_description": "Processes and computes evidence into automated governance decisions. Invoke when implementing evidence-based verification or confidence scoring."
+    },
+    "eos-verification": {
+      "manifest_loaded": true,
+      "contract_checks": {
+        "trigger_defined": true,
+        "input_output_specified": true,
+        "preconditions_documented": true,
+        "risk_assessment_present": true,
+        "authority_boundaries_defined": true
+      },
+      "skill_version": "1.0.0",
+      "skill_description": "Verification Agent role \u2014 INDEPENDENT from implementation agents. NEVER trusts what implementation agents say. Runs: tests, integration tests, E2E replay, security checks, tenant isolation verification, evidence chain check. Produces binary verdict: ALL_PASSED or FAILED with concrete failures."
+    },
+    "eos-face-capability": {
+      "manifest_loaded": true,
+      "contract_checks": {
+        "trigger_defined": true,
+        "input_output_specified": true,
+        "preconditions_documented": true,
+        "risk_assessment_present": true,
+        "authority_boundaries_defined": true
+      },
+      "skill_version": "1.0.0",
+      "skill_description": "Use when exposing an existing EOS capability through FACE, deciding which actions belong on a product surface, mapping Work actions to UI affordances, or reviewing whether a frontend action preserves EOS capability, actor, authorization, evidence, and canonical state."
+    },
+    "eos-product-slice": {
+      "manifest_loaded": true,
+      "contract_checks": {
+        "trigger_defined": true,
+        "input_output_specified": true,
+        "preconditions_documented": true,
+        "risk_assessment_present": true,
+        "authority_boundaries_defined": true
+      },
+      "skill_version": "1.0.0",
+      "skill_description": "Product Slice Agent role \u2014 THE MOST IMPORTANT AGENT. Given a REAL USER JOB (e.g., 'User creates a legal case'), deliver end-to-end: experience \u2192 procedure \u2192 capability \u2192 state \u2192 persistence \u2192 evidence \u2192 test. NOT 'just frontend' or 'just backend' \u2014 VERTICAL business output."
+    },
+    "eos-face-verification": {
+      "manifest_loaded": true,
+      "contract_checks": {
+        "trigger_defined": true,
+        "input_output_specified": true,
+        "preconditions_documented": true,
+        "risk_assessment_present": true,
+        "authority_boundaries_defined": true
+      },
+      "skill_version": "1.0.0",
+      "skill_description": "Use when verifying EOS frontend behavior, authenticated product journeys, Work continuity, persistence read-back, evidence visibility, authorization boundaries, navigation continuity, rendered state, or human-facing E2E behavior. Never accept source-code inspection alone as proof of rendered FACE behavior when runtime/browser verification is available."
+    }
+  },
+  "overall_compliance": {
+    "total_checks": 50,
+    "passed_checks": 50,
+    "compliance_percentage": 100.0
+  }
+}

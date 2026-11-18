@@ -1,0 +1,46 @@
+{
+  "work_id": "EDGE-002",
+  "recon_completed_at": "2026-09-26T10:30:00.000Z",
+  "locked_boundaries_verified": {
+    "work_core_is_semantic_authority": true,
+    "apps_edge_is_execution_surface_only": true,
+    "no_semantic_core_changes_required": true,
+    "audited_005_compliant": true
+  },
+  "existing_capabilities_found": [
+    "work-core (work-identity, work-state, work-continuity)",
+    "core-runtime (work-continuity, invocation-evidence)",
+    "connector-ecosystem (sync patterns for external platforms)",
+    "recordRuntimeInvocation (actor_id support added)",
+    "WorkHandoffEnvelope pattern (handles cross-actor work transfer)"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "AttributionLedger dengan actor_id support",
+      "WorkHandoffEnvelope dari core-runtime",
+      "capabilityRegistry.invoke pattern",
+      "WorkRepositoryPostgres dari work-core",
+      "Sync patterns dari connector-ecosystem"
+    ],
+    "required_new": [
+      "work.sync capability command di work-core",
+      "POST /api/work/sync HTTP endpoint",
+      "apps/edge/src/index.ts edge-runtime entrypoint",
+      "EdgeRuntime syncWork implementation",
+      "E2E test untuk edge-runtime work sync flow"
+    ],
+    "reuse_percentage": 65.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Implementasikan work.sync command dengan minimal changes ke work-core",
+    "Tambahkan API endpoint /api/work/sync",
+    "Buat entrypoint sederhana untuk apps/edge",
+    "Pastikan semua write ke execution log menyertakan actor_id: 'edge-runtime'",
+    "Uji end-to-end untuk memverifikasi Work Continuity dari core ke edge"
+  ]
+}

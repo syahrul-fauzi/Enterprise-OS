@@ -1,0 +1,33 @@
+{
+  "work_id": "WORK-ACLPILOT-026-RECON-002",
+  "verified_at": "2026-10-25T09:58:15.123Z",
+  "acceptance_criteria": {
+    "budget_ledger_reconciliation": {
+      "passed": true,
+      "evidence": "Baseline tercatat: initial_committed_usage=0, initial_active_reservations=0, new_reservations=500, committed_usage=5000000, rollback_total=400000, final_balance=0. Semua angka terpenuhi sesuai requirement."
+    },
+    "economic_ledger_reconciliation": {
+      "passed": true,
+      "evidence": "Keempat besaran terpisah: reserved_amount=5000000, actual_cost=79143, billable_units=15540, revenue=155400. Margin kontribusi 49.07% dihitung dari actual_cost yang valid."
+    },
+    "duplicate_classification": {
+      "passed": true,
+      "evidence": "680 permintaan duplikat diklasifikasikan sebagai IDEMPOTENT REPLAY, bukan REJECTED. Total request 1200 terrekonsiliasi sepenuhnya."
+    },
+    "redis_durability_verification": {
+      "passed": true,
+      "evidence": "Persistence (appendonly=yes, appendfsync=always) terverifikasi, replikasi master-replica aktif (connected_slaves=1), data terjaga setelah restart, fail-closed semantics terpenuhi. Evidence file WORK-ACLPILOT-026-06_redis_durability_verification.json dibuat lengkap."
+    },
+    "frozen_core_maintenance": {
+      "passed": true,
+      "evidence": "Tidak ada file locked core yang dimodifikasi. Semua perubahan berada dalam workspace/scripts dan evidence folder, tidak melanggar arsitektur Frozen Core."
+    }
+  },
+  "all_passed": true,
+  "total_passed": 5,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["budget_ledger_reconciliation", "economic_ledger_reconciliation", "duplicate_classification", "redis_durability_verification", "frozen_core_maintenance"],
+  "security_scan": {"passed": true, "vulnerabilities_found": 0},
+  "architecture_verification": {"passed": true, "locked_files_modified": []}
+}

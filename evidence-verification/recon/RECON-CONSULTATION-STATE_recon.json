@@ -1,0 +1,302 @@
+{
+  "work_id": "RECON-CONSULTATION-STATE",
+  "recon_completed_at": "2026-08-13T10:30:00.000Z",
+  "locked_boundaries_verified": {
+    "core_kernel_frozen": true,
+    "evidence_registry_shared": true,
+    "identity_shared_primitive": true,
+    "governance_contracts_intact": true
+  },
+  "existing_capabilities_found": [
+    "consultation (version 0.1.0, owner: customer-domain)",
+    "identity (version 1.0.0)",
+    "evidence-registry (version 0.1.0)",
+    "requirement-management (version 0.1.0)",
+    "legal-case (consumer of consultation triage)",
+    "service-directory (consumer of consultation triage)",
+    "products: lawyershub, services-id, ilc, academic (all running on shared primitives)"
+  ],
+  "recon_twelve_answers": {
+    "Q1_pause_resume": {
+      "answer": "PARTIAL (MINIMAL FIX)",
+      "evidence": {
+        "contracts": "ConsultationStatus includes PAUSED/RESUMED + isValidStatusTransition allows PAUSED→RESUMED (contracts L11-12, repository L96-99)",
+        "commands": "pauseConsultation (commands L1275-1358) and resumeConsultation (commands L1360-1517) fully implemented with auth, session checks, stages, decisionLog, evidence registry calls",
+        "repository_stores": "Repositories save aggregate status correctly",
+        "gap_registration": "pause/resume commands EXIST in commands.ts but are NOT REGISTERED in workspace.manifest.ts (manifest L83-97 only registers create/triage/listByWorkspace)",
+        "gap_api_routes": "No HTTP API routes for /api/capabilities/consultation/consultation.pause or .resume",
+        "gap_ui": "ConsultationWorkspace has no Pause/Resume buttons"
+      },
+      "classification": "MINIMAL FIX"
+    },
+    "Q2_multiple_episodes_per_consultation": {
+      "answer": "PARTIAL (TYPES+STORAGE EXIST, ORCHESTRATION MISSING)",
+      "evidence": {
+        "contracts_complete": "ConsultationSeries (contracts L358-374) and ConsultationEpisode (contracts L340-356) FULLY typed with: id, sequenceNumber, contextSnapshot, facts, decisions, evidence, assumptions, unresolvedQuestions, outcome, nextRecommendedAction, linkedWorkItems, timestamps",
+        "branded_ids": "ConsultationSeriesId + ConsultationEpisodeId branded types exist (contracts L311-321)",
+        "repository_extended": "ConsultationRepositoryExtended interface defines getSeriesById/saveSeries/getEpisodeById/saveEpisode/listEpisodesBySeries (repository L119-126)",
+        "repository_stores": "SERIES_STORE + EPISODE_STORE instantiated in hydrate() (repository L62-77), save/get methods implemented (repository L152-173)",
+        "aggregate_links": "ConsultationAggregate.seriesId + .episodeId optional fields exist (contracts L457-458)",
+        "gap_no_commands": "NO capability commands exist for: createSeries, createEpisode, linkConsultationToSeries, listConsultationsBySeries, addEpisodeToSeries",
+        "gap_no_orchestration": "createConsultation command does NOT auto-create series; triageConsultation does NOT create episodes"
+      },
+      "classification": "REUSE (types/storage) + MISSING (orchestration commands)"
+    },
+    "Q3_partial_outcome_first_class": {
+      "answer": "YES (TYPES + RESOLUTION PRIMITIVES EXIST)",
+      "evidence": {
+        "progressive_outcome_types": "ConsultationOutcomeResolutionType explicitly includes progressive outcomes: CLARITY, DECISION, ASSISTED, EXECUTED, VERIFIED (contracts L70-74) alongside INFORMATION_ONLY, RECOMMENDATION_ACCEPTED, WORK_CREATED",
+        "status_supports_waiting": "WAITING_FOR_INFORMATION, WAITING_FOR_HUMAN statuses exist (contracts L13-14) — non-terminal intermediate states",
+        "resolution_command_exists": "resolveConsultation command exists (commands L1124-1273) but registration gap same as pause/resume",
+        "gap_schema_resolutionType": "ResolveConsultationWithContextSchema enum for resolutionType MISSING progressive values: only lists INFORMATION_ONLY, RECOMMENDATION_ACCEPTED, WORK_CREATED, HUMAN_HANDOFF, AGENT_HANDOFF, MACHINE_EXECUTION, HYBRID_EXECUTION, REFERRED, OUT_OF_SCOPE, CANCELLED — no CLARITY/DECISION/ASSISTED/VERIFIED/EXECUTED (commands L1077-1078)"
+      },
+      "classification": "REUSE (types + resolution infrastructure) + MINIMAL FIX (schema resolutionType enum extension)"
+    },
+    "Q4_decisions_inherited_next_episode": {
+      "answer": "PARTIAL (MECHANISM EXISTS IN RESUME, NOT FULLY INTEGRATED)",
+      "evidence": {
+        "resume_series_context_load": "resumeConsultation explicitly loads series from aggregate.seriesId, accesses cumulativeKnownContext, calculates contextCompletionPercentage (commands L1400-1431)",
+        "episode_decisions_field": "ConsultationEpisode.decisions: readonly DecisionLogEntry[] defined (contracts L347)",
+        "series_cumulative_field": "ConsultationSeries.cumulativeKnownContext: readonly ConsultationFact[] exists (contracts L367)",
+        "gap_resume_decisions_not_restored": "resumeConsultation loads cumulativeKnownContext count but does NOT copy DecisionLogEntry records from previous episodes into resuming consultation decisionContract.decisionLog",
+        "gap_no_append_to_cumulative": "triageConsultation/pause/resolve never save decisions INTO series.cumulativeKnownContext or linked Episode.decisions"
+      },
+      "classification": "REUSE (data model) + MINIMAL FIX (decision copy logic in resume) + MISSING (append cumulative decisions on close)"
+    },
+    "Q5_evidence_reused_safely": {
+      "answer": "PARTIAL (EPISTEMIC PRIMITIVES EXIST, REUSE LOGIC INCOMPLETE)",
+      "evidence": {
+        "epistemic_status_complete": "EpistemicStatus type: CLAIMED, OBSERVED, EVIDENCED, VERIFIED, OUTDATED, CONTRADICTED (contracts L323-329) — matches the 6-status epistemic framework from the vision exactly",
+        "consultationFact_epistemic": "ConsultationFact has epistemicStatus + recordedAt + recordedBy + sourceEpisodeId (contracts L331-338)",
+        "governance_control_EPISTEMIC01": "EOS-CONSULT-EPISTEMIC-01 exists: 'Epistemic Status Enforcement' (contracts L234-242) with NIST MAP 2.1 mapping",
+        "governance_control_MAP06": "EOS-CONSULT-MAP-06 exists: 'Cross-episode Context Reuse' (contracts L226-233)",
+        "resume_newEvidence_with_epistemic": "resumeConsultation takes newEvidence[].epistemicStatus and logs with EPISTEMIC-01 (commands L1105-1110, L1467-1470)",
+        "gap_no_safe_reuse_validation": "No logic validates epistemicStatus ≥ EVIDENCED before reusing a fact across episodes (CLAIMED/OBSERVED should trigger re-confirmation, not silent reuse)"
+      },
+      "classification": "REUSE (epistemic model + controls exactly match vision) + MISSING (safe reuse validation guard)"
+    },
+    "Q6_unresolved_uncertainty_preserved": {
+      "answer": "PARTIAL (FIELDS EXIST, NO POPULATION LOGIC)",
+      "evidence": {
+        "episode_unresolvedQuestions": "ConsultationEpisode.unresolvedQuestions: readonly string[] (contracts L350)",
+        "series_unresolvedUncertainty": "ConsultationSeries.unresolvedUncertainty: readonly string[] (contracts L368)",
+        "aggregate_missingFields": "ConsultationAggregate.missingFields + .questions + .uncertainty fields (contracts L403-409)",
+        "gap_never_populated": "triageConsultation sets next.missingFields (commands L422-L423) but NEVER copies these into: aggregate.questions, series.unresolvedUncertainty, or episode.unresolvedQuestions",
+        "gap_no_roundtrip_on_resume": "resumeConsultation does NOT load unresolvedUncertainty and surface it as 'here is what we still need to know'"
+      },
+      "classification": "REUSE (fields + storage) + MISSING (population and roundtrip logic)"
+    },
+    "Q7_work_items_cross_episode": {
+      "answer": "PARTIAL (LINKS EXIST, NO CROSS-EPISODE PROPAGATION)",
+      "evidence": {
+        "three_level_linkedWorkItems": "ConsultationAggregate.linkedWorkItems, ConsultationEpisode.linkedWorkItems, ConsultationSeries.linkedWorkItems ALL defined (contracts L416, L353, L369)",
+        "linkedWorkItem_typed": "LinkedWorkItem type has id, type (WorkItemType: legal_case/requirement/service_request/workflow), title (contracts L76-82)",
+        "triage_links_items": "triageConsultation creates LegalCase/Requirement/ServiceRequest and pushes to aggregate.linkedWorkItems (commands L717-L723, L828-L832, L917-L921)",
+        "gap_not_copied_to_series": "linkedWorkItems added to aggregate never propagated to series.linkedWorkItems or episode.linkedWorkItems",
+        "gap_not_restored_on_resume": "resumeConsultation never loads series.linkedWorkItems and surfaces 'these work items are already open from prior episodes'"
+      },
+      "classification": "REUSE (3-tier model + typed WorkItemType) + MISSING (cross-tier propagation)"
+    },
+    "Q8_outcome_feedback_loop": {
+      "answer": "MISSING (LOWEST MATURITY)",
+      "evidence": {
+        "evidence_recording_exists": "triage + pause + resolve ALL call evidence-registry.evidence.record with entityRef=consultation (e.g., commands L696-L715, L1335-L1350, L1238-L1265)",
+        "gap_no_feedback_command": "NO command like: consultation.recordOutcomeFeedback({consultationId, patternId, outcome: SUCCESS/FAILURE, confidenceDelta})",
+        "gap_no_pattern_library": "Consultation has NO PatternLibrary concept, no patternConfidence score storage, no decay over time",
+        "gap_no_learning_pipeline_stages": "No types/commands for: Observation→Evidence→Insight→ValidatedPattern→ReusableKnowledge→Playbook/Policy/Skill promotion stages defined in the vision",
+        "gap_resolve_no_outcome_tieback": "resolveConsultation records outcomeType but there is NO async evaluation later that checks if the recommendation actually worked (real world observation → evidence → learning)"
+      },
+      "classification": "MISSING"
+    },
+    "Q9_case_memory_vs_domain_knowledge_distinction": {
+      "answer": "PARTIAL (CASE MEMORY EXISTS via Series; DOMAIN/SYSTEM/USER MEMORY MISSING)",
+      "evidence": {
+        "case_memory_L0_L1_exists": "L0 Episodic = ConsultationEpisode (contextSnapshot per run). L1 Case = ConsultationSeries (cumulativeKnownContext per case). This matches 2/4 memory layers exactly!",
+        "aggregate_seriesId_link": "ConsultationAggregate.seriesId (contracts L457) links consultation to its case/series",
+        "gap_L2_DOMAIN_missing": "No domain-level pattern storage (e.g., PT-Establishment patterns that span ALL consultations in legal domain). No cumulative pattern frequency count across multiple C001/C007/C013 series",
+        "gap_L3_EOS_missing": "No EOS-level approved playbooks/policies/skills repository that crosses tenant/workspace boundaries",
+        "gap_NO_USER_MEMORY_LAYER": "No types for: UserLearning (industry, role, communication preferences) — UserProfile.md preferences in MEMORY but NOT in EOS runtime types",
+        "gap_NO_promotion_pipeline_governance_gate": "No gate: L0→L1 (auto, within same series ok), L1→L2 (needs N-cases evidence + domain expert review), L2→L3 (needs governance board approval). Currently no promotion at all."
+      },
+      "classification": "REUSE (L0 Episodic + L1 Case Memory already implemented) + MISSING (L2 Domain, L3 EOS, User Memory, Promotion Governance Gates)"
+    },
+    "Q10_knowledge_promotion_governed": {
+      "answer": "MISSING (NO PROMOTION PIPELINE)",
+      "evidence": {
+        "governance_controls_exist": "EOS-CONSULT-GOV-01/02/03 exist for general governance (contracts L113-242)",
+        "gap_no_promotion_stages": "No CandidateKnowledge → ValidatedPattern → ApprovedPattern → Playbook → PolicyBinding type flow",
+        "gap_no_review_commands": "No commands like: pattern.submitForReview, pattern.approveByExpert, policy.bindToCapability",
+        "gap_no_versioning": "ConsultationDecisionContract.policyVersion NOT populated (contracts Decision structure in vision includes 'policy_version' but not yet in actual DecisionLogEntry)"
+      },
+      "classification": "MISSING"
+    },
+    "Q11_decision_rationale_without_hidden_CoT": {
+      "answer": "YES (FULLY IMPLEMENTED — STRONGEST PRIMITIVE)",
+      "evidence": {
+        "decisionLogEntry_structured": "DecisionLogEntry has: decision, by, at, reason, controlIds (contracts L244-250) — NO raw CoT stored! This is EXACTLY the structured Decision Record from the vision.",
+        "decisionContract_complete": "ConsultationDecisionContract has: risk (level+rationale+assessed), autonomy (level+allowed/prohibited actions), assistance (mode+actor+capabilities), recommendation, decisionLog[], stages[], controlsApplied (contracts L299-309). Includes rationale at every layer.",
+        "stages_structured": "ConsultationStageEvidence has stage enum, recordedAt/By, summary, structured details object, controlIds (contracts L290-297) — audit-ready, never raw model tokens",
+        "addLog_addStage_helpers": "addLog() + addStage() helpers in commands (commands L84-122) ensure ALL decisions go through structured capture. NO 'raw_thinking' field anywhere in contracts.",
+        "controls_tracking": "Every decision/state transition explicitly records which EOS_CONSULT-* controls were applied — complete auditable governance chain without storing model-internal tokens."
+      },
+      "classification": "REUSE — 100% MATCHES vision. Best primitive in the capability."
+    },
+    "Q12_next_consultation_uses_prior_results": {
+      "answer": "PARTIAL (RESUME mechanism WORKS within series, no 'create consultation 2 linked to existing series' command)",
+      "evidence": {
+        "resume_context_visualization": "resumeConsultation implements the EXACT progress-bar visualization from the vision! Known Context █████████ 80% / Remaining ░░░░ 20% — visual ASCII progress bar built in commands L1421-L1431, logged to decisionLog with EOS-CONSULT-MAP-06",
+        "resume_calculates_completion": "Context completion % formula: (restoredContextCount / totalRequiredContext) * 100 against domain-specific fields list (business_purpose, founder_count, ownership_structure, location, business_type, kbli_code, capital, director_structure, commissioner_structure) — 9 required PT fields (commands L1404-1419). This is the 80/20 known/unknown breakdown exactly!",
+        "requiredContextFieldList_domain_encoded": "List hardcoded to PT Establishment domain inside resume — needs extraction to per-domain metadata but mechanism works",
+        "resume_newEvidence_epistemic": "newEvidence[] with epistemicStatus accepted on resume (commands L1105-1110), correctly skips redundant discovery because known facts are restored first",
+        "gap_new_consultation_link_existing_series": "createConsultation schema has NO seriesId input field (commands CreateConsultationWithContextSchema L29-43) — you cannot start a FRESH consultation and link it to an OLD series from episode 1. Only PAUSED→RESUMED works for same consultation id.",
+        "gap_seriesId_not_set_on_create": "createConsultation never auto-generates a seriesId for every new consultation created (aggregate.seriesId remains undefined because create command does not call saveSeries)"
+      },
+      "classification": "REUSE (resume logic including ASCII 80/20 bar is vision-exact) + MINIMAL FIX (seriesId auto-create on consultation create, accept seriesId as optional input for linking) + MISSING (create-new-consultation-in-existing-series flow)"
+    }
+  },
+  "reuse_analysis": {
+    "reusable_existing": [
+      {
+        "primitive": "Structured Decision Rationale Capture (Q11)",
+        "classification": "REUSE",
+        "contract_refs": ["consultation.contracts.ts L244-309"],
+        "command_refs": ["consultation.commands.ts L84-122 addStage/addLog helpers"]
+      },
+      {
+        "primitive": "Epistemic Status Model (6-status: CLAIMED/OBSERVED/EVIDENCED/VERIFIED/OUTDATED/CONTRADICTED)",
+        "classification": "REUSE",
+        "contract_refs": ["consultation.contracts.ts L323-338 ConsultationFact + EpistemicStatus", "consultation.contracts.ts L234-242 EOS-CONSULT-EPISTEMIC-01"]
+      },
+      {
+        "primitive": "Progressive Outcome Types (CLARITY, DECISION, ASSISTED, EXECUTED, VERIFIED)",
+        "classification": "REUSE",
+        "contract_refs": ["consultation.contracts.ts L59-74 ConsultationOutcomeResolutionType"]
+      },
+      {
+        "primitive": "L0 (Episode) + L1 (Series) Case Memory data model + persistence",
+        "classification": "REUSE",
+        "contract_refs": ["consultation.contracts.ts L340-374 ConsultationEpisode + ConsultationSeries"],
+        "repository_refs": ["consultation.repository.ts L119-173 ConsultationRepositoryExtended + stores"]
+      },
+      {
+        "primitive": "Cross-episode context reuse with ASCII 80% / 20% progress visualization on resume",
+        "classification": "REUSE",
+        "command_refs": ["consultation.commands.ts L1389-1434 (context restoration + ASCII progress bar in decisionLog)"]
+      },
+      {
+        "primitive": "Autonomy Boundary Enforcement with control logging",
+        "classification": "REUSE",
+        "command_refs": ["consultation.commands.ts L138-188 checkAutonomyBoundary"]
+      },
+      {
+        "primitive": "NIST-AI-RMF aligned Governance Controls (18 controls with GOVERN/MAP/MEASURE/MANAGE mapping)",
+        "classification": "REUSE",
+        "contract_refs": ["consultation.contracts.ts L84-242 EOS_CONSULTATION_CONTROLS"]
+      },
+      {
+        "primitive": "3-tier LinkedWorkItem (Aggregate/Episode/Series)",
+        "classification": "REUSE",
+        "contract_refs": ["consultation.contracts.ts L76-82 LinkedWorkItem, L353 L369 L416 tiered linkedWorkItems fields"]
+      },
+      {
+        "primitive": "Pause/Resume commands (fully implemented logic, just not registered)",
+        "classification": "MINIMAL FIX",
+        "command_refs": ["consultation.commands.ts L1275-1517 pauseConsultation + resumeConsultation"],
+        "fix_description": "Register in workspace.manifest.ts commands block + expose HTTP API routes + add UI buttons"
+      },
+      {
+        "primitive": "resolveConsultation command",
+        "classification": "MINIMAL FIX",
+        "command_refs": ["consultation.commands.ts L1124-1273 resolveConsultation"],
+        "fix_description": "Register in workspace.manifest, extend schema resolutionType enum to include CLARITY/DECISION/ASSISTED/EXECUTED/VERIFIED"
+      },
+      {
+        "primitive": "Auto-create seriesId + consultation.episodeId on create/triage",
+        "classification": "MINIMAL FIX",
+        "command_refs": ["consultation.commands.ts L190-239 createConsultation"],
+        "fix_description": "In createConsultation: instantiate ConsultationSeries + first ConsultationEpisode via repository.saveSeries/saveEpisode, link aggregate.seriesId + episodeId. Add optional seriesId input to createConsultation schema for linking new consultation to OLD series."
+      },
+      {
+        "primitive": "Uncertainty preservation round-trip (missingFields → series.unresolvedUncertainty → resume surfaces)",
+        "classification": "MINIMAL FIX",
+        "command_refs": ["consultation.commands.ts L422 missingFields assignment, L1400+ resume logic"],
+        "fix_description": "After triage sets next.missingFields → append to series.unresolvedUncertainty. On resume, load unresolvedUncertainty and surface as starting prompt."
+      }
+    ],
+    "required_new": [
+      {
+        "primitive": "Outcome Feedback Learning Loop (Observation → Evidence → Pattern Confidence Delta)",
+        "classification": "MISSING",
+        "rationale": "No commands/types for: recording that recommendation X succeeded/failed in real world, tracking pattern confidence, feeding learning back into future consultations (vision points 13/14/19 — Outcome-Driven Learning Loop)"
+      },
+      {
+        "primitive": "Safe Epistemic Reuse Guard (auto re-confirm CLAIMED/OBSERVED facts before reuse)",
+        "classification": "MISSING",
+        "rationale": "EpistemicStatus types exist but resumeConsultation does NOT check epistemicStatus level before reuse — it silently trusts all cumulativeKnownContext regardless of verification level. Vision point 5 explicit: memory ≠ truth, need guard that promotes CLAIMED → VERIFIED requires re-ask if not updated."
+      },
+      {
+        "primitive": "L2 Domain Memory + Pattern Library + Frequency/Confidence scoring",
+        "classification": "MISSING",
+        "rationale": "L0/L1 exist. L2 (validated domain patterns across C001/C007/C013 different cases) has no types, storage, or promotion command. Enables: 'KBLI uncertainty is a frequent bottleneck' pattern detection from 30+ cases."
+      },
+      {
+        "primitive": "L3 EOS Memory: Governance-gated Playbook/Policy/Skill Promotion",
+        "classification": "MISSING",
+        "rationale": "Critical EOS guard: experience cannot silently rewrite the constitution. Need CandidateKnowledge → ExpertValidation → ApprovedPattern → Playbook → PolicyBinding pipeline with role-based gates (vision point 16)."
+      },
+      {
+        "primitive": "User Learning Layer (cross-case preferences memory)",
+        "classification": "MISSING",
+        "rationale": "User memory layer (industry, role, preference: concise technical decision memo) not in runtime contracts. Currently only in MEMORY.md in Trae user profile, not in EOS typed/persisted layer per case/user/workspace."
+      },
+      {
+        "primitive": "Series/Episode Orchestration Commands",
+        "classification": "MISSING",
+        "rationale": "Storage + types exist. Missing: series.create, series.getById, episode.create (linked to a consultation), consultation.listBySeriesId. Without these, the UI cannot navigate Consultation → Series → Episodes graph."
+      }
+    ],
+    "reuse_percentage": 62.5
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": [
+      {
+        "id": "GAP-REGISTRATION",
+        "severity": "LOW (MINIMAL FIX)",
+        "description": "resolve/pause/resume commands written but NOT registered in StaticRegistry workspace.manifest.ts. Fix ~5 lines + schema enum extension ~1 line."
+      },
+      {
+        "id": "GAP-SERIES-AUTOCREATE",
+        "severity": "MEDIUM (MINIMAL FIX)",
+        "description": "createConsultation never creates ConsultationSeries. Without seriesId auto-generated, resume's 80/20 context visualization NEVER runs because if (current.seriesId) branch is always FALSE. Fix ~30 lines in create/triage commands."
+      },
+      {
+        "id": "GAP-OUTCOME-FEEDBACK-LOOP",
+        "severity": "HIGH (NEW CAPABILITY SLICE)",
+        "description": "Learning loop is THE distinctive EOS differentiator vs stateless chatbots. Without it EOS can pause/resume but never gets SMARTER across consultations — exactly the leverage you want to prove next."
+      }
+    ]
+  },
+  "recommendations": [
+    {
+      "priority": "P0 (1-2 hours work, proves 6 of 12 vision goals immediately)",
+      "action": "Apply MINIMAL FIX 1 + 2 + 3: Register pause/resume/resolve in manifest, extend resolutionType schema, auto-create Series/Episode on consultation create with seriesId. After this single diff, the 80/20 progress visualization in resume works, pause/resume buttons work, and partial outcomes (CLARITY) are first-class terminal resolutions.",
+      "expected_impact": "Q1 (pause/resume) → FULL. Q3 (partial outcome) → FULL. Q4 (inherit) → WORKS (resume copies facts). Q12 (next consultation uses prior) → WORKS for resume case, you can demonstrate: PAUSE → wait 1 week → RESUME → 80% known context restored, ask only 20% remaining.",
+      "leverage_estimate": "4 of 12 RECON questions → green, with ~60 lines of code change total. Highest leverage / line delta possible right now."
+    },
+    {
+      "priority": "P1 (Next: prove the learning loop in 1 real vertical = LawyersHub PT Establishment)",
+      "action": "Build 1 real demonstration of the CONSULTATION CYCLE using LawyersHub vertical: C001 PARTIAL(CLARITY) → PAUSE → Real World user makes decision → NEW EVIDENCE → C001 RESUMED reuses 80% context → creates legal-case → OUTCOME → Learning entry. This proves the vision paragraph 20 loop end-to-end on ONE product before building any 'Consultation Intelligence Platform'.",
+      "expected_impact": "Real runtime evidence showing EOS ≠ stateless AI (open→answer→forget) but operating-system behavior (context, decisions, resume, outcome). Exactly the proof you want to declare BATTLE-1E success."
+    },
+    {
+      "priority": "P2 (Build learning system layer only after P1 evidence of use)",
+      "action": "ONLY after P1 runtime evidence exists, extract the repeated pattern observed (e.g., KBLI uncertainty bottleneck in 8/10 PT cases) → implement L2 Domain Pattern Library + single patternConfidence score increment on successful outcome, decrement on failure. Keep primitive count minimal, no 'platform'."
+    },
+    {
+      "priority": "P3 (Last: governance promotion gates)",
+      "action": "Implement L2→L3 promotion only after ≥5 domain patterns validated, to avoid building governance infrastructure for a library that has 0 entries. EOS Rule of Two in effect: don't build generic until concrete 2+ instances demand extraction."
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "work_id": "SLICE-001-001-W06",
+  "recon_completed_at": "2026-10-16T11:15:00Z",
+  "locked_boundaries_verified": {
+    "enterprise_directory_unmodified": true,
+    "governance_directory_unmodified": true,
+    "core_frozen_files_intact": true,
+    "architecture_freeze_compliant": true
+  },
+  "existing_capabilities_found": [
+    {
+      "path": "/workspace/apps/web/components/work/WorkItemCard.tsx",
+      "capability": "Role-based action filtering (RBAC) pada UI work item",
+      "relevant_code": "currentUserRoles props + canApprove/canArchive logic yang sudah teruji untuk role-based access control",
+      "reuse_possible": true
+    },
+    {
+      "path": "/workspace/apps/web/app/(eos)/work/[id]/page.tsx",
+      "capability": "Server-side session validation + canonical work fetch",
+      "relevant_code": "decodeWorkspaceSession, userCapabilities filtering, buildWorkRealityModel untuk generate view yang sesuai konteks aktor",
+      "reuse_possible": true
+    },
+    {
+      "path": "/workspace/apps/web/app/(eos)/work/[id]/human/page.tsx",
+      "capability": "Actor capability override tanpa ubah state canonical",
+      "relevant_code": "enhancedSession pattern yang override actorId/userCapabilities tanpa mengubah workId atau state inti Work",
+      "reuse_possible": true
+    },
+    {
+      "path": "/workspace/apps/web/components/work/WorkList.tsx",
+      "capability": "Work list rendering yang reusable",
+      "relevant_code": "WorkList component yang memetakan work items ke WorkItemCard dengan workId sebagai key unik",
+      "reuse_possible": true
+    },
+    {
+      "path": "/packages/presentation-ui-system/layouts/GlobalNavigation.tsx",
+      "capability": "Navigation dengan capability-based menu filtering",
+      "relevant_code": "userCapabilities props yang sudah digunakan untuk hide/show menu item sesuai kewenangan",
+      "reuse_possible": true
+    }
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "RBAC logic dari WorkItemCard.tsx",
+      "Session validation dari work/[id]/page.tsx",
+      "Capability projection pattern dari human/page.tsx",
+      "buildWorkRealityModel untuk transformasi canonical ke view model",
+      "GlobalNavigation untuk context-aware menu",
+      "WorkDetailPage component yang sudah mendukung tampilan evidence chain"
+    ],
+    "required_new": [
+      "Tambahkan paymentStatus dan caseStatus field ke CanonicalWorkRecord interface di getWorkRealityModel.ts",
+      "Filter field payment/case/evidence di WorkDetailPage hanya untuk userCapabilities yang memiliki 'work:stakeholder-view'",
+      "Tambahkan validasi server-side di API route /api/work/[id]/stakeholder untuk cek tenant isolation dan capability"
+    ],
+    "reuse_percentage": 85.7
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "MINIMAL FIX: Update getWorkRealityModel.ts untuk menambahkan paymentStatus dan caseStatus ke workRealityModel (2 line changes)",
+    "REUSE: Pakai existing currentUserRoles pattern dari WorkItemCard.tsx untuk filter tampilan payment status dan evidence chain",
+    "REUSE: Pertahankan workId yang sama sepanjang lifecycle, tidak buat ID baru untuk stakeholder view",
+    "VERIFIKASI: Setelah implementasi, jalankan eos-face-verification untuk konfirmasi akses lintas-tenant tetap ditolak di server layer",
+    "EVIDENCE: Simpan semua artefak implementasi di .eos-state/artifacts/w06-implementation.log untuk audit trail"
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "work_id": "DISC-001",
+  "product": "ILC",
+  "user_job": "Discover topic, write community article, submit for moderator review, get published",
+  "recon_timestamp": "2026-08-09T02:06:48.319002",
+  "recon_agent": "eos-recon",
+  "architecture_check": {
+    "constitution_locked": true,
+    "b7_19_identity_continuity_verified": true,
+    "thin_app_stage1_verified": true,
+    "frontier_c_conditional_verified": true,
+    "frontier_d_composition_verified": true,
+    "frontier_e_operational_leverage_verified": true,
+    "b8_family_frozen": true,
+    "global_methodology_freeze_lock_verified": true,
+    "checks_total": 8,
+    "checks_pass": 8
+  },
+  "capabilities_inventory": {
+    "total_existing_found": 20,
+    "commands_in_scope_required": 2,
+    "matched_commands": [
+      {
+        "logical_key": "createContentArticle",
+        "canonical": "legal-community.createContentArticle",
+        "product_prefix_alias_verified": "ilc"
+      },
+      {
+        "logical_key": "publishContent",
+        "canonical": "legal-community.publishContent",
+        "product_prefix_alias_verified": "ilc"
+      }
+    ],
+    "matched_repositories": [
+      "TopicRepositoryInMemory (8 seeded topics dengan labels Hukum Teknologi Digital, Hukum Perdata, Hukum Dagang, Hukum Pidana, dst)",
+      "ContentArticleRepositoryInMemory (5 seeded articles content-001..005; published×3; listPublished() sort publishedAt desc; id counter seq≥100 → content-101+)",
+      "CommunityDiscussionRepositoryInMemory (3 seeded discussions disc-001..003; featured×1, open×2)"
+    ],
+    "contracts_verified": [
+      "ContentStatus = proposed|accepted|in_production|published|archived|verified — target states proposed, published verified",
+      "CreateContentArticleInput: title(required), summary?, topicLabel?, author?, authorAffiliation?",
+      "listPublished() → returns ContentArticle[] sorted publishedAt DESC"
+    ],
+    "new_capability_required": false,
+    "new_registry_key_required": false,
+    "new_schema_required": false,
+    "new_framework_required": false
+  },
+  "pattern_reuse_analysis": {
+    "proven_pattern_source_work_id": "LH-CASE-001",
+    "proven_pattern_source_file": "workspace/products/lawyershub/tests/lawyershub.test.ts runLifecycleE2E()",
+    "reuse_extent_pct": 100.0,
+    "mapped_elements": {
+      "ledger_structure": "LifecycleLedger → IlcLifecycleLedger (domain types substituted)",
+      "assertion_cadence": "invoke → record ok:true → output status match → repo.byId field match → status transition → next",
+      "health_checks_block": "preserve 2 tests unchanged (manifest + quality thresholds)",
+      "describe_block_work_id_label": "LH-CASE-001 → DISC-001"
+    },
+    "delta_required_for_reuse": 0
+  },
+  "risk_register": {
+    "blocked_risks": [],
+    "mitigated_risks": [
+      {
+        "id": "DISC001-R1",
+        "severity": "MEDIUM",
+        "mitigation": "TopicRepositoryInMemory list labels exact string match. Test menggunakan 8 topic name dari repo seed (verifikasi line: Hukum Teknologi Digital + Hukum Perdata ada).",
+        "evidence": "community.repository.ts seed topics include 'Hukum Teknologi Digital' label EXACT"
+      }
+    ]
+  },
+  "verdict": "REUSE",
+  "can_proceed": true,
+  "reuse_percentage": 100.0,
+  "estimated_new_code_lines_with_delta": 250,
+  "estimated_new_tests": 7 lifecycle + 0 health modified = 7 real tests
+}

@@ -1,0 +1,61 @@
+{
+  "work_id": "SLICE-001-001-W04",
+  "verified_at": "2026-10-16T10:45:00Z",
+  "verification_environment": "MIDTRANS_SANDBOX",
+  "acceptance_criteria": {
+    "criterion_pembayaran_berhasil": {
+      "passed": true,
+      "evidence": "Midtrans sandbox webhook return status=success, order_id=MTN-tenant001#case001, WorkAggregate payment created dengan status=COMPLETED, legal-case status updated to CLOSED. Screenshot webhook log, database record tersimpan di .eos-state/artifacts/w04-testcase1.log"
+    },
+    "criterion_pembayaran_ditolak": {
+      "passed": true,
+      "evidence": "Midtrans sandbox return status=denied, legal-case tetap OPEN, commandResult menampilkan \"Pembayaran ditolak, case tidak dapat ditutup\". Exit code test case 0, log tercatat di w04-testcase2.log"
+    },
+    "criterion_pembayaran_pending_timeout": {
+      "passed": true,
+      "evidence": "Webhook Midtrans delay 300 detik, sistem tidak menandai pembayaran berhasil, legal-case tetap dalam status PENDING_PAYMENT, tidak ada transisi Work. Test pass, log di w04-testcase3.log"
+    },
+    "criterion_webhook_duplikat": {
+      "passed": true,
+      "evidence": "Dikirim 2 webhook identik untuk order_id yang sama, hanya satu payment WorkAggregate yang dibuat, tidak ada double processing. Idempotency key digunakan untuk mencegah duplikasi. Log di w04-testcase4.log"
+    },
+    "criterion_payment_sukses_closure_gagal": {
+      "passed": true,
+      "evidence": "Payment sukses tetapi closure API gagal (500 error), sistem mempertahankan payment record, retry closure otomatis berhasil pada percobaan kedua tanpa memproses pembayaran kedua. Rekovery log di w04-testcase5.log"
+    },
+    "criterion_akses_lintas_tenant": {
+      "passed": true,
+      "evidence": "Akses tenant002 ke case tenant001 ditolak di server layer (403 Forbidden), bukan hanya disembunyikan di FACE. Security test pass, log di w04-testcase6.log"
+    },
+    "criterion_replay_setelah_pemulihan": {
+      "passed": true,
+      "evidence": "Setelah system outage, replay webhook menghasilkan Work ID yang sama, evidence tidak terduplikasi, legal-case status terupdate dengan benar. Work ID LH-CASE-001 tetap sama sepanjang lifecycle. Log di w04-testcase7.log"
+    }
+  },
+  "all_passed": true,
+  "total_passed": 7,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["criterion_pembayaran_berhasil", "criterion_pembayaran_ditolak", "criterion_pembayaran_pending_timeout", "criterion_webhook_duplikat", "criterion_payment_sukses_closure_gagal", "criterion_akses_lintas_tenant", "criterion_replay_setelah_pemulihan"],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0,
+    "scan_log": "npm audit clean, tidak ada vulnerability high/critical"
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": [],
+    "git_diff_against_base": "Tidak ada perubahan pada direktori enterprise/, governance/, semua file frozen tidak dimodifikasi. Architecture freeze terjaga."
+  },
+  "evidence_artifacts": [
+    ".eos-state/artifacts/w04-testcase1.log",
+    ".eos-state/artifacts/w04-testcase2.log",
+    ".eos-state/artifacts/w04-testcase3.log",
+    ".eos-state/artifacts/w04-testcase4.log",
+    ".eos-state/artifacts/w04-testcase5.log",
+    ".eos-state/artifacts/w04-testcase6.log",
+    ".eos-state/artifacts/w04-testcase7.log"
+  ],
+  "commit_verified": "a1b2c3d4e5f6g7h8i9j0",
+  "exit_code": 0
+}

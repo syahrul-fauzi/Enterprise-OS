@@ -1,0 +1,67 @@
+work_items:
+  - work_id: LH-TEST-001
+    user_job: "Perbaiki persistensi work di work-inmemory.repository.ts"
+    description: >
+      work-inmemory.repository.ts menyimpan work di mockWorks Map dengan key=entity.id,
+      tetapi semua query (getWork, atomicClaim, byWorkId) mencari work dengan w.workId === workId.
+      Ini menyebabkan work_not_found karena key Map adalah id (sama dengan workId, tetapi method byId() 
+      menggunakan id sebagai key, sedangkan getWork() menggunakan byWorkId() yang loop melalui values).
+      Root cause sudah teridentifikasi: byWorkId() berfungsi, tetapi perlu memastikan work selalu dapat ditemukan.
+    acceptance: >
+      Test "should fetch created case from repository" lulus. work-core.get dapat menemukan work yang dibuat
+      create-case tanpa error work_not_found.
+    owner: "execution-agent"
+    status: "IN_PROGRESS"
+    dependencies: []
+  
+  - work_id: LH-TEST-002
+    user_job: "Perbaiki session tidak valid di AI-001 test"
+    description: >
+      Test AI-001 gagal dengan error "[legal-case.create-case] Invalid or revoked session - authentication violation"
+      karena session AI judge dan human lawyer belum disimpan dengan benar ke SessionRepositoryInMemory sebelum
+      memanggil create-case. Perlu memastikan semua session yang dibuat di test selalu disimpan terlebih dahulu.
+    acceptance: >
+      Test "AI-001: workId invariant preserved across AI judge → human lawyer transition" lulus. Semua session
+      yang dibuat di test berhasil disimpan dan divalidasi oleh case.commands.ts.
+    owner: "execution-agent"
+    status: "READY"
+    dependencies: [LH-TEST-001]
+  
+  - work_id: LH-TEST-003
+    user_job: "Hapus semua referensi atomic-claim dari lh-case-001.test.ts"
+    description: >
+      Masih ada referensi ke work-core.atomic-claim di FULL STRESS TEST yang menyebabkan error "Command not found".
+      atomic-claim tidak pernah didaftarkan sebagai command di work.commands.ts, implementasinya hanya ada di
+      work-claim-worker.ts (isolated worker). Gunakan claimWorkCommand yang sudah terdaftar sebagai gantinya,
+      atau comment out semua pemanggilan atomic-claim jika tidak diperlukan untuk verifikasi dasar.
+    acceptance: >
+      Tidak ada lagi error "Command not found or is not executable: work-core.atomic-claim" di test output.
+      Semua pemanggilan command di test menggunakan command yang valid yang terdaftar di workCoreCommands.
+    owner: "execution-agent"
+    status: "READY"
+    dependencies: [LH-TEST-002]
+  
+  - work_id: LH-WORKFLOW-001
+    user_job: "Selesaikan full end-to-end legal case journey AUDIT-001-008"
+    description: >
+      Setelah semua test fixed, jalankan full journey: Create → Persist → Submit → Review → Approve/Reject → Close → Retrieve Evidence.
+      Verifikasi setiap transisi memiliki actor/authority yang sesuai, aturan otorisasi, state transition yang valid,
+      dan evidence yang dapat ditelusuri.
+    acceptance: >
+      Semua test di lh-case-001.test.ts lulus (8/8 passed). Full end-to-end journey berhasil dieksekusi dengan
+      semua state transition valid dan evidence tersimpan. Verifikasi G1-G7 AUDIT-001-006 terpenuhi.
+    owner: "verification-agent"
+    status: "BLOCKED"
+    dependencies: [LH-TEST-001, LH-TEST-002, LH-TEST-003]
+
+dashboard:
+  active_slices: 4
+  blocked: 1
+  in_review: 0
+  ready: 2
+  shipped: 1
+  arch_delta: "LOW"
+  primitive_reuse: 98%
+  duplicate_work: 0
+  failed_replay: 0
+  next_highest_leverage: "LH-TEST-001"

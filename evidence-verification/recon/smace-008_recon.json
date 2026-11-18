@@ -1,0 +1,24 @@
+{
+  "work_id": "smace-008",
+  "work_title": "Generate product photography",
+  "product": "smace",
+  "recon_timestamp": "2026-11-15T[timestamp]",
+  "reuse_percentage": 100.0,
+  "required_capabilities": [
+    "work-core.identity",
+    "creative-brief.process",
+    "provider-workflow.build",
+    "provider-execution.execute",
+    "quality-validation.validate",
+    "human-approval.process",
+    "asset-packaging.generate",
+    "commercial-reconciliation.reconcile",
+    "evidence-registry.record",
+    "work-completion.complete"
+  ],
+  "existing_capabilities_available": true,
+  "blockers": [],
+  "recon_verdict": "MINIMAL_FIX",
+  "workflow_validated": true,
+  "lifecycle_stages": ["process", "build", "execute", "validate", "approve", "package", "reconcile", "complete"]
+}

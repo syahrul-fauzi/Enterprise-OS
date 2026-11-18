@@ -1,0 +1,140 @@
+{
+  "work_id": "EDGE-DEVICE-001",
+  "recon_completed_at": "2026-10-24T00:00:00.000Z",
+  "locked_boundaries_verified": {
+    "work_core_is_semantic_authority": true,
+    "no_duplicate_primitives": true,
+    "canonical_imports_enforced": true,
+    "edge_is_execution_only_surface": true
+  },
+  "existing_capabilities_found": [
+    {
+      "name": "work-core",
+      "path": "/root/Enterprise-OS/workspace/capabilities/work-core",
+      "contains_required": ["safeRecordEvidence", "checkAutonomyBoundary", "EventRepository", "WorkAggregate types", "Session types"],
+      "is_canonical": true,
+      "all_primitives_reusable": true
+    },
+    {
+      "name": "evidence-registry",
+      "path": "/root/Enterprise-OS/workspace/capabilities/evidence-registry",
+      "contains_required": ["record command", "evidence persistence", "capability registry integration"],
+      "is_canonical": true,
+      "all_primitives_reusable": true
+    },
+    {
+      "name": "capability-command-registry",
+      "path": "/root/Enterprise-OS/workspace/packages/core/kernel/src/registry/capability-command-registry.ts",
+      "contains_required": ["register", "invoke", "listCommandKeys"],
+      "runtime_verified": true
+    },
+    {
+      "name": "work-postgres.repository",
+      "path": "/root/Enterprise-OS/workspace/capabilities/work-core/implementation/repository/work-postgres.repository.ts",
+      "contains_required": ["atomic deduplication via processed_event_ids", "unique constraints", "addEvidence method"],
+      "durable_storage_verified": true
+    },
+    {
+      "name": "work-inmemory.repository",
+      "path": "/root/Enterprise-OS/workspace/capabilities/work-core/implementation/repository/work-inmemory.repository.ts",
+      "contains_required": ["offlineBuffer schema (maxSize:100, drop_oldest)", "processedEventIds array", "authorizedDeviceIds validation"],
+      "test_environment_ready": true
+    }
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "safeRecordEvidence (canonical work-core)",
+      "checkAutonomyBoundary (canonical work-core)",
+      "work-core EventRepository (both inmemory/postgres)",
+      "capabilityRegistry runtime",
+      "evidence-registry.record command",
+      "Session validation utilities",
+      "DeviceId/SessionId type exports",
+      "Work lifecycle state machine",
+      "processed_event_ids deduplication pattern",
+      "offlineBuffer schema pattern",
+      "RuleBasedProvider export from work-core"
+    ],
+    "required_new": [
+      "Session ID propagation from validateDeviceSession to downstream calls",
+      "PostgreSQL unique constraint for event_ids (enforce atomicity)",
+      "Offline buffer persistence implementation in edge adapter",
+      "Hardware interlock sensor integration for checkAutonomyBoundary",
+      "WebSocket/MQTT specific envelope schema validation (issuedAt/expiresAt/size)"
+    ],
+    "reuse_percentage": 87.5
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "gate_a_gaps_verified": [
+    {
+      "id": "GAP-SESSION-VALIDATION",
+      "severity": "P0",
+      "description": "validateDeviceSession di websocket-adapter.service.ts belum mengembalikan validatedActorId, masih menggunakan envelope.deviceId di 32 downstream references",
+      "file": "/root/Enterprise-OS/workspace/apps/edge/src/websocket-adapter.service.ts",
+      "fix_minimal": true,
+      "lines_to_change": 35
+    },
+    {
+      "id": "GAP-MQTT-SESSION",
+      "severity": "P0",
+      "description": "mqtt-adapter.service.ts masih menggunakan envelope.deviceId di 9 downstream references setelah validasi",
+      "file": "/root/Enterprise-OS/workspace/apps/edge/src/mqtt-adapter.service.ts",
+      "fix_minimal": true,
+      "lines_to_change": 12
+    },
+    {
+      "id": "GAP-INMEMORY-DEDUPE",
+      "severity": "P0",
+      "description": "processedEvents Set masih ada di edge adapter sebagai fallback, belum sepenuhnya menggunakan durable processed_event_ids dari work repository",
+      "file": "/root/Enterprise-OS/workspace/apps/edge/src/websocket-adapter.service.ts",
+      "fix_minimal": true,
+      "lines_to_change": 8
+    },
+    {
+      "id": "GAP-GLOBAL-STATE",
+      "severity": "P0",
+      "description": "currentWorkState masih merupakan variabel global di level module, bisa menyebabkan conflict antar Work",
+      "file": "/root/Enterprise-OS/workspace/apps/edge/src/websocket-adapter.service.ts",
+      "fix_minimal": false,
+      "lines_to_change": 47,
+      "requires_work_lifecycle_migration": true
+    },
+    {
+      "id": "GAP-OFFLINE-BUFFER-IMPLEMENTATION",
+      "severity": "P0",
+      "description": "offline buffer belum diimplementasikan dengan drop_oldest policy dan persistensi lokal, schema hanya ada di inmemory repository",
+      "file": "/root/Enterprise-OS/workspace/apps/edge/src/websocket-adapter.service.ts",
+      "fix_minimal": false,
+      "lines_to_change": 62
+    },
+    {
+      "id": "GAP-HW-SAFETY-INTERLOCK",
+      "severity": "P1",
+      "description": "checkAutonomyBoundary belum membaca sensor fisik, masih berupa boolean check",
+      "file": "/root/Enterprise-OS/workspace/capabilities/work-core/implementation/utils/boundary-checks.utils.ts",
+      "fix_minimal": false,
+      "lines_to_change": 28
+    },
+    {
+      "id": "GAP-ENVELOPE-VALIDATION",
+      "severity": "P0",
+      "description": "envelope issuedAt/expiresAt belum divalidasi dengan pengecekan timestamp yang ketat, hanya schema check",
+      "file": "/root/Enterprise-OS/workspace/apps/edge/src/websocket-adapter.service.ts",
+      "fix_minimal": true,
+      "lines_to_change": 15
+    }
+  ],
+  "gate_a_verdict": "CONTRACT_VERIFIED",
+  "recommendations": [
+    "Prioritaskan EDGE-A-001-GATE-B-SESSION-VALIDATION sebagai blocker utama",
+    "Semua envelope.deviceId pasca-validasi harus diganti dengan session.actorId yang sudah tervalidasi",
+    "Modifikasi validateDeviceSession untuk mengembalikan { valid: boolean; errors: string[]; validatedActorId?: string }",
+    "Hapus semua penggunaan processedEvents Set di edge adapter, gunakan workRepository.processed_event_ids secara eksklusif",
+    "Pindahkan currentWorkState dari global ke per-session state di instance WebSocketAdapter",
+    "Implementasikan offline buffer menggunakan schema yang sudah ada di work-inmemory.repository.ts"
+  ]
+}

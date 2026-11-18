@@ -1,0 +1,75 @@
+# AUDIT-001-008 Work Items (LH-Legal-Case End-to-End)
+# War Room orchestration output untuk legal-case workflow completion
+
+work_items:
+  - work_id: LH-TEST-001
+    product: lawyershub
+    user_job: "Fix work_not_found error di persistence test"
+    acceptance: >
+      Test "should fetch created case from repository" lulus dengan work-core.get command yang valid
+      dan parameter yang lengkap sesuai GetWorkRequestSchema
+    dependencies: []
+    owner: eos-verification
+    status: READY
+    blocker: none
+
+  - work_id: LH-TEST-002
+    product: lawyershub
+    user_job: "Fix invalid session error di AI-001 test"
+    acceptance: >
+      Semua session di test disimpan ke SessionRepositoryInMemory sebelum dipakai;
+      tidak ada lagi error "Invalid or revoked session"
+    dependencies: [LH-TEST-001]
+    owner: eos-verification
+    status: BLOCKED
+    blocker: LH-TEST-001
+
+  - work_id: LH-TEST-003
+    product: lawyershub
+    user_job: "Hapus sisa pemanggilan atomic-claim command yang tidak ada"
+    acceptance: >
+      Semua referensi ke work-core.atomic-claim dihapus atau dikomentari sepenuhnya;
+      linter tidak ada error
+    dependencies: [LH-TEST-001]
+    owner: eos-verification
+    status: BLOCKED
+    blocker: LH-TEST-001
+
+  - work_id: LH-FLOW-001
+    product: lawyershub
+    user_job: "Lengkapi full chain workflow client→submit→review→approve→close"
+    acceptance: >
+      Semua state transition terpenuhi dengan actor authorization yang benar;
+      evidence terbentuk dan dapat di-retrieve dengan evidence.getByWorkId
+    dependencies: [LH-TEST-002, LH-TEST-003]
+    owner: eos-product-slice
+    status: BLOCKED
+    blocker: LH-TEST-002, LH-TEST-003
+
+  - work_id: LH-EVIDENCE-001
+    product: lawyershub
+    user_job: "Verifikasi semua evidence dapat ditelusuri ke Work ID yang sama"
+    acceptance: >
+      Semua log dan test result dicatat di .eos-state/ dengan commit hash aktual;
+      workId invariant terjaga sepanjang chain
+    dependencies: [LH-FLOW-001]
+    owner: eos-evidence-engine
+    status: BLOCKED
+    blocker: LH-FLOW-001
+
+# EOS WAR ROOM DASHBOARD (SNAPSHOT)
+dashboard:
+  active_slices: 1
+  blocked: 4
+  in_review: 0
+  ready: 1
+  shipped: 0
+  arch_delta: LOW
+  primitive_reuse: 98%
+  duplicate_work: 0
+  failed_replay: 0
+  domain_totals:
+    lawyershub: 5
+
+# NEXT HIGHEST LEVERAGE WORK
+next_highest_leverage: LH-TEST-001

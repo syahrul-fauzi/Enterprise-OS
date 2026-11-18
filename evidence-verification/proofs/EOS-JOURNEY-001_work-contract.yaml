@@ -1,0 +1,59 @@
+work:
+  id: EOS-JOURNEY-001
+  why: "Untuk menyelesaikan finalisasi .eos-* persistence & architecture mapping yang menjadi syarat masuk ke tahap pengembangan selanjutnya, menghindari infinite loop task tanpa terminal condition, dan mempertahankan prinsip satu NEXT WORK sebagai pusat gravitasi."
+  what: "Menyelesaikan semua tahap Gate B — Dependency/Content Trace, klasifikasi final semua artefak .eos-*, menentukan persistence strategy, menetapkan Git strategy, dan memverifikasi semua batasan otorisasi state mutation."
+
+  current_state: >
+    - Gate A — Discovery SELESAI 100% (file + directory discovery lengkap)
+    - .eos-map/eos-artifacts.v1.json terisi dengan semua artefak terverifikasi
+    - .eos-discovery-inventory.txt mencatat semua file/direktori .eos-*
+    - workspace/.eos-state berisi data runtime yang aktif digunakan composition.repository.ts
+    - .eos-state/current-journey.yaml sudah dibuat sebagai operational memory
+    - workspace/capabilities/atomic-composition/.eos-state SUDAH DIHAPUS (terverifikasi sebagai unused duplicate)
+    - Semua post-delete verification PASS: target directory absent, active root state intact, inventory consistent
+    - ✅ B-01 Discover Live .eos-* SELESAI: semua artefak .eos-* yang hidup ditemukan dan diverifikasi
+    - ✅ B-02 Content Trace SELESAI: semua reader/writer dan dependensi runtime semua artefak terverifikasi
+    - ✅ B-03 Classification SELESAI: klasifikasi evidence-based diterapkan untuk semua artefak di eos-artifacts.v1.json
+    - ✅ B-04 Persistence Decision SELESAI: keputusan persistence untuk semua state .eos-* diambil
+    - ✅ B-05 Git Strategy SELESAI: Git lifecycle strategy untuk semua persistent artefak ditetapkan
+    - ✅ B-06 Final Verification SELESAI: semua kriteria verifikasi Gate B terpenuhi, tidak ada pelanggaran batasan
+          - ✅ PROOF phase SELESAI: semua bukti eksekusi work tersimpan di .eos-state/proofs/EOS-JOURNEY-001_evidence.json
+          - 📝 Memulai DONE phase: mengupdate state journey dan menentukan ONE NEXT WORK berikutnya
+
+  may_change:
+    - .eos-map/*.json (untuk update klasifikasi final artefak)
+    - .eos-state/current-journey.yaml (untuk update progres journey)
+    - .eos-state/proofs/*.json (untuk menyimpan bukti eksekusi)
+    - workspace/capabilities/atomic-composition/.eos-state (dapat dihapus jika tidak terpakai)
+    - File work contract ini (untuk update progres pekerjaan)
+
+  must_not_change:
+    - Semua file runtime inti di workspace/capabilities/*/implementation/
+    - .gitmodules dan konfigurasi git lainnya (tidak ada perubahan sebelum persetujuan)
+    - .eos-venv (lingkungan virtual Python tetap tidak diubah)
+    - Semua path import yang sudah diperbaiki di scripts/verification/
+    - Invariant "satu NEXT WORK hanya satu outcome" — tidak boleh menambahkan multiple next work
+    - Semua batasan otorisasi state mutation (hanya actor terverifikasi yang boleh menulis)
+
+  done_when:
+    - Gate B — Dependency/Content Trace SELESAI 100%
+    - Semua artefak .eos-* memiliki klasifikasi final di eos-artifacts.v1.json
+    - Semua persistence decision untuk state .eos-* tercatat dan terverifikasi
+    - Git strategy untuk semua artefak ditentukan dan tidak ada submodule yang tidak perlu
+    - eos-verification mengkonfirmasi semua batasan terpenuhi dengan exit code 0
+    - Semua bukti eksekusi work tersimpan di .eos-state/proofs/EOS-JOURNEY-001_evidence.json
+    - .eos-state/current-journey.yaml diupdate dengan status work selesai dan NEXT WORK baru
+
+  proof:
+    - .eos-map/eos-artifacts.v1.json dengan klasifikasi final semua artefak
+    - .eos-state/proofs/EOS-JOURNEY-001_evidence.json yang berisi semua bukti eksekusi
+    - Laporan verifikasi dari eos-verification dengan status PASS
+    - .eos-state/current-journey.yaml yang sudah diupdate dengan NEXT WORK baru
+
+  result:
+    - Semua .eos-* artefak terklasifikasi dengan final dan terverifikasi
+    - Gate B selesai dan sistem siap untuk masuk ke tahap pengembangan berikutnya
+    - Prinsip Golden Spine terpenuhi sepenuhnya dalam eksekusi work pertama
+    - Tidak ada artefak tidak terpakai yang tersisa di codebase
+
+  next: "TBD — akan ditentukan setelah work ini proven dan terverifikasi 100%"

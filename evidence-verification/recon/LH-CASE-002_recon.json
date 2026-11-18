@@ -1,0 +1,88 @@
+{
+  "work_id": "LH-CASE-002",
+  "product": "LawyersHub",
+  "user_job": "Create matter, attach document signed archived linked persistently to matter",
+  "recon_timestamp": "2026-08-09T02:07:22.004171",
+  "recon_agent": "eos-recon",
+  "architecture_check": {
+    "constitution_locked": true,
+    "b7_19_identity_continuity_verified": true,
+    "thin_app_stage1_verified": true,
+    "frontier_c_conditional_verified": true,
+    "frontier_d_composition_verified": true,
+    "frontier_e_operational_leverage_verified": true,
+    "b8_family_frozen": true,
+    "global_methodology_freeze_lock_verified": true,
+    "checks_total": 8,
+    "checks_pass": 8
+  },
+  "capabilities_inventory": {
+    "total_existing_found": 20,
+    "commands_in_scope_required": 5,
+    "matched_commands": [
+      {
+        "logical_key": "case.create",
+        "canonical": "legal-case.case.create",
+        "product_prefix_alias_verified": "legal-case"
+      },
+      {
+        "logical_key": "case.assignLawyer",
+        "canonical": "lawyershub.case.assignLawyer",
+        "product_prefix_alias_verified": "lawyershub"
+      },
+      {
+        "logical_key": "document.create",
+        "canonical": "legal-document.document.create",
+        "product_prefix_alias_verified": "legal-document"
+      },
+      {
+        "logical_key": "document.sign",
+        "canonical": "legal-document.document.sign",
+        "product_prefix_alias_verified": "legal-document"
+      },
+      {
+        "logical_key": "document.archive",
+        "canonical": "legal-document.document.archive",
+        "product_prefix_alias_verified": "legal-document"
+      }
+    ],
+    "matched_repositories": [
+      "CaseRepositoryInMemory (reused from LH-CASE-001, seeded 3 cases)",
+      "DocumentRepositoryInMemory (document.commands.ts line 14 imports; id counter seq≥100 → doc-101+)"
+    ],
+    "contracts_verified": [
+      "DocumentAggregate field: matterId?: string — SUDAH ADA native (line 42 matterId condition spread entity)",
+      "CreateDocumentInput: title(required), description?, matterId?, author? — ALL exist native; TIDAK PERLU menambah field apapun",
+      "DocumentStatus: draft|signed|archived — target states monotonic chain draft→signed→archived"
+    ],
+    "critical_native_discovery_exact_line_ref": "workspace/capabilities/legal-document/implementation/commands/document.commands.ts LINE 41: `...(input.matterId !== undefined ? { matterId: input.matterId } : {})` — native built-in sejak genesis.",
+    "new_capability_required": false,
+    "new_registry_key_required": false,
+    "new_schema_required": false,
+    "new_framework_required": false
+  },
+  "pattern_reuse_analysis": {
+    "proven_pattern_source_work_ids": ["LH-CASE-001", "SREQ-001"],
+    "proven_pattern_primitives": ["LifecycleLedger structure", "invoke→assert→repo.byId cadence", "describe_block(work_id · E2E · NO MOCKS)", "2 health checks block"],
+    "new_composition_extension": "EXTEND proven single-capability lifecycle → 5-stage DUAL-CAPABILITY composition (legal-case 2 stages + legal-document 3 stages) with CROSS-CAPABILITY REFERENCE native matterId = caseId",
+    "reuse_extent_pct": 95.0,
+    "delta_required_for_composition": "5% — 2 extra imports (DocumentRepositoryInMemory + DocumentAggregate/Status), composite MatterDocCompositeLedger interface, 3 document stages appended after matter open"
+  },
+  "risk_register": {
+    "blocked_risks": [],
+    "mitigated_risks": [
+      {
+        "id": "LHCASE002-R1",
+        "severity": "HIGH mitigated to LOW",
+        "risk": "APABILA matterId TIDAK ADA di CreateDocumentInput → perlu schema mutation yang VIOLASI architecture frozen + menciptakan technical debt",
+        "mitigation": "Grep codebase legal-document contracts/commands line 41 matterId !== undefined spread operator → NATIVE SUDAH ADA sejak awal. Schema mutation = ZERO.",
+        "evidence": "document.commands.ts line 40-45 entity spread includes matterId conditional field; CreateDocumentInput interface includes matterId?: string"
+      }
+    ]
+  },
+  "verdict": "REUSE (95%) + NATIVE DISCOVERY matterId → NO MUTATION REQUIRED",
+  "can_proceed": true,
+  "reuse_percentage": 95.0,
+  "estimated_new_code_lines_with_delta": 200,
+  "estimated_new_tests": 3 new composite tests appended (LH-CASE-001 3 tests preserved = 6 lifecycle + 2 health = 8/8 LawyersHub)
+}

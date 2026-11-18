@@ -1,0 +1,20 @@
+{
+  "work_id": "aw-101",
+  "work_title": "Execute agentic work assignment",
+  "product": "agentic-work",
+  "recon_timestamp": "2026-11-15T[timestamp]",
+  "reuse_percentage": 100.0,
+  "required_capabilities": [
+    "work-core.identity",
+    "atomic-composition.decompose",
+    "ai-agent-execution.match",
+    "agent-orchestration.compose",
+    "governance-evidence.verify",
+    "work-completion.complete"
+  ],
+  "existing_capabilities_available": true,
+  "blockers": [],
+  "recon_verdict": "MINIMAL_FIX",
+  "workflow_validated": true,
+  "lifecycle_stages": ["decompose", "match", "compose", "execute", "verify", "complete"]
+}

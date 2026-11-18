@@ -1,0 +1,27 @@
+{
+  "work_id": "W05",
+  "recon_started_at": "2026-11-14T17:26:15.758Z",
+  "primitive_checks": [
+    {
+      "primitive_name": "Transaction success primitive",
+      "path": "/home/ios-id/eos/workspace/packages/core/runtime/src/transaction-success.ts",
+      "exists": false,
+      "status": "FAIL"
+    },
+    {
+      "primitive_name": "Invocation evidence primitive",
+      "path": "/home/ios-id/eos/workspace/packages/core/runtime/src/invocation-evidence.ts",
+      "exists": true,
+      "status": "PASS"
+    },
+    {
+      "primitive_name": "War Room Dashboard",
+      "path": "/home/ios-id/eos/.eos-state/coordination/command-center/war-room-dashboard.json",
+      "exists": true,
+      "status": "PASS"
+    }
+  ],
+  "recon_completed_at": "2026-11-14T17:26:15.763Z",
+  "reuse_percentage": 0,
+  "overall_recommendation": "MISSING_PRIMITIVES"
+}

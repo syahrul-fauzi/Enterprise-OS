@@ -1,0 +1,24 @@
+{
+  "actor_id": "journey-engine",
+  "work_id": "EOS-JOURNEY-004",
+  "milestone": "secure_state_mutation",
+  "mutation_timestamp": "2026-09-27T01:37:34.828Z",
+  "new_next_work_id": "EOS-JOURNEY-005",
+  "updated_milestones": [
+    {
+      "acquisition_initiated": ""
+    },
+    {
+      "webhook_configured": ""
+    },
+    {
+      "first_sync_completed": ""
+    },
+    {
+      "bidirectional_verification": ""
+    },
+    {
+      "state_transitioned": ""
+    }
+  ]
+}

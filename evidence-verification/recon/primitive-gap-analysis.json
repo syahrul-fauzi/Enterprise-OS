@@ -1,0 +1,113 @@
+{
+  "analysis_started_at": "2026-11-14T17:29:34.724Z",
+  "work_item_gaps": [
+    {
+      "work_id": "W-010",
+      "missing_primitives": [
+        "Channel installation primitive",
+        "Access proof primitive"
+      ]
+    },
+    {
+      "work_id": "W-011",
+      "missing_primitives": [
+        "Runtime replacement primitive"
+      ]
+    },
+    {
+      "work_id": "W-012",
+      "missing_primitives": [
+        "Package manifest primitive"
+      ]
+    },
+    {
+      "work_id": "SMACE-001",
+      "missing_primitives": [
+        "Campaign approval primitive"
+      ]
+    },
+    {
+      "work_id": "W01",
+      "missing_primitives": [
+        "Pivot audit primitive"
+      ]
+    },
+    {
+      "work_id": "W02",
+      "missing_primitives": [
+        "Identity mapping primitive"
+      ]
+    },
+    {
+      "work_id": "W03",
+      "missing_primitives": [
+        "Cross-industry transaction primitive"
+      ]
+    },
+    {
+      "work_id": "W05",
+      "missing_primitives": [
+        "Transaction success primitive"
+      ]
+    }
+  ],
+  "unique_missing_primitives": [
+    "Channel installation primitive",
+    "Access proof primitive",
+    "Runtime replacement primitive",
+    "Package manifest primitive",
+    "Campaign approval primitive",
+    "Pivot audit primitive",
+    "Identity mapping primitive",
+    "Cross-industry transaction primitive",
+    "Transaction success primitive"
+  ],
+  "priority_ranking": [
+    {
+      "primitive_name": "Channel installation primitive",
+      "impact_count": 1,
+      "priority_score": 1
+    },
+    {
+      "primitive_name": "Access proof primitive",
+      "impact_count": 1,
+      "priority_score": 1
+    },
+    {
+      "primitive_name": "Runtime replacement primitive",
+      "impact_count": 1,
+      "priority_score": 1
+    },
+    {
+      "primitive_name": "Package manifest primitive",
+      "impact_count": 1,
+      "priority_score": 1
+    },
+    {
+      "primitive_name": "Campaign approval primitive",
+      "impact_count": 1,
+      "priority_score": 1
+    },
+    {
+      "primitive_name": "Pivot audit primitive",
+      "impact_count": 1,
+      "priority_score": 1
+    },
+    {
+      "primitive_name": "Identity mapping primitive",
+      "impact_count": 1,
+      "priority_score": 1
+    },
+    {
+      "primitive_name": "Cross-industry transaction primitive",
+      "impact_count": 1,
+      "priority_score": 1
+    },
+    {
+      "primitive_name": "Transaction success primitive",
+      "impact_count": 1,
+      "priority_score": 1
+    }
+  ],
+  "analysis_completed_at": "2026-11-14T17:29:34.724Z"
+}

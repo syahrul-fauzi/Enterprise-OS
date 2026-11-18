@@ -1,0 +1,20 @@
+{
+  "work_id": "acad-101",
+  "work_title": "Manage academic program assignment",
+  "product": "academic",
+  "recon_timestamp": "2026-11-15T[timestamp]",
+  "reuse_percentage": 100.0,
+  "required_capabilities": [
+    "work-core.identity",
+    "requirement-management.manage",
+    "legal-community.connect",
+    "academic-program.assign",
+    "governance-evidence.verify",
+    "work-completion.complete"
+  ],
+  "existing_capabilities_available": true,
+  "blockers": [],
+  "recon_verdict": "MINIMAL_FIX",
+  "workflow_validated": true,
+  "lifecycle_stages": ["manage", "connect", "assign", "verify", "complete"]
+}

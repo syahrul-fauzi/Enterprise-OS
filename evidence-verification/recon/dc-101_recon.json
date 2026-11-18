@@ -1,0 +1,23 @@
+{
+  "work_id": "dc-101",
+  "work_title": "Manage commercial agreement from request to reconciliation",
+  "product": "deal-coordinator",
+  "recon_timestamp": "2026-11-15T[timestamp]",
+  "reuse_percentage": 100.0,
+  "required_capabilities": [
+    "connector-ecosystem.ingest",
+    "work-formation.create",
+    "governance-approval.approve",
+    "budget-management.allocate",
+    "workflow-engine.transition",
+    "reconciliation.execute",
+    "cross-org-agreement.execute",
+    "payment-reconciliation.execute",
+    "governance-evidence.archive"
+  ],
+  "existing_capabilities_available": true,
+  "blockers": [],
+  "recon_verdict": "MINIMAL_FIX",
+  "workflow_validated": true,
+  "lifecycle_stages": ["request_created", "triage", "approve", "commit", "fulfill", "reconcile", "complete"]
+}

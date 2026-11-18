@@ -1,0 +1,18 @@
+{
+  "work_id": "SMACE-008",
+  "verified_at": "2026-11-04T16:15:00.000Z",
+  "acceptance_criteria": {
+    "polling_reconciliation_implemented": {"passed": true, "evidence": "pollJobStatus() dengan exponential backoff terimplementasi di comfyui-provider.ts, retries tracking di jobStatuses Map"},
+    "secure_download_checksum": {"passed": true, "evidence": "secureDownloadAsset() dengan SHA-256 checksum verifikasi terimplementasi, error throw jika mismatch"},
+    "durable_asset_handoff": {"passed": true, "evidence": "recordAssetHandoff() integrasi dengan EOS Evidence Registry, semua asset transfer tercatat dengan canonical Work ID"},
+    "batch_partial_success_retry": {"passed": true, "evidence": "executeBatchWorkflows() support partial success, retry individual job tanpa duplicate Work ID, canonical Work ID tetap preserve"},
+    "all_requirements_met": {"passed": true, "evidence": "SEMUA permintaan ComfyUI adapter improvements terpenuhi: polling, secure download, durable handoff, batch/partial support"},
+    "security_scan": {"passed": true, "vulnerabilities_found": 0},
+    "architecture_verification": {"passed": true, "locked_files_modified": []}
+  },
+  "all_passed": true,
+  "total_passed": 7,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["semua kriteria SMACE-008 terpenuhi"]
+}

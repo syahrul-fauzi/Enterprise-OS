@@ -1,0 +1,35 @@
+{
+  "work_id": "case-101",
+  "recon_timestamp": "2026-11-15T04:15:00.000Z",
+  "product": "lawyershub",
+  "work_description": "Full lifecycle manajemen kasus hukum litigasi perusahaan",
+  "reuse_analysis": {
+    "reusable_existing": [
+      "core-kernel.5-boundary-model",
+      "core-kernel.6-stage-lifecycle",
+      "connector-ecosystem.connector.ingest",
+      "governance-approval.approveSettlement",
+      "governance-evidence.archive",
+      "governance-evidence.preserve",
+      "observability.observability.monitor",
+      "payment-processing.payment.process"
+    ],
+    "required_new": [],
+    "reuse_percentage": 100.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "blocker_details": []
+  },
+  "workflow_validation": {
+    "valid": true,
+    "validation_check": "isValidWorkflowDefinition passed",
+    "stages_count": 6,
+    "transitions_count": 5
+  },
+  "capability_readiness": {
+    "total_capabilities_required": 5,
+    "capabilities_available": 5,
+    "capabilities_stable": 5
+  }
+}

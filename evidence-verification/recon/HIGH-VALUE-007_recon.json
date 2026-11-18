@@ -1,0 +1,61 @@
+
+{
+  "work_id": "HIGH-VALUE-007",
+  "recon_completed_at": "2026-10-03T12:00:00Z",
+  "locked_boundaries_verified": {
+    "eos_boundary_model": "verified",
+    "composition_hierarchy": "verified"
+  },
+  "existing_capabilities_found": [
+    "product-delivery",
+    "legal-case",
+    "service-directory",
+    "atomic-composition",
+    "work-core"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      {
+        "capability": "product-delivery",
+        "reason": "Provides core logistics, shipping, and tracking primitives."
+      },
+      {
+        "capability": "legal-case",
+        "reason": "Provides dispute resolution and case management primitives."
+      },
+      {
+        "capability": "work-core",
+        "reason": "Provides the fundamental Work primitive for continuity."
+      }
+    ],
+    "minimal_fix": [
+      {
+        "capability": "service-directory",
+        "reason": "Contains payment processing logic that can be adapted from simulation to production."
+      },
+      {
+        "capability": "atomic-composition",
+        "reason": "Contains payment simulation logic that can be adapted."
+      }
+    ],
+    "required_new": [
+      {
+        "capability": "iot-container-tracking",
+        "reason": "A new capability is required for real-time, in-transit container monitoring."
+      }
+    ],
+    "reuse_percentage": 60
+  },
+  "blocker_analysis": {
+    "blocked": true,
+    "block_reason": "Critical capability missing for a core requirement of HV-007.",
+    "critical_missing": [
+      "iot-container-tracking"
+    ]
+  },
+  "recommendations": [
+    "Initiate development of the 'iot-container-tracking' capability.",
+    "Adapt existing payment capabilities for production use.",
+    "Compose the HV-007 solution using the identified reusable primitives."
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "work_id": "ACaaS-001",
+  "recon_completed_at": "2026-10-21T09:50:00.000Z",
+  "locked_boundaries_verified": {
+    "service-directory": "verified - ServiceRequestRepositoryInMemory implements byExternalId and update with tenant isolation",
+    "api-platform": "verified - ACaaS evaluator contracts frozen per user request",
+    "core-kernel": "verified - capabilityRegistry and recordRuntimeInvocation exist and are reused"
+  },
+  "existing_capabilities_found": [
+    "service-directory.serviceRequest.create",
+    "service-directory.serviceRequest.findByExternalId",
+    "service-directory.serviceRequest.update",
+    "api-platform.acaas.complianceCheck.create",
+    "api-platform.acaas.complianceCheck.getResult",
+    "api-platform.acaas.complianceCheck.markProcessing",
+    "api-platform.acaas.complianceCheck.markCompleted",
+    "api-platform.acaas.complianceCheck.markFailed"
+  ],
+  "api_routes_found": [
+    "POST /api/v1/acaas/compliance/create",
+    "GET /api/v1/acaas/compliance/:id/result",
+    "POST /api/v1/acaas/compliance/:id/processing",
+    "POST /api/v1/acaas/compliance/:id/completed",
+    "POST /api/v1/acaas/compliance/:id/failed"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "tenant isolation (service-directory repository)",
+      "evidence ledger (safeRecordEvidenceACaaS)",
+      "idempotency (byExternalId + SHA-256 input hash)",
+      "capability registry (core kernel)",
+      "6-boundary validation (work-core contracts)",
+      "HTTP API gateway (api-platform service)",
+      "service request lifecycle (service-directory)",
+      "metering flags (isDuplicate in create response)"
+    ],
+    "required_new": [
+      "Vertical PPN Invoice policy implementation (ppn-invoice-validation v1.0)",
+      "runComplianceEvaluation function with PASS/FAIL/INDETERMINATE logic",
+      "UI component for ACaaS compliance check submission (FACE projection)",
+      "billing integration for metering data",
+      "E2E tests with real repository invocations (no mocks)"
+    ],
+    "reuse_percentage": 72.7
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Implement first vertical policy: PPN Invoice Validation v1.0 for Indonesian tax compliance",
+    "Fix remaining test failures in acaas-runtime.test.ts (mock order and method detection)",
+    "Add UI component to expose ACaaS capability through FACE",
+    "Run E2E tests to verify all acceptance gates (ACAAS-001 to ACAAS-005)",
+    "Document evidence durability implementation (SHA-256 + database transactions)"
+  ]
+}

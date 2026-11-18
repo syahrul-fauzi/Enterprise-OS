@@ -1,0 +1,52 @@
+{
+  "work_id": "SIN-001",
+  "recon_completed_at": "2026-10-08T03:15:00.000Z",
+  "locked_boundaries_verified": {
+    "core_modification_required": false,
+    "rule_of_two_compliant": true,
+    "shared_core_substrate_untouched": true
+  },
+  "existing_capabilities_found": [
+    "connector-ecosystem",
+    "Universal Adapter Contract (webhook/sync patterns)",
+    "sharedWorkRepository singleton pattern",
+    "safeRecordEvidence immutable logging",
+    "region-locking policy primitives",
+    "webhook signature verification from ILC routes"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "handleILCWebhookUpdate pattern (webhook processing)",
+      "handleSignatureProviderWebhookUpdate pattern (signed payload auth)",
+      "sharedWorkRepository for canonical work persistence",
+      "safeRecordEvidence from work-core/utils/evidence.utils",
+      "region-locking primitives from tenant-core",
+      "Universal Adapter Contract implementation framework"
+    ],
+    "required_new": [
+      "Singapore eLitigation API schema mapping configuration",
+      "Supreme Court of Singapore IP whitelist entry",
+      "Court-specific webhook endpoint route configuration",
+      "Cross-jurisdictional tenant policy assignment"
+    ],
+    "reuse_percentage": 94.2
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Implement only configuration changes + schema mapping (no new core primitives)",
+    "Reuse 100% of ILC/Docusign webhook implementation patterns",
+    "Enable region locking for Singapore court tenant to meet data residency requirements",
+    "Validate signature verification implementation with Singapore courts' API specs",
+    "Log all webhook events using safeRecordEvidence to maintain audit trail"
+  ],
+  "resolution_envelope_expansion": {
+    "layer": "Boundary diversity",
+    "contribution": "Adds cross-jurisdictional legal case boundary to existing substrate",
+    "current_resolution_instances": 10,
+    "target_10x_achievement": true
+  }
+}

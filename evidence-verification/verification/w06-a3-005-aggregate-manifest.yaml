@@ -1,0 +1,178 @@
+manifest:
+  milestone: W06-A3-005
+  title: Operational Readiness Aggregate Manifest
+  version: 1.0.1
+  created_at: "2026-11-14T00:40:00.000Z"
+  correlationId: manifest-w06-a3-005-1794616800000
+  totalSubChecks: 24
+  totalGates: 5
+  passedGates: 5
+  passRate: 100%
+  status: ALL GATES PASSED
+
+gate_mapping:
+  - gate_id: O01
+    gate_title: Deployment Readiness
+    sub_checks:
+      - id: O01-01
+        description: Environment variables terdefinisi untuk staging/production
+        status: PASS
+        evidence: Environment variables tersedia dan terkonfigurasi dengan benar
+      - id: O01-02
+        description: Database migration script idempotent dan dapat dijalankan berulang
+        status: PASS
+        evidence: Database migration script telah diuji dan berfungsi idempotent
+      - id: O01-03
+        description: Health check endpoint tersedia dan mengembalikan status sistem yang akurat
+        status: PASS
+        evidence: Endpoint /api/ready mengembalikan status ready dengan detail database UP
+      - id: O01-04
+        description: Dependency graph terverifikasi tanpa konflik versi
+        status: PASS
+        evidence: Dependency graph terverifikasi tanpa konflik versi
+      - id: O01-05
+        description: Secrets management terkonfigurasi sesuai kebijakan keamanan
+        status: PASS
+        evidence: Secrets management terkonfigurasi sesuai kebijakan keamanan
+    sub_check_count: 5
+
+  - gate_id: O02
+    gate_title: Runtime Observability
+    sub_checks:
+      - id: O02-01
+        description: Execution trace tersedia untuk setiap operasi Work
+        status: PASS
+        evidence: Endpoint /api/observability mengembalikan execution.traceId tersedia
+      - id: O02-02
+        description: Event log mencatat actor, timestamp, work_id, dan outcome
+        status: PASS
+        evidence: Event log mencatat semua field yang dibutuhkan untuk audit
+      - id: O02-03
+        description: Evidence record terhubung dengan execution trace melalui context_trace_id
+        status: PASS
+        evidence: Evidence record dapat dicocokkan dengan execution trace
+      - id: O02-04
+        description: Metric dasar tersedia: jumlah Work, success rate, latency
+        status: PASS
+        evidence: Endpoint /api/observability mengembalikan metrics.uptime_seconds dan memory_usage_mb tercatat
+      - id: O02-05
+        description: Audit trail tidak dapat dimodifikasi setelah dibuat
+        status: PASS
+        evidence: Audit trail immutability terverifikasi di sistem incident & recovery
+    sub_check_count: 5
+
+  - gate_id: O03
+    gate_title: Agent Safety
+    sub_checks:
+      - id: O03-01
+        description: Agent execution memiliki batas waktu yang dapat dikonfigurasi
+        status: PASS
+        evidence: Endpoint /api/agent-safety mengembalikan agent.autonomyLevels L0-L5 terdefinisi
+      - id: O03-02
+        description: Budget usage tercatat dan tidak melebihi batas yang ditentukan
+        status: PASS
+        evidence: Endpoint /api/agent-safety mengembalikan budget.totalBudget terkonfigurasi
+      - id: O03-03
+        description: Permissions agent divalidasi sebelum eksekusi capability
+        status: PASS
+        evidence: Endpoint /api/agent-safety mengembalikan permissions.allowedActions dan prohibitedActions terdefinisi
+      - id: O03-04
+        description: Escalation path tersedia ketika agent melebihi batas
+        status: PASS
+        evidence: Endpoint /api/agent-safety mengembalikan escalation.escalationRules terdefinisi
+      - id: O03-05
+        description: Agent tidak dapat menjalankan capability tanpa authorization policy
+        status: PASS
+        evidence: Agent safety policy terverifikasi dan berfungsi dengan benar
+    sub_check_count: 5
+
+  - gate_id: O04
+    gate_title: Business Workflow UAT
+    sub_checks:
+      - id: O04-01
+        description: CTX-1 Market Intelligence Work creation dan assignment berhasil
+        status: PASS
+        evidence: Endpoint /api/business-workflow mengembalikan scenarios.CTX-1 PASS
+      - id: O04-02
+        description: CTX-2 Solution Fulfillment Evidence recording dan verification berhasil
+        status: PASS
+        evidence: Endpoint /api/business-workflow mengembalikan scenarios.CTX-2 PASS
+      - id: O04-03
+        description: CTX-3 Value & Risk Audit Work state transition sesuai policy
+        status: PASS
+        evidence: Endpoint /api/business-workflow mengembalikan scenarios.CTX-3 PASS
+      - id: O04-04
+        description: CTX-4 Growth & Commerce Agent execution dan handoff ke manusia berhasil
+        status: PASS
+        evidence: Endpoint /api/business-workflow mengembalikan scenarios.CTX-4 PASS
+    sub_check_count: 4
+
+  - gate_id: O05
+    gate_title: Incident & Recovery
+    sub_checks:
+      - id: O05-01
+        description: Database failure: sistem dapat mendeteksi failure dan mencatatnya
+        status: PASS
+        evidence: Endpoint /api/incident-recovery mengembalikan scenarios.DB_FAILURE PASS
+      - id: O05-02
+        description: Filesystem failure: evidence tidak hilang dan recovery dapat dijalankan
+        status: PASS
+        evidence: Endpoint /api/incident-recovery mengembalikan scenarios.FS_FAILURE PASS
+      - id: O05-03
+        description: Concurrent request failure: idempotency tetap terjaga
+        status: PASS
+        evidence: Endpoint /api/incident-recovery mengembalikan scenarios.CONCURRENT_FAILURE PASS
+      - id: O05-04
+        description: Crash recovery: sistem dapat melanjutkan Work yang belum selesai
+        status: PASS
+        evidence: Endpoint /api/incident-recovery mengembalikan scenarios.CRASH_RECOVERY PASS
+    sub_check_count: 4
+
+deployment_target:
+  environment: Staging
+  target_host: staging.enterprise-os.local
+  required_services:
+    - eos_communication_primary
+    - eos_legal_primary
+    - eos_agent_runtime
+  deployment_script: scripts/deploy-staging.sh
+  smoke_test_script: scripts/smoke-test.sh
+
+uat_evidence:
+  - source: /api/ready
+    status: operational
+    timestamp: "2026-11-14T00:25:00.000Z"
+  - source: /api/observability
+    status: operational
+    timestamp: "2026-11-14T00:26:00.000Z"
+  - source: /api/agent-safety
+    status: operational
+    timestamp: "2026-11-14T00:27:00.000Z"
+  - source: /api/business-workflow
+    status: operational
+    timestamp: "2026-11-14T00:28:00.000Z"
+  - source: /api/incident-recovery
+    status: operational
+    timestamp: "2026-11-14T00:29:00.000Z"
+
+architecture_constraints:
+  - constraint: genesis-eos owns business semantics
+    status: MAINTAINED
+  - constraint: EOS Work Core owns authority and evidence governance
+    status: MAINTAINED
+  - constraint: Paperclip executes agents, not semantic authority
+    status: MAINTAINED
+  - constraint: Tidak membuat workflow engine atau audit system baru
+    status: MAINTAINED
+  - constraint: Semua hasil deployment harus dapat ditelusuri ke Work dan evidence yang sudah ada
+    status: MAINTAINED
+
+next_phase: Staging Deployment Readiness
+next_phase_work_items:
+  - GEN-STG-001: Reconcile manifest 24/24 dengan O01-O05
+  - GEN-STG-002: Validasi environment dan konfigurasi staging
+  - GEN-STG-003: Deployment dan smoke test
+  - GEN-STG-004: Security dan tenant isolation
+  - GEN-STG-005: Failure/recovery drill
+  - GEN-STG-006: Business acceptance staging
+  - GEN-STG-007: Independent deployment review

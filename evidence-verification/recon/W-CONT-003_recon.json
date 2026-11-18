@@ -1,0 +1,46 @@
+{
+  "work_id": "W-CONT-003",
+  "recon_completed_at": "2026-10-01T12:00:00.000Z",
+  "locked_boundaries_verified": {
+    "semantic_boundary_preserved": true,
+    "work_id_invariant": true,
+    "tenant_isolation": true
+  },
+  "existing_capabilities_found": [
+    "work-continuity.ts (handoff_work/receive_work/continue_work)",
+    "executionContext.run() (from C20/C21/C22 tests)",
+    "SemanticState interface (work.contracts.ts)",
+    "SemanticBoundary validation (capability-command-registry.ts)",
+    "TeamProjection primitive (atomic-composition.contracts.ts)",
+    "PRODUCT_DOMAINS configuration (product-domains.ts)",
+    "detectCurrentSurface() (surface-utils.ts)",
+    "canonical .eos-state/evidence logging (repo-wide pattern)"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "handoff_work/receive_work/continue_work",
+      "executionContext.run()",
+      "SemanticState",
+      "SemanticBoundary",
+      "canonical evidence logging",
+      "PRODUCT_DOMAINS",
+      "workflow definitions with 5 explicit boundaries"
+    ],
+    "required_new": [
+      "cross-domain semantic projection logic (update SemanticBoundary.domain without modifying Work identity)"
+    ],
+    "reuse_percentage": 92.3
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Extend WorkHandoffEnvelope with source_domain and target_domain fields to track semantic boundary transitions",
+    "Add SemanticBoundary validation before/after domain projection to ensure only domain field is modified",
+    "Reuse exact vertical slice pattern from C21/C22 tests to maintain consistency",
+    "Maintain workId > domainId precedence (Work as invariant, domain as semantic projection)",
+    "Avoid any horizontal platform changes; implement as standalone test file in core-runtime"
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "work_id": "W-006",
+  "recon_completed_at": "2026-10-09T00:00:00.000Z",
+  "locked_boundaries_verified": {
+    "semantic_boundary_preserved": true,
+    "authority_boundary_preserved": true,
+    "execution_boundary_preserved": true,
+    "evidence_boundary_preserved": true,
+    "workspace_not_identity": true,
+    "workspace_not_authority": true,
+    "face_is_projection": true
+  },
+  "existing_capabilities_found": [
+    "connector-ecosystem:universal-adapter-contract",
+    "connector-ecosystem:github-projects-adapter",
+    "connector-ecosystem:zendesk-support-adapter",
+    "connector-ecosystem:external-work-sync",
+    "communication:communication-adapter-interface",
+    "communication:lamport-clock-time-drift-handling",
+    "core-runtime:mcp-execution-frame-enforcement",
+    "trust-framework:signature-verification-spi",
+    "work-core:safe-record-evidence",
+    "work-core:validate-all-boundaries"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      {
+        "primitive_id": "connector-ecosystem:external-work-sync",
+        "purpose": "Cross-environment work synchronization (bidirectional sync)",
+        "location": "/root/Enterprise-OS/workspace/capabilities/connector-ecosystem/implementation/services/connector-ecosystem.service.ts",
+        "reuse_score": 1.0,
+        "requires_minimal_fix": false
+      },
+      {
+        "primitive_id": "communication:api_webhook-adapter",
+        "purpose": "HTTP webhook communication adapter for external systems",
+        "location": "/root/Enterprise-OS/workspace/capabilities/communication/implementation/contracts/communication.contracts.ts",
+        "reuse_score": 1.0,
+        "requires_minimal_fix": false
+      },
+      {
+        "primitive_id": "core-runtime:mcp-framework",
+        "purpose": "Model Control Protocol execution frame for external actors/APIs",
+        "location": "/root/Enterprise-OS/workspace/packages/compositions/work-template-core/workspace.ts",
+        "reuse_score": 1.0,
+        "requires_minimal_fix": false
+      },
+      {
+        "primitive_id": "communication:lamport-converter",
+        "purpose": "Lamport clock for cross-environment time drift handling",
+        "location": "/root/Enterprise-OS/workspace/capabilities/communication/implementation/grounding/converter.ts",
+        "reuse_score": 1.0,
+        "requires_minimal_fix": false
+      },
+      {
+        "primitive_id": "trust-framework:local-signature-provider",
+        "purpose": "Authenticated transport signature signing/verification",
+        "location": "/root/Enterprise-OS/workspace/capabilities/trust-framework/implementation/services/trust-framework.service.ts",
+        "reuse_score": 1.0,
+        "requires_minimal_fix": false
+      }
+    ],
+    "required_new": [
+      {
+        "primitive_id": "eos-cli:remote-work-adapter-wrapper",
+        "purpose": "Thin CLI wrapper to expose connector-ecosystem's external-work-sync as CLI command",
+        "change_type": "MINIMAL_FIX",
+        "estimated_lines": 3
+      },
+      {
+        "primitive_id": "eos-cli:streaming-event-interface",
+        "purpose": "CLI wrapper for communication capability's event streaming",
+        "change_type": "MINIMAL_FIX",
+        "estimated_lines": 2
+      }
+    ],
+    "reuse_percentage": 87.5
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "REUSE: All C5 requirements can be implemented by wrapping existing connector-ecosystem and communication primitives in the EOS CLI",
+    "MINIMAL_FIX: Add only 2 thin CLI wrappers (≤5 total lines) with no new semantic authority",
+    "Enforce MCP execution frame for all remote CLI operations to maintain boundary compliance",
+    "Reuse trust-framework's signature provider for authenticated cross-environment transport",
+    "Use Lamport clock from communication capability to handle time drift in remote work synchronization"
+  ]
+}
