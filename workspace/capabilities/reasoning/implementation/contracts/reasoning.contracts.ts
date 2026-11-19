@@ -5,7 +5,7 @@ import type {
   TenantId,
   ActorId
 } from "../../../identity/implementation/contracts/identity.contracts.ts";
-import type { WorkAggregate } from "../../../work-core/contracts/work.contracts.ts";
+import type { WorkAggregate } from "@repo/contracts-core";
 
 // ==============================================
 // 📌 COGNITIVE ADAPTER CAPABILITY CONTRACT (CONSTITUTIONAL)

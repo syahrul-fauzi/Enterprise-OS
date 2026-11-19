@@ -5,7 +5,7 @@
  */
 // Gunakan import yang sesuai dengan vitest.config.ts alias dan resolusi .js ke .ts
 import { describe, it, expect, beforeEach } from "vitest";
-import { getWorkRepositoryInMemory } from "../implementation/repository/work-inmemory.repository";
+import { getWorkRepositoryLazy } from "../implementation/commands/work.commands.js";
 import { registerWorkCoreCapability } from "../implementation/commands/work.commands";
 import type { WorkAggregate } from "../implementation/types/work.types";
 import { MembershipRepositoryInMemory, resetMembershipRepositoryInMemory } from "../../identity/implementation/repositories/index.js";
@@ -27,7 +27,7 @@ describe("PAYROLL-INTEGRATION-001 End-to-End Test", () => {
   beforeEach(async () => {
           // Reset in-memory repository untuk setiap test (isolation) dengan pattern identity capability yang ada
           // MembershipRepositoryInMemory sudah menjadi singleton object literal (tidak perlu factory function seperti work-core)
-          workRepo = getWorkRepositoryInMemory();
+          workRepo = await getWorkRepositoryLazy();
           membershipRepo = MembershipRepositoryInMemory;
           
  
@@ -363,7 +363,7 @@ describe("PAYROLL-INTEGRATION-001 End-to-End Test", () => {
     // Catatan: Ini tidak sama dengan GATEWAY_PAYMENT_CONFIRMED - hanya verifikasi algoritma di test environment
 
     // Step 3: Update payroll menjadi SIMULATED_COMPLETE (bukan PAID - isolated simulation only)
-    const updatedPayroll = await workRepo.update(savedPayroll.id, {
+    const updatedPayroll = await workRepo.save({
       ...savedPayroll,
       status: "SIMULATED_COMPLETE",
       domainSpecificData: {

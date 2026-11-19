@@ -56,7 +56,7 @@ export type { WorkId, TenantId, ActorId, WorkspaceId, SessionId, DeviceId, Devic
 
 // Import work-specific repositories dan base utilities untuk di-export ulang
 import { getWorkRepositoryPostgres } from "../implementation/repository/work-postgres.repository.js";
-import { initIdentitySchema, PostgresRepository, getPool } from "@repo/capabilities-identity";
+import { initIdentitySchema, PostgresRepository, getPool } from "@capabilities/identity";
 
 // Re-export SEMUA value/factory functions dan base classes
 export {
@@ -85,7 +85,7 @@ export type {
 // Semua type di bawah ini adalah type baru yang didefinisikan khusus di work-core
 // ==============================================
 // Use z.BRAND compatible type definition to match atomic-composition contracts
-// CompositionId adalah identifier unik untuk work-core (tidak ada di @repo/capabilities-identity)
+// CompositionId adalah identifier unik untuk work-core (tidak ada di @capabilities/identity)
 export type CompositionId = string & { __brand: "CompositionId" };
 export function CompositionId(value: string): CompositionId { return value as CompositionId; }
 
@@ -447,29 +447,6 @@ export const DOMAIN_AUTHORITY_OWNERSHIP: Record<string, string[]> = {
   "acaas": ["billing", "quota", "metering"],
   "requirement-management": ["rtm", "requirements-traceability", "requirement-lifecycle"]
 };
-
-// ==============================================
-// 6-BOUNDARY VALIDATION UTILITY (Tahap B Architecture Rule)
-// Fungsi untuk memvalidasi setiap command/route melewati batas yang diizinkan
-// Work Core TIDAK BOLEH mengakses domain lain (otoritas semantik terpusat)
-// ==============================================
-export function validateBoundaryAccess(domain: string, accessedDomain: string): boolean {
-  const allowedDependencies: Record<string, string[]> = {
-    "identity": ["work-core"],
-    "capability-dispatch": ["work-core", "identity"],
-    "evidence-gateway": ["work-core", "identity", "capability-dispatch"],
-    "acaas": ["work-core", "identity", "evidence-gateway"],
-    "investment-compliance": ["work-core", "identity", "evidence-gateway"], // ILC-001: Tambahkan ACaaS capability sebagai domain yang diizinkan
-    "requirement-management": ["work-core", "identity"],
-    "legal-case": ["work-core", "identity", "legal-case"], // LH-CASE-001: Tambahkan legal-case sebagai domain yang diizinkan, termasuk akses ke domain itu sendiri
-    "api-gateway": ["work-core", "identity", "capability-dispatch", "evidence-gateway", "acaas", "requirement-management", "investment-compliance"],
-    "full-platform-integration": ["work-core", "identity", "connector-ecosystem"], // DIGIOP-104: Tambahkan full-platform-integration dengan dependency yang diizinkan
-    "work-core": [] // Work Core tidak boleh mengakses domain lain
-  };
-  return allowedDependencies[domain]?.includes(accessedDomain) ?? false;
-}
-
-
 
 // ==============================================
 // 📌 CANONICAL BOUNDARY CHECK TYPES (dipindahkan dari utils untuk konsistensi)

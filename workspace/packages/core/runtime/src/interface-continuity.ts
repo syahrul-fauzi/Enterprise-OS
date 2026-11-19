@@ -1,5 +1,5 @@
-import { ExecutionContext } from './execution-context';
-import { InvocationEvidence } from './invocation-evidence';
+import { ExecutionContext } from './execution-context.js';
+import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface InterfaceSession {
   sessionId: string;
@@ -21,12 +21,12 @@ export class InterfaceContinuityService {
       interfaceHash: `iface-hash-${Date.now()}`,
       createdAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'createInterfaceSession', { actorId, workItemId, session });
+    await InvocationEvidence.record(context, 'createInterfaceSession', { actorId, workItemId, session });
     return session;
   }
 
   async suspendInterfaceSession(context: ExecutionContext, sessionId: string, suspendReason: string): Promise<{ suspended: boolean; sessionId: string }> {
-    await InvocationEvidence.recordInvocation(context, 'suspendInterfaceSession', { sessionId, suspendReason });
+    await InvocationEvidence.record(context, 'suspendInterfaceSession', { sessionId, suspendReason });
     return { suspended: true, sessionId };
   }
 
@@ -40,7 +40,7 @@ export class InterfaceContinuityService {
       createdAt: new Date().toISOString(),
       lastResumedAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'resumeInterfaceSession', { sessionId, session });
+    await InvocationEvidence.record(context, 'resumeInterfaceSession', { sessionId, session });
     return session;
   }
 
@@ -51,7 +51,7 @@ export class InterfaceContinuityService {
       'Method signatures are unchanged',
       'Input/output types are preserved'
     ];
-    await InvocationEvidence.recordInvocation(context, 'verifyInterfaceContinuity', { sessionId, checks });
+    await InvocationEvidence.record(context, 'verifyInterfaceContinuity', { sessionId, checks });
     return { valid: true, checks };
   }
 }

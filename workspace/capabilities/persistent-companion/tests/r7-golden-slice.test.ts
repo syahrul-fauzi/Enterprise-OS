@@ -15,7 +15,7 @@ import { test, describe, before, after, beforeEach } from "node:test";
 import assert from "node:assert";
 import { persistentWorkCompanion } from "../implementation/services/persistent-companion.service";
 import { WorkRepositoryPostgres } from "../../work-core/implementation/repository/work-postgres.repository";
-import { WorkAggregate } from "../../work-core/contracts/work.contracts";
+import { WorkAggregate } from "@repo/contracts-core";
 
 // Test constants
 const TEST_USER_ID = "test-user-123";

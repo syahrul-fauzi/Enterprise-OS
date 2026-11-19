@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { glob } from "glob";
 import { readFile } from "fs/promises";
-import { validateBoundaryAccess, validateNoCircularDependencies, DOMAIN_AUTHORITY_OWNERSHIP } from "../contracts/work.contracts.js";
+import { validateBoundaryAccess, validateNoCircularDependencies, DOMAIN_AUTHORITY_OWNERSHIP } from "@repo/contracts-core";
 
 // Architecture Fitness Checks - Tahap B Output
 // Dapat dijalankan otomatis di CI/CD untuk memvalidasi compliance boundary

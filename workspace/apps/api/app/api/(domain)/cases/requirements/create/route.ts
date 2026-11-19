@@ -7,11 +7,11 @@ import {
   createAnonymousWorkspaceSession,
   encodeWorkspaceSession
 } from "@repo/core-kernel";
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "@repo/capabilities-identity";
+} from "@capabilities/identity";
 
 export async function POST(request: Request) {
   try {

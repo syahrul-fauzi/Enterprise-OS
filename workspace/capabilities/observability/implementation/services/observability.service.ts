@@ -14,7 +14,7 @@ import {
   getTraceForDecision, 
   verifyWorkIdCorrelation,
   type ObservedExecution 
-} from "../../../../packages/core/runtime/dist/execution-observability.js";
+} from "../../../../packages/core/runtime/src/execution-observability.js";
 import {createIncident, resolveIncident } from "../commands/observability.commands.js";
 import { statePath } from "../../../../packages/tooling/eos-cli/src/state.js";
 import type {

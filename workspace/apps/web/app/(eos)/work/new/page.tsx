@@ -18,7 +18,7 @@ import {
 import { GlobalNavigation } from "@repo/presentation-ui-system/layouts";
 import type { BreadcrumbItem } from "@repo/presentation-ui-system/molecules";
 // Import canonical intent understanding service (now exported from atomic-composition)
-import { intentUnderstandingService, resolveSemanticIntentFallback } from "@repo/capabilities-atomic-composition";
+import { intentUnderstandingService, resolveSemanticIntentFallback } from "@capabilities/atomic-composition";
 
 // Server-side intent retrieval - uses canonical repository primitive (no internal HTTP calls)
 async function fetchIntentServerSide(
@@ -28,7 +28,7 @@ async function fetchIntentServerSide(
   try {
     // Import canonical intent repository (lazy import to avoid circular dependencies)
     const { getIntentRepositoryPostgres, initIdentitySchema } = await import(
-      "@repo/capabilities-identity/repositories"
+      "@capabilities/identity/repositories"
     );
 
     await initIdentitySchema();
@@ -138,7 +138,7 @@ export default async function NewWorkPage({
       // Implements user's requirement: ALL reality sources use same canonical ingress path
       // Re-enabled for W004-P3-01 real work execution (added to Golden Spine)
       const { createUniversalExpression } = await import(
-        "@repo/capabilities-atomic-composition"
+        "@capabilities/atomic-composition"
       );
 
       // Combine form data into single raw content for universal expression pipeline (includes BPJS/healthcare fields if present)

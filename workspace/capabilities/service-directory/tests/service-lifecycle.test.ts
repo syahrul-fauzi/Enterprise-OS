@@ -14,7 +14,7 @@ import type {
   ServiceRequestAggregate,
   ServiceRequestStatus,
 } from "../implementation/contracts/service.contracts.js";
-import { ExecutionFrame } from "../../work-core/contracts/work.contracts.js";
+import { ExecutionFrame } from "@repo/contracts-core";
 import { registerServiceDirectoryCapability } from "../implementation/services/service-request.service.js";
 import { SessionRepositoryInMemory } from "../../identity/implementation/repositories/index.js";
 import { SessionId, UserId, TenantId, WorkspaceId, ActorId, type SessionAggregate } from "../../identity/implementation/contracts/index.js";

@@ -1,5 +1,5 @@
-import { ExecutionContext } from './execution-context';
-import { InvocationEvidence } from './invocation-evidence';
+import { ExecutionContext } from './execution-context.js';
+import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface InvocationSession {
   sessionId: string;
@@ -21,12 +21,12 @@ export class InvocationContinuityService {
       invocationHash: `invocation-hash-${Date.now()}`,
       createdAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'createInvocationSession', { actorId, workItemId, session });
+    await InvocationEvidence.record(context, 'createInvocationSession', { actorId, workItemId, session });
     return session;
   }
 
   async suspendInvocationSession(context: ExecutionContext, sessionId: string, suspendReason: string): Promise<{ suspended: boolean; sessionId: string }> {
-    await InvocationEvidence.recordInvocation(context, 'suspendInvocationSession', { sessionId, suspendReason });
+    await InvocationEvidence.record(context, 'suspendInvocationSession', { sessionId, suspendReason });
     return { suspended: true, sessionId };
   }
 
@@ -40,7 +40,7 @@ export class InvocationContinuityService {
       createdAt: new Date().toISOString(),
       lastResumedAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'resumeInvocationSession', { sessionId, session });
+    await InvocationEvidence.record(context, 'resumeInvocationSession', { sessionId, session });
     return session;
   }
 
@@ -51,7 +51,7 @@ export class InvocationContinuityService {
       'Invocation context is unchanged',
       'Invocation evidence chain is complete'
     ];
-    await InvocationEvidence.recordInvocation(context, 'verifyInvocationContinuity', { sessionId, checks });
+    await InvocationEvidence.record(context, 'verifyInvocationContinuity', { sessionId, checks });
     return { valid: true, checks };
   }
 }

@@ -37,9 +37,9 @@ import type {
   DeviceHardwareAbstraction,
   AutonomyBoundaryCheck,
   AutonomyBoundaryResult
-} from "@capabilities/work-core/contracts/work.contracts.js";
+} from "@repo/contracts-core";
 // Identity factories dari work-core contracts (canonical export)
-import { createDeviceId } from "@capabilities/work-core/contracts/work.contracts.js";
+import { createDeviceId } from "@repo/contracts-core";
 console.log(`[websocket-adapter] Work-core imports loaded: createDeviceId exists? ${!!createDeviceId}, checkAutonomyBoundary exists? ${!!checkAutonomyBoundary}, WorkRepositoryInMemory exists? ${!!WorkRepositoryInMemory}, getWorkRepositoryPostgres exists? ${!!getWorkRepositoryPostgres}`);
 // Lazy load capabilityRegistry dengan path alias yang sama dengan index.ts
 // Gate A compliance: path import dan registry terverifikasi, menghindari module cycle di vitest
@@ -160,7 +160,7 @@ import { z } from "zod";
 // getSessionByIdCommand sudah di-export ulang oleh work-core untuk menjaga canonical import chain
 // Lazy initialize saat pertama kali digunakan (bukan di module load) - hindari conflict
 import { RuleBasedProvider } from "@capabilities/work-core/implementation/utils/intent-understanding.utils.js";
-import type { IntentUnderstandingProvider } from "@capabilities/work-core/contracts/work.contracts.js";
+import type { IntentUnderstandingProvider } from "@repo/contracts-core";
 
 let _intentService: IntentUnderstandingProvider | undefined;
 function getIntentService(): IntentUnderstandingProvider {

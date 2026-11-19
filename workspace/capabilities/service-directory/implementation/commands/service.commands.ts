@@ -32,7 +32,7 @@ import {
   type ActorId, 
   type WorkspaceId, 
   type TenantId
-} from "../../../work-core/contracts/work.contracts.js";
+} from "@repo/contracts-core";
 // W-SVC-002: Import shared Work Continuity Substrate utilities (complies with Rule of Two reuse)
 import { 
   calculateExecutionFrame, 
@@ -41,7 +41,7 @@ import {
   buildWorkFaceProjection,
   validateAllBoundaries // W-013: Import boundary validation from work-core (5-boundary model compliance)
 } from "../../../work-core/implementation/utils/index.js";
-import type { WorkFaceProjection, IdentityBoundary, SemanticBoundary, AuthorityBoundary, ExecutionBoundary, PresentationBoundary } from "../../../work-core/contracts/work.contracts.js";
+import type { WorkFaceProjection, IdentityBoundary, SemanticBoundary, AuthorityBoundary, ExecutionBoundary, PresentationBoundary } from "@repo/contracts-core";
 // W-SVC-001: Import capabilityRegistry dari @repo/core-kernel (alias yang terdaftar di package.json)
 // Sesuai pola canonical yang digunakan di semua capability lain (work-core, legal-case, dll)
 async function getCapabilityRegistry() {

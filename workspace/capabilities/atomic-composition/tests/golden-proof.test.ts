@@ -8,11 +8,10 @@ import type {
   CapabilityResolutionRequest
 } from "../implementation/contracts/atomic-composition.contracts.js";
 import {
-  RequirementId,
-  ActorId,
-  WorkId
-} from "../implementation/contracts/atomic-composition.contracts.js";
-import { WorkId as createWorkId } from "@capabilities/work-core/contracts/work.contracts.js";
+  createWorkId,
+  createActorId
+} from "@repo/contracts-core";
+import { RequirementId } from "@capabilities/requirement-management/implementation/contracts/requirement.contracts.js";
 
 /**
  * GOLDEN PROOF: Micro-Business Work - Launch Client X Website
@@ -108,7 +107,7 @@ describe("Golden Proof: Client X Website Launch", () => {
     const availableActors: Actor[] = [
       {
         id: "actor-jane",
-        actorId: ActorId("human-jane-2026"),
+        actorId: createActorId("human-jane-2026"),
         type: "human",
         displayName: "Jane Smith",
         capabilities: [capabilities[0]], // Frontend capability (core ID)
@@ -120,7 +119,7 @@ describe("Golden Proof: Client X Website Launch", () => {
       },
       {
         id: "actor-bob",
-        actorId: ActorId("human-bob-2026"),
+        actorId: createActorId("human-bob-2026"),
         type: "human",
         displayName: "Bob Johnson",
         capabilities: [capabilities[1]], // Backend capability (core ID)
@@ -132,7 +131,7 @@ describe("Golden Proof: Client X Website Launch", () => {
       },
       {
         id: "actor-alice",
-        actorId: ActorId("human-alice-2026"),
+        actorId: createActorId("human-alice-2026"),
         type: "human",
         displayName: "Alice Wong",
         capabilities: [capabilities[2]], // Design capability (core ID)
@@ -144,7 +143,7 @@ describe("Golden Proof: Client X Website Launch", () => {
       },
       {
         id: "actor-charlie",
-        actorId: ActorId("human-charlie-2026"),
+        actorId: createActorId("human-charlie-2026"),
         type: "human",
         displayName: "Charlie Davis",
         capabilities: [capabilities[3]], // QA capability (core ID)
@@ -181,8 +180,8 @@ describe("Golden Proof: Client X Website Launch", () => {
     console.log("\n📊 Composition Result:");
     console.log(`   Success: ${result.success}`);
     console.log(`   Composition ID: ${result.compositionId} (canonical link)`);
-    console.log(`   Team created: ${result.team.name} (${result.team.projectionId}) - EPHEMERAL projection`);
-    console.log(`   Actors assigned: ${result.team.actors.length}`);
+    console.log(`   Team created: ${result.team.teamId} (${result.team.compositionId}) - EPHEMERAL projection`);
+    console.log(`   Bindings created: ${result.team.totalBindings}`);
     console.log(`   Assignments created: ${result.assignments.length}`);
     console.log(`   Unresolved requirements: ${result.unresolvedRequirements.length}`);
 
@@ -198,11 +197,8 @@ describe("Golden Proof: Client X Website Launch", () => {
 
     // Final assertions
     expect(result.success).toBe(true);
-    expect(result.team.actors.length).toBe(4); // All actors assigned
     expect(result.assignments.length).toBe(4); // All requirements fulfilled
     expect(result.unresolvedRequirements.length).toBe(0); // No unresolved needs
-    expect(result.team.status).toBe("active"); // Team is active
-    expect(result.team.isEphemeral).toBe(true); // Team is ephemeral (as expected)
 
     console.log("\n");
     console.log("=".repeat(80));

@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@repo/presentation-experience": "workspace:*",
-    "@eos/genesis": "workspace:*"
+    "@capabilities/genesis": "workspace:*"
   },
   "devDependencies": {
     "@repo/config-typescript": "workspace:*",

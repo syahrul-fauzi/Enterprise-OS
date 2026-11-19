@@ -11,11 +11,11 @@ import type {
   ActorMetadata,
   AuthorizationScope as CoreAuthorizationScope,
   RiskAssessment as CoreRiskAssessment
-} from "../../work-core/contracts/work.contracts.js";
+} from "@repo/contracts-core";
 // Import canonical branded types + factory functions dari @repo/contracts-core (source of truth)
 import { WorkId, createWorkId } from "../../../packages/contracts-core/dist/index.js";
 
-export type CaseStatus = "draft" | "open" | "submitted" | "reviewed" | "approved" | "in_progress" | "under_review" | "closed";
+export type CaseStatus = "draft" | "open" | "submitted" | "reviewed" | "approved" | "in_progress" | "under_review" | "settled";
 export type CasePriority = "low" | "medium" | "high" | "critical";
 export type RiskLevel = "low" | "medium" | "high" | "critical";
 export type CaseId = string & {
@@ -94,7 +94,7 @@ export interface CreateCaseInput {
     readonly caseContext: CaseContextMetadata;
     readonly initialRiskAssessment: RiskAssessment;
 }
-import type { WorkFaceProjection } from "../../work-core/contracts/work.contracts.js";
+import type { WorkFaceProjection } from "@repo/contracts-core";
 export interface CreateCaseOutput {
     readonly id: CaseId;
     readonly status: CaseStatus;
@@ -108,7 +108,7 @@ export interface CloseCaseInput {
 }
 export interface CloseCaseOutput {
     readonly id: CaseId;
-    readonly status: "closed";
+    readonly status: "settled";
     readonly closedAt: Date;
 }
 export interface AssignLawyerInput {

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { WorkAggregate } from "../../../work-core/contracts/work.contracts";
+import { WorkAggregate } from "@repo/contracts-core";
 
 /**
  * DJKI API Configuration - defines government API schema inline to avoid import issues

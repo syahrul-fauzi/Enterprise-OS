@@ -24,8 +24,8 @@
     "target": "ES2022",
     "ignoreDeprecations": "5.0",
     "paths": {
-      "@repo/capabilities-work-core": ["../work-core/contracts/work.contracts.ts"],
-      "@repo/capabilities-work-core/*": ["../work-core/*"]
+      "@capabilities/work-core": ["../work-core/contracts/work.contracts.ts"],
+      "@capabilities/work-core/*": ["../work-core/*"]
     }
   },
   "include": ["implementation/**/*.ts", "contracts/**/*.ts"],

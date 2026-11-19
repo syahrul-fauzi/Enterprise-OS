@@ -4,9 +4,9 @@ import {
   readWorkspaceSessionFromRequest,
   decodeWorkspaceSession,
 } from "@repo/core-kernel";
-import { getSessionRepositoryPostgres, initIdentitySchema } from "@repo/capabilities-identity/repositories";
+import { getSessionRepositoryPostgres, initIdentitySchema } from "@capabilities/identity/repositories";
 // Canonical import SessionId dari @repo/contracts-core (sumber tunggal tipe identity - W06-A3-001)
-// Mengganti import non-canonical dari @repo/capabilities-identity/implementation/contracts untuk sinkronisasi tipe
+// Mengganti import non-canonical dari @capabilities/identity/implementation/contracts untuk sinkronisasi tipe
 import { SessionId } from "@repo/contracts-core";
 
 // Initialize schema once at route load

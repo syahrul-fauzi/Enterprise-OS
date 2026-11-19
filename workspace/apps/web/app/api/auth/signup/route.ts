@@ -6,7 +6,7 @@ import {
   decodeWorkspaceSession,
   type WorkspaceSession,
 } from "@repo/core-kernel";
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 
 // Lazy load capabilityRegistry sesuai pattern yang digunakan di semua route EOS (hindari module cycle)
 async function getCapabilityRegistry() {

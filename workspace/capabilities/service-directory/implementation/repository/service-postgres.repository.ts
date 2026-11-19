@@ -10,7 +10,7 @@ import {
   type ActorId, 
   type TenantId, 
   type WorkspaceId 
-} from "../../../work-core/contracts/work.contracts.js";
+} from "@repo/contracts-core";
 import {
   ServiceRequestId,
   ServiceProviderId,

@@ -33,12 +33,12 @@ import type {
   TenantId,
   WorkspaceId,
   ActorId
-} from "../../../work-core/contracts/work.contracts.js";
+} from "@repo/contracts-core";
 import { 
   createActorId, 
   createTenantId, 
   createWorkspaceId 
-} from "../../../work-core/contracts/work.contracts.js";
+} from "@repo/contracts-core";
 // Import Work repository dari lokasi yang sama (exact pattern reuse from COM-001)
 import { getWorkRepositoryPostgres } from "../../../work-core/implementation/repository/work-postgres.repository.js";
 import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.js";

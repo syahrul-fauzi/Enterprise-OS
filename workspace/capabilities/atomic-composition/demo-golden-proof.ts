@@ -15,7 +15,7 @@ import {
   ActorId,
   WorkId
 } from "./implementation/contracts/atomic-composition.contracts.ts";
-import { WorkId as createWorkId } from "../work-core/contracts/work.contracts.ts";
+import { WorkId as createWorkId } from "@repo/contracts-core";
 
 async function runGoldenProof() {
   console.log("=".repeat(80));

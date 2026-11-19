@@ -72,6 +72,44 @@ export const ProviderTypeSchema = z.enum([
 
 export type ProviderType = z.infer<typeof ProviderTypeSchema>;
 
+export const ActorRiskClassificationSchema = z.enum([
+  "low",      // No access to sensitive data, no financial impact
+  "medium",   // Access to non-sensitive data, limited financial impact
+  "high",     // Access to sensitive data, significant financial impact
+  "critical"  // Access to all data, irreversible business impact
+]);
+
+export type ActorRiskClassification = z.infer<typeof ActorRiskClassificationSchema>;
+
+export const ActorAutonomyLevelSchema = z.enum([
+  "read-only",    // A0: Membaca, mencari, meriset (tidak perlu approval per tindakan)
+  "supervised",   // A1-A2: Menganalisis, membuat draft, memperbarui progres (mandat diperlukan)
+  "conditional",  // A3: Membuat Issue, menugaskan To-Do (approval eksplisit sesuai governance)
+  "autonomous"    // A4: Tindakan strategis/finansial (human approval wajib)
+]);
+
+export type ActorAutonomyLevel = z.infer<typeof ActorAutonomyLevelSchema>;
+
+export const ActorLifecycleStatusSchema = z.enum([
+  "registered",   // Actor has been registered but not yet approved
+  "active",       // Actor is active and can execute
+  "suspended",    // Actor is temporarily suspended
+  "deactivated",  // Actor is permanently deactivated
+  "archived"      // Actor has been archived
+]);
+
+export type ActorLifecycleStatus = z.infer<typeof ActorLifecycleStatusSchema>;
+
+export const ActorBudgetLimitSchema = z.object({
+  maxCostPerExecution: z.number().optional(),
+  maxTotalCostPerPeriod: z.number().optional(),
+  periodStart: z.string().optional(),
+  periodEnd: z.string().optional(),
+  currency: z.string().default("IDR")
+});
+
+export type ActorBudgetLimit = z.infer<typeof ActorBudgetLimitSchema>;
+
 export const ActorProjectionSchema = z.object({
   // Extend canonical identity (user from identity capability)
   userId: z.string().brand<"UserId">(), // links directly to core identity
@@ -84,6 +122,32 @@ export const ActorProjectionSchema = z.object({
   availability: z.boolean().default(true),
   // Keep compatibility with existing code but remove duplicate Actor definition
   actorId: z.string().brand<"ActorId">(), // derived from userId for composition context
+  // ACTOR-002: Actor Registry Extension Fields
+  ownerUserId: z.string().brand<"UserId">(), // Human owner responsible for this actor
+  permissionScope: z.array(z.string()).default([]), // Explicit capability permissions
+  riskClassification: ActorRiskClassificationSchema.default("medium"),
+  autonomyLevel: ActorAutonomyLevelSchema.default("supervised"),
+  lifecycleStatus: ActorLifecycleStatusSchema.default("registered"),
+  budgetLimit: ActorBudgetLimitSchema.optional(),
+  inputOutputContract: z.object({
+    inputSchema: z.any().optional(),
+    outputSchema: z.any().optional(),
+    businessRules: z.array(z.string()).default([])
+  }).optional(),
+  // G3 Security & Adversarial Gate Fields
+  securityControls: z.array(z.string()).default([]), // Explicit security controls
+  // G4 Reliability & Recovery Gate Fields
+  retryLimit: z.number().default(3), // Maximum number of retries
+  timeoutMs: z.number().default(30000), // Execution timeout in milliseconds
+  recoveryProcedure: z.string().default("rollback"), // Failure recovery procedure
+  // G5 Economic & Business Gate Fields
+  costPerExecution: z.number().default(0), // Cost per successful execution
+  expectedSuccessRate: z.number().default(0.95), // Expected success rate (0-1)
+  businessOutcomeEvidence: z.string().default("required"), // Business outcome evidence requirements
+  qualityGatesPassed: z.array(z.enum(["G1", "G2", "G3", "G4", "G5"])).default([]),
+  createdAt: z.string().default(() => new Date().toISOString()),
+  updatedAt: z.string().default(() => new Date().toISOString()),
+  lastVerifiedAt: z.string().optional()
 });
 
 export type ActorProjection = z.infer<typeof ActorProjectionSchema>;

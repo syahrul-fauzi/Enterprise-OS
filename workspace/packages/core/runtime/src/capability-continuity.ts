@@ -1,5 +1,5 @@
-import { ExecutionContext } from './execution-context';
-import { InvocationEvidence } from './invocation-evidence';
+import { ExecutionContext } from './execution-context.js';
+import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface CapabilitySession {
   sessionId: string;
@@ -21,12 +21,12 @@ export class CapabilityContinuityService {
       capabilityHash: `cap-hash-${Date.now()}`,
       createdAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'createCapabilitySession', { actorId, workItemId, session });
+    await InvocationEvidence.record(context, 'createCapabilitySession', { actorId, workItemId, session });
     return session;
   }
 
   async suspendCapabilitySession(context: ExecutionContext, sessionId: string, suspendReason: string): Promise<{ suspended: boolean; sessionId: string }> {
-    await InvocationEvidence.recordInvocation(context, 'suspendCapabilitySession', { sessionId, suspendReason });
+    await InvocationEvidence.record(context, 'suspendCapabilitySession', { sessionId, suspendReason });
     return { suspended: true, sessionId };
   }
 
@@ -40,7 +40,7 @@ export class CapabilityContinuityService {
       createdAt: new Date().toISOString(),
       lastResumedAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'resumeCapabilitySession', { sessionId, session });
+    await InvocationEvidence.record(context, 'resumeCapabilitySession', { sessionId, session });
     return session;
   }
 
@@ -51,7 +51,7 @@ export class CapabilityContinuityService {
       'Input/output schemas are unchanged',
       'Authorization boundaries are preserved'
     ];
-    await InvocationEvidence.recordInvocation(context, 'verifyCapabilityContinuity', { sessionId, checks });
+    await InvocationEvidence.record(context, 'verifyCapabilityContinuity', { sessionId, checks });
     return { valid: true, checks };
   }
 }

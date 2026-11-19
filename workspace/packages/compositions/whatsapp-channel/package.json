@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@capabilities/work-core": "workspace:*",
-    "@repo/capabilities-identity": "workspace:*",
+    "@capabilities/identity": "workspace:*",
     "@capabilities/edge": "workspace:*"
   },
   "keywords": [

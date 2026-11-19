@@ -17,7 +17,7 @@
  */
 
 import { AtomicCompositionService } from "./implementation/services/composition.service";
-import type { WorkId } from "@capabilities/work-core/contracts/work.contracts";
+import type { WorkId } from "@repo/contracts-core";
 import {
   RequirementId,
   ActorId,

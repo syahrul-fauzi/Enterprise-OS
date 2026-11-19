@@ -11,7 +11,7 @@ import {
 } from "@repo/contracts-core";
 import { randomUUID } from "node:crypto";
 // Import 6-boundary validation function dari package kanonis
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 
 // Lazy load repositories untuk menghindari module cycle dan mematuhi 6-boundary compliance
 async function getUserRepositoryLazy() {

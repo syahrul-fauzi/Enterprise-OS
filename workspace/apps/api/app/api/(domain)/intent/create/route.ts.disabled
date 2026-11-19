@@ -10,8 +10,8 @@ import {
 import {
   getIntentRepositoryPostgres,
   initIdentitySchema,
-} from "@repo/capabilities-identity";
-import { IntentId, type IntentCategory, type IntentOrigin, type IntentRawInput } from "@repo/capabilities-identity";
+} from "@capabilities/identity";
+import { IntentId, type IntentCategory, type IntentOrigin, type IntentRawInput } from "@capabilities/identity";
 // EOS-INTELLIGENCE-001: Import the new universal intent pipeline
 // Implements the full universal intent lifecycle: ANY SOURCE → INTAKE → UNDERSTANDING → SUFFICIENCY → RESOLUTION → WORK
 // This replaces all previous intent creation logic with the new architecture

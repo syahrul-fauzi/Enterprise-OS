@@ -9,7 +9,7 @@ import { z } from "zod";
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "@repo/capabilities-identity";
+} from "@capabilities/identity";
 
 // Canonical API proxy pattern (domain specialization of core Work primitive)
 // Mengikuti EXACT pattern yang sama dengan Services.ID intake API dan LH-003/LawyersHub

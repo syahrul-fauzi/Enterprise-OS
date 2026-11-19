@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import { readWorkspaceSessionFromRequest } from "@repo/core-kernel";
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 
 export async function POST(request: Request) {
   try {

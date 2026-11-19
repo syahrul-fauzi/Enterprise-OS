@@ -4,13 +4,13 @@
     "outDir": "dist",
     "paths": {
       "@repo/*": ["../../packages/*"],
-      "@repo/capabilities-requirement-management": ["../../capabilities/requirement-management"],
-      "@repo/capabilities-evidence-registry": ["../../capabilities/evidence-registry"],
-      "@repo/capabilities-agent-orchestration": ["../../capabilities/agent-orchestration"],
+      "@capabilities/requirement-management": ["../../capabilities/requirement-management"],
+      "@capabilities/evidence-registry": ["../../capabilities/evidence-registry"],
+      "@capabilities/agent-orchestration": ["../../capabilities/agent-orchestration"],
       "@repo/capabilities-workflow-engine": ["../../capabilities/workflow-engine"],
       "@capabilities/*": ["../../capabilities/*"],
-      "@repo/capabilities-work-core": ["../work-core/contracts/work.contracts.ts"],
-      "@repo/capabilities-work-core/*": ["../work-core/*"]
+      "@capabilities/work-core": ["../work-core/contracts/work.contracts.ts"],
+      "@capabilities/work-core/*": ["../work-core/*"]
     }
   },
   "include": ["implementation/**/*.ts"],

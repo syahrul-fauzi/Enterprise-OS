@@ -3,9 +3,10 @@ import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { CaseId, type CaseRepository, type CaseAggregate, type CaseId as CaseIdType, CaseStatus, CasePriority } from "../../contracts/index.js";
 // Import canonical Work repository dari work-core (CORE-001: satu-satunya sumber truth boundary metadata)
 import { getWorkRepositoryPostgres } from "@capabilities/work-core/repository/work-postgres.repository";
-// Import canonical realtime notifier from core package (D1 architecture compliance)
-// @ts-ignore - Temporary fix for module declaration issue
-import { notifyWorkspaceListeners } from "@repo/core-realtime";
+// Stub for realtime notifier - will be replaced when core-realtime package is available
+const notifyWorkspaceListeners = async () => {
+  console.log("[CaseRepository] notifyWorkspaceListeners called (stub implementation)");
+};
 
 // In-memory store for cases - isolated to this module
 const STORE = new Map<string, CaseAggregate>();

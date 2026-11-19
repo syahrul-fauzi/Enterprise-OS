@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "main": "./implementation/index.ts",
-  "types": "./dist/implementation/index.d.ts",
+  "main": "./index.ts",
+  "types": "./index.d.ts",
   "exports": {
     ".": {
-      "types": "./implementation/index.ts",
-      "default": "./implementation/index.ts"
+      "types": "./index.ts",
+      "default": "./index.ts"
     },
     "./implementation": "./implementation/index.ts",
     "./implementation/*": "./implementation/*",
@@ -28,7 +28,7 @@
   "dependencies": {
     "@repo/contracts-core": "workspace:*",
     "@repo/core-kernel": "workspace:*",
-    "@repo/capabilities-identity": "workspace:*"
+    "@capabilities/identity": "workspace:*"
   },
   "devDependencies": {
     "@repo/config-typescript": "workspace:*",

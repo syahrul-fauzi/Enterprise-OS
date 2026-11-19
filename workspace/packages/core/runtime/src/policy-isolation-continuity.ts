@@ -1,4 +1,4 @@
-import { ExecutionContext } from './execution-context';
+import { ExecutionContext } from './execution-context.js';
 
 export interface PolicyIsolationSession {
   sessionId: string;

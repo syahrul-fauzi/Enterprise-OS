@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.10",
-    "@repo/capabilities-work-core": "link:capabilities/work-core",
+    "@capabilities/work-core": "link:capabilities/work-core",
     "@repo/core-kernel": "link:packages/core/kernel",
     "@repo/core-runtime": "link:packages/core/runtime",
     "@repo/presentation-shared": "link:packages/presentation/shared",

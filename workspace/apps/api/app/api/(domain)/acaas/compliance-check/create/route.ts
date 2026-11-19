@@ -11,8 +11,8 @@ import { z } from "zod";
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "@repo/capabilities-identity";
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+} from "@capabilities/identity";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 
 // ACaaS-COMMERCIAL-001: Create Compliance Check endpoint
 // Mengikuti EXACT canonical pattern yang sama dengan compliance-cases dan domain lain

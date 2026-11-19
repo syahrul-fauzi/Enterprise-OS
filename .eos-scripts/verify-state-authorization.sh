@@ -8,8 +8,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).parent.parent
 EOS_STATE_DIR = REPO_ROOT / ".eos-state"
 OWNERSHIP_MAP_PATH = EOS_STATE_DIR / "eos-state-ownership-map.yaml"
-AUDIT_LOG_PATH = EOS_STATE_DIR / "audit" / "state-write-audit.log"
-LOG_FILE = EOS_STATE_DIR / "audit" / "state-authorization-validation.log"
+AUDIT_DIR = EOS_STATE_DIR / "evidence-verification" / "audit"
+AUDIT_LOG_PATH = AUDIT_DIR / "state-write-audit.log"
+LOG_FILE = AUDIT_DIR / "state-authorization-validation.log"
 
 logging.basicConfig(
     level=logging.INFO,

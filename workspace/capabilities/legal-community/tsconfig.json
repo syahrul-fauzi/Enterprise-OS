@@ -22,8 +22,8 @@
     "strict": true,
     "target": "ES2022",
     "paths": {
-      "@repo/capabilities-work-core": ["../work-core/contracts/work.contracts.ts"],
-      "@repo/capabilities-work-core/*": ["../work-core/*"]
+      "@capabilities/work-core": ["../work-core/contracts/work.contracts.ts"],
+      "@capabilities/work-core/*": ["../work-core/*"]
     }
   },
   "references": [

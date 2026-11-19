@@ -9,7 +9,7 @@ import { capabilityRegistry } from "@repo/core-kernel/registry/capability-comman
 import { decodeWorkspaceSession, WORKSPACE_SESSION_COOKIE } from "@repo/core-kernel";
 import { getWorkById } from "../create/route";
 // Gunakan permission check terverifikasi dari work-core untuk ONE TRUTH source (sesuai tsconfig.json path alias)
-import { getWork } from "@repo/capabilities-work-core/implementation/commands/work.commands";
+import { getWork } from "@capabilities/work-core/implementation/commands/work.commands";
 
 export async function POST(request: Request) {
   try {

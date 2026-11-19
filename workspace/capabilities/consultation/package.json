@@ -11,7 +11,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@repo/capabilities-identity": "workspace:*",
+    "@capabilities/identity": "workspace:*",
     "@repo/core-kernel": "workspace:*",
     "@repo/core-runtime": "workspace:*",
     "@capabilities/work-core": "workspace:*"

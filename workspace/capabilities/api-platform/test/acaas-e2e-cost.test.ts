@@ -6,7 +6,8 @@
  * Mengikuti pola E2E yang sama dengan test-real-001-e2e.ts
  */
 import { describe, it, expect, beforeEach, afterAll, vi } from 'vitest';
-import { capabilityRegistry, capabilityCommands } from "@repo/core-kernel/registry/capability-command-registry";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+const capabilityCommands = capabilityRegistry.capabilityCommands;
 import { recordRuntimeInvocation, recordObservedExecution } from "@repo/core-runtime";
 
 // Mock recordRuntimeInvocation dan recordObservedExecution sesuai pola test lainnya

@@ -4,7 +4,7 @@
 // Mengikuti EOS Product Slice playbook: 100% primitive reuse, frozen core compliance, bukti komersial end-to-end
 
 // Type definitions only (tidak diproses saat runtime)
-import type { WorkAggregate as Work } from '../../../work-core/contracts/work.contracts.js';
+import type { WorkAggregate as Work } from "@repo/contracts-core";
 import type { CommercialPackage } from '../types/commercial.types.js';
 
 // Konfigurasi paket komersial yang akan divalidasi (sesuai requirement SMACE)

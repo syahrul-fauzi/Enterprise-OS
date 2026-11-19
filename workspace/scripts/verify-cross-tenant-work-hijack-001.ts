@@ -15,7 +15,7 @@ import {
   type SessionId,
   type WorkspaceId,
   createWorkspaceId
-} from "@repo/capabilities-identity";
+} from "@capabilities/identity";
 import * as fs from "node:fs";
 import { statePath } from "@repo/eos-cli";
 import { randomUUID } from "node:crypto";

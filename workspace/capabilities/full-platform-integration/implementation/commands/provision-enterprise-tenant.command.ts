@@ -22,7 +22,7 @@ import {
   type EvidenceBoundary, 
   type PresentationBoundary,
   WorkStatus
-} from "../../../work-core/contracts/work.contracts.js";
+} from "@repo/contracts-core";
 import { slugifyForTenant } from "../../../identity/implementation/services/password.service.js";
 
 // Lazy initialization untuk menghindari module cycle (Edge Runtime compatible) - reuse identity's tenant repository

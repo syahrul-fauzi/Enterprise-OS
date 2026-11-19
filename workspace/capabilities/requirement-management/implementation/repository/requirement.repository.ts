@@ -1,7 +1,8 @@
 // @ts-nocheck
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
-import { type WorkId } from "../../../work-core/contracts/work.contracts.js";
+// import { type WorkId } from "@repo/contracts-core";
+import { type WorkId } from "@capabilities/work-core";
 import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
 import { newWorkId } from "../../../work-core/index.ts";
 import {

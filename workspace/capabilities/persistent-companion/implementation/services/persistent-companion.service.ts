@@ -5,7 +5,7 @@
  * This is the golden slice that proves EOS can stay "always at your side"
  * for work spread across all external platforms
  */
-import type { WorkId } from "../../../work-core/contracts/work.contracts";
+import type { WorkId } from "@repo/contracts-core";
 import type { WorkInspectionResult } from "../../../work-inspection/implementation/contracts/work-inspection.contracts";
 import { WorkInspectionAgent } from "../../../work-inspection/implementation/services/inspection.agent.service";
 

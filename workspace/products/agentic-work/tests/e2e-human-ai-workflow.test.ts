@@ -16,7 +16,7 @@ import {
   ActorId,
   CompositionId
 } from "../../../capabilities/atomic-composition/implementation/contracts/atomic-composition.contracts.js";
-import { WorkId } from "@capabilities/work-core/contracts/work.contracts.js";
+import { WorkId } from "@repo/contracts-core";
 import { AGENTIC_WORK_WORKFLOW } from "../runtime/workflow-definition.js";
 import { provideAgenticWorkContext } from "../runtime/product-context-provider.js";
 

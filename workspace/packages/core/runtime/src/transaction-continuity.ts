@@ -1,5 +1,5 @@
-import { ExecutionContext } from './execution-context';
-import { InvocationEvidence } from './invocation-evidence';
+import { ExecutionContext } from './execution-context.js';
+import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface TransactionSession {
   sessionId: string;
@@ -21,12 +21,12 @@ export class TransactionContinuityService {
       transactionHash: `transaction-hash-${Date.now()}`,
       createdAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'createTransactionSession', { actorId, workItemId, session });
+    await InvocationEvidence.record(context, 'createTransactionSession', { actorId, workItemId, session });
     return session;
   }
 
   async suspendTransactionSession(context: ExecutionContext, sessionId: string, suspendReason: string): Promise<{ suspended: boolean; sessionId: string }> {
-    await InvocationEvidence.recordInvocation(context, 'suspendTransactionSession', { sessionId, suspendReason });
+    await InvocationEvidence.record(context, 'suspendTransactionSession', { sessionId, suspendReason });
     return { suspended: true, sessionId };
   }
 
@@ -40,7 +40,7 @@ export class TransactionContinuityService {
       createdAt: new Date().toISOString(),
       lastResumedAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'resumeTransactionSession', { sessionId, session });
+    await InvocationEvidence.record(context, 'resumeTransactionSession', { sessionId, session });
     return session;
   }
 
@@ -51,7 +51,7 @@ export class TransactionContinuityService {
       'Transaction context is unchanged',
       'Transaction evidence chain is complete'
     ];
-    await InvocationEvidence.recordInvocation(context, 'verifyTransactionContinuity', { sessionId, checks });
+    await InvocationEvidence.record(context, 'verifyTransactionContinuity', { sessionId, checks });
     return { valid: true, checks };
   }
 }

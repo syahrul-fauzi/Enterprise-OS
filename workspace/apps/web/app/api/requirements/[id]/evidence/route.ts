@@ -10,7 +10,7 @@ import {
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "@repo/capabilities-identity";
+} from "@capabilities/identity";
 
 // GET: Retrieve all evidence for a specific requirement item
 export async function GET(

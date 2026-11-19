@@ -9,7 +9,7 @@ import { z } from "zod";
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "@repo/capabilities-identity";
+} from "@capabilities/identity
 
 // Canonical API proxy pattern (domain specialization of core Work primitive)
 // Mengikuti EXACT pattern yang sama dengan PROD-001.5 (product-delivery) dan LH-004 (legal-case) untuk Rule of Three compliance

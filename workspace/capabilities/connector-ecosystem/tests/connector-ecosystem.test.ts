@@ -95,7 +95,7 @@ test("whatsapp webhook creates valid WorkAggregate", async () => {
 test("whatsapp outbound sync uses existing communication capability", async () => {
     // Pertama buat test WorkAggregate yang valid - import dari work-core capability (path absolut sesuai codebase pattern)
     const { getWorkRepositoryPostgres } = await import("../../work-core/implementation/repository/work-postgres.repository.js");
-    // Import langsung constructor TenantId dari @repo/capabilities-identity (karena work.contracts.ts hanya export TYPE, bukan value)
+    // Import langsung constructor TenantId dari @capabilities/identity (karena work.contracts.ts hanya export TYPE, bukan value)
     // Gunakan type assertion yang aman untuk menghindari branded type collision
     const workRepository = getWorkRepositoryPostgres();
     const testWork = await workRepository.save({

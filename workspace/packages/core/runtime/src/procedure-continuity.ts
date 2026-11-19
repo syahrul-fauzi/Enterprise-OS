@@ -1,5 +1,5 @@
-import { ExecutionContext } from './execution-context';
-import { InvocationEvidence } from './invocation-evidence';
+import { ExecutionContext } from './execution-context.js';
+import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface ProcedureSession {
   sessionId: string;
@@ -21,12 +21,12 @@ export class ProcedureContinuityService {
       procedureHash: `proc-hash-${Date.now()}`,
       createdAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'createProcedureSession', { actorId, workItemId, session });
+    await InvocationEvidence.record(context, 'createProcedureSession', { actorId, workItemId, session });
     return session;
   }
 
   async suspendProcedureSession(context: ExecutionContext, sessionId: string, suspendReason: string): Promise<{ suspended: boolean; sessionId: string }> {
-    await InvocationEvidence.recordInvocation(context, 'suspendProcedureSession', { sessionId, suspendReason });
+    await InvocationEvidence.record(context, 'suspendProcedureSession', { sessionId, suspendReason });
     return { suspended: true, sessionId };
   }
 
@@ -40,7 +40,7 @@ export class ProcedureContinuityService {
       createdAt: new Date().toISOString(),
       lastResumedAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'resumeProcedureSession', { sessionId, session });
+    await InvocationEvidence.record(context, 'resumeProcedureSession', { sessionId, session });
     return session;
   }
 
@@ -51,7 +51,7 @@ export class ProcedureContinuityService {
       'Step execution order is unchanged',
       'Input/output mappings are preserved'
     ];
-    await InvocationEvidence.recordInvocation(context, 'verifyProcedureContinuity', { sessionId, checks });
+    await InvocationEvidence.record(context, 'verifyProcedureContinuity', { sessionId, checks });
     return { valid: true, checks };
   }
 }

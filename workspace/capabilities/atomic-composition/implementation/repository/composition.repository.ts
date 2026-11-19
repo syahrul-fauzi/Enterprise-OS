@@ -6,7 +6,7 @@ import type { Assignment } from '../contracts/atomic-composition.contracts';
 import type { Requirement } from '../contracts/atomic-composition.contracts';
 import type { WorkId } from "@capabilities/work-core";
 import { TeamId, AssignmentId, RequirementId } from '../contracts/atomic-composition.contracts';
-import { statePath } from '../../../../packages/tooling/eos-cli/src/state.js';
+import { statePath } from '../../../../packages/tooling/eos-cli/src/state';
 
 // PERSISTENCE LAYER FOR ATOMIC COMPOSITION
 // Stores composition artifacts in .eos-state/composition for durability

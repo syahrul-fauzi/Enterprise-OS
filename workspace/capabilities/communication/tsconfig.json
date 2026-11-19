@@ -28,10 +28,10 @@
       "@repo/core-runtime": ["../../packages/core/runtime/dist/src/index.d.ts"],
       "@repo/core-runtime/*": ["../../packages/core/runtime/dist/src/*"],
       "@capabilities/*": ["../../capabilities/*"],
-      "@repo/capabilities-work-core": ["../work-core/contracts/work.contracts.ts"],
-      "@repo/capabilities-work-core/*": ["../work-core/*"],
-      "@repo/capabilities-identity": ["../identity/dist/index.d.ts"],
-      "@repo/capabilities-identity/*": ["../identity/dist/*"]
+      "@capabilities/work-core": ["../work-core/contracts/work.contracts.ts"],
+      "@capabilities/work-core/*": ["../work-core/*"],
+      "@capabilities/identity": ["../identity/dist/index.d.ts"],
+      "@capabilities/identity/*": ["../identity/dist/*"]
     }
   },
   "include": ["implementation/**/*.ts", "implementation/contracts/**/*.ts"],

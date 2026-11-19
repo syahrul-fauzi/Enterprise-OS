@@ -1,8 +1,8 @@
 // @ts-nocheck
 // WorkRepositoryPostgres type tidak diperlukan lagi - semua repository menggunakan getWorkRepositoryLazy
 // import { getEvidenceRepositoryPostgres, type EvidenceRepositoryPostgres } from "../../../evidence-registry/implementation/repository/evidence-postgres.repository.js";
-import type { WorkAggregate, WorkStatus, ActorId } from "../../../work-core/contracts/work.contracts.js";
-import { createSessionId, createTenantId, createWorkspaceId, createActorId, newWorkId } from "../../../work-core/contracts/work.contracts.js";
+import type { WorkAggregate, WorkStatus, ActorId } from "@repo/contracts-core";
+import { createSessionId, createTenantId, createWorkspaceId, createActorId, newWorkId } from "@repo/contracts-core";
 import { safeRecordEvidence } from "../../../work-core/implementation/utils/evidence.utils.js";
 import type { ConnectorDefinition, ConnectorSyncResult } from "../contracts/index.js";
 import { recordRuntimeInvocation } from "@repo/core-runtime";

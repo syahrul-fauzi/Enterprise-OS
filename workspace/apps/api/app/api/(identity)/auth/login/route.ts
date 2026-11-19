@@ -7,7 +7,7 @@ import {
   type WorkspaceSession,
 } from "@repo/core-kernel";
 // Import 6-boundary validation function dari package kanonis (Tahap B mandate)
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 
 // Lazy load capabilityRegistry sesuai pattern yang digunakan di semua route EOS (hindari module cycle)
 async function getCapabilityRegistry() {

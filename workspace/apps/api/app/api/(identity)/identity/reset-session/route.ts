@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { encodeWorkspaceSession, createAnonymousWorkspaceSession, WORKSPACE_SESSION_COOKIE, decodeWorkspaceSession } from "@repo/core-kernel";
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {

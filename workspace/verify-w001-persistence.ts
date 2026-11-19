@@ -12,7 +12,7 @@ import { initIdentitySchema } from '@capabilities/identity/implementation/reposi
 import { WorkRepositoryPostgres } from '@capabilities/work-core/implementation/repository/work-postgres.repository.js';
 import { identityCommands } from '@capabilities/identity/implementation/commands/index.js';
 // Import WorkAggregate type untuk type safety mapping
-import type { WorkAggregate } from '@capabilities/work-core/contracts/work.contracts.js';
+import type { WorkAggregate } from "@repo/contracts-core";
 
 // ============================================================================
 // LH-PROD-001 P5 DESTRUCTIVE PERSISTENCE VERIFICATION

@@ -1,8 +1,9 @@
 // @ts-nocheck
 // ACaaS-COMMERCIAL-001: Wrapper untuk canonical safeRecordEvidence dari work-core (tidak lagi local copy)
 // Gate A requirement: hapus semua duplikat safeRecordEvidence, gunakan canonical dari work-core
-import type { WorkspaceId, EvidenceBoundary } from "@capabilities/work-core/contracts/work.contracts";
-import { validateBoundaryAccess, safeRecordEvidence } from "@capabilities/work-core/implementation/utils/evidence.utils.js";
+import type { WorkspaceId, EvidenceBoundary } from "@repo/contracts-core";
+import { validateBoundaryAccess } from "@repo/contracts-core";
+import { safeRecordEvidence } from "@capabilities/work-core/implementation/utils/evidence.utils.js";
 
 export async function safeRecordEvidenceACaaS(payload: {
   workspace_id: WorkspaceId; // Wajib sesuai EOS MASTER EVIDENCE REQUIREMENT

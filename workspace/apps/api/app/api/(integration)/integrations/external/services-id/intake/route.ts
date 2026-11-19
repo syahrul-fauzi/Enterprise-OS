@@ -17,7 +17,7 @@ async function initNodeRuntime() {
   }
   
   if (!initIdentitySchema) {
-    const { initIdentitySchema: importedInit } = await import("@repo/capabilities-identity");
+    const { initIdentitySchema: importedInit } = await import("@capabilities/identity");
     initIdentitySchema = importedInit;
   }
 }

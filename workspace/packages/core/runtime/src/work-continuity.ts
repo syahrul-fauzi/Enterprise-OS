@@ -38,9 +38,8 @@ export async function handoff_work(envelope: WorkHandoffEnvelope): Promise<boole
       operationId: "handoff",
       sourceRef: "core-runtime/work-continuity",
       success: true,
-      input: envelope,
-      result: { workId: envelope.work_id, sourceActorId: envelope.source_actor_id, targetActorId: envelope.target_actor_id },
-      work_id: envelope.work_id
+      input: envelope as unknown as Record<string, unknown>,
+      result: { workId: envelope.work_id, sourceActorId: envelope.source_actor_id, targetActorId: envelope.target_actor_id }
     });
   }
   catch (err) {

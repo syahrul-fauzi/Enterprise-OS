@@ -1,5 +1,5 @@
-import { ExecutionContext } from './execution-context';
-import { InvocationEvidence } from './invocation-evidence';
+import { ExecutionContext } from './execution-context.js';
+import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface GovernanceSession {
   sessionId: string;
@@ -21,12 +21,12 @@ export class GovernanceContinuityService {
       governanceHash: `gov-hash-${Date.now()}`,
       createdAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'createGovernanceSession', { actorId, workItemId, session });
+    await InvocationEvidence.record(context, 'createGovernanceSession', { actorId, workItemId, session });
     return session;
   }
 
   async suspendGovernanceSession(context: ExecutionContext, sessionId: string, suspendReason: string): Promise<{ suspended: boolean; sessionId: string }> {
-    await InvocationEvidence.recordInvocation(context, 'suspendGovernanceSession', { sessionId, suspendReason });
+    await InvocationEvidence.record(context, 'suspendGovernanceSession', { sessionId, suspendReason });
     return { suspended: true, sessionId };
   }
 
@@ -40,7 +40,7 @@ export class GovernanceContinuityService {
       createdAt: new Date().toISOString(),
       lastResumedAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'resumeGovernanceSession', { sessionId, session });
+    await InvocationEvidence.record(context, 'resumeGovernanceSession', { sessionId, session });
     return session;
   }
 
@@ -51,7 +51,7 @@ export class GovernanceContinuityService {
       'Authorization policies are unchanged',
       'Audit trail is complete'
     ];
-    await InvocationEvidence.recordInvocation(context, 'verifyGovernanceContinuity', { sessionId, checks });
+    await InvocationEvidence.record(context, 'verifyGovernanceContinuity', { sessionId, checks });
     return { valid: true, checks };
   }
 }

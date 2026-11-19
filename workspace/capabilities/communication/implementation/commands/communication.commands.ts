@@ -9,7 +9,7 @@ import {
   type WorkspaceId,
   createTenantId,
   createWorkspaceId
-} from "../../../work-core/contracts/work.contracts.ts";
+} from "@repo/contracts-core";
 import {
   newCommunicationEventId,
   defaultCommunicationStatus,

@@ -10,7 +10,7 @@ import {
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "@repo/capabilities-identity";
+} from "@capabilities/identity";
 
 export async function POST(request: Request) {
   try {

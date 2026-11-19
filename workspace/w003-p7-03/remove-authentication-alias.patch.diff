@@ -8,8 +8,8 @@ index ca4e506..4ef6ae2 100644
        "@repo/presentation-hooks/*": ["../../packages/presentation/hooks/dist/*"],
 -      "@repo/presentation-templates": ["../../packages/presentation/templates/dist"],
 -      "@repo/presentation-templates/*": ["../../packages/presentation/templates/dist/*"],
-       "@repo/capabilities-identity": ["../../capabilities/identity/implementation/index.ts"],
-       "@repo/capabilities-identity/*": ["../../capabilities/identity/implementation/*"],
+       "@capabilities/identity": ["../../capabilities/identity/implementation/index.ts"],
+       "@capabilities/identity/*": ["../../capabilities/identity/implementation/*"],
        "@repo/capabilities-requirement-management": ["../../capabilities/requirement-management/implementation/index.ts"],
 @@ -26,9 +24,16 @@
        "@repo/presentation-ui-system": ["../../packages/presentation/ui-system/dist"],

@@ -9,7 +9,7 @@ import test from "node:test";
 import { connectorEcosystemService } from "../implementation/services/connector-ecosystem.service.js";
 import { getWorkRepositoryLazy } from "../../work-core/implementation/commands/work.commands.js";
 import crypto from "crypto";
-import type { WorkAggregate } from "../../work-core/contracts/work.contracts.js";
+import type { WorkAggregate } from "@repo/contracts-core";
 
 // Test harness untuk EDGE-DEVICE-001 failure scenarios
 async function setupTestWork(): Promise<WorkAggregate> {

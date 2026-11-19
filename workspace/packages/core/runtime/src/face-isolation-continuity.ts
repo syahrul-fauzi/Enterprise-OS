@@ -1,5 +1,5 @@
-import { ExecutionContext } from '../types/execution-context';
-import { logInvocationEvidence } from '../evidence/evidence-logger';
+import { ExecutionContext } from './execution-context.js';
+import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface FaceIsolationSession {
   faceSessionId: string;
@@ -20,13 +20,13 @@ export class FaceIsolationContinuityService {
       createdAt: new Date().toISOString()
     };
     
-    logInvocationEvidence(context, 'createFaceIsolationSession', { faceRole, session });
+    await InvocationEvidence.record(context, 'createFaceIsolationSession', { faceRole, session });
     return session;
   }
 
   async suspendFaceIsolationSession(context: ExecutionContext, faceSessionId: string, suspendReason: string): Promise<{ suspended: boolean; faceSessionId: string }> {
     const result = { suspended: true, faceSessionId };
-    logInvocationEvidence(context, 'suspendFaceIsolationSession', { faceSessionId, suspendReason, result });
+    await InvocationEvidence.record(context, 'suspendFaceIsolationSession', { faceSessionId, suspendReason, result });
     return result;
   }
 
@@ -40,7 +40,7 @@ export class FaceIsolationContinuityService {
       lastResumedAt: new Date().toISOString()
     };
     
-    logInvocationEvidence(context, 'resumeFaceIsolationSession', { faceSessionId, session });
+    await InvocationEvidence.record(context, 'resumeFaceIsolationSession', { faceSessionId, session });
     return session;
   }
 
@@ -51,7 +51,7 @@ export class FaceIsolationContinuityService {
       'Face evidence chain verified'
     ];
     
-    logInvocationEvidence(context, 'verifyFaceIsolationContinuity', { faceSessionId, checks });
+    await InvocationEvidence.record(context, 'verifyFaceIsolationContinuity', { faceSessionId, checks });
     return { valid: true, checks };
   }
 }

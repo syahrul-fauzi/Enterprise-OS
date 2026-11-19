@@ -4,9 +4,9 @@ import {
   WORKSPACE_SESSION_COOKIE,
   readWorkspaceSessionFromRequest,
 } from "@repo/core-kernel";
-import { getUserRepositoryPostgres, initIdentitySchema } from "@repo/capabilities-identity/repositories";
-import { UserId } from "@repo/capabilities-identity/implementation/contracts/identity.contracts";
-import { passwordService } from "@repo/capabilities-identity/implementation/services/password.service";
+import { getUserRepositoryPostgres, initIdentitySchema } from "@capabilities/identity/repositories";
+import { UserId } from "@capabilities/identity/implementation/contracts/identity.contracts";
+import { passwordService } from "@capabilities/identity/implementation/services/password.service";
 
 // Initialize schema once at route load
 initIdentitySchema().catch(err => console.error("[user/update] Failed to init identity schema:", err));

@@ -7,9 +7,9 @@
     "paths": {
       "@repo/*": ["../../packages/*"],
       "@capabilities/*": ["../../capabilities/*"],
-      "@repo/capabilities-requirement-management": ["../../capabilities/requirement-management"],
-      "@repo/capabilities-identity": ["../../capabilities/identity"],
-      "@repo/capabilities-work-core": ["../../capabilities/work-core"],
+      "@capabilities/requirement-management": ["../../capabilities/requirement-management"],
+      "@capabilities/identity": ["../../capabilities/identity"],
+      "@capabilities/work-core": ["../../capabilities/work-core"],
       "@repo/capabilities-workflow-engine": ["../../capabilities/workflow-engine"],
       "@repo/capabilities-requirements-traceability-matrix": ["../../capabilities/requirements-traceability-matrix"]
     }

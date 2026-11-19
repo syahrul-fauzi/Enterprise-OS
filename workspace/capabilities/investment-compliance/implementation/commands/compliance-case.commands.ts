@@ -40,7 +40,7 @@ import {
 	type WorkId,
 	type ProductNode,
 	type HighValueWorkGraphQuery
-} from "../../../work-core/contracts/work.contracts.js";
+} from "@repo/contracts-core";
 // Import ExecutionEnvelope dari connector-ecosystem contracts (canonical source untuk MCP)
 import {
 	type ExecutionEnvelope,

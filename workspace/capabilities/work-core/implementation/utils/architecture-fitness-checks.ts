@@ -9,8 +9,8 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 // Fixed: Menambahkan koma yang hilang untuk valid import (Tahap B syntax correction)
-import { validateBoundaryAccess, validateAllBoundaries, validateNoCircularDependencies } from "../../contracts/work.contracts.js";
-import type { WorkFaceProjection, FitnessBaseline, FitnessCheckResult } from "../../contracts/work.contracts.js";
+import { validateBoundaryAccess, validateAllBoundaries, validateNoCircularDependencies } from "@repo/contracts-core";
+import type { WorkFaceProjection, FitnessBaseline, FitnessCheckResult } from "@repo/contracts-core";
 
 /**
  * Scan semua capability command files untuk memeriksa apakah mereka memanggil validateBoundaryAccess

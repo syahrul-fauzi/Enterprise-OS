@@ -27,10 +27,10 @@
     "target": "ES2022",
     "paths": {
       "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
-      "@repo/capabilities-identity": ["../identity/implementation/index.ts"],
-      "@repo/capabilities-identity/*": ["../identity/implementation/*"],
-      "@repo/capabilities-work-core": ["../work-core/contracts/work.contracts.ts"],
-      "@repo/capabilities-work-core/*": ["../work-core/*"],
+      "@capabilities/identity": ["../identity/implementation/index.ts"],
+      "@capabilities/identity/*": ["../identity/implementation/*"],
+      "@capabilities/work-core": ["../work-core/contracts/work.contracts.ts"],
+      "@capabilities/work-core/*": ["../work-core/*"],
       "@repo/capabilities-reasoning": ["./implementation/contracts/reasoning.contracts.ts"],
       "@repo/capabilities-reasoning/*": ["./*"]
     }

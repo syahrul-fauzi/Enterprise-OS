@@ -1,5 +1,5 @@
-import { ExecutionContext } from './execution-context';
-import { InvocationEvidence } from './invocation-evidence';
+import { ExecutionContext } from './execution-context.js';
+import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface FaceSession {
   sessionId: string;
@@ -21,12 +21,12 @@ export class FaceContinuityService {
       faceHash: `face-hash-${Date.now()}`,
       createdAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'createFaceSession', { actorId, workItemId, session });
+    await InvocationEvidence.record(context, 'createFaceSession', { actorId, workItemId, session });
     return session;
   }
 
   async suspendFaceSession(context: ExecutionContext, sessionId: string, suspendReason: string): Promise<{ suspended: boolean; sessionId: string }> {
-    await InvocationEvidence.recordInvocation(context, 'suspendFaceSession', { sessionId, suspendReason });
+    await InvocationEvidence.record(context, 'suspendFaceSession', { sessionId, suspendReason });
     return { suspended: true, sessionId };
   }
 
@@ -40,7 +40,7 @@ export class FaceContinuityService {
       createdAt: new Date().toISOString(),
       lastResumedAt: new Date().toISOString()
     };
-    await InvocationEvidence.recordInvocation(context, 'resumeFaceSession', { sessionId, session });
+    await InvocationEvidence.record(context, 'resumeFaceSession', { sessionId, session });
     return session;
   }
 
@@ -51,7 +51,7 @@ export class FaceContinuityService {
       'Component hierarchy is unchanged',
       'User interaction flows are preserved'
     ];
-    await InvocationEvidence.recordInvocation(context, 'verifyFaceContinuity', { sessionId, checks });
+    await InvocationEvidence.record(context, 'verifyFaceContinuity', { sessionId, checks });
     return { valid: true, checks };
   }
 }

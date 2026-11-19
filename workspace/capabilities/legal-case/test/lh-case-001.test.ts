@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import { createDevAuthenticatedSession } from "../../../packages/core/kernel/src/session/workspace-session.js";
 import { capabilityRegistry } from "../../../packages/core/kernel/src/registry/capability-command-registry.js";
 import { commands as legalCaseCommands } from "../implementation/commands/case.commands.js";
-import { createWorkCommand, getWorkCommand } from "../../work-core/implementation/commands/work.commands.js";
+import { createWork } from "../../work-core/implementation/commands/work.commands.js";
 // Import session repository untuk save createDevAuthenticatedSession sessions ke in-memory store
 import { SessionRepositoryInMemory } from "../../identity/implementation/repositories/session.inmemory.js";
 
@@ -41,14 +41,7 @@ beforeAll(async () => {
     ...legalCaseCommands["legal-case.close"],
     capability: "legal-case"
   });
-  capabilityRegistry.register({
-    ...createWorkCommand,
-    capability: "work-core"
-  });
-  capabilityRegistry.register({
-    ...getWorkCommand,
-    capability: "work-core"
-  });
+  capabilityRegistry.register(createWork);
   console.log("[LH-001 TEST SETUP] ✅ All core commands registered successfully (following DEL-001 pattern)");
 });
 

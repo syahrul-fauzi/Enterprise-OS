@@ -24,7 +24,7 @@
     "@repo/core-realtime": "workspace:*",
     "@repo/core-capability-registry": "workspace:*",
     "@capabilities/connector-ecosystem": "workspace:*",
-    "@repo/capabilities-identity": "workspace:*",
+    "@capabilities/identity": "workspace:*",
     "ioredis": "^5.4.2"
   },
   "devDependencies": {

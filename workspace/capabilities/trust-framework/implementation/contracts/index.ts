@@ -1,2 +1,2 @@
 // @ts-nocheck
-export * from "./trust-framework.contracts.js";
+export * from "@repo/contracts-core";

@@ -30,7 +30,7 @@ async function getSessionRepositoryLazy() {
 // Ekstrak execute function dari command object
 const getWork = getWorkCommand.execute;
 
-import type { WorkId, TenantId, WorkspaceId, ActorId, SessionId } from "../contracts/work.contracts.js";
+import type { WorkId, TenantId, WorkspaceId, ActorId, SessionId } from "@repo/contracts-core";
 
 // Test constants (sesuai pola test lain di work-core)
 const TEST_TENANT_ID = "tenant-test-001" as TenantId;

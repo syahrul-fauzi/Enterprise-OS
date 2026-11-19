@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { validateBoundaryAccess, decodeWorkspaceSession, WORKSPACE_SESSION_COOKIE } from "@repo/capabilities-work-core/contracts/work.contracts.js";
+import { decodeWorkspaceSession, WORKSPACE_SESSION_COOKIE } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 import { initNodeRuntime } from "@repo/core-kernel/runtime/node/index.js";
 
 // Lazy load capability registry to avoid module cycles

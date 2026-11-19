@@ -8,10 +8,10 @@ import { randomUUID } from "crypto";
 import type { IntentResolutionRequirement } from "../contracts/universal-intent.contracts";
 // Import type (untuk type annotation) dan value (fungsi constructor) dengan alias yang benar
 // FIXED: Canonical import dari single-source @capabilities/work-core (TENANT-ISOLATION-001 compliance)
-import type { WorkId, ActorId, TenantId, WorkspaceId } from "../../../work-core/contracts/work.contracts";
-import { newWorkId as createWorkId, createActorId, createTenantId } from "../../../work-core/contracts/work.contracts";
+import type { WorkId, ActorId, TenantId, WorkspaceId } from "@repo/contracts-core";
+import { newWorkId as createWorkId, createActorId, createTenantId } from "@repo/contracts-core";
 // Import CMBCD execution frame calculator (user's execution-boundary policy requirement)
-import { calculateExecutionFrame } from "../../../work-core/implementation/utils/cmbdc.utils.js";
+import { calculateExecutionFrame } from "../../../work-core/implementation/utils/cmbdc.utils";
 // Define WorkIdType locally to avoid TypeScript alias resolution issues
 type WorkIdType = Awaited<ReturnType<typeof createWorkId>>;
 import { ActionId, EffectId, AttemptId, ObservationId, EvidenceId } from "../contracts/execution-requirements.contracts";
@@ -88,7 +88,7 @@ interface ProviderResolutionStage {
 // Implements user requirement: "In-memory registry bukan Execution Fabric production"
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
-import { statePath } from '../../../../packages/tooling/eos-cli/src/state.js';
+import { statePath } from '../../../../packages/tooling/eos-cli/src/state';
 
 const STORAGE_DIR = statePath("execution-fabric");
 

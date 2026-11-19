@@ -1,7 +1,7 @@
 // @ts-nocheck
 // @ts-nocheck
 import { z } from "zod";
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "@repo/core-kernel";
 import { slugifyForTenant } from "../services/password.service.cjs";
 import {

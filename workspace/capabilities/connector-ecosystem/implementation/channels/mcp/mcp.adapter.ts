@@ -472,9 +472,1429 @@ mcpServer.setRequestHandler("tools/call", async (request: any, context: any) => 
         })
       }]
     };
-  }
+  } else if (name === "register_seat_companion") {
+    // EOS-360-002: Seat Companion registration MCP handler (SAMA PERSIS seperti API call - TIDAK ADA BYPASS GOVERNANCE)
+    // Gate 3 EOS MCP Integration: Implement MCP handler for seat companion registration following authorization parity pattern
+    const protocolVersion = context.requestHeaders?.["mcp-protocol-version"] || "2026-07-28";
+    const clientId = args.clientInfo?.id || context.clientId || "";
+    const tenantContext = args.tenant_context || args.clientMetadata?.tenant_context;
+    const workspaceContext = args.workspace_context || args.clientMetadata?.workspace_context || tenantContext;
+    const mcpSessionId = args.mcp_session_id || context.sessionId || "";
 
-  throw new Error(`Tool not found: ${name}`);
+    if (!tenantContext) {
+      throw new Error("[MCP register_seat_companion] tenant_context is required");
+    }
+
+    const tenantId = createTenantId(tenantContext);
+    const workspaceId = createWorkspaceId(workspaceContext);
+    const companionInput = args;
+
+    // W06-A3-002: Panggil security-hardening.authorize sebelum eksekusi (SAMA PERSIS API) - single authorization check
+    const authRequest = new Request(context.request.url || "", {
+      headers: context.requestHeaders || {}
+    });
+    const seatCompanionCapabilityRegistry = await getCapabilityRegistry();
+    
+    // Ekstrak session yang sudah divalidasi dari SSE endpoint (canonical decodeWorkspaceSession)
+    // Session dari context request (yang sudah melewati SSE validation) bukan dari client-controlled input
+    const mcpSession = context?.validatedWorkspaceSession;
+    if (!mcpSession) {
+      throw new Error("[MCP seat companion authorization error] Session tidak terverifikasi");
+    }
+    
+    // Panggil security-hardening.authorize dengan parameter yang SAMA persis dengan API (W06-A3-002 acceptance criteria)
+    // Kontrak: security-hardening.authorize(request: Request, scope: EosScope, session?) → AuthorizationDecision
+    const authDecision = await seatCompanionCapabilityRegistry.invoke(
+      "security-hardening",
+      "authorize",
+      authRequest,
+      workspaceId, // scope = workspaceId (sama dengan API yang menggunakan workspaceId sebagai EosScope)
+      // Parameter session lengkap dengan revokedAt (W06-A3-002: revoked session test - acceptance criteria terpenuhi)
+      {
+        tenantId: tenantId,
+        actorId: mcpSession.actorId, // Gunakan actorId dari session terverifikasi, bukan dari client-controlled input
+        sessionId: mcpSession.sessionId || context.sessionId || "",
+        revokedAt: mcpSession.revokedAt ? new Date(mcpSession.revokedAt) : null // Gunakan revokedAt aktual dari session terverifikasi
+      }
+    ) as { 
+      allowed: boolean; 
+      status: 200 | 401 | 403; 
+      reason: string; 
+      scope: string 
+    };
+
+    // Jika authorization ditolak, throw error DENGAN STATUS code yang sama (tidak ada side effects - W06-A3-002 acceptance criteria)
+    if (!authDecision.allowed) {
+      safeRecordEvidence({
+        capability: "connector-ecosystem",
+        command: "mcp.authorization.denied",
+        work_id: "",
+        actor_id: `mcp-client:${clientId}`,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        sessionId: context.sessionId || "",
+        timestamp: new Date().toISOString(),
+        auth_decision: authDecision,
+        reason: authDecision.reason
+      });
+      throw new Error(`[MCP authorization denied] ${authDecision.reason} (status: ${authDecision.status})`);
+    }
+
+    // Setelah authorization lulus, baru invoke capability registerSeatCompanion (sama alur dengan API middleware)
+    const seatCompanionInvokeCapabilityRegistry = await getCapabilityRegistry();
+    const invocationResult = await seatCompanionInvokeCapabilityRegistry.invoke(
+      "atomic-composition",
+      "seat-companion.register",
+      companionInput
+    );
+
+    // Catat evidence invokasi berhasil (EOS-360-007: Evidence Continuity)
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.seat-companion.registered",
+      work_id: "",
+      actor_id: `mcp-client:${clientId}`,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: "",
+      timestamp: new Date().toISOString(),
+      protocolVersion: protocolVersion,
+      companionActorId: invocationResult.result?.companionActorId,
+      seatOwnerUserId: invocationResult.result?.seatOwnerUserId,
+      autonomyLevel: invocationResult.result?.autonomyLevel,
+      invocationSuccess: invocationResult.ok
+    });
+
+    if (!invocationResult.ok) {
+      throw new Error(`[MCP register_seat_companion] Invocation failed: ${invocationResult.error || "Unknown error"}`);
+    }
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          companionActorId: invocationResult.result.companionActorId,
+          seatOwnerUserId: invocationResult.result.seatOwnerUserId,
+          autonomyLevel: invocationResult.result.autonomyLevel
+        })
+      }]
+    };
+  } else if (name === "update_seat_companion_status") {
+    // EOS-360-003: Seat Companion status update MCP handler (SAMA PERSIS seperti API call - TIDAK ADA BYPASS GOVERNANCE)
+    // Gate 4 Dot Companion Pilot: Implement MCP handler for seat companion status update following authorization parity pattern
+    const protocolVersion = context.requestHeaders?.["mcp-protocol-version"] || "2026-07-28";
+    const clientId = args.clientInfo?.id || context.clientId || "";
+    const tenantContext = args.tenant_context || args.clientMetadata?.tenant_context;
+    const workspaceContext = args.workspace_context || args.clientMetadata?.workspace_context || tenantContext;
+    const mcpSessionId = args.mcp_session_id || context.sessionId || "";
+
+    if (!tenantContext) {
+      throw new Error("[MCP update_seat_companion_status] tenant_context is required");
+    }
+
+    const tenantId = createTenantId(tenantContext);
+    const workspaceId = createWorkspaceId(workspaceContext);
+    const companionInput = args;
+
+    // W06-A3-002: Panggil security-hardening.authorize sebelum eksekusi (SAMA PERSIS API) - single authorization check
+    const authRequest = new Request(context.request.url || "", {
+      headers: context.requestHeaders || {}
+    });
+    const seatCompanionCapabilityRegistry = await getCapabilityRegistry();
+    
+    // Ekstrak session yang sudah divalidasi dari SSE endpoint (canonical decodeWorkspaceSession)
+    // Session dari context request (yang sudah melewati SSE validation) bukan dari client-controlled input
+    const mcpSession = context?.validatedWorkspaceSession;
+    if (!mcpSession) {
+      throw new Error("[MCP seat companion authorization error] Session tidak terverifikasi");
+    }
+    
+    // Panggil security-hardening.authorize dengan parameter yang SAMA persis dengan API (W06-A3-002 acceptance criteria)
+    // Kontrak: security-hardening.authorize(request: Request, scope: EosScope, session?) → AuthorizationDecision
+    const authDecision = await seatCompanionCapabilityRegistry.invoke(
+      "security-hardening",
+      "authorize",
+      authRequest,
+      workspaceId, // scope = workspaceId (sama dengan API yang menggunakan workspaceId sebagai EosScope)
+      // Parameter session lengkap dengan revokedAt (W06-A3-002: revoked session test - acceptance criteria terpenuhi)
+      {
+        tenantId: tenantId,
+        actorId: mcpSession.actorId, // Gunakan actorId dari session terverifikasi, bukan dari client-controlled input
+        sessionId: mcpSession.sessionId || context.sessionId || "",
+        revokedAt: mcpSession.revokedAt ? new Date(mcpSession.revokedAt) : null // Gunakan revokedAt aktual dari session terverifikasi
+      }
+    ) as { 
+      allowed: boolean; 
+      status: 200 | 401 | 403; 
+      reason: string; 
+      scope: string 
+    };
+
+    // Jika authorization ditolak, throw error DENGAN STATUS code yang sama (tidak ada side effects - W06-A3-002 acceptance criteria)
+    if (!authDecision.allowed) {
+      safeRecordEvidence({
+        capability: "connector-ecosystem",
+        command: "mcp.authorization.denied",
+        work_id: "",
+        actor_id: `mcp-client:${clientId}`,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        sessionId: context.sessionId || "",
+        timestamp: new Date().toISOString(),
+        auth_decision: authDecision,
+        reason: authDecision.reason
+      });
+      throw new Error(`[MCP authorization denied] ${authDecision.reason} (status: ${authDecision.status})`);
+    }
+
+    // Setelah authorization lulus, baru invoke capability updateActorLifecycle (sama alur dengan API middleware)
+    const seatCompanionInvokeCapabilityRegistry = await getCapabilityRegistry();
+    const invocationResult = await seatCompanionInvokeCapabilityRegistry.invoke(
+      "atomic-composition",
+      "update-actor-lifecycle",
+      companionInput
+    );
+
+    // Catat evidence invokasi berhasil (EOS-360-007: Evidence Continuity)
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.seat-companion.status_updated",
+      work_id: "",
+      actor_id: `mcp-client:${clientId}`,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: "",
+      timestamp: new Date().toISOString(),
+      protocolVersion: protocolVersion,
+      actorId: companionInput.actorId,
+      newStatus: companionInput.newStatus,
+      invocationSuccess: invocationResult.ok
+    });
+
+    if (!invocationResult.ok) {
+      throw new Error(`[MCP update_seat_companion_status] Invocation failed: ${invocationResult.error || "Unknown error"}`);
+    }
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          actorId: invocationResult.result.actorProjection.actorId,
+          newStatus: invocationResult.result.actorProjection.lifecycleStatus,
+          updatedAt: invocationResult.result.actorProjection.updatedAt
+        })
+      }]
+    };
+  } else if (name === "list_business_os_rocks") {
+    const protocolVersion = context.requestHeaders?.["mcp-protocol-version"] || "2026-07-28";
+    const clientId = args.clientInfo?.id || context.clientId || "";
+    const tenantContext = args.tenant_context || args.clientMetadata?.tenant_context;
+    const workspaceContext = args.workspace_context || args.clientMetadata?.workspace_context || tenantContext;
+    const mcpSessionId = args.mcp_session_id || context.sessionId || "";
+
+    if (!tenantContext) {
+      throw new Error("[MCP list_business_os_rocks] tenant_context is required");
+    }
+
+    const tenantId = createTenantId(tenantContext);
+    const workspaceId = createWorkspaceId(workspaceContext);
+
+    const authRequest = new Request(context.request.url || "", {
+      headers: context.requestHeaders || {}
+    });
+
+    const mcpSession = context?.validatedWorkspaceSession;
+    if (!mcpSession) {
+      throw new Error("[MCP list_business_os_rocks] Session tidak terverifikasi");
+    }
+
+    const capabilityRegistry = await getCapabilityRegistry();
+    const authDecision = await capabilityRegistry.invoke(
+      "security-hardening",
+      "authorize",
+      authRequest,
+      workspaceId,
+      {
+        tenantId: tenantId,
+        actorId: mcpSession.actorId,
+        sessionId: mcpSession.sessionId || mcpSessionId || "",
+        revokedAt: mcpSession.revokedAt
+      }
+    );
+
+    if (!authDecision?.allowed) {
+      safeRecordEvidence({
+        capability: "connector-ecosystem",
+        command: "mcp.authorization.failed.list_rocks",
+        work_id: "",
+        actor_id: mcpSession.actorId,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        sessionId: mcpSessionId,
+        timestamp: new Date().toISOString(),
+        authorizationDecision: authDecision
+      });
+      throw new Error(`[MCP list_business_os_rocks] Authorization denied: ${authDecision?.reason}`);
+    }
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.authorization.success.list_rocks",
+      work_id: "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      authorizationDecision: authDecision
+    });
+
+    const invocationResult = await capabilityRegistry.invoke(
+      "business-os",
+      "listRocks",
+      {
+        tenantId: tenantId,
+        status: args.status || undefined
+      }
+    );
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.invocation.success.list_rocks",
+      work_id: "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      protocolVersion: protocolVersion,
+      correlationId: "",
+      invocationSuccess: invocationResult.ok
+    });
+
+    if (!invocationResult.ok) {
+      throw new Error(`[MCP list_business_os_rocks] Capability invocation failed: ${JSON.stringify(invocationResult.error)}`);
+    }
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          rocks: invocationResult.result,
+          count: invocationResult.result?.length || 0
+        })
+      }]
+    };
+  } else if (name === "list_business_os_issues") {
+    const protocolVersion = context.requestHeaders?.["mcp-protocol-version"] || "2026-07-28";
+    const clientId = args.clientInfo?.id || context.clientId || "";
+    const tenantContext = args.tenant_context || args.clientMetadata?.tenant_context;
+    const workspaceContext = args.workspace_context || args.clientMetadata?.workspace_context || tenantContext;
+    const mcpSessionId = args.mcp_session_id || context.sessionId || "";
+
+    if (!tenantContext) {
+      throw new Error("[MCP list_business_os_issues] tenant_context is required");
+    }
+
+    const tenantId = createTenantId(tenantContext);
+    const workspaceId = createWorkspaceId(workspaceContext);
+
+    const authRequest = new Request(context.request.url || "", {
+      headers: context.requestHeaders || {}
+    });
+
+    const mcpSession = context?.validatedWorkspaceSession;
+    if (!mcpSession) {
+      throw new Error("[MCP list_business_os_issues] Session tidak terverifikasi");
+    }
+
+    const capabilityRegistry = await getCapabilityRegistry();
+    const authDecision = await capabilityRegistry.invoke(
+      "security-hardening",
+      "authorize",
+      authRequest,
+      workspaceId,
+      {
+        tenantId: tenantId,
+        actorId: mcpSession.actorId,
+        sessionId: mcpSession.sessionId || mcpSessionId || "",
+        revokedAt: mcpSession.revokedAt
+      }
+    );
+
+    if (!authDecision?.allowed) {
+      safeRecordEvidence({
+        capability: "connector-ecosystem",
+        command: "mcp.authorization.failed.list_issues",
+        work_id: "",
+        actor_id: mcpSession.actorId,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        sessionId: mcpSessionId,
+        timestamp: new Date().toISOString(),
+        authorizationDecision: authDecision
+      });
+      throw new Error(`[MCP list_business_os_issues] Authorization denied: ${authDecision?.reason}`);
+    }
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.authorization.success.list_issues",
+      work_id: "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      authorizationDecision: authDecision
+    });
+
+    const invocationResult = await capabilityRegistry.invoke(
+      "business-os",
+      "listIssues",
+      {
+        tenantId: tenantId,
+        status: args.status || undefined
+      }
+    );
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.invocation.success.list_issues",
+      work_id: "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      protocolVersion: protocolVersion,
+      correlationId: "",
+      invocationSuccess: invocationResult.ok
+    });
+
+    if (!invocationResult.ok) {
+      throw new Error(`[MCP list_business_os_issues] Capability invocation failed: ${JSON.stringify(invocationResult.error)}`);
+    }
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          issues: invocationResult.result,
+          count: invocationResult.result?.length || 0
+        })
+      }]
+    };
+  } else if (name === "list_business_os_decisions") {
+    const protocolVersion = context.requestHeaders?.["mcp-protocol-version"] || "2026-07-28";
+    const clientId = args.clientInfo?.id || context.clientId || "";
+    const tenantContext = args.tenant_context || args.clientMetadata?.tenant_context;
+    const workspaceContext = args.workspace_context || args.clientMetadata?.workspace_context || tenantContext;
+    const mcpSessionId = args.mcp_session_id || context.sessionId || "";
+
+    if (!tenantContext) {
+      throw new Error("[MCP list_business_os_decisions] tenant_context is required");
+    }
+
+    const tenantId = createTenantId(tenantContext);
+    const workspaceId = createWorkspaceId(workspaceContext);
+
+    const authRequest = new Request(context.request.url || "", {
+      headers: context.requestHeaders || {}
+    });
+
+    const mcpSession = context?.validatedWorkspaceSession;
+    if (!mcpSession) {
+      throw new Error("[MCP list_business_os_decisions] Session tidak terverifikasi");
+    }
+
+    const capabilityRegistry = await getCapabilityRegistry();
+    const authDecision = await capabilityRegistry.invoke(
+      "security-hardening",
+      "authorize",
+      authRequest,
+      workspaceId,
+      {
+        tenantId: tenantId,
+        actorId: mcpSession.actorId,
+        sessionId: mcpSession.sessionId || mcpSessionId || "",
+        revokedAt: mcpSession.revokedAt
+      }
+    );
+
+    if (!authDecision?.allowed) {
+      safeRecordEvidence({
+        capability: "connector-ecosystem",
+        command: "mcp.authorization.failed.list_decisions",
+        work_id: "",
+        actor_id: mcpSession.actorId,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        sessionId: mcpSessionId,
+        timestamp: new Date().toISOString(),
+        authorizationDecision: authDecision
+      });
+      throw new Error(`[MCP list_business_os_decisions] Authorization denied: ${authDecision?.reason}`);
+    }
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.authorization.success.list_decisions",
+      work_id: "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      authorizationDecision: authDecision
+    });
+
+    const invocationResult = await capabilityRegistry.invoke(
+      "business-os",
+      "listDecisions",
+      {
+        tenantId: tenantId,
+        status: args.status || undefined
+      }
+    );
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.invocation.success.list_decisions",
+      work_id: "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      protocolVersion: protocolVersion,
+      correlationId: "",
+      invocationSuccess: invocationResult.ok
+    });
+
+    if (!invocationResult.ok) {
+      throw new Error(`[MCP list_business_os_decisions] Capability invocation failed: ${JSON.stringify(invocationResult.error)}`);
+    }
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          decisions: invocationResult.result,
+          count: invocationResult.result?.length || 0
+        })
+      }]
+    };
+  } else if (name === "list_business_os_tasks") {
+    const protocolVersion = context.requestHeaders?.["mcp-protocol-version"] || "2026-07-28";
+    const clientId = args.clientInfo?.id || context.clientId || "";
+    const tenantContext = args.tenant_context || args.clientMetadata?.tenant_context;
+    const workspaceContext = args.workspace_context || args.clientMetadata?.workspace_context || tenantContext;
+    const mcpSessionId = args.mcp_session_id || context.sessionId || "";
+
+    if (!tenantContext) {
+      throw new Error("[MCP list_business_os_tasks] tenant_context is required");
+    }
+
+    const tenantId = createTenantId(tenantContext);
+    const workspaceId = createWorkspaceId(workspaceContext);
+
+    const authRequest = new Request(context.request.url || "", {
+      headers: context.requestHeaders || {}
+    });
+
+    const mcpSession = context?.validatedWorkspaceSession;
+    if (!mcpSession) {
+      throw new Error("[MCP list_business_os_tasks] Session tidak terverifikasi");
+    }
+
+    const capabilityRegistry = await getCapabilityRegistry();
+    const authDecision = await capabilityRegistry.invoke(
+      "security-hardening",
+      "authorize",
+      authRequest,
+      workspaceId,
+      {
+        tenantId: tenantId,
+        actorId: mcpSession.actorId,
+        sessionId: mcpSession.sessionId || mcpSessionId || "",
+        revokedAt: mcpSession.revokedAt
+      }
+    );
+
+    if (!authDecision?.allowed) {
+      safeRecordEvidence({
+        capability: "connector-ecosystem",
+        command: "mcp.authorization.failed.list_tasks",
+        work_id: "",
+        actor_id: mcpSession.actorId,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        sessionId: mcpSessionId,
+        timestamp: new Date().toISOString(),
+        authorizationDecision: authDecision
+      });
+      throw new Error(`[MCP list_business_os_tasks] Authorization denied: ${authDecision?.reason}`);
+    }
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.authorization.success.list_tasks",
+      work_id: "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      authorizationDecision: authDecision
+    });
+
+    const invocationResult = await capabilityRegistry.invoke(
+      "business-os",
+      "listActionableTasks",
+      {
+        tenantId: tenantId,
+        status: args.status || undefined
+      }
+    );
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.invocation.success.list_tasks",
+      work_id: "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      protocolVersion: protocolVersion,
+      correlationId: "",
+      invocationSuccess: invocationResult.ok
+    });
+
+    if (!invocationResult.ok) {
+      throw new Error(`[MCP list_business_os_tasks] Capability invocation failed: ${JSON.stringify(invocationResult.error)}`);
+    }
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          tasks: invocationResult.result,
+          count: invocationResult.result?.length || 0
+        })
+      }]
+    };
+  } else if (name === "create_business_os_rock") {
+    const protocolVersion = context.requestHeaders?.["mcp-protocol-version"] || "2026-07-28";
+    const clientId = args.clientInfo?.id || context.clientId || "";
+    const tenantContext = args.tenant_context || args.clientMetadata?.tenant_context;
+    const workspaceContext = args.workspace_context || args.clientMetadata?.workspace_context || tenantContext;
+    const mcpSessionId = args.mcp_session_id || context.sessionId || "";
+
+    if (!tenantContext) {
+      throw new Error("[MCP create_business_os_rock] tenant_context is required");
+    }
+
+    if (!args.title) {
+      throw new Error("[MCP create_business_os_rock] title is required");
+    }
+
+    const tenantId = createTenantId(tenantContext);
+    const workspaceId = createWorkspaceId(workspaceContext);
+
+    const authRequest = new Request(context.request.url || "", {
+      headers: context.requestHeaders || {}
+    });
+
+    const mcpSession = context?.validatedWorkspaceSession;
+    if (!mcpSession) {
+      throw new Error("[MCP create_business_os_rock] Session tidak terverifikasi");
+    }
+
+    const capabilityRegistry = await getCapabilityRegistry();
+    const authDecision = await capabilityRegistry.invoke(
+      "security-hardening",
+      "authorize",
+      authRequest,
+      workspaceId,
+      {
+        tenantId: tenantId,
+        actorId: mcpSession.actorId,
+        sessionId: mcpSession.sessionId || mcpSessionId || "",
+        revokedAt: mcpSession.revokedAt
+      }
+    );
+
+    if (!authDecision?.allowed) {
+      safeRecordEvidence({
+        capability: "connector-ecosystem",
+        command: "mcp.authorization.failed.create_rock",
+        work_id: "",
+        actor_id: mcpSession.actorId,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        sessionId: mcpSessionId,
+        timestamp: new Date().toISOString(),
+        authorizationDecision: authDecision
+      });
+      throw new Error(`[MCP create_business_os_rock] Authorization denied: ${authDecision?.reason}`);
+    }
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.authorization.success.create_rock",
+      work_id: "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      authorizationDecision: authDecision
+    });
+
+    const invocationResult = await capabilityRegistry.invoke(
+      "business-os",
+      "createQuarterlyObjectiveWork",
+      {
+        tenantId: tenantId,
+        principalId: mcpSession.actorId,
+        title: args.title,
+        description: args.description || "",
+        ownerIds: args.owner_ids ? args.owner_ids.map(id => createActorId(id)) : [mcpSession.actorId]
+      }
+    );
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.invocation.success.create_rock",
+      work_id: invocationResult.result?.workId || "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      protocolVersion: protocolVersion,
+      correlationId: "",
+      invocationSuccess: invocationResult.ok
+    });
+
+    if (!invocationResult.ok) {
+      throw new Error(`[MCP create_business_os_rock] Capability invocation failed: ${JSON.stringify(invocationResult.error)}`);
+    }
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          eos_work_id: invocationResult.result,
+          title: args.title
+        })
+      }]
+    };
+  } else if (name === "create_business_os_issue") {
+    const protocolVersion = context.requestHeaders?.["mcp-protocol-version"] || "2026-07-28";
+    const clientId = args.clientInfo?.id || context.clientId || "";
+    const tenantContext = args.tenant_context || args.clientMetadata?.tenant_context;
+    const workspaceContext = args.workspace_context || args.clientMetadata?.workspace_context || tenantContext;
+    const mcpSessionId = args.mcp_session_id || context.sessionId || "";
+
+    if (!tenantContext) {
+      throw new Error("[MCP create_business_os_issue] tenant_context is required");
+    }
+
+    if (!args.title) {
+      throw new Error("[MCP create_business_os_issue] title is required");
+    }
+
+    const tenantId = createTenantId(tenantContext);
+    const workspaceId = createWorkspaceId(workspaceContext);
+
+    const authRequest = new Request(context.request.url || "", {
+      headers: context.requestHeaders || {}
+    });
+
+    const mcpSession = context?.validatedWorkspaceSession;
+    if (!mcpSession) {
+      throw new Error("[MCP create_business_os_issue] Session tidak terverifikasi");
+    }
+
+    const capabilityRegistry = await getCapabilityRegistry();
+    const authDecision = await capabilityRegistry.invoke(
+      "security-hardening",
+      "authorize",
+      authRequest,
+      workspaceId,
+      {
+        tenantId: tenantId,
+        actorId: mcpSession.actorId,
+        sessionId: mcpSession.sessionId || mcpSessionId || "",
+        revokedAt: mcpSession.revokedAt
+      }
+    );
+
+    if (!authDecision?.allowed) {
+      safeRecordEvidence({
+        capability: "connector-ecosystem",
+        command: "mcp.authorization.failed.create_issue",
+        work_id: "",
+        actor_id: mcpSession.actorId,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        sessionId: mcpSessionId,
+        timestamp: new Date().toISOString(),
+        authorizationDecision: authDecision
+      });
+      throw new Error(`[MCP create_business_os_issue] Authorization denied: ${authDecision?.reason}`);
+    }
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.authorization.success.create_issue",
+      work_id: "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      authorizationDecision: authDecision
+    });
+
+    const invocationResult = await capabilityRegistry.invoke(
+      "business-os",
+      "createIssueWork",
+      {
+        tenantId: tenantId,
+        principalId: mcpSession.actorId,
+        title: args.title,
+        description: args.description || "",
+        ownerIds: args.owner_ids ? args.owner_ids.map(id => createActorId(id)) : [mcpSession.actorId]
+      }
+    );
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.invocation.success.create_issue",
+      work_id: invocationResult.result?.workId || "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      protocolVersion: protocolVersion,
+      correlationId: "",
+      invocationSuccess: invocationResult.ok
+    });
+
+    if (!invocationResult.ok) {
+      throw new Error(`[MCP create_business_os_issue] Capability invocation failed: ${JSON.stringify(invocationResult.error)}`);
+    }
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          eos_work_id: invocationResult.result,
+          title: args.title
+        })
+      }]
+    };
+  } else if (name === "create_business_os_task") {
+    const protocolVersion = context.requestHeaders?.["mcp-protocol-version"] || "2026-07-28";
+    const clientId = args.clientInfo?.id || context.clientId || "";
+    const tenantContext = args.tenant_context || args.clientMetadata?.tenant_context;
+    const workspaceContext = args.workspace_context || args.clientMetadata?.workspace_context || tenantContext;
+    const mcpSessionId = args.mcp_session_id || context.sessionId || "";
+
+    if (!tenantContext) {
+      throw new Error("[MCP create_business_os_task] tenant_context is required");
+    }
+
+    if (!args.title) {
+      throw new Error("[MCP create_business_os_task] title is required");
+    }
+
+    const tenantId = createTenantId(tenantContext);
+    const workspaceId = createWorkspaceId(workspaceContext);
+
+    const authRequest = new Request(context.request.url || "", {
+      headers: context.requestHeaders || {}
+    });
+
+    const mcpSession = context?.validatedWorkspaceSession;
+    if (!mcpSession) {
+      throw new Error("[MCP create_business_os_task] Session tidak terverifikasi");
+    }
+
+    const capabilityRegistry = await getCapabilityRegistry();
+    const authDecision = await capabilityRegistry.invoke(
+      "security-hardening",
+      "authorize",
+      authRequest,
+      workspaceId,
+      {
+        tenantId: tenantId,
+        actorId: mcpSession.actorId,
+        sessionId: mcpSession.sessionId || mcpSessionId || "",
+        revokedAt: mcpSession.revokedAt
+      }
+    );
+
+    if (!authDecision?.allowed) {
+      safeRecordEvidence({
+        capability: "connector-ecosystem",
+        command: "mcp.authorization.failed.create_task",
+        work_id: "",
+        actor_id: mcpSession.actorId,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        sessionId: mcpSessionId,
+        timestamp: new Date().toISOString(),
+        authorizationDecision: authDecision
+      });
+      throw new Error(`[MCP create_business_os_task] Authorization denied: ${authDecision?.reason}`);
+    }
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.authorization.success.create_task",
+      work_id: "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      authorizationDecision: authDecision
+    });
+
+    const invocationResult = await capabilityRegistry.invoke(
+      "business-os",
+      "createActionableWork",
+      {
+        tenantId: tenantId,
+        principalId: mcpSession.actorId,
+        title: args.title,
+        description: args.description || "",
+        ownerIds: args.owner_ids ? args.owner_ids.map(id => createActorId(id)) : [mcpSession.actorId]
+      }
+    );
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.invocation.success.create_task",
+      work_id: invocationResult.result?.workId || "",
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      protocolVersion: protocolVersion,
+      correlationId: "",
+      invocationSuccess: invocationResult.ok
+    });
+
+    if (!invocationResult.ok) {
+      throw new Error(`[MCP create_business_os_task] Capability invocation failed: ${JSON.stringify(invocationResult.error)}`);
+    }
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          eos_work_id: invocationResult.result,
+          title: args.title
+        })
+      }]
+    };
+  } else if (name === "list_business_os_evidence") {
+    const protocolVersion = context.requestHeaders?.["mcp-protocol-version"] || "2026-07-28";
+    const clientId = args.clientInfo?.id || context.clientId || "";
+    const tenantContext = args.tenant_context || args.clientMetadata?.tenant_context;
+    const workspaceContext = args.workspace_context || args.clientMetadata?.workspace_context || tenantContext;
+    const mcpSessionId = args.mcp_session_id || context.sessionId || "";
+
+    if (!tenantContext) {
+      throw new Error("[MCP list_business_os_evidence] tenant_context is required");
+    }
+
+    if (!args.work_id) {
+      throw new Error("[MCP list_business_os_evidence] work_id is required");
+    }
+
+    const tenantId = createTenantId(tenantContext);
+    const workspaceId = createWorkspaceId(workspaceContext);
+    const workId = args.work_id;
+
+    const authRequest = new Request(context.request.url || "", {
+      headers: context.requestHeaders || {}
+    });
+
+    const mcpSession = context?.validatedWorkspaceSession;
+    if (!mcpSession) {
+      throw new Error("[MCP list_business_os_evidence] Session tidak terverifikasi");
+    }
+
+    const capabilityRegistry = await getCapabilityRegistry();
+    const authDecision = await capabilityRegistry.invoke(
+      "security-hardening",
+      "authorize",
+      authRequest,
+      workspaceId,
+      {
+        tenantId: tenantId,
+        actorId: mcpSession.actorId,
+        sessionId: mcpSession.sessionId || mcpSessionId || "",
+        revokedAt: mcpSession.revokedAt
+      }
+    );
+
+    if (!authDecision?.allowed) {
+      safeRecordEvidence({
+        capability: "connector-ecosystem",
+        command: "mcp.authorization.failed.list_evidence",
+        work_id: workId,
+        actor_id: mcpSession.actorId,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        sessionId: mcpSessionId,
+        timestamp: new Date().toISOString(),
+        authorizationDecision: authDecision
+      });
+      throw new Error(`[MCP list_business_os_evidence] Authorization denied: ${authDecision?.reason}`);
+    }
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.authorization.success.list_evidence",
+      work_id: workId,
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      authorizationDecision: authDecision
+    });
+
+    const invocationResult = await capabilityRegistry.invoke(
+      "business-os",
+      "listBusinessWorkEvidence",
+      {
+        tenantId: tenantId,
+        workId: workId
+      }
+    );
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.invocation.success.list_evidence",
+      work_id: workId,
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      protocolVersion: protocolVersion,
+      correlationId: "",
+      invocationSuccess: invocationResult.ok
+    });
+
+    if (!invocationResult.ok) {
+      throw new Error(`[MCP list_business_os_evidence] Capability invocation failed: ${JSON.stringify(invocationResult.error)}`);
+    }
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          work_id: workId,
+          evidence: invocationResult.result,
+          count: invocationResult.result?.length || 0
+        })
+      }]
+    };
+  } else if (name === "record_business_os_decision_evidence") {
+    const protocolVersion = context.requestHeaders?.["mcp-protocol-version"] || "2026-07-28";
+    const clientId = args.clientInfo?.id || context.clientId || "";
+    const tenantContext = args.tenant_context || args.clientMetadata?.tenant_context;
+    const workspaceContext = args.workspace_context || args.clientMetadata?.workspace_context || tenantContext;
+    const mcpSessionId = args.mcp_session_id || context.sessionId || "";
+
+    if (!tenantContext) {
+      throw new Error("[MCP record_business_os_decision_evidence] tenant_context is required");
+    }
+
+    if (!args.work_id) {
+      throw new Error("[MCP record_business_os_decision_evidence] work_id is required");
+    }
+
+    if (!args.decision_rationale) {
+      throw new Error("[MCP record_business_os_decision_evidence] decision_rationale is required");
+    }
+
+    if (!args.decision_outcome) {
+      throw new Error("[MCP record_business_os_decision_evidence] decision_outcome is required");
+    }
+
+    const tenantId = createTenantId(tenantContext);
+    const workspaceId = createWorkspaceId(workspaceContext);
+    const workId = args.work_id;
+
+    const authRequest = new Request(context.request.url || "", {
+      headers: context.requestHeaders || {}
+    });
+
+    const mcpSession = context?.validatedWorkspaceSession;
+    if (!mcpSession) {
+      throw new Error("[MCP record_business_os_decision_evidence] Session tidak terverifikasi");
+    }
+
+    const capabilityRegistry = await getCapabilityRegistry();
+    const authDecision = await capabilityRegistry.invoke(
+      "security-hardening",
+      "authorize",
+      authRequest,
+      workspaceId,
+      {
+        tenantId: tenantId,
+        actorId: mcpSession.actorId,
+        sessionId: mcpSession.sessionId || mcpSessionId || "",
+        revokedAt: mcpSession.revokedAt
+      }
+    );
+
+    if (!authDecision?.allowed) {
+      safeRecordEvidence({
+        capability: "connector-ecosystem",
+        command: "mcp.authorization.failed.record_decision_evidence",
+        work_id: workId,
+        actor_id: mcpSession.actorId,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        sessionId: mcpSessionId,
+        timestamp: new Date().toISOString(),
+        authorizationDecision: authDecision
+      });
+      throw new Error(`[MCP record_business_os_decision_evidence] Authorization denied: ${authDecision?.reason}`);
+    }
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.authorization.success.record_decision_evidence",
+      work_id: workId,
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      authorizationDecision: authDecision
+    });
+
+    const invocationResult = await capabilityRegistry.invoke(
+      "business-os",
+      "recordDecisionEvidence",
+      {
+        tenantId: tenantId,
+        principalId: mcpSession.actorId,
+        workId: workId,
+        decisionRationale: args.decision_rationale,
+        alternativesConsidered: args.alternatives_considered || [],
+        decisionOutcome: args.decision_outcome
+      }
+    );
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.invocation.success.record_decision_evidence",
+      work_id: workId,
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      protocolVersion: protocolVersion,
+      correlationId: "",
+      invocationSuccess: invocationResult.ok
+    });
+
+    if (!invocationResult.ok) {
+      throw new Error(`[MCP record_business_os_decision_evidence] Capability invocation failed: ${JSON.stringify(invocationResult.error)}`);
+    }
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          work_id: workId,
+          evidence_id: invocationResult.result,
+          decision_rationale: args.decision_rationale,
+          decision_outcome: args.decision_outcome
+        })
+      }]
+    };
+  } else if (name === "record_business_os_meeting_evidence") {
+    const protocolVersion = context.requestHeaders?.["mcp-protocol-version"] || "2026-07-28";
+    const clientId = args.clientInfo?.id || context.clientId || "";
+    const tenantContext = args.tenant_context || args.clientMetadata?.tenant_context;
+    const workspaceContext = args.workspace_context || args.clientMetadata?.workspace_context || tenantContext;
+    const mcpSessionId = args.mcp_session_id || context.sessionId || "";
+
+    if (!tenantContext) {
+      throw new Error("[MCP record_business_os_meeting_evidence] tenant_context is required");
+    }
+
+    if (!args.work_id) {
+      throw new Error("[MCP record_business_os_meeting_evidence] work_id is required");
+    }
+
+    if (!args.meeting_title) {
+      throw new Error("[MCP record_business_os_meeting_evidence] meeting_title is required");
+    }
+
+    if (!args.meeting_notes) {
+      throw new Error("[MCP record_business_os_meeting_evidence] meeting_notes is required");
+    }
+
+    const tenantId = createTenantId(tenantContext);
+    const workspaceId = createWorkspaceId(workspaceContext);
+    const workId = args.work_id;
+
+    const authRequest = new Request(context.request.url || "", {
+      headers: context.requestHeaders || {}
+    });
+
+    const mcpSession = context?.validatedWorkspaceSession;
+    if (!mcpSession) {
+      throw new Error("[MCP record_business_os_meeting_evidence] Session tidak terverifikasi");
+    }
+
+    const capabilityRegistry = await getCapabilityRegistry();
+    const authDecision = await capabilityRegistry.invoke(
+      "security-hardening",
+      "authorize",
+      authRequest,
+      workspaceId,
+      {
+        tenantId: tenantId,
+        actorId: mcpSession.actorId,
+        sessionId: mcpSession.sessionId || mcpSessionId || "",
+        revokedAt: mcpSession.revokedAt
+      }
+    );
+
+    if (!authDecision?.allowed) {
+      safeRecordEvidence({
+        capability: "connector-ecosystem",
+        command: "mcp.authorization.failed.record_meeting_evidence",
+        work_id: workId,
+        actor_id: mcpSession.actorId,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        sessionId: mcpSessionId,
+        timestamp: new Date().toISOString(),
+        authorizationDecision: authDecision
+      });
+      throw new Error(`[MCP record_business_os_meeting_evidence] Authorization denied: ${authDecision?.reason}`);
+    }
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.authorization.success.record_meeting_evidence",
+      work_id: workId,
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspaceId: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      authorizationDecision: authDecision
+    });
+
+    const invocationResult = await capabilityRegistry.invoke(
+      "business-os",
+      "recordMeetingMinutesEvidence",
+      {
+        tenantId: tenantId,
+        principalId: mcpSession.actorId,
+        workId: workId,
+        meetingTitle: args.meeting_title,
+        attendees: args.attendees ? args.attendees.map(id => createActorId(id)) : [mcpSession.actorId],
+        actionItems: args.action_items || [],
+        meetingNotes: args.meeting_notes
+      }
+    );
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.invocation.success.record_meeting_evidence",
+      work_id: workId,
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      protocolVersion: protocolVersion,
+      correlationId: "",
+      invocationSuccess: invocationResult.ok
+    });
+
+    if (!invocationResult.ok) {
+      throw new Error(`[MCP record_business_os_meeting_evidence] Capability invocation failed: ${JSON.stringify(invocationResult.error)}`);
+    }
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          work_id: workId,
+          evidence_id: invocationResult.result,
+          meeting_title: args.meeting_title
+        })
+      }]
+    };
+  } else if (name === "record_business_os_performance_evidence") {
+    const protocolVersion = context.requestHeaders?.["mcp-protocol-version"] || "2026-07-28";
+    const clientId = args.clientInfo?.id || context.clientId || "";
+    const tenantContext = args.tenant_context || args.clientMetadata?.tenant_context;
+    const workspaceContext = args.workspace_context || args.clientMetadata?.workspace_context || tenantContext;
+    const mcpSessionId = args.mcp_session_id || context.sessionId || "";
+
+    if (!tenantContext) {
+      throw new Error("[MCP record_business_os_performance_evidence] tenant_context is required");
+    }
+
+    if (!args.work_id) {
+      throw new Error("[MCP record_business_os_performance_evidence] work_id is required");
+    }
+
+    if (!args.metric_name) {
+      throw new Error("[MCP record_business_os_performance_evidence] metric_name is required");
+    }
+
+    if (args.current_value === undefined) {
+      throw new Error("[MCP record_business_os_performance_evidence] current_value is required");
+    }
+
+    if (args.target_value === undefined) {
+      throw new Error("[MCP record_business_os_performance_evidence] target_value is required");
+    }
+
+    if (!args.measurement_period) {
+      throw new Error("[MCP record_business_os_performance_evidence] measurement_period is required");
+    }
+
+    const tenantId = createTenantId(tenantContext);
+    const workspaceId = createWorkspaceId(workspaceContext);
+    const workId = args.work_id;
+
+    const authRequest = new Request(context.request.url || "", {
+      headers: context.requestHeaders || {}
+    });
+
+    const mcpSession = context?.validatedWorkspaceSession;
+    if (!mcpSession) {
+      throw new Error("[MCP record_business_os_performance_evidence] Session tidak terverifikasi");
+    }
+
+    const capabilityRegistry = await getCapabilityRegistry();
+    const authDecision = await capabilityRegistry.invoke(
+      "security-hardening",
+      "authorize",
+      authRequest,
+      workspaceId,
+      {
+        tenantId: tenantId,
+        actorId: mcpSession.actorId,
+        sessionId: mcpSession.sessionId || mcpSessionId || "",
+        revokedAt: mcpSession.revokedAt
+      }
+    );
+
+    if (!authDecision?.allowed) {
+      safeRecordEvidence({
+        capability: "connector-ecosystem",
+        command: "mcp.authorization.failed.record_performance_evidence",
+        work_id: workId,
+        actor_id: mcpSession.actorId,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        sessionId: mcpSessionId,
+        timestamp: new Date().toISOString(),
+        authorizationDecision: authDecision
+      });
+      throw new Error(`[MCP record_business_os_performance_evidence] Authorization denied: ${authDecision?.reason}`);
+    }
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.authorization.success.record_performance_evidence",
+      work_id: workId,
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspaceId: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      authorizationDecision: authDecision
+    });
+
+    const invocationResult = await capabilityRegistry.invoke(
+      "business-os",
+      "recordPerformanceEvidence",
+      {
+        tenantId: tenantId,
+        principalId: mcpSession.actorId,
+        workId: workId,
+        metricName: args.metric_name,
+        currentValue: args.current_value,
+        targetValue: args.target_value,
+        measurementPeriod: args.measurement_period
+      }
+    );
+
+    safeRecordEvidence({
+      capability: "connector-ecosystem",
+      command: "mcp.invocation.success.record_performance_evidence",
+      work_id: workId,
+      actor_id: mcpSession.actorId,
+      tenant_id: tenantId,
+      workspaceId: workspaceId,
+      sessionId: mcpSessionId,
+      timestamp: new Date().toISOString(),
+      protocolVersion: protocolVersion,
+      correlationId: "",
+      invocationSuccess: invocationResult.ok
+    });
+
+    if (!invocationResult.ok) {
+      throw new Error(`[MCP record_business_os_performance_evidence] Capability invocation failed: ${JSON.stringify(invocationResult.error)}`);
+    }
+
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          work_id: workId,
+          evidence_id: invocationResult.result,
+          metric_name: args.metric_name,
+          current_value: args.current_value,
+          target_value: args.target_value
+        })
+      }]
+    };
+  } else {
+    throw new Error(`Tool not found: ${name}`);
+  }
 });
 
 // MCP-P1-002-002: Handler ping() - Dipetakan ke EOS heartbeat mechanism (satu-satunya handler terpisah dari tools/call)

@@ -2,7 +2,7 @@
 import { z } from "zod";
 // Gunakan alias canonical @repo/core-kernel sesuai package exports (hanya dist path yang diizinkan)
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
-import { validateBoundaryAccess, validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary, type WorkAggregate, WorkId, TenantId, ActorId } from "../../contracts/work.contracts.js";
+import { validateBoundaryAccess, validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary, type WorkAggregate, WorkId, TenantId, ActorId } from "@repo/contracts-core";
 import { getWorkRepositoryPostgres } from "../repository/work-postgres.repository.js";
 // Gunakan jalur relatif langsung ke src karena tsx tidak dapat menyelesaikan alias @repo saat runtime
 import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";

@@ -1,11 +1,11 @@
 // @ts-nocheck: Skip TypeScript checks to unblock Lawyers Hub staging deployment
 import { Pool } from "pg";
-import type { WorkAggregate, WorkId, ActorId, SessionId, DeviceId, ProductNode, RequirementNode, OutcomeNode, HighValueWorkGraphQuery } from "../../contracts/work.contracts.js";
+import type { WorkAggregate, WorkId, ActorId, SessionId, DeviceId, ProductNode, RequirementNode, OutcomeNode, HighValueWorkGraphQuery } from "@repo/contracts-core";
 import { randomUUID } from "crypto";
 // Import base repository dan getPool dari identity yang sudah memiliki implementasi canonical (reuse eksisting)
 // Menggunakan package identity yang terdaftar di monorepo sesuai standar EOS
 // Gunakan path relatif untuk import dari identity capability agar dapat diselesaikan Next.js pada tahap build
-import { getPool, PostgresRepository } from "@repo/capabilities-identity";
+import { getPool, PostgresRepository } from "@capabilities/identity";
 // Lazy import factory functions to avoid top-level await
 let newWorkId: (input?: string) => WorkId;
 let createSessionId: (input?: string) => SessionId;
@@ -842,7 +842,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
     } as WorkAggregate;
   }
 
-  async save(work: Partial<WorkAggregate>): Promise<WorkAggregate> {
+  async save(work: Partial<WorkAggregate>, context?: { allowCrossTenantTransfer?: boolean }): Promise<WorkAggregate> {
     let existingWork: WorkAggregate | undefined;
     if (work.id || work.workId) {
       existingWork = await this.byId(work.id || work.workId!);
@@ -851,8 +851,8 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
     // Hanya pertahankan cross-tenant validation (satu-satunya field yang didefinisikan di WorkAggregate core)
     // Semua cross-account/institution/federation dihapus untuk mematuhi semantic core freeze
     if (existingWork) {
-      // Jika ada existingWork, pastikan tenantId cocok (hanya ini yang sudah ada di core contract)
-      if (work.tenantId && existingWork.tenantId !== work.tenantId) {
+      // Jika ada existingWork, pastikan tenantId cocok KECUALI jika ini adalah transfer otoritas Work yang sah
+      if (work.tenantId && existingWork.tenantId !== work.tenantId && !context?.allowCrossTenantTransfer) {
         throw new Error(`Cross-tenant violation for Work ${existingWork.id}: cannot modify work from different tenant`);
       }
     }

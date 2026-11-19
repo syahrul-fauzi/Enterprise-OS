@@ -9,7 +9,7 @@ import {
 } from "../contracts/index.js";
 import { RequirementRepositoryCurrent } from "../repository/index.js";
 import { getWorkRepositoryPostgres } from "../../../work-core/implementation/repository/work-postgres.repository.js";
-import type { WorkAggregate, WorkFaceProjection } from "../../../work-core/contracts/work.contracts.js";
+// import type { WorkAggregate, WorkFaceProjection } from "@repo/contracts-core";
 
 // FACE-001: RequirementFaceProjection interface untuk layer presentasi (server-derived only)
 export interface RequirementFaceProjection {

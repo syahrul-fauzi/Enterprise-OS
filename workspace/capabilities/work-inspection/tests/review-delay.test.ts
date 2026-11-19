@@ -4,7 +4,7 @@
  * Memastikan full Persistent Work Companion loop berjalan ketika PR melebihi review SLA
  */
 import { workInspectionAgent } from "../implementation/services/inspection.agent.service.js";
-import { WorkAggregate } from "../../work-core/contracts/work.contracts.js";
+import { WorkAggregate } from "@repo/contracts-core";
 
 // Initialize shared repository (sama seperti di connector-ecosystem.test)
 (global as any).sharedWorkRepository = {

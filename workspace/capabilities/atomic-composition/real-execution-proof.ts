@@ -5,7 +5,7 @@
 import { AtomicCompositionService } from './implementation/services/composition.service';
 import { ActorId } from './implementation/contracts/atomic-composition.contracts';
 import { ServiceProviderRepositoryInMemory } from "../service-directory/implementation/repository/service.repository";
-import { createWorkId, type WorkId, WorkAggregate as Work } from '@capabilities/work-core/contracts/work.contracts';
+import { createWorkId, type WorkId, WorkAggregate as Work } from "@repo/contracts-core";
 
 // ------------------------------
 // E2 P3: REAL USER NEED - UMKM Batik Jaya ingin meluncurkan bisnis online

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { handleSignatureProviderWebhookUpdate } from "../../../../../capabilities/connector-ecosystem/implementation/services/connector-ecosystem.service.js";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
-import { getWork } from "@repo/capabilities-work-core/implementation/commands/work.commands";
+import { getWork } from "@capabilities/work-core/implementation/commands/work.commands";
 
 // SIG-NET-001: Provider-agnostic signature provider webhook endpoint
 // Memproses webhook dari DocuSign, Adobe Sign, atau provider lain dengan tetap mempertahankan boundary provider-neutral

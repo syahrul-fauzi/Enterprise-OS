@@ -819,6 +819,38 @@ Apakah Anda ingin:
       }
     }
 
+    // FALLBACK: Jika tidak ada pattern yang cocok, selalu kembalikan objek understanding yang valid
+    console.log("[RULEBASED PROVIDER] No pattern matched, returning generic fallback");
+    const fallbackEvidence: UnderstandingEvidence = {
+      knownFacts: [`Raw expression processed: ${inputString}`],
+      unknowns: ["Detail spesifik untuk memahami kebutuhan pengguna"],
+      hypotheses: ["Expression classified as generic domain"],
+      evidenceCollected: ["generic-fallback-applied"],
+      confidence: 0.6,
+      lastUpdated: now
+    };
+
+    return {
+      rawExpression: inputString,
+      interpretedObjective: `Pengguna menyatakan: ${inputString}`,
+      context: {
+        domain: "generic",
+        locale: "id-ID",
+        known: [`Pengguna menyatakan: ${inputString}`],
+        unknown: ["Detail spesifik yang dibutuhkan pengguna"],
+        constraints: []
+      },
+      domainCandidates: [{ domain: "generic", confidence: 0.6 }],
+      intentType: "generic",
+      entities: [],
+      unknowns: [],
+      clarificationRequired: false,
+      canFormWork: false,
+      canProceedToWork: false,
+      understandingEvidence: fallbackEvidence,
+      failureIntelligence: undefined
+    };
+
     // Akhir dari RuleBasedProvider.understand() implementation
   }
 
@@ -1059,6 +1091,9 @@ export const intentUnderstandingService = {
     return getIntentUnderstandingService();
   }
 };
+
+// Export ruleBasedProvider instance untuk test dan backward compatibility
+export const ruleBasedProvider = new RuleBasedProvider();
 
 // Untuk pure ESM environment juga export sebagai named export
 if (typeof module === 'undefined' && typeof exports === 'undefined') {

@@ -52,6 +52,49 @@ export function ActorId(value: string): ActorId {
 export const createActorId = ActorId;
 export const newActorId = ActorId;
 
+// Actor Profile Classification - EOS 2027 Actor Assurance Standard
+// Defines 7 standard actor profiles based on functional capability
+export type ActorProfile =
+  | "foundation" // Reasoning dan pemahaman, output validation
+  | "tool-using" // Interaksi sistem, scoped permissions
+  | "pipeline" // Eksekusi berantai, schema gate
+  | "parallel" // Kerja spesialis paralel, conflict resolution
+  | "router" // Klasifikasi dan distribusi, confidence & fallback
+  | "hitl" // Persetujuan manusia, approval integrity
+  | "orchestrator"; // Delegasi dan koordinasi, budget & circuit breaker
+
+// Actor Autonomy Level - berdasarkan bukti keandalan
+export type ActorAutonomyLevel =
+  | "supervised" // Memerlukan persetujuan manusia untuk semua aksi
+  | "conditional" // Memerlukan persetujuan untuk aksi berisiko tinggi
+  | "autonomous"; // Dapat mengeksekusi tanpa persetujuan untuk aksi yang terverifikasi
+
+// Actor Risk Classification
+export type ActorRiskLevel = "low" | "medium" | "high" | "critical";
+
+// Actor Aggregate - represents a registered actor in EOS
+export interface ActorAggregate {
+  readonly id: ActorId;
+  readonly tenantId: TenantId;
+  readonly workspaceId?: WorkspaceId;
+  readonly workId?: WorkId;
+  readonly ownerId: UserId; // Human owner yang bertanggung jawab
+  readonly label: string;
+  readonly profile: ActorProfile;
+  readonly autonomyLevel: ActorAutonomyLevel;
+  readonly riskLevel: ActorRiskLevel;
+  readonly inputContract?: unknown; // Input schema validation
+  readonly outputContract?: unknown; // Output schema validation
+  readonly permissions: readonly string[]; // Explicit capability permissions
+  readonly budgetLimit?: number; // Resource/budget limit per execution
+  readonly retryLimit?: number; // Maximum retry attempts
+  readonly timeoutMs?: number; // Execution timeout
+  readonly failureRecoveryProcedure?: string; // Recovery procedure on failure
+  readonly isActive: boolean;
+  readonly createdAt: Readonly<Date>;
+  readonly updatedAt: Readonly<Date>;
+}
+
 // Interface untuk abstraksi hardware sensor (resolusi P1 gap: Local safety check verifikasi fisik)
 export interface DeviceHardwareAbstraction {
   readonly readSensors: () => Promise<{

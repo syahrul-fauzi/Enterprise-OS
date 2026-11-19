@@ -17,7 +17,7 @@ import {
   ExecutionBoundary,
   EvidenceBoundary,
   PresentationBoundary
-} from "@capabilities/work-core/contracts/work.contracts.js";
+} from "@repo/contracts-core";
 import { WorkspaceRepositoryPostgres } from "../repositories/index.js";
 import { slugifyForTenant } from "../services/password.service.js";
 

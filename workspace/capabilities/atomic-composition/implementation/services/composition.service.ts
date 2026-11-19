@@ -49,8 +49,8 @@ import {
 } from "../contracts/atomic-composition.contracts";
 // Import canonical ActorId, CompositionId, WorkId type AND factory function from work-core to maintain primitive sovereignty
 // Pakai createCompositionId (alias dari work-core's CompositionId function) untuk menghindari type/value conflict
-import type { ActorId, CompositionId, WorkId } from "../../../work-core/contracts/work.contracts.js";
-import { CompositionId as createCompositionId, WorkId as createWorkId } from "../../../work-core/contracts/work.contracts.js";
+import type { ActorId, CompositionId, WorkId } from "@repo/contracts-core";
+import { CompositionId as createCompositionId, WorkId as createWorkId } from "@repo/contracts-core";
 import { aiAgentExecutionService } from "./ai-agent.service.js";
 
 // W-COMP-001: Helper function untuk load composition package dari packages/compositions
@@ -415,7 +415,7 @@ export class AtomicCompositionService {
       while (assignmentsForThisRequirement < requirementQuantity) {
         const matchingActors = availableActors.filter(actor => 
           actor.capabilities.includes(req.capabilityId) &&
-          actor.trust >= req.minimumTrust &&
+          trustLevels[actor.trust] >= trustLevels[req.minimumTrust] &&
           actor.availability &&
           !resolvedActorIds.includes(actor.actorId)
         );

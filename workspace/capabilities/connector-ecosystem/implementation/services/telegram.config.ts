@@ -5,7 +5,7 @@
  * Reuses service-directory PostgreSQL patterns and maintains backward API compatibility
  */
 import { Pool, getPool } from "../../../identity/implementation/repositories/base.repository.js";
-import { createTenantId, type TenantId } from "../../../work-core/contracts/work.contracts.js";
+import { createTenantId, type TenantId } from "@repo/contracts-core";
 
 // Initialize connection pool with unified connection string
 const pool: Pool = getPool();

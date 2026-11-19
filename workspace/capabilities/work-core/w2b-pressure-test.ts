@@ -20,11 +20,11 @@
  */
 import { WorkRepositoryInMemory } from "./implementation/repository/work-inmemory.repository.ts";
 import { getWorkRepositoryPostgres } from "./implementation/repository/work-postgres.repository.ts";
-import type { WorkAggregate } from "./contracts/work.contracts.ts";
+import type { WorkAggregate } from "@repo/contracts-core";
 import { safeRecordEvidence } from "./implementation/utils/evidence.utils.ts";
 
 // Import branded type factories dari work.contracts (canonical source)
-import { createActorId, createWorkspaceId, createTenantId, SessionId } from "./contracts/work.contracts.ts";
+import { createActorId, createWorkspaceId, createTenantId, SessionId } from "@repo/contracts-core";
 
 // Test Constants - Gunakan factory functions yang sudah ada untuk compliance dengan branded types
 const TEST_TENANT_ID = createTenantId("test-tenant-001");

@@ -13,7 +13,7 @@ export { initIdentitySchema, getPool, PostgresRepository } from "./repositories/
 // Pulihkan export yang diperlukan oleh route auth login/signup
 export { newSessionId, resetSessionRepository, SessionRepositoryInMemory } from "./repositories/session.inmemory.js";
 export { newUserId } from "./repositories/user.inmemory.js";
-// Re-export semua type/value dari identity.contracts.ts agar bisa diimport dari @repo/capabilities-identity
+// Re-export semua type/value dari identity.contracts.ts agar bisa diimport dari @capabilities/identity
 export * from "@repo/contracts-core";
 // Original barrel exports - pastikan semua command terexport untuk import dari route auth
 export * from "./commands/index.js";

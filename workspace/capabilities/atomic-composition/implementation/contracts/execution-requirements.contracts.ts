@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
-import type { WorkId, ActorId, WorkspaceId, TenantId, ActorMetadata, AuthorizationScope, ContextMetadata, RiskAssessment } from "../../../work-core/contracts/work.contracts";
+import type { WorkId, ActorId, WorkspaceId, TenantId, ActorMetadata, AuthorizationScope, ContextMetadata, RiskAssessment } from "@repo/contracts-core";
 import type { CapabilityProvider } from "../services/capability-resolver.service.js";
 
 // ============================================================================

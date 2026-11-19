@@ -9,7 +9,7 @@ import {
   RequirementId,
   CompositionId
 } from "../implementation/contracts/atomic-composition.contracts.js";
-import { createWorkId, createActorId, type WorkId, type ActorId } from "@capabilities/work-core/contracts/work.contracts.js";
+import { createWorkId, createActorId, type WorkId, type ActorId } from "@repo/contracts-core";
 
 /**
  * E1 GOLDEN PROOF: Launch a Business - Multi-Provider Type Test

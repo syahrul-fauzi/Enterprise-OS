@@ -56,8 +56,8 @@ describe("COMP-001-Registration: Atomic Composition Capability Registration Veri
       key.includes("atomic-composition") || key.includes("billing.generate")
     ).length;
     
-    // Total expected: 4 commands (2 core + atomic-composition.billing.generate + alias billing.generate)
-          const totalExpected = 4;
+    // Total expected: 6 commands (2 core + atomic-composition.billing.generate + alias billing.generate + atomic-composition.register-seat-companion + atomic-composition.update-actor-lifecycle)
+          const totalExpected = 6;
           assert.equal(actualRegistered, totalExpected, `Harus ada ${totalExpected} commands terdaftar, tanpa duplikasi. Ditemukan ${actualRegistered}`);
     
     console.log(`✅ REG-03 PASSED: Tidak ada duplikasi registrasi - ${actualRegistered} commands terdaftar sesuai ekspektasi`);

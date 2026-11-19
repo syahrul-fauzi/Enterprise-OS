@@ -16,7 +16,7 @@
 
 import { existsSync, writeFileSync, readFileSync } from "node:fs";
 import { statePath } from "@repo/eos-cli";
-// Seragamkan import dari work.contracts yang sudah mere-export semua identity types dari @repo/capabilities-identity
+// Seragamkan import dari work.contracts yang sudah mere-export semua identity types dari @capabilities/identity
 // Menghindari branded type collision dari dual import source dan memperbaiki TS5097
 import { WorkId, TenantId, ActorId, SessionId, WorkspaceId, WorkAggregate } from "../capabilities/work-core/contracts/work.contracts";
 // Pisahkan factory function karena work.contracts belum export

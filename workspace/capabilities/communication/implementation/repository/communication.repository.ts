@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";
 import type { CommunicationEvent, CommunicationEventId, CommunicationAdapterType, CommunicationEventStatus } from "../contracts/communication.contracts.js";
 import type { LamportCommunicationEvent } from "../grounding/converter.js";
-import type { TenantId } from "../../../work-core/contracts/work.contracts.ts";
+import type { TenantId } from "@repo/contracts-core";
 import { 
   newCommunicationEventId
 } from "../contracts/communication.contracts.js";

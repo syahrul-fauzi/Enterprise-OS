@@ -3,7 +3,7 @@
 import { NextResponse } from "next/server";
 import { DatabaseHealthChecker } from "@repo/capabilities-shared/database/health.check";
 import { getCommunicationRepositoryPostgres } from "@repo/capabilities-communication/repository/communication.postgres.repository";
-import { getCaseRepositoryPostgres } from "@repo/capabilities-legal-case/repository/case-postgres.repository";
+import { getCaseRepositoryPostgres } from "@capabilities/legal-case/repository/case-postgres.repository";
 
 export async function GET(request: Request) {
   // PR-01 requirement: correlation ID tracking for audit and observability

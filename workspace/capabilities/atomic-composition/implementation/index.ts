@@ -9,8 +9,15 @@
 // Re-export all contracts (already has proper index.ts in contracts directory)
 export * from "./contracts/index.js";
 
-// Re-export all commands from existing command file (no separate commands index.ts)
+// Re-export all commands from existing command file and new Actor Registry commands
 export * from "./commands/atomic-composition.commands.js";
+export * from "./commands/register-actor.command.js";
+export * from "./commands/update-actor-lifecycle.command.js";
+export * from "./commands/verify-actor-quality-gates.command.js";
+export * from "./queries/get-actor-registry.query.js";
+
+// Re-export all repositories
+export * from "./repository/index.js";
 
 // Re-export all services from their respective files - mengikuti struktur direktori aktual yang terdeteksi
 export * from "./services/composition.service.js";

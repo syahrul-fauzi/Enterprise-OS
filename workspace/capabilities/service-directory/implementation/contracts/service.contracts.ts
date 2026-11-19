@@ -12,7 +12,7 @@ import type {
   ContextMetadata,
   RiskAssessment,
   WorkFaceProjection
-} from "../../../work-core/contracts/work.contracts.js";
+} from "@repo/contracts-core";
 
 export type ServiceRequestStatus = "draft" | "submitted" | "proposed" | "accepted" | "in_service" | "delivered" | "verified" | "settled" | "cancelled" | "declined";
 export type ServiceRequestPriority = "low" | "medium" | "high" | "critical";

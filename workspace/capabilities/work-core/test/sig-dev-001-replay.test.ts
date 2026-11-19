@@ -8,8 +8,8 @@ import { randomUUID } from "crypto";
 import { WorkRepositoryInMemory } from "../implementation/repository/work-inmemory.repository.js";
 import { getWorkRepositoryLazy, updateWork } from "../implementation/commands/work.commands.js";
 import { safeRecordEvidence } from "../implementation/utils/evidence.utils.js";
-import type { WorkId, TenantId, WorkspaceId, ActorId, SessionId, IdentityBoundary, AuthorityBoundary } from "../contracts/work.contracts.js";
-import { validateIdentityBoundary, validateAuthorityBoundary, validateNoCircularDependencies } from "../contracts/work.contracts.js";
+import type { WorkId, TenantId, WorkspaceId, ActorId, SessionId, IdentityBoundary, AuthorityBoundary } from "@repo/contracts-core";
+import { validateIdentityBoundary, validateAuthorityBoundary, validateNoCircularDependencies } from "@repo/contracts-core";
 
 // Test Constants
 const TEST_TENANT_ID = "tenant-test-001" as TenantId;

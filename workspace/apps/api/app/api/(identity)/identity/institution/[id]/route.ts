@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { decodeWorkspaceSession } from "@repo/core-kernel";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 
 export const dynamic = "force-dynamic";
 

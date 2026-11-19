@@ -14,7 +14,7 @@ import { describe, it, beforeEach, assert } from "vitest";
 import { getWorkRepositoryLazy, getMembershipRepositoryLazy, getEvidenceByWorkIdCommand } from "../implementation/commands/work.commands.js";
 import type { GetEvidenceByWorkIdRequest } from "../implementation/commands/work.commands.js";
 import { safeRecordEvidence } from "../implementation/utils/evidence.utils.js";
-import { createActorId, createWorkspaceId, createTenantId, SessionId } from "../contracts/work.contracts.js";
+import { createActorId, createWorkspaceId, createTenantId, SessionId } from "@repo/contracts-core";
 
 // Test constants - Gunakan factory functions yang sudah ada untuk compliance dengan branded types
 const TEST_TENANT_ID = createTenantId("tenant-test-w2c-001");

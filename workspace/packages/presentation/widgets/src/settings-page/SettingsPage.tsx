@@ -9,6 +9,7 @@ import { useWorkspaceSession } from "@repo/presentation-hooks";
 // Simplified SettingsPage with only basic tabs for golden spine v0.1
 // Removed complex tab dependencies to unblock build
 import { WorkRealityLoading, EmptyState, ErrorState } from "@repo/presentation-ui-system";
+import { CompanionsTab } from "./CompanionsTab";
 
 export interface SettingsPageProps {
   readonly session: {
@@ -170,9 +171,10 @@ function GovernanceTab() {
   );
 }
 
-// Simplified tabs for golden spine v0.1 - added governance tab
+// Simplified tabs for golden spine v0.1 - added governance and companions tabs
 const TABS = [
   { id: "basic", label: "Basic Settings", component: () => <div>Settings coming soon</div> },
+  { id: "companions", label: "Seat Companions", component: (props: { userId: string }) => <CompanionsTab userId={props.userId} /> },
   { id: "governance", label: "Governance", component: GovernanceTab },
 ] as const;
 
@@ -293,7 +295,7 @@ export function SettingsPage({ session, productId, binding, activeTab }: Setting
 
           {/* Tab content */}
           <div className="max-w-2xl">
-            <TabComponent />
+            <TabComponent userId={session.userId} />
           </div>
         </section>
       </div>

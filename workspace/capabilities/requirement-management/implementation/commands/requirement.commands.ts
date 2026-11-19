@@ -49,7 +49,7 @@ import {
 } from "../../../work-core/index.js";
 
 // Import hanya type, inisialisasi dilakukan di dalam fungsi async untuk menghindari circular dependency
-import type { SessionRepository } from "@repo/contracts-core";
+// import type { SessionRepository } from "@repo/contracts-core";
 
 // Inisialisasi session repository hanya saat dibutuhkan (lazy init) untuk menghindari ReferenceError
 let sessionRepository: SessionRepository;

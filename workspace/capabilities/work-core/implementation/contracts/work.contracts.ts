@@ -1,3 +1,3 @@
 // @ts-nocheck
-export * from "../../contracts/work.contracts.js";
+export * from "@repo/contracts-core";
 

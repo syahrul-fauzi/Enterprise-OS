@@ -1,4 +1,4 @@
-import { ExecutionContext } from '../types/execution-context.js';
+import { ExecutionContext } from './execution-context.js';
 import { EvidenceService } from './evidence-service.js';
 
 export interface AuthorizationSession {

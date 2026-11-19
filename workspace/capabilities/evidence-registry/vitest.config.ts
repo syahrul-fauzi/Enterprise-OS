@@ -9,7 +9,7 @@ export default defineConfig({
       { find: '@repo/core-kernel', replacement: path.resolve(__dirname, '../../packages/core/kernel/src') },
       { find: '@repo/core-runtime', replacement: path.resolve(__dirname, '../../packages/core/runtime/src') },
       { find: '@repo/core-runtime/*', replacement: path.resolve(__dirname, '../../packages/core/runtime/src/$1') },
-      { find: '@repo/capabilities-identity', replacement: path.resolve(__dirname, '../../capabilities/identity') },
+      { find: '@capabilities/identity', replacement: path.resolve(__dirname, '../../capabilities/identity') },
       { find: '@capabilities/identity', replacement: path.resolve(__dirname, '../../capabilities/identity') },
       { find: '@repo', replacement: path.resolve(__dirname, '../../packages') },
       { find: '@repo/contracts-core', replacement: path.resolve(__dirname, '../../packages/contracts-core/dist') },

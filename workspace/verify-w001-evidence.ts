@@ -12,7 +12,7 @@ console.log('DATABASE_URL set to:', process.env.DATABASE_URL);
 import { initIdentitySchema } from '@capabilities/identity/implementation/repositories/base.repository.js';
 import { WorkRepositoryPostgres } from '@capabilities/work-core/implementation/repository/work-postgres.repository.js';
 import { safeRecordEvidence } from '@capabilities/work-core/implementation/utils/evidence.utils.js';
-import type { WorkAggregate } from '@capabilities/work-core/contracts/work.contracts.js';
+import type { WorkAggregate } from "@repo/contracts-core";
 
 // ============================================================================
 // W06-A6 EVIDENCE VERIFICATION

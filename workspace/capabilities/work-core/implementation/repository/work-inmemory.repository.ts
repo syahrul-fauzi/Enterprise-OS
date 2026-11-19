@@ -30,7 +30,7 @@ import {
   type SessionId,
   type WorkspaceId,
   type WorkAggregate
-} from "../../contracts/work.contracts.js";
+} from "@repo/contracts-core";
 import { randomUUID } from "node:crypto";
 // Import safeRecordEvidence dari utils yang sama dengan postgres repository (satu import saja)
 import { safeRecordEvidence } from "../utils/evidence.utils.js";
@@ -45,10 +45,20 @@ const hydrate = (): Map<string, WorkAggregate> => {
   return store;
 };
 
-// SAMA DENGAN SESSION.INMEMORY.TS: Global store untuk mencegah multiple instances
-const STORE: Map<string, WorkAggregate> = (globalThis as any).__EOS_WORK_CORE_WORK_STORE__ ??= hydrate();
-const EVIDENCE_STORE: Map<string, any[]> = (globalThis as any).__EOS_WORK_CORE_EVIDENCE_STORE__ ??= new Map();
-const WORK_QUEUES: Map<string, any[]> = (globalThis as any).__EOS_WORK_CORE_QUEUES__ ??= new Map();
+// Helper untuk mendapatkan referensi terbaru ke store global (menghindari masalah stale const reference)
+const getStore = (): Map<string, WorkAggregate> => {
+  return (globalThis as any).__EOS_WORK_CORE_WORK_STORE__ ??= hydrate();
+};
+
+// Helper untuk mendapatkan referensi terbaru ke evidence store global (menghindari masalah stale const reference setelah reset)
+const getEvidenceStore = (): Map<string, any[]> => {
+  return (globalThis as any).__EOS_WORK_CORE_EVIDENCE_STORE__ ??= new Map();
+};
+
+// Helper untuk mendapatkan referensi terbaru ke queue store global (menghindari masalah stale const reference setelah reset)
+const getQueueStore = (): Map<string, any[]> => {
+  return (globalThis as any).__EOS_WORK_CORE_QUEUES__ ??= new Map();
+};
 
 // Hapus type assertion CapabilityRepository sementara untuk menghindari linter error dari @repo/contracts-core
 // Ini adalah minimal patch: kita tetap gunakan object pattern yang sama dengan session.inmemory.ts, hanya lepas type yang bermasalah
@@ -75,15 +85,19 @@ export const WorkRepositoryInMemory: any & {
   },
 
   async byId(id: string): Promise<WorkAggregate | undefined> {
-    return STORE.get(id);
+    return getStore().get(id);
   },
 
   async list(): Promise<readonly WorkAggregate[]> {
-    return Array.from(STORE.values());
+    return Array.from(getStore().values());
+  },
+
+  async listByInstitution(institutionId: string): Promise<readonly WorkAggregate[]> {
+    return Array.from(getStore().values()).filter(work => work.compositionId === institutionId || work.tenantId === institutionId);
   },
 
   async search(): Promise<readonly WorkAggregate[]> {
-    return Array.from(STORE.values());
+    return Array.from(getStore().values());
   },
 
   async byWorkId(workId: string): Promise<WorkAggregate | undefined> {
@@ -128,11 +142,11 @@ export const WorkRepositoryInMemory: any & {
       updatedAt: new Date()
     };
 
-    STORE.set(updatedWork.id as string, updatedWork);
+    getStore().set(updatedWork.id as string, updatedWork);
     return clone(updatedWork);
   },
 
-  async save(work: Partial<WorkAggregate>): Promise<WorkAggregate> {
+  async save(work: Partial<WorkAggregate>, context?: { allowCrossTenantTransfer?: boolean }): Promise<WorkAggregate> {
     let existingWork: WorkAggregate | undefined;
     if (work.id || work.workId) {
       existingWork = await this.byId(work.id || work.workId!);
@@ -140,8 +154,8 @@ export const WorkRepositoryInMemory: any & {
 
     // Hanya pertahankan cross-tenant validation (satu-satunya field yang didefinisikan di WorkAggregate core)
     if (existingWork) {
-      // Jika ada existingWork, pastikan tenantId cocok (hanya ini yang sudah ada di core contract)
-      if (work.tenantId && existingWork.tenantId !== work.tenantId) {
+      // Jika ada existingWork, pastikan tenantId cocok KECUALI jika ini adalah transfer otoritas Work yang sah
+      if (work.tenantId && existingWork.tenantId !== work.tenantId && !context?.allowCrossTenantTransfer) {
         throw new Error(`Cross-tenant violation for Work ${existingWork.id}: cannot modify work from different tenant`);
       }
     }
@@ -176,9 +190,12 @@ export const WorkRepositoryInMemory: any & {
       const uniqueNewParticipants = newParticipants.filter(p => !existingParticipantIds.has(p));
       const mergedParticipants = [...existingParticipants, ...uniqueNewParticipants];
       
+      // Hapus transferMetadata dari objek work sebelum disimpan, karena itu hanya parameter untuk perekaman bukti
+      const { transferMetadata, ...workWithoutTransferMetadata } = work;
+      
       savedWork = {
         ...existingWork,
-        ...work,
+        ...workWithoutTransferMetadata,
         participants: mergedParticipants, // Gunakan merged participants bukan overwrite
         updatedAt: new Date(),
         stateHistory: newStateHistory,
@@ -211,34 +228,41 @@ export const WorkRepositoryInMemory: any & {
       } as WorkAggregate;
     }
 
-    STORE.set(savedWork.id, savedWork);
+    getStore().set(savedWork.id, savedWork);
+    
     // Record evidence immediately after successful persistence (P5-PROVE-001 requirement)
+    // Tentukan command yang sesuai berdasarkan jenis operasi
+    const evidenceCommand = (work as any).transferMetadata ? "authority.transfer" : (existingWork ? "work.updated" : "work.created");
+    const evidenceMetadata = (work as any).transferMetadata ? { ...(work as any).transferMetadata } : undefined;
+    
     // MATCH safeRecordEvidence payload schema dari evidence.utils.ts
     await safeRecordEvidence({
       workspace_id: savedWork.workspaceId as WorkspaceId,
       capability: "work-core",
-      command: existingWork ? "work.updated" : "work.created",
+      command: evidenceCommand,
       work_id: savedWork.id,
       tenant_id: savedWork.tenantId,
       actor_id: savedWork.actorId,
       timestamp: new Date().toISOString(),
       sessionId: savedWork.sessionId || "test-session-unknown",
+      metadata: evidenceMetadata
     });
 
     return clone(savedWork);
   },
 
   async delete(id: WorkId): Promise<void> {
-    STORE.delete(String(id));
+    getStore().delete(String(id));
   },
 
   // Method untuk ambil lock async per Work (DEL-001 concurrency control)
   async acquireWorkLock(workId: WorkId): Promise<void> {
+    const queueStore = getQueueStore();
     const key = String(workId);
-    if (!WORK_QUEUES.has(key)) {
-      WORK_QUEUES.set(key, []);
+    if (!queueStore.has(key)) {
+      queueStore.set(key, []);
     }
-    const queue = WORK_QUEUES.get(key)!;
+    const queue = queueStore.get(key)!;
     if (queue.length > 0) {
       // Jika ada proses lain yang sedang berjalan, tunggu sampai selesai
       await new Promise<void>((resolve) => queue.push(resolve));
@@ -247,8 +271,9 @@ export const WorkRepositoryInMemory: any & {
 
   // Method untuk lepaskan lock setelah selesai
   releaseWorkLock(workId: WorkId): void {
+    const queueStore = getQueueStore();
     const key = String(workId);
-    const queue = WORK_QUEUES.get(key);
+    const queue = queueStore.get(key);
     if (queue && queue.length > 0) {
       // Panggil proses berikutnya dalam queue
       const next = queue.shift();
@@ -303,7 +328,7 @@ export const WorkRepositoryInMemory: any & {
       updatedWork.previousExecutionIds.push(executionId);
     }
 
-    STORE.set(String(updatedWork.id), updatedWork);
+    getStore().set(String(updatedWork.id), updatedWork);
     
     // Catat evidence untuk claim
     await this.addEvidence(workId, {
@@ -330,7 +355,7 @@ export const WorkRepositoryInMemory: any & {
         lockedAt: new Date().toISOString(),
         lockHolder: "eos-work-core"
       };
-      STORE.set(String(work.id), updatedWork);
+      getStore().set(String(work.id), updatedWork);
     }
     return work;
   },
@@ -344,7 +369,7 @@ export const WorkRepositoryInMemory: any & {
         lockedAt: undefined,
         lockHolder: undefined
       };
-      STORE.set(String(work.id), updatedWork);
+      getStore().set(String(work.id), updatedWork);
     }
   },
 
@@ -357,7 +382,7 @@ export const WorkRepositoryInMemory: any & {
   async markStaleClaims(): Promise<number> {
     let count = 0;
     const now = new Date();
-    for (const [id, work] of STORE.entries()) {
+    for (const [id, work] of getStore().entries()) {
       if (work.claimStatus === "claimed" && work.leaseUntil && new Date(work.leaseUntil) < now) {
         const updated = {
           ...work,
@@ -368,7 +393,7 @@ export const WorkRepositoryInMemory: any & {
           version: work.version + 1,
           updatedAt: new Date().toISOString()
         };
-        STORE.set(id, updated);
+        getStore().set(id, updated);
         count++;
         // Catat evidence untuk stale claim
         await this.addEvidence(work.workId, {
@@ -385,21 +410,23 @@ export const WorkRepositoryInMemory: any & {
 
   // Implementasi getEvidence dan addEvidence untuk parity dengan Postgres
   async getEvidence(filter?: { workId?: string; productId?: string }): Promise<any[]> {
+    const evidenceStore = getEvidenceStore();
     if (filter?.workId) {
-      return EVIDENCE_STORE.get(filter.workId) || [];
+      return evidenceStore.get(filter.workId) || [];
     }
     // Jika tidak ada filter, gabungkan semua evidence
     const allEvidence: any[] = [];
-    for (const [workId, evidence] of EVIDENCE_STORE.entries()) {
+    for (const [workId, evidence] of evidenceStore.entries()) {
       allEvidence.push(...evidence.map(e => ({ ...e, workId })));
     }
     return allEvidence;
   },
 
   async addEvidence(workId: string, entry: any): Promise<void> {
-    const current = EVIDENCE_STORE.get(workId) || [];
+    const evidenceStore = getEvidenceStore();
+    const current = evidenceStore.get(workId) || [];
     current.push(entry);
-    EVIDENCE_STORE.set(workId, current);
+    evidenceStore.set(workId, current);
   },
 
   // Implementasi createMany untuk bulk create
@@ -437,7 +464,7 @@ export const WorkRepositoryInMemory: any & {
         processedEventIds: [],
         ...work
       } as unknown as WorkAggregate;
-      STORE.set(id, newWork);
+      getStore().set(id, newWork);
       ids.push(id);
       // W06-A2: Audit trace untuk setiap bulk create
       console.log(`[AUDIT] ALLOW work.createBulk | correlation_id=${context.context_trace_id} | actor=${trustedActorId} | tenant=${trustedTenantId} | work=${newWork.workId}`);

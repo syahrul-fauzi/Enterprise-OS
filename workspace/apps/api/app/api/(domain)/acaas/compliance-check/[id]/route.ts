@@ -7,7 +7,7 @@ import {
 } from "@repo/core-kernel/session/workspace-session.js";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 
 // Schema untuk parameter GET - mengikuti pola kanonik yang sama
 const GetComplianceCheckSchema = z.object({

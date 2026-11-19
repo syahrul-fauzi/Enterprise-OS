@@ -9,7 +9,7 @@
 import { randomUUID } from "crypto";
 import { describe, it } from "node:test";
 import assert from "node:assert";
-import type { WorkId, TenantId, WorkspaceId, ActorId } from "./contracts/work.contracts";
+import type { WorkId, TenantId, WorkspaceId, ActorId } from "@repo/contracts-core";
 
 // Reuse MOCK REPOSITORIES YANG SAMA dari high-value-work-graph.test.ts - 100% reuse
 class MockWorkRepository {

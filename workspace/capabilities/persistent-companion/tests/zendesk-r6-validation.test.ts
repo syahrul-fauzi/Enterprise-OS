@@ -8,7 +8,7 @@ import { test, describe, before, after } from "node:test";
 import assert from "node:assert";
 import { WorkRepositoryPostgres } from "../../work-core/implementation/repository/work-postgres.repository.js";
 import { handleZendeskWebhookUpdate, syncEOSToZendesk, createZendeskComment } from "../../connector-ecosystem/implementation/services/connector-ecosystem.service.js";
-import type { WorkAggregate } from "../../work-core/contracts/work.contracts.js";
+import type { WorkAggregate } from "@repo/contracts-core";
 
 describe("R6 - Universal Adapter Contract (Zendesk Proof)", () => {
   let workRepository: WorkRepositoryPostgres;

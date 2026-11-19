@@ -91,7 +91,9 @@ test-results/
 # **/.eos-state/  # Uncomment only after full submodule adjudication
 # */.eos-state/
 */evidence/
+!evidence-verification/
 */artifacts/
+!evidence-verification/
 .eos-state-temp/
 .eos-state-backup/
 .eos-venv/  # Generated Python virtual environment - never commit

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
-import type { DeviceId, WorkId } from "../../../work-core/contracts/work.contracts.js";
+import type { DeviceId, WorkId } from "@repo/contracts-core";
 
 // Buat schema Zod secara lokal karena tidak diexport dari work-core.contracts (sesuai freeze EOS Core)
 // Pattern: string() dengan validasi UUID/pola yang sesuai dengan DeviceId/WorkId yang dihasilkan newWorkId/newDeviceId

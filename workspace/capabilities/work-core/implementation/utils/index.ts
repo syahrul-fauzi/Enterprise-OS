@@ -10,7 +10,7 @@ export type {
   ExecutionBoundary, 
   EvidenceBoundary, 
   PresentationBoundary 
-} from "../../contracts/work.contracts.js";
+} from "@repo/contracts-core";
 
 // Export factory functions dari canonical contracts (createSessionId, createDeviceId, createActorId, createTenantId, createWorkspaceId)
 // Menambahkan createSessionId dan createDeviceId yang dibutuhkan oleh websocket-adapter untuk validasi session
@@ -27,7 +27,7 @@ export {
   newWorkspaceId, 
   createWorkId, 
   newWorkId 
-} from "../../contracts/work.contracts.js";
+} from "@repo/contracts-core";
 
 // Export types for autonomy boundary checks
 export type { AutonomyBoundaryCheck, AutonomyBoundaryResult, DecisionLogEntry, ConsultationStageEvidence } from "./boundary-checks.types.js";
@@ -40,9 +40,9 @@ export { calculateExecutionFrame } from "./cmbdc.utils.js";
 export { safeRecordEvidence } from "./evidence.utils.js";
 export { safeNotifyWorkspaceListeners } from "./realtime.utils.js";
 export { buildWorkFaceProjection } from "./face-projection.utils.js";
-export { validateAllBoundaries, validateIdentityBoundary, validateAuthorityBoundary, validateNoCircularDependencies, validateBoundaryAccess } from "../../contracts/work.contracts.js";
+export { validateAllBoundaries, validateIdentityBoundary, validateAuthorityBoundary, validateNoCircularDependencies, validateBoundaryAccess } from "@repo/contracts-core";
 export { runArchitectureFitnessChecks } from "./architecture-fitness-checks.js";
-export type { FitnessCheckResult } from "../../contracts/work.contracts.js";
+export type { FitnessCheckResult } from "@repo/contracts-core";
 
 // Export RuleBasedProvider dan IntentUnderstanding utilities untuk AI fallback
 // Gate A compliance: Reuse provider yang sudah ada, semua import dari work-core

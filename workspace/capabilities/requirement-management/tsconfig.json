@@ -24,7 +24,7 @@
     "target": "ES2022",
     "paths": {
       "@repo/core-runtime": ["../../packages/core/runtime/src"],
-      "@repo/capabilities-identity": ["../identity/src"],
+      "@capabilities/identity": ["../identity/src"],
       "@capabilities/work-core": ["../work-core/index.ts"],
       "@capabilities/work-core/*": ["../work-core/*"]
     }

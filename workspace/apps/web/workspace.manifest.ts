@@ -7,8 +7,8 @@ import type { CapabilityDescriptor, CapabilityImplementation } from "@repo/core-
 //   RequirementView,
 //   default as RequirementViewDefault,
 // } from "../../capabilities/requirement-management/experience/views/RequirementView.js"; (temporarily disabled)
-// import * as RequirementServiceImplModule from "@repo/capabilities-requirement-management"; // Package not yet registered
-import { identityCommands } from "@repo/capabilities-identity";
+// import * as RequirementServiceImplModule from "@capabilities/requirement-management"; // Package not yet registered
+import { identityCommands } from "@capabilities/identity";
 import {
   getUserRepositoryPostgres,
   getTenantRepositoryPostgres,
@@ -16,7 +16,7 @@ import {
   getMembershipRepositoryPostgres,
   getSessionRepositoryPostgres,
   passwordService
-} from "@repo/capabilities-identity";
+} from "@capabilities/identity";
 import * as ConsultationServiceImplModule from "../../capabilities/consultation/implementation/service.js";
 import { 
   createConsultation, 

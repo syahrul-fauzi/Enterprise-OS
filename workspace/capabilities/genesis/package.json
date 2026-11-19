@@ -1,5 +1,5 @@
 {
-  "name": "@eos/genesis",
+  "name": "@capabilities/genesis",
   "version": "1.0.0",
   "description": "Genesis EOS Business Domain Package - End-to-end business journey from LeadProspect to ClientAccount",
   "main": "implementation/index.ts",

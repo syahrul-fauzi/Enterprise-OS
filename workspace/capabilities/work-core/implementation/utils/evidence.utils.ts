@@ -1,5 +1,5 @@
 // @ts-nocheck: Skip TypeScript checks to unblock Lawyers Hub staging deployment
-import type { WorkspaceId } from "../../contracts/work.contracts.js";
+import type { WorkspaceId } from "@repo/contracts-core";
 import { getWorkRepositoryLazy } from "../commands/work.commands.js";
 
 // Canonical safeRecordEvidence utility - shared across all vertical slices
@@ -81,12 +81,18 @@ export async function safeRecordEvidence(payload: {
           evidenceWithChecksum as never,
           payload.executionContext
         );
-        // Only consider primary successful if the registry returns a success: true result
-        if (registryResult && typeof registryResult === 'object' && (registryResult as { success?: boolean }).success === true) {
+        // Only consider primary successful if the registry returns a success: true result AND it's not a simulated fallback
+        // The simulated fallback from capabilityRegistry.invoke has ok: true but status: 'simulated', which means the actual registry didn't process the request
+        // The _execution_trace field is added by capabilityRegistry.invoke and should not affect success check
+        const isRegistrySuccess = registryResult && typeof registryResult === 'object' && 
+            ((registryResult as { success?: boolean }).success === true || (registryResult as { ok?: boolean }).ok === true) &&
+            (registryResult as { status?: string }).status !== 'simulated';
+        
+        if (isRegistrySuccess) {
           console.log(`[safeRecordEvidence] ✅ Evidence recorded via registry with checksum: ${payload.command} for work ${payload.work_id}`);
           return { ok: true };
         } else {
-          console.warn(`[safeRecordEvidence] Registry returned non-success result, activating fallback: ${JSON.stringify(registryResult)}`);
+          console.warn(`[safeRecordEvidence] Registry returned non-success or simulated result, activating fallback: ${JSON.stringify(registryResult)}`);
         }
       } catch (registryErr) {
         console.warn(`[safeRecordEvidence] Registry threw exception, activating fallback: ${(registryErr as Error).message}`);
@@ -100,6 +106,7 @@ export async function safeRecordEvidence(payload: {
   try {
     const workRepository = await getWorkRepositoryLazy();
     if (typeof workRepository.addEvidence === "function") {
+      console.log(`[safeRecordEvidence] 🚀 Calling addEvidence for command: ${payload.command}, work: ${payload.work_id}, stack: ${new Error().stack}`);
       // Use the same canonical payload and checksum as primary path
       await workRepository.addEvidence(payload.work_id, evidenceWithChecksum);
       console.log(`[safeRecordEvidence] ✅ Evidence recorded locally with checksum: ${payload.command} for work ${payload.work_id}`);

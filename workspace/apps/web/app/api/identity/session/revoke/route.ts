@@ -4,8 +4,8 @@ import {
   readWorkspaceSessionFromRequest,
   decodeWorkspaceSession,
 } from "@repo/core-kernel";
-import { getSessionRepositoryPostgres, initIdentitySchema } from "@repo/capabilities-identity/repositories";
-import { SessionId } from "@repo/capabilities-identity/implementation/contracts/identity.contracts";
+import { getSessionRepositoryPostgres, initIdentitySchema } from "@capabilities/identity/repositories";
+import { SessionId } from "@capabilities/identity/implementation/contracts/identity.contracts";
 
 // Initialize schema once at route load
 initIdentitySchema().catch(err => console.error("[session/revoke] Failed to init identity schema:", err));

@@ -54,7 +54,7 @@ export type IntentContract = {
   dynamicUnderstanding?: IntentUnderstanding;
 };
 // Re-export base identity types from existing project import to maintain type safety
-import type { IntentCategory, IntentRawInput } from "@repo/capabilities-identity";
+import type { IntentCategory, IntentRawInput } from "@capabilities/identity";
 export type { IntentCategory, IntentRawInput };
 
 // Keep only what's needed below this point - removed duplicate inline definitions that were already declared above

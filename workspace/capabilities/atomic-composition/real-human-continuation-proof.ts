@@ -4,7 +4,7 @@
 // SATUSATU Work ID, semua actor melihat state yang sama, tidak ada duplikasi work, tidak ada fork state.
 
 import { AtomicCompositionService } from './implementation/services/composition.service';
-import { WorkAggregate as Work } from '@capabilities/work-core/contracts/work.contracts';
+import { WorkAggregate as Work } from "@repo/contracts-core";
 import { ActorId } from './implementation/contracts/atomic-composition.contracts';
 // Import real providers dari service directory (sama seperti semua proof E2 sebelumnya)
 import { ServiceProviderRepositoryInMemory } from '../../capabilities/service-directory/implementation/repository/service.repository';

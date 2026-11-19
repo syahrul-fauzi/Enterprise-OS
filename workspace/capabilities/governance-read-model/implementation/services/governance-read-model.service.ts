@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import type { GovernanceReadModelCatalog, GovernanceReadModelLocation, GovernanceReadModelKind } from "../contracts/governance-read-model.contracts.js";
 
-const __filename = require.resolve('./governance-read-model.service.js');
+const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
 const WORKSPACE_ROOT = path.resolve(__dirname, '../../../../');
 

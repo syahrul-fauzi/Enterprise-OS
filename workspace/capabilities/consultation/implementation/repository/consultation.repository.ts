@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { type WorkId, createWorkId } from "../../../work-core/contracts/work.contracts.ts";
+import { type WorkId, createWorkId } from "@repo/contracts-core";
 import {
   ConsultationAggregate,
   ConsultationId,

@@ -14,14 +14,14 @@
 
 import { existsSync, writeFileSync, readFileSync } from "node:fs";
 import { statePath } from "@repo/eos-cli";
-// Seragamkan import dari work.contracts yang sudah mere-export semua identity types dari @repo/capabilities-identity
+// Seragamkan import dari work.contracts yang sudah mere-export semua identity types dari @capabilities/identity
 // Menghindari branded type collision dari dual import source dan memperbaiki TS5097
 import { WorkId, TenantId, ActorId, SessionId, WorkspaceId, WorkAggregate } from "../capabilities/work-core/contracts/work.contracts.js";
 // Semua factory functions sudah di-export dari work.contracts (single source of truth)
 import { newWorkId, newTenantId, newActorId, newSessionId, getWorkRepositoryPostgres } from "../capabilities/work-core/contracts/work.contracts.js";
 // Import membership repository untuk dependency updateWork
 import { getMembershipRepositoryPostgres } from "../capabilities/identity/implementation/repositories/membership.repository.js";
-// Copy implementasi updateWork dari work.commands.ts agar tidak perlu import file asli yang dependen pada @repo/capabilities-identity
+// Copy implementasi updateWork dari work.commands.ts agar tidak perlu import file asli yang dependen pada @capabilities/identity
 export type UpdateWorkRequest = {
   workId: string;
   actorId: string;

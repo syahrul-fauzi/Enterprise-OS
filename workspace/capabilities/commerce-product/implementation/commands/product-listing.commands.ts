@@ -24,7 +24,7 @@ import {
 // Import Work repository dari lokasi yang benar (bukan utils)
 import { getWorkRepositoryPostgres } from "../../../work-core/implementation/repository/work-postgres.repository.js";
 import { WorkRepositoryInMemory } from "../../../work-core/implementation/repository/work-inmemory.repository.js";
-import { type WorkId, type WorkAggregate, type ProductNode } from "../../../work-core/contracts/work.contracts.js";
+import { type WorkId, type WorkAggregate, type ProductNode } from "@repo/contracts-core";
 import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.js";
 import {
 	type ProductListingContextMetadata,

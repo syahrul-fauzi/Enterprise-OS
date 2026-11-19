@@ -11,7 +11,7 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
-    "@repo/capabilities-identity": "workspace:*",
+    "@capabilities/identity": "workspace:*",
     "@repo/presentation-experience": "workspace:*",
     "@repo/presentation-foundation": "workspace:*",
     "@repo/presentation-ui-system": "workspace:*",

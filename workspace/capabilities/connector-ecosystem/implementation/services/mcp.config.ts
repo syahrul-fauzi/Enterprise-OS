@@ -5,7 +5,7 @@
  * Reuses identical pattern from telegram.config.ts and whatsapp.config.ts to maintain consistency
  */
 import { Pool, getPool } from "../../../identity/implementation/repositories/base.repository.js";
-import { createTenantId, type TenantId } from "../../../work-core/contracts/work.contracts.js";
+import { createTenantId, type TenantId } from "@repo/contracts-core";
 
 // Initialize connection pool with unified connection string (reuse from base repository)
 const pool: Pool = getPool();

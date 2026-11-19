@@ -3,14 +3,14 @@
 export type { 
   WorkId, WorkStatus, WorkAggregate, TenantId, ActorId, SessionId, CompositionId,
   DeviceId, DeviceHardwareAbstraction
-} from "../contracts/work.contracts.js";
+} from "@repo/contracts-core";
 
 // Re-export SEMUA factory functions dari contracts yang dibutuhkan untuk identity
 export { 
   createWorkId, newWorkId, createSessionId, newSessionId, 
   createActorId, newActorId, createDeviceId, newDeviceId,
   createTenantId, newTenantId, createWorkspaceId, newWorkspaceId
-} from "../contracts/work.contracts.js";
+} from "@repo/contracts-core";
 
 // Re-export semua repository implementations
 export { getWorkRepositoryLazy as getWORK_REPO } from "./commands/work.commands.js";
@@ -30,9 +30,9 @@ export { checkAutonomyBoundary } from "./utils/boundary-checks.utils.js";
 export type { AutonomyBoundaryCheck, AutonomyBoundaryResult } from "./utils/boundary-checks.types.js";
 
 // Re-export base repository classes dari identity
-export { PostgresRepository, initIdentitySchema, getPool } from "@repo/capabilities-identity";
+export { PostgresRepository, initIdentitySchema, getPool } from "@capabilities/identity";
 // Re-export identity repositories untuk kompatibilitas import dari work-core (hanya untuk primitif yang belum diekspor via kontrak)
-export { getSessionRepositoryPostgres } from "@repo/capabilities-identity";
-export { SessionRepositoryInMemory } from "@repo/capabilities-identity";
+export { getSessionRepositoryPostgres } from "@capabilities/identity";
+export { SessionRepositoryInMemory } from "@capabilities/identity";
 
 // Main capability implementation export sudah ada di baris sebelumnya, tidak perlu duplikasi

@@ -10,7 +10,7 @@ import type {
   IntentUnderstandingProvider, 
   IntentRawInput, 
   IntentUnderstanding 
-} from "../../contracts/work.contracts.js";
+} from "@repo/contracts-core";
 
 /**
  * RuleBasedUnderstandingProvider - Implements deterministic fallback intent understanding

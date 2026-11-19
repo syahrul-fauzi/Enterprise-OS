@@ -165,7 +165,7 @@ export const compositionPackage = {
   // Private helper: Record lifecycle evidence dengan full context (compliant dengan recordEvidence schema)
   private async recordLifecycleEvidence(type: string, data: any) {
     if (!this.state.workspaceId) throw new Error("Workspace ID not resolved, cannot record evidence");
-    const { recordEvidence } = await import("@repo/capabilities-work-core");
+    const { recordEvidence } = await import("@capabilities/work-core");
     const evidenceId = await recordEvidence.execute({
       sessionId: this.state.sessionId,
       workspaceId: this.state.workspaceId,

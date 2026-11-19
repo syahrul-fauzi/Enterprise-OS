@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
   WORKSPACE_SESSION_COOKIE,

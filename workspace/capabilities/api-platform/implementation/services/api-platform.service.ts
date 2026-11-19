@@ -20,6 +20,7 @@ import { governanceReadGatewayService } from "./governance-read-gateway.service.
 import { requirementDeliveryGatewayService } from "./requirement-delivery-gateway.service.js";
 import { workflowReadGatewayService } from "./workflow-read-gateway.service.js";
 import { intentReadGatewayService } from "./intent-read-gateway.service.js";
+// import { workReadGatewayService } from "./work-read-gateway.service.js"; // Temporarily disabled - file not found
 import { registerApiPlatformCapability } from "../commands/index.js";
 // B6.11: Use intent read gateway to avoid compile-time coupling with atomic-composition
 // Canonical intentUnderstandingService is accessed via runtime globalThis binding
@@ -258,6 +259,194 @@ const ENDPOINTS: readonly ApiPlatformEndpoint[] = Object.freeze([
     path: "/api/constitution/proof-bundle",
     resource: "constitution",
     operation: "get",
+    authRequired: true,
+  },
+  {
+    id: "work-get",
+    method: "POST",
+    path: "/api/work/get",
+    resource: "work",
+    operation: "get",
+    authRequired: true,
+  },
+  {
+    id: "work-list",
+    method: "POST",
+    path: "/api/work/list",
+    resource: "work",
+    operation: "list",
+    authRequired: true,
+  },
+  // Business OS Endpoints - Gate G2 Business Work Integration
+  {
+    id: "business-os-get-rocks",
+    method: "POST",
+    path: "/api/business-os/rocks",
+    resource: "business-os",
+    operation: "list",
+    authRequired: true,
+  },
+  {
+    id: "business-os-get-issues",
+    method: "POST",
+    path: "/api/business-os/issues",
+    resource: "business-os",
+    operation: "list",
+    authRequired: true,
+  },
+  {
+    id: "business-os-get-decisions",
+    method: "POST",
+    path: "/api/business-os/decisions",
+    resource: "business-os",
+    operation: "list",
+    authRequired: true,
+  },
+  {
+    id: "business-os-get-tasks",
+    method: "POST",
+    path: "/api/business-os/tasks",
+    resource: "business-os",
+    operation: "list",
+    authRequired: true,
+  },
+  {
+    id: "business-os-get-meetings",
+    method: "POST",
+    path: "/api/business-os/meetings",
+    resource: "business-os",
+    operation: "list",
+    authRequired: true,
+  },
+  {
+    id: "business-os-get-all",
+    method: "POST",
+    path: "/api/business-os/all",
+    resource: "business-os",
+    operation: "list",
+    authRequired: true,
+  },
+  {
+    id: "business-os-create-rock",
+    method: "POST",
+    path: "/api/business-os/rocks/create",
+    resource: "business-os",
+    operation: "create",
+    authRequired: true,
+  },
+  {
+    id: "business-os-create-issue",
+    method: "POST",
+    path: "/api/business-os/issues/create",
+    resource: "business-os",
+    operation: "create",
+    authRequired: true,
+  },
+  {
+    id: "business-os-create-task",
+    method: "POST",
+    path: "/api/business-os/tasks/create",
+    resource: "business-os",
+    operation: "create",
+    authRequired: true,
+  },
+  // Business OS Accountability & Authority Endpoints - Gate G3
+  {
+    id: "business-os-get-accountability-charts",
+    method: "POST",
+    path: "/api/business-os/accountability-charts",
+    resource: "business-os",
+    operation: "list",
+    authRequired: true,
+  },
+  {
+    id: "business-os-get-authority-boundaries",
+    method: "POST",
+    path: "/api/business-os/authority-boundaries",
+    resource: "business-os",
+    operation: "list",
+    authRequired: true,
+  },
+  {
+    id: "business-os-get-actor-authority",
+    method: "POST",
+    path: "/api/business-os/actor-authority",
+    resource: "business-os",
+    operation: "list",
+    authRequired: true,
+  },
+  {
+    id: "business-os-create-accountability-chart",
+    method: "POST",
+    path: "/api/business-os/accountability-charts/create",
+    resource: "business-os",
+    operation: "create",
+    authRequired: true,
+  },
+  {
+    id: "business-os-create-authority-boundary",
+    method: "POST",
+    path: "/api/business-os/authority-boundaries/create",
+    resource: "business-os",
+    operation: "create",
+    authRequired: true,
+  },
+  // Business OS Evidence Endpoints - Gate G4
+  {
+    id: "business-os-get-work-evidence",
+    method: "POST",
+    path: "/api/business-os/work-evidence",
+    resource: "business-os",
+    operation: "list",
+    authRequired: true,
+  },
+  {
+    id: "business-os-record-evidence",
+    method: "POST",
+    path: "/api/business-os/evidence/record",
+    resource: "business-os",
+    operation: "create",
+    authRequired: true,
+  },
+  {
+    id: "business-os-record-decision-evidence",
+    method: "POST",
+    path: "/api/business-os/evidence/decision",
+    resource: "business-os",
+    operation: "create",
+    authRequired: true,
+  },
+  {
+    id: "business-os-record-meeting-evidence",
+    method: "POST",
+    path: "/api/business-os/evidence/meeting",
+    resource: "business-os",
+    operation: "create",
+    authRequired: true,
+  },
+  {
+    id: "business-os-record-performance-evidence",
+    method: "POST",
+    path: "/api/business-os/evidence/performance",
+    resource: "business-os",
+    operation: "create",
+    authRequired: true,
+  },
+  // Business OS FACE Endpoints - Gate G5
+  {
+    id: "business-os-executive-dashboard",
+    method: "POST",
+    path: "/api/business-os/face/executive-dashboard",
+    resource: "business-os",
+    operation: "list",
+    authRequired: true,
+  },
+  {
+    id: "business-os-team-member-view",
+    method: "POST",
+    path: "/api/business-os/face/team-member",
+    resource: "business-os",
+    operation: "list",
     authRequired: true,
   },
 ]);
@@ -529,7 +718,17 @@ export class ApiPlatformService {
                                   ? workflowReadGatewayService.traceExecutionsByDecision({
                                       decision_id: String(params.decision_id ?? ""),
                                     })
-                                  : undefined;
+                                  // : input.resource === "work" && input.operation === "get"
+                                  //   ? workReadGatewayService.getWorkFaceProjection({
+                                  //       workId: String(params.workId ?? ""),
+                                  //     })
+                                  // : input.resource === "work" && input.operation === "list"
+                                  //   ? workReadGatewayService.listWorksByInstitution({
+                                  //       tenantId: String(params.tenantId ?? ""),
+                                  //       workspaceId: params.workspaceId ? String(params.workspaceId) : undefined,
+                                  //       domainType: params.domainType ? String(params.domainType) : undefined,
+                                  //     })
+                                      : undefined;
             })();
 
     if (result === undefined) {

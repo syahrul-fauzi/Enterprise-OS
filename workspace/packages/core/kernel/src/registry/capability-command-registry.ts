@@ -122,7 +122,8 @@ export function createRegistry() {
     console.log(`🔍 DEBUG: capabilityRegistry.invoke - Command ditemukan! Menjalankan execute/handler dengan correlation_id=${correlation_id}...`);
     // W06-A3: Propagate correlation ID ke input handler untuk trace berkelanjutan
     // W06-A2-R1: HARDENED TRUST BOUNDARY - NEVER allow untrusted context override
-          const ctxFromExecution = executionContext.get();
+          // Fallback for test environments where executionContext might not be initialized
+          const ctxFromExecution = typeof executionContext?.get === 'function' ? executionContext.get() : null;
           console.log(`[capabilityRegistry.invoke] 🔍 DEBUG: executionContext.get() returned:`, JSON.stringify(ctxFromExecution, null, 2));
           console.log(`[capabilityRegistry.invoke] 🔍 DEBUG: providedExecutionContext:`, JSON.stringify(providedExecutionContext, null, 2));
 
@@ -1437,6 +1438,14 @@ export const EOS_SKILL_001_RepositoryAuditWorkflow: WorkflowDefinition = {
       command: "work.close",
       description: "Workflow audit selesai dengan seluruh evidence terarsip",
       requiredRoles: ["engineering-lead", "audit-actor"]
+    },
+    {
+      id: "audit-failed",
+      label: "Audit Failed",
+      capability: "eos-command-center",
+      command: "work.block",
+      description: "Workflow audit gagal, masalah memerlukan intervensi sebelum dapat dilanjutkan",
+      requiredRoles: ["engineering-lead", "audit-actor"]
     }
   ],
   transitions: {
@@ -1451,15 +1460,6 @@ export const EOS_SKILL_001_RepositoryAuditWorkflow: WorkflowDefinition = {
     "evidence-to-failed": { requiredRoles: ["system", "engineering-lead", "audit-actor"], from: "evidence-recorded", to: "audit-failed" },
     "recover-to-recon": { requiredRoles: ["system", "engineering-lead", "audit-actor"], from: "audit-failed", to: "audit-initiated" }
   },
-  steps: [
-    { id: "audit-initiated", label: "Audit Initiated", capability: "eos-recon", command: "recon.scan", description: "Repository reconnaissance dimulai dengan scanning codebase untuk existing capabilities dan resources", requiredRoles: ["system", "automated", "audit-actor"] },
-    { id: "recon-completed", label: "Reconnaissance Complete", capability: "eos-dependency-engine", command: "dependency.analyze", description: "Dependency dan ownership analysis dijalankan terhadap hasil scan recon", requiredRoles: ["system", "automated"] },
-    { id: "dependency-analysis-completed", label: "Dependency Analysis Complete", capability: "eos-verification", command: "verification.run", description: "Validasi kondisi aktual dan acceptance criteria capability registry", requiredRoles: ["system", "automated", "engineering-lead"] },
-    { id: "verification-completed", label: "Verification Complete", capability: "eos-evidence-engine", command: "evidence.record", description: "Semua hasil audit diregistrasikan dan direkonsiliasi di evidence ledger", requiredRoles: ["system", "automated"] },
-    { id: "evidence-recorded", label: "Evidence Recorded", capability: "eos-command-center", command: "commandcenter.update", description: "Status Work diperbarui sesuai authority dan laporan audit disimpan", requiredRoles: ["system", "engineering-lead"] },
-    { id: "audit-completed", label: "Audit Completed", capability: "eos-command-center", command: "work.close", description: "Workflow audit selesai dengan seluruh evidence terarsip", requiredRoles: ["engineering-lead", "audit-actor"] },
-    { id: "audit-failed", label: "Audit Failed", capability: "eos-command-center", command: "work.block", description: "Workflow audit gagal, masalah memerlukan intervensi sebelum dapat dilanjutkan", requiredRoles: ["engineering-lead", "audit-actor"] }
-  ],
   initialStep: "audit-initiated",
   terminalStep: "audit-completed"
 };

@@ -9,7 +9,7 @@ import {
   decodeWorkspaceSession,
   type WorkspaceSession,
 } from "@repo/core-kernel";
-import { validateBoundaryAccess } from "@repo/capabilities-work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 
 export const dynamic = 'force-dynamic';
 

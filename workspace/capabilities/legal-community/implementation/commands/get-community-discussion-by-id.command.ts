@@ -1,7 +1,7 @@
 // @ts-nocheck: Skip TypeScript checks to unblock Lawyers Hub staging deployment
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { validateBoundaryAccess, validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary } from "../../../work-core/implementation/contracts/work.contracts.ts";
+import { validateBoundaryAccess, validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary } from "@repo/contracts-core";
 import {
   CommunityDiscussionRepositoryInMemory,
   getCommunityDiscussionRepositoryPostgres,

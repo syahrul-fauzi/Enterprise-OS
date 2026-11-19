@@ -12,7 +12,7 @@ files.forEach(filePath => {
     const content = fs.readFileSync(filePath, 'utf8');
     if (!content.includes('@capabilities/identity')) return;
     
-    const newContent = content.replace(/@capabilities\/identity/g, '@repo/capabilities-identity');
+    const newContent = content.replace(/@capabilities\/identity/g, '@capabilities/identity');
     fs.writeFileSync(filePath, newContent, 'utf8');
     console.log(`Fixed: ${filePath}`);
   } catch (err) {

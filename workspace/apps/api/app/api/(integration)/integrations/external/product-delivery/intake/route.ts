@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   initIdentitySchema,
-} from "@repo/capabilities-identity";
+} from "@capabilities/identity";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 
 // Lazy initialization untuk Node.js crypto module (hindari Edge Runtime static analysis warning)
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Inisialisasi schema dan repository (sesuai dengan @repo/capabilities-identity)
+    // Inisialisasi schema dan repository (sesuai dengan @capabilities/identity)
     await initIdentitySchema();
     
     // Execute canonical PROD-001.1 command: delivery.createFromWork

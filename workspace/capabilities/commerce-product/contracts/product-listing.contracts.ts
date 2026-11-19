@@ -1,7 +1,7 @@
 // @ts-nocheck
 // Import canonical identity + CMBCD types dari work-core (single source of truth - anti-drift)
 import { calculateExecutionFrame } from "../../work-core/implementation/utils/index.js";
-import type { TenantId, WorkspaceId, ActorId, ActorMetadata, AuthorizationScope, RiskAssessment, ExecutionFrame, ContextMetadata, WorkId, WorkFaceProjection } from "../../work-core/contracts/work.contracts.js";
+import type { TenantId, WorkspaceId, ActorId, ActorMetadata, AuthorizationScope, RiskAssessment, ExecutionFrame, ContextMetadata, WorkId, WorkFaceProjection } from "@repo/contracts-core";
 
 export type ProductListingStatus = "draft" | "active" | "out-of-stock" | "archived";
 export type ProductListingPriority = "low" | "medium" | "high" | "critical";

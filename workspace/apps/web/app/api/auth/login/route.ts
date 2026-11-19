@@ -7,7 +7,7 @@ import {
   type WorkspaceSession,
 } from "@repo/core-kernel";
 import { initNodeRuntime, getCapabilityRegistry } from "@repo/capability-registry";
-import { validateBoundaryAccess } from "../../../../../capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 
 const LoginRequestSchema = z.object({
   email: z.string().email(),

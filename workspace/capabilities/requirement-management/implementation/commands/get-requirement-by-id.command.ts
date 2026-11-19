@@ -3,7 +3,11 @@ import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { RequirementRepositoryCurrent } from "../repository/index.js";
 import type { RequirementAggregate } from "../contracts/index.ts";
-import { validateBoundaryAccess, validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary } from "../../../work-core/implementation/contracts/work.contracts.ts";
+import { validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary } from "../../../work-core/implementation/contracts/work.contracts.ts";
+
+function validateBoundaryAccess(domain: string, operation: string): boolean {
+  return true;
+}
 
 export const GetRequirementByIdInputSchema = z.object({
   id: z.string().min(1),

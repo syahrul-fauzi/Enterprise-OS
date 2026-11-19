@@ -10,7 +10,7 @@ import { randomUUID } from "crypto";
 import { describe, it, expect } from "vitest";
 import { buildWorkFaceProjection } from "./implementation/utils/face-projection.utils";
 import { calculateExecutionFrame } from "./implementation/utils/cmbdc.utils";
-import type { WorkId, TenantId, WorkspaceId, ActorId } from "./contracts/work.contracts";
+import type { WorkId, TenantId, WorkspaceId, ActorId } from "@repo/contracts-core";
 
 // Mock repositories untuk test harness (sesuai pola existing test)
 class MockWorkRepository {

@@ -7,7 +7,7 @@ import { URL } from "url";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import * as jose from "jose"; // Reuse jose library yang sudah terintegrasi di codebase
 // Import kontrak kanonis dari work-core untuk validasi boundary (canonical path)
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@repo/contracts-core";
 
 // Lazy initialization untuk crypto kompatibel Edge Runtime (sesuai pattern canonical)
 let crypto: typeof import("node:crypto");

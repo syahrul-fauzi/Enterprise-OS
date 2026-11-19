@@ -5,8 +5,8 @@
  * outcome bisnis yang menghasilkan event ekonomi (invoice, revenue, dll.)
  */
 
-import { type WorkId, createWorkId, type WorkAggregate as Work } from '@repo/capabilities-work-core';
-// Gunakan alias canonical @repo/capabilities-atomic-composition untuk import dari internal contracts (sesuai Gate A requirements)
+import { type WorkId, createWorkId, type WorkAggregate as Work } from '@capabilities/work-core';
+// Gunakan alias canonical @capabilities/atomic-composition untuk import dari internal contracts (sesuai Gate A requirements)
 import { 
   ActorId, 
   RequirementId,

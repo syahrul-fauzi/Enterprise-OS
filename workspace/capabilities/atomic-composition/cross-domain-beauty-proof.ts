@@ -5,7 +5,7 @@
  * Hanya: Requirements, Capabilities, Actors yang berubah
  */
 
-import { newWorkId, type WorkId, type Work, createActorId, type ActorId } from '../work-core/contracts/work.contracts.js';
+import { newWorkId, type WorkId, type Work, createActorId, type ActorId } from "@repo/contracts-core";
 import { 
   type Actor, 
   type Requirement, 

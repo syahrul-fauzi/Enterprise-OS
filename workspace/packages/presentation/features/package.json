@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "@repo/presentation-ui-system": "workspace:*",
-    "@repo/capabilities-identity": "workspace:*",
+    "@capabilities/identity": "workspace:*",
     "lucide-react": "^0.417.0"
   },
   "peerDependencies": {

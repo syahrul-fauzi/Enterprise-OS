@@ -1,7 +1,7 @@
 // @ts-nocheck
 import type { ServiceProviderCategory, CreateServiceRequestInputLegacy as CreateServiceRequestInput } from "../contracts/service.contracts.js";
 import type { TenantId, WorkspaceId } from "@capabilities/work-core";
-import { createTenantId, createWorkspaceId } from "../../../work-core/contracts/work.contracts.js";
+import { createTenantId, createWorkspaceId } from "@repo/contracts-core";
 import { ServiceRequestRepositoryInMemory } from "../repository/service.repository.js";
 import { validateBatchItems } from "../validation/batch-validator.js";
 import { getServiceRequestRepositoryPostgres } from "../repository/index.js";
