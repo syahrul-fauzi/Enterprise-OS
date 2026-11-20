@@ -316,12 +316,21 @@ export const observabilityService = new ObservabilityService();
 // B7.18.2: Basic collector to capture invocations and save as evidence
 export async function recordRuntimeInvocation(invocation: RuntimeInvocation): Promise<void> {
   observabilityService.ensureCanonicalDirsExist();
-  const { statePath } = await import('@repo/eos-cli');
-  const ACAAS_METRICS_PATH = statePath('metrics', 'ACaaS-001', 'processed_requests.jsonl');
-  const DIGITALOPS_METRICS_PATH = statePath('metrics', 'DIGITAL-OPS-001', 'processed_requests.jsonl');
-  const EVIDENCE_PATH = path.join(observabilityService.WORKSPACE_ROOT, "capabilities/observability/evidence/verification/runtime-invocations.jsonl");
+  const WORKSPACE_ROOT = process.cwd();
+  let statePathFn;
+  try {
+    const { statePath } = await import('../../../../packages/tooling/eos-cli/src/state.js');
+    statePathFn = statePath;
+  } catch (e) {
+    // Fallback jika statePath tidak tersedia di lingkungan test
+    statePathFn = (...parts) => path.join(WORKSPACE_ROOT, '.eos-state', ...parts);
+  }
+  const ACAAS_METRICS_PATH = statePathFn('metrics', 'ACaaS-001', 'processed_requests.jsonl');
+  const DIGITALOPS_METRICS_PATH = statePathFn('metrics', 'DIGITAL-OPS-001', 'processed_requests.jsonl');
+  const EVIDENCE_PATH = path.join(WORKSPACE_ROOT, "capabilities/observability/evidence/verification/runtime-invocations.jsonl");
   const line = JSON.stringify(invocation) + "\n";
   // Simpan ke evidence umum
+  fs.mkdirSync(path.dirname(EVIDENCE_PATH), { recursive: true });
   fs.appendFileSync(EVIDENCE_PATH, line);
   // Simpan ke canonical metrics path khusus ACaaS-001 untuk pilot - sesuai mandat "Aktifkan metering sejak awal"
   if (invocation.capability_id === "api-platform" && invocation.operation_id.startsWith("acaas.")) {

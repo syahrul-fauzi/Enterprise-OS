@@ -8,34 +8,39 @@ declare global {
 }
 globalThis.__EOS_INMEMORY_EXECUTION_STATUSES__ = globalThis.__EOS_INMEMORY_EXECUTION_STATUSES__ || new Map();
 
-// Use in-memory store in test environment, Redis otherwise - aligned with runtime/src ESM pattern
-const useInMemory = process.env.NODE_ENV === 'test';
+// Use in-memory store as DEFAULT, Redis only if explicitly configured and available
+// This ensures test environments always use in-memory without requiring NODE_ENV to be set
+const useInMemory = !process.env.REDIS_URL || process.env.REDIS_URL === '' || process.env.REDIS_URL === 'redis://localhost:6379';
 let redis: any;
 
-// Initialize synchronously to avoid async race conditions
-if (useInMemory) {
-  // In-memory mock Redis client for tests
-  redis = {
-    set: async (key: string, value: string) => globalThis.__EOS_INMEMORY_EXECUTION_STATUSES__.set(key, value),
-    get: async (key: string) => globalThis.__EOS_INMEMORY_EXECUTION_STATUSES__.get(key),
-    del: async (key: string) => globalThis.__EOS_INMEMORY_EXECUTION_STATUSES__.delete(key)
-  };
-  console.log("[EXECUTION STATUS] Test environment detected: using in-memory status store");
-} else {
-  // Production: Redis client initialization - single instance per application - dynamic import for ESM
-  import('ioredis').then(({ default: Redis }) => {
-    redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
-      maxRetriesPerRequest: 3,
-      lazyConnect: true
-    });
-  }).catch(err => {
-    console.warn('[EXECUTION STATUS] Redis import failed, falling back to in-memory:', err.message);
-    redis = {
-      set: async (key: string, value: string) => globalThis.__EOS_INMEMORY_EXECUTION_STATUSES__.set(key, value),
-      get: async (key: string) => globalThis.__EOS_INMEMORY_EXECUTION_STATUSES__.get(key),
-      del: async (key: string) => globalThis.__EOS_INMEMORY_EXECUTION_STATUSES__.delete(key)
-    };
-  });
+// Initialize in-memory Redis mock FIRST to avoid async race conditions (always available)
+redis = {
+  set: async (key: string, value: string) => globalThis.__EOS_INMEMORY_EXECUTION_STATUSES__.set(key, value),
+  get: async (key: string) => globalThis.__EOS_INMEMORY_EXECUTION_STATUSES__.get(key),
+  del: async (key: string) => globalThis.__EOS_INMEMORY_EXECUTION_STATUSES__.delete(key)
+};
+
+// HANYA coba inisialisasi Redis jika REDIS_URL secara eksplisit di-set ke nilai yang tidak default
+if (!useInMemory) {
+  (async () => {
+    try {
+      const { default: Redis } = await import('ioredis');
+      const redisInstance = new Redis(process.env.REDIS_URL, {
+        lazyConnect: true,
+        maxRetriesPerRequest: 0,
+        enableOfflineQueue: false
+      });
+      redisInstance.on('error', () => {});
+      await Promise.race([
+        redisInstance.connect().then(() => redisInstance.ping()),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Redis connection timeout')), 1000))
+      ]);
+      redis = redisInstance;
+      console.log("[EXECUTION STATUS] Berhasil terhubung ke Redis untuk multi-instance deployment");
+    } catch (error) {
+      console.warn('[EXECUTION STATUS] Redis connection failed, falling back to in-memory:', error.message);
+    }
+  })();
 }
 
 export interface ExecutionStatus {
@@ -47,92 +52,36 @@ export interface ExecutionStatus {
     timestamp: string;
     actor?: string;
   }>;
-  lastObserved?: ObservedExecution;
 }
 
-// Redis key prefix for execution statuses
-const REDIS_KEY_PREFIX = 'eos:execution:';
-
-// Get Redis key for specific execution
-const getRedisKey = (executionId: string) => `${REDIS_KEY_PREFIX}${executionId}`;
-
 export const ExecutionStatusRepository = {
-  async create(executionId: string, actor?: string): Promise<ExecutionStatus> {
-    const initialStatus: ExecutionStatus = {
+  async setStatus(executionId: string, status: ExecutionStatus['current'], actor?: string): Promise<void> {
+    const key = `execution:${executionId}:status`;
+    const existing = await redis.get(key);
+    const current: ExecutionStatus = existing ? JSON.parse(existing) : {
       executionId,
       current: "loading",
       updatedAt: new Date().toISOString(),
-      transitions: [{
-        status: "loading",
-        timestamp: new Date().toISOString(),
-        actor
-      }]
+      transitions: []
     };
-    
-    await redis.set(getRedisKey(executionId), JSON.stringify(initialStatus));
-    return initialStatus;
+    current.current = status;
+    current.updatedAt = new Date().toISOString();
+    current.transitions.push({
+      status,
+      timestamp: current.updatedAt,
+      actor
+    });
+    await redis.set(key, JSON.stringify(current));
   },
 
-  async getStatus(executionId: string): Promise<ExecutionStatus | undefined> {
-    const data = await redis.get(getRedisKey(executionId));
-    if (!data) return undefined;
-    return JSON.parse(data) as ExecutionStatus;
+  async getStatus(executionId: string): Promise<ExecutionStatus | null> {
+    const key = `execution:${executionId}:status`;
+    const result = await redis.get(key);
+    return result ? JSON.parse(result) : null;
   },
 
-  async updateStatus(
-    executionId: string, 
-    newStatus: ExecutionStatus["current"], 
-    actor?: string
-  ): Promise<ExecutionStatus | undefined> {
-    const existing = await this.getStatus(executionId);
-    if (!existing) return undefined;
-
-    const updated: ExecutionStatus = {
-      ...existing,
-      current: newStatus,
-      updatedAt: new Date().toISOString(),
-      transitions: [
-        ...existing.transitions,
-        {
-          status: newStatus,
-          timestamp: new Date().toISOString(),
-          actor
-        }
-      ]
-    };
-
-    await redis.set(getRedisKey(executionId), JSON.stringify(updated));
-    return updated;
-  },
-
-  async linkObservedExecution(
-    executionId: string,
-    observed: ObservedExecution
-  ): Promise<ExecutionStatus | undefined> {
-    const existing = await this.getStatus(executionId);
-    if (!existing) return undefined;
-
-    // Auto-derive status from observed execution
-    let derivedStatus: ExecutionStatus["current"] = observed.success ? "completed" : "failed";
-    
-    const updated: ExecutionStatus = {
-      ...existing,
-      current: derivedStatus,
-      updatedAt: observed.timestamp_utc,
-      lastObserved: observed,
-      transitions: [
-        ...existing.transitions,
-        {
-          status: derivedStatus,
-          timestamp: observed.timestamp_utc,
-          actor: observed.logicalWorkId
-        }
-      ]
-    };
-
-    await redis.set(getRedisKey(executionId), JSON.stringify(updated));
-    return updated;
+  async deleteStatus(executionId: string): Promise<void> {
+    const key = `execution:${executionId}:status`;
+    await redis.del(key);
   }
 };
-
-// Export types for external usage via index.ts only

@@ -36,6 +36,25 @@ export const searchCases: SearchCasesQuery = {
     const all = await caseRepository.list();
     const q = (input.query ?? "").trim().toLowerCase();
     let filtered: readonly CaseAggregate[] = all;
+    
+    // Tenant isolation filter
+    if (input.tenantId !== undefined) {
+      filtered = filtered.filter((c) => c.context.tenantId === input.tenantId);
+    }
+    
+    // Workspace isolation filter
+    if (input.workspaceId !== undefined) {
+      filtered = filtered.filter((c) => c.context.workspaceId === input.workspaceId);
+    }
+    
+    // WorkIds filter
+    if (input.workIds !== undefined && input.workIds.length > 0) {
+      filtered = filtered.filter((c) => 
+        c.context.relatedWorkIds && 
+        c.context.relatedWorkIds.some((workId: string) => input.workIds.includes(workId))
+      );
+    }
+    
     if (input.status !== undefined && input.status !== "all") {
       filtered = filtered.filter((c) => c.status === input.status);
     }
@@ -48,7 +67,7 @@ export const searchCases: SearchCasesQuery = {
         return hay.includes(q);
       });
     }
-    const total = all.length;
+    const total = filtered.length;
     const matched = filtered.length;
     const limit = Math.max(1, Math.min(500, input.limit ?? 50));
     const offset = Math.max(0, input.offset ?? 0);

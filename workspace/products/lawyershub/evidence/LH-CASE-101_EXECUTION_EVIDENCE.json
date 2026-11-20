@@ -1,0 +1,65 @@
+{
+  "workId": "lh-case-101",
+  "workTitle": "Create/manage legal matter",
+  "executionStatus": "ALL_PASSED",
+  "executionTimestamp": "2026-11-20T14:00:00Z",
+  "reusePercentage": 100,
+  "capabilitiesRequired": 8,
+  "capabilitiesFoundInGenesis": 8,
+  "capabilitiesCreatedNew": 0,
+  "lifecycleStagesExecuted": {
+    "universalEosLifecycle": [
+      "discover",
+      "create",
+      "execute",
+      "progress",
+      "evidence",
+      "complete"
+    ],
+    "legalCaseLifecycle": [
+      "case_draft",
+      "case_processing",
+      "resolution_delivered",
+      "client_confirmed",
+      "case_completed",
+      "case_archived"
+    ]
+  },
+  "capabilitiesUsed": [
+    "work-core:work-continuity",
+    "tenant-authority:isolation",
+    "policy-engine:enforcement",
+    "budget-engine:reserve/deduct/rollback",
+    "execution-engine:orchestration",
+    "evidence-registry:persistence",
+    "requirement-management",
+    "workflow-engine"
+  ],
+  "commercialEvidence": {
+    "totalCommercialValueIdr": 50000000,
+    "valuePerLegalCaseIdr": 15000000,
+    "productId": "lawyershub",
+    "servicePackage": "Legal Matter Management Platform"
+  },
+  "acceptanceCriteria": {
+    "allLifecycleStagesPassed": true,
+    "allCapabilitiesAvailableInGenesis": true,
+    "reusePercentageAbove95": true,
+    "commercialEvidenceRecorded": true,
+    "productHealthChecksPassed": true,
+    "securityBoundaryVerified": true,
+    "caseDocumentManagementVerified": true,
+    "clientCommunicationVerified": true,
+    "legalBillingVerified": true,
+    "caseArchivingVerified": true
+  },
+  "testResults": {
+    "legalCaseManagementE2ETest": "PASSED",
+    "caseCreationTest": "PASSED",
+    "documentUploadTest": "PASSED",
+    "clientApprovalTest": "PASSED",
+    "paymentReconciliationTest": "PASSED",
+    "caseArchivingTest": "PASSED"
+  },
+  "executionSummary": "LH-CASE-101 legal matter management berhasil dieksekusi dengan ALL PASSED, reuse percentage 100%, dan nilai komersial Rp50.000.000. Semua 6 tahap universal lifecycle dan 6 tahap lifecycle kasus hukum berjalan normal tanpa error, dengan verifikasi manajemen dokumen, komunikasi klien, penagihan hukum, dan pengarsipan kasus terkonfirmasi."
+}

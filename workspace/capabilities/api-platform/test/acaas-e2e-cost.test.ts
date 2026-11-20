@@ -7,13 +7,24 @@
  */
 import { describe, it, expect, beforeEach, afterAll, vi } from 'vitest';
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
-const capabilityCommands = capabilityRegistry.capabilityCommands;
 import { recordRuntimeInvocation, recordObservedExecution } from "@repo/core-runtime";
 
-// Mock recordRuntimeInvocation dan recordObservedExecution sesuai pola test lainnya
+// Mock recordRuntimeInvocation, recordObservedExecution, dan executionContext sesuai pola test lainnya
 vi.mock('@repo/core-runtime', () => ({
   recordRuntimeInvocation: vi.fn().mockResolvedValue(true),
-  recordObservedExecution: vi.fn().mockResolvedValue(true)
+  recordObservedExecution: vi.fn().mockResolvedValue(true),
+  executionContext: {
+    get: vi.fn().mockReturnValue({
+      execution_id: 'test-execution-id',
+      correlation_id: 'test-correlation-id',
+      actor_id: 'actor-a-001',
+      tenant_id: 'tenant-a-001',
+      session_id: 'session-acaas-test',
+      workspace_id: 'workspace-a-001'
+    }),
+    set: vi.fn(),
+    run: vi.fn((context, fn) => fn())
+  }
 }));
 
 // Import commands dari api-platform
@@ -38,17 +49,35 @@ describe('ACaaS E2E Cost & Reliability Tests - STEP5', () => {
     
     // HAPUS SEMUA COMMAND YANG PERNAH KITA TAMBAHKAN SEBELUMNYA
     addedServiceCommands.forEach(cmdKey => {
-      delete capabilityCommands[cmdKey];
+      delete capabilityRegistry.capabilityCommands[cmdKey];
     });
     addedServiceCommands = [];
     
     // DAFTARKAN SEMUA SERVICE-DIRECTORY COMMANDS YANG DIBUTUHKAN ACaaS KE DALAM CAPABILITYCOMMANDS GLOBAL!
     // Ini sesuai dengan bagaimana capabilityRegistry bekerja di production - command harus ada di capabilityCommands
+    let serviceRequestCounter = 0;
     const serviceDirectoryCommands = {
       "serviceRequest.findByExternalId": vi.fn().mockResolvedValue({ success: true, id: null, exists: false }),
-      "serviceRequest.create": vi.fn().mockResolvedValue({ success: true, id: "srv-test-001", status: "initiated" }),
-      "createServiceRequest": vi.fn().mockResolvedValue({ success: true, id: "srv-test-001", status: "initiated" }),
-      "getById": vi.fn().mockResolvedValue({ success: true, status: "completed", findings: [], verifiedAt: new Date().toISOString(), evidenceId: "evd-test-001" }),
+      "serviceRequest.create": vi.fn().mockImplementation(async () => {
+        serviceRequestCounter++;
+        return { success: true, id: `srv-test-${serviceRequestCounter}`, status: "initiated" };
+      }),
+      "createServiceRequest": vi.fn().mockImplementation(async () => {
+        serviceRequestCounter++;
+        const serviceRequestId = `srv-test-${serviceRequestCounter}-${Date.now()}`;
+        console.log(`[TEST-MOCK] service-directory.createServiceRequest called, returning id: ${serviceRequestId}`);
+        return { 
+          success: true, 
+          id: serviceRequestId, 
+          status: "initiated",
+          title: "ACaaS Compliance Check",
+          description: "Compliance evaluation",
+          category: "IT Support"
+        };
+      }),
+      "getById": vi.fn().mockImplementation(async (id) => {
+        return { success: true, id, status: "completed", findings: [], verifiedAt: new Date().toISOString(), evidenceId: "evd-test-001" };
+      }),
       "updateExternalSystemStatus": vi.fn().mockResolvedValue({ success: true }),
       "serviceRequest.markServiceVerified": vi.fn().mockResolvedValue({ success: true, verified: true })
     };
@@ -59,10 +88,15 @@ describe('ACaaS E2E Cost & Reliability Tests - STEP5', () => {
       "recordObservedExecution": vi.fn().mockResolvedValue(true)
     };
     
-    // Tambahkan service-directory commands ke capabilityCommands dan catat untuk dihapus nanti
+    // DAFTARKAN EVIDENCE REGISTRY COMMANDS (dibutuhkan oleh safeRecordEvidenceACaaS)
+    const evidenceRegistryCommands = {
+      "record": vi.fn().mockResolvedValue({ ok: true, status: "recorded" })
+    };
+    
+    // Tambahkan service-directory commands ke capabilityRegistry.capabilityCommands dan catat untuk dihapus nanti
     Object.entries(serviceDirectoryCommands).forEach(([commandName, executeFn]) => {
       const commandKey = `service-directory.${commandName}`;
-      capabilityCommands[commandKey] = {
+      capabilityRegistry.capabilityCommands[commandKey] = {
         capability: "service-directory",
         name: commandName,
         kind: "command",
@@ -72,10 +106,10 @@ describe('ACaaS E2E Cost & Reliability Tests - STEP5', () => {
       console.log(`[TEST-SETUP] ✅ Registered service-directory command: ${commandKey}`);
     });
     
-    // Tambahkan runtime commands ke capabilityCommands (namespace yang benar: runtime.*)
+    // Tambahkan runtime commands ke capabilityRegistry.capabilityCommands (namespace yang benar: runtime.*)
     Object.entries(runtimeCommands).forEach(([commandName, executeFn]) => {
       const commandKey = `runtime.${commandName}`;
-      capabilityCommands[commandKey] = {
+      capabilityRegistry.capabilityCommands[commandKey] = {
         capability: "core-runtime",
         name: commandName,
         kind: "command",
@@ -83,6 +117,42 @@ describe('ACaaS E2E Cost & Reliability Tests - STEP5', () => {
       };
       addedServiceCommands.push(commandKey);
       console.log(`[TEST-SETUP] ✅ Registered core-runtime command: ${commandKey}`);
+    });
+    
+    // Tambahkan evidence-registry commands ke capabilityRegistry.capabilityCommands
+    Object.entries(evidenceRegistryCommands).forEach(([commandName, executeFn]) => {
+      const commandKey = `evidence-registry.${commandName}`;
+      capabilityRegistry.capabilityCommands[commandKey] = {
+        capability: "work-core",
+        name: commandName,
+        kind: "command",
+        execute: executeFn
+      };
+      addedServiceCommands.push(commandKey);
+      console.log(`[TEST-SETUP] ✅ Registered evidence-registry command: ${commandKey}`);
+    });
+    
+    // DAFTARKAN SEMUA ACAAS COMMANDS SECARA EKSPLISIT KE CAPABILITYREGISTRY.CAPABILITYCOMMANDS UNTUK TEST MODE
+    // Ini diperlukan karena capabilityRegistry.invoke mencari command di capabilityRegistry.capabilityCommands dengan key yang tepat
+    const acaasTestCommands = {
+      "acaas.complianceCheck.create": apiPlatformCommands["acaas.complianceCheck.create"].execute,
+      "acaas.complianceCheck.getResult": apiPlatformCommands["acaas.complianceCheck.getResult"].execute,
+      "acaas.complianceCheck.markProcessing": apiPlatformCommands["acaas.complianceCheck.markProcessing"].execute,
+      "acaas.complianceCheck.markCompleted": apiPlatformCommands["acaas.complianceCheck.markCompleted"].execute,
+      "acaas.complianceCheck.markFailed": apiPlatformCommands["acaas.complianceCheck.markFailed"].execute
+    };
+    
+    // Tambahkan ACaaS commands dengan namespace yang benar: api-platform.*
+    Object.entries(acaasTestCommands).forEach(([commandName, executeFn]) => {
+      const commandKey = `api-platform.${commandName}`;
+      capabilityRegistry.capabilityCommands[commandKey] = {
+        capability: "api-platform",
+        name: commandName,
+        kind: "command",
+        execute: executeFn
+      };
+      addedServiceCommands.push(commandKey);
+      console.log(`[TEST-SETUP] ✅ Registered ACaaS command: ${commandKey}`);
     });
     
     // Register command ACaaS SEBELUM MENJALANKAN TEST!
@@ -93,7 +163,7 @@ describe('ACaaS E2E Cost & Reliability Tests - STEP5', () => {
   // Hapus semua command yang kita tambahkan setelah semua test selesai
   afterAll(() => {
     addedServiceCommands.forEach(cmdKey => {
-      delete capabilityCommands[cmdKey];
+      delete capabilityRegistry.capabilityCommands[cmdKey];
     });
   });
 

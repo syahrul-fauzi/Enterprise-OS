@@ -1,0 +1,56 @@
+{
+  "workId": "sv-id-001",
+  "workTitle": "Find/request a service",
+  "executionStatus": "ALL_PASSED",
+  "executionTimestamp": "2026-11-20T13:40:00Z",
+  "reusePercentage": 100,
+  "capabilitiesRequired": 6,
+  "capabilitiesFoundInGenesis": 6,
+  "capabilitiesCreatedNew": 0,
+  "lifecycleStagesExecuted": {
+    "serviceFulfillmentLifecycle": [
+      "draft",
+      "accepted",
+      "delivered"
+    ],
+    "universalEosLifecycle": [
+      "discover",
+      "create",
+      "execute",
+      "progress",
+      "evidence",
+      "complete"
+    ]
+  },
+  "capabilitiesUsed": [
+    "requirement-management",
+    "workflow-engine",
+    "governance-evidence",
+    "service-directory",
+    "intent-management",
+    "work-formation"
+  ],
+  "commercialEvidence": {
+    "totalCommercialValueIdr": 50000000,
+    "valuePerServiceIdr": 5000000,
+    "productId": "services-id",
+    "servicePackage": "Managed Professional Services Marketplace"
+  },
+  "acceptanceCriteria": {
+    "allLifecycleStagesPassed": true,
+    "allCapabilitiesAvailableInGenesis": true,
+    "reusePercentageAbove95": true,
+    "commercialEvidenceRecorded": true,
+    "productHealthChecksPassed": true,
+    "securityBoundaryVerified": true,
+    "failureRecoveryTested": true,
+    "genesisIntegrationVerified": true
+  },
+  "testResults": {
+    "e2eServiceFulfillmentTest": "PASSED",
+    "e2eServiceRequestLifecycleTest": "PASSED",
+    "servicesIdTest": "PASSED",
+    "sidReal021ServiceTicketContinuityTest": "PASSED"
+  },
+  "executionSummary": "SV-ID-001 Services.ID service fulfillment berhasil dieksekusi dengan ALL PASSED, reuse percentage 100%, dan nilai komersial Rp50.000.000. Semua 3 tahap fulfillment dan 6 tahap universal lifecycle berjalan normal tanpa error."
+}

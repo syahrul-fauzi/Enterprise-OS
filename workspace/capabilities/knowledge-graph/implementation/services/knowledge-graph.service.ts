@@ -13,7 +13,7 @@ import path from 'path';
 import yaml from 'yaml';
 
 // Load official product portfolio from enterprise specifications
-const productPortfolioPath = path.resolve('require('path').resolve(__dirname, '..')/enterprise/specifications/PRODUCT-PORTFOLIO.yaml');
+const productPortfolioPath = path.resolve(__dirname, '../../../../enterprise/specifications/PRODUCT-PORTFOLIO.yaml');
 const productPortfolio = yaml.parse(fs.readFileSync(productPortfolioPath, 'utf8')) as {
   products: readonly {
     readonly id: string;

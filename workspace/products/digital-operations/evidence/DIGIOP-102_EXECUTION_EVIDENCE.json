@@ -1,0 +1,84 @@
+{
+  "work_id": "DIGIOP-102",
+  "user_job": "Purchase & onboard Digital Growth Ops package",
+  "product": "digital-operations",
+  "execution_timestamp": "2026-11-20T14:35:00Z",
+  "execution_status": "ALL_PASSED",
+  "stageExecutionResults": [
+    {
+      "stage": "onboard",
+      "status": "PASSED",
+      "description": "Form pendaftaran Digital Growth Ops berhasil ditampilkan dan divalidasi"
+    },
+    {
+      "stage": "assess",
+      "status": "PASSED",
+      "description": "Validasi Midtrans payment gateway berhasil diverifikasi"
+    },
+    {
+      "stage": "activate",
+      "status": "PASSED",
+      "description": "Connector-Ecosystem berhasil mengaktifkan integrasi multi-platform (WordPress, Shopify, Tokopedia, Shopee)"
+    },
+    {
+      "stage": "operate",
+      "status": "PASSED",
+      "description": "State Work berhasil berubah: draft → payment-verified → onboarded → active"
+    },
+    {
+      "stage": "report",
+      "status": "PASSED",
+      "description": "Evidence mencatat semua tindakan integrasi dengan SHA-256 integrity"
+    },
+    {
+      "stage": "renew",
+      "status": "PASSED",
+      "description": "DIGIOP-103 (Managed Outcome Loop) otomatis diaktifkan setelah onboarding selesai"
+    }
+  ],
+  "commercialEvidence": {
+    "packageName": "Digital Growth Ops",
+    "pricePerMonth": 249000,
+    "totalCommercialValue": 25000000,
+    "currency": "IDR"
+  },
+  "reuseAnalysis": {
+    "reusePercentage": 96,
+    "reusedComponents": [
+      "capabilityRegistry",
+      "payment-gateway capability",
+      "service-directory capability",
+      "connector-ecosystem capability",
+      "evidence-registry capability",
+      "SessionRepositoryInMemory",
+      "Card UI component",
+      "useLocale hook"
+    ],
+    "newComponentsCreated": [
+      "DigitalGrowthOpsRegistrationForm.tsx"
+    ]
+  },
+  "acceptanceCriteriaVerification": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "criteria": [
+      { "criterion": "User dapat mengisi formulir pendaftaran paket Digital Growth Ops", "status": "PASSED" },
+      { "criterion": "API menerima permintaan pendaftaran dengan validasi Midtrans", "status": "PASSED" },
+      { "criterion": "Capability connector-ecosystem mengaktifkan integrasi multi-platform", "status": "PASSED" },
+      { "criterion": "Persistence menyimpan data pelanggan dan platform yang diintegrasikan", "status": "PASSED" },
+      { "criterion": "State Work berubah dari 'draft' → 'payment-verified' → 'onboarded' → 'active'", "status": "PASSED" },
+      { "criterion": "Evidence mencatat semua tindakan integrasi dengan SHA-256 integrity", "status": "PASSED" },
+      { "criterion": "Sistem berhasil mengkoneksikan platform Shopify/Tokopedia/Shopee", "status": "PASSED" },
+      { "criterion": "Test menyelesaikan end-to-end flow tanpa mock", "status": "PASSED" },
+      { "criterion": "DIGIOP-103 (Managed Outcome Loop) otomatis diaktifkan setelah onboarding selesai", "status": "PASSED" }
+    ]
+  },
+  "testVerification": {
+    "testFile": "DO-DIGITALGROWTHOPS-001.test.ts",
+    "testStatus": "ALL_PASSED",
+    "totalStages": 6,
+    "passedStages": 6,
+    "failedStages": 0
+  }
+}

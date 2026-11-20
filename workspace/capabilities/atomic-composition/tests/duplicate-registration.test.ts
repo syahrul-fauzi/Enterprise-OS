@@ -29,7 +29,7 @@ async function testDuplicateRegistration() {
 
   try {
     // 1. First registry initialization - should succeed
-    const { getGlobalCapabilityRegistry } = await import('./implementation/services/capability-resolver.service.js');
+    const { getGlobalCapabilityRegistry } = await import('../implementation/services/capability-resolver.service.js');
     console.log('📝 First call to getGlobalCapabilityRegistry()...');
     const registry = await getGlobalCapabilityRegistry();
     console.log('✅ First registry initialization succeeded');

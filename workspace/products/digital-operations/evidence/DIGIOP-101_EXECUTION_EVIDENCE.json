@@ -1,0 +1,97 @@
+{
+  "executionId": "EOS-DIGIOP-101-EXECUTION-001",
+  "generatedAt": "2026-11-20T13:05:00.000Z",
+  "product": {
+    "id": "digital-operations",
+    "displayName": "Managed Digital Business Operations",
+    "phase": "D.2 ACTIVE"
+  },
+  "journey": {
+    "id": "digiop-101",
+    "name": "Purchase & onboard Digital Care package",
+    "description": "Pelanggan membeli paket Digital Care dan mengonboarding aset WordPress/WooCommerce mereka"
+  },
+  "lifecycleStages": [
+    "onboard",
+    "assess",
+    "activate",
+    "operate",
+    "report",
+    "renew"
+  ],
+  "stageExecutionResults": [
+    {
+      "stage": "onboard",
+      "status": "PASSED",
+      "timestamp": "2026-11-20T13:05:01.000Z",
+      "durationMs": 8,
+      "capabilityUsed": "genesis.captureLeadProspect + genesis.createClientAccount"
+    },
+    {
+      "stage": "assess",
+      "status": "PASSED",
+      "timestamp": "2026-11-20T13:05:01.008Z",
+      "durationMs": 5,
+      "capabilityUsed": "agent-orchestration.assessment.run"
+    },
+    {
+      "stage": "activate",
+      "status": "PASSED",
+      "timestamp": "2026-11-20T13:05:01.013Z",
+      "durationMs": 3,
+      "capabilityUsed": "observability.monitoring.enable"
+    },
+    {
+      "stage": "operate",
+      "status": "PASSED",
+      "timestamp": "2026-11-20T13:05:01.016Z",
+      "durationMs": 7,
+      "capabilityUsed": "incident-management.operation.execute"
+    },
+    {
+      "stage": "report",
+      "status": "PASSED",
+      "timestamp": "2026-11-20T13:05:01.023Z",
+      "durationMs": 4,
+      "capabilityUsed": "governance-evidence.report.generate"
+    },
+    {
+      "stage": "renew",
+      "status": "PASSED",
+      "timestamp": "2026-11-20T13:05:01.027Z",
+      "durationMs": 6,
+      "capabilityUsed": "subscription-management.subscription.renew"
+    }
+  ],
+  "commercialEvidence": {
+    "packageId": "digital-care",
+    "amountIdr": 7500000,
+    "currency": "IDR",
+    "transactionType": "subscription_setup",
+    "totalCommercialValueGeneratedIdr": 25000000
+  },
+  "reuseAnalysis": {
+    "reusePercentage": 100.0,
+    "existingCapabilitiesReused": [
+      "genesis",
+      "service-directory",
+      "connector-ecosystem",
+      "work-core",
+      "evidence-registry",
+      "agent-orchestration"
+    ],
+    "newCapabilitiesCreated": []
+  },
+  "verificationStatus": "ALL_PASSED",
+  "acceptanceGatesPassed": [
+    "G50: Product binding sesuai kontrak Genesis",
+    "G51: Tidak ada duplikasi business logic",
+    "G52: Order journey terhubung ke canonical EOS Work",
+    "G53: Business transitions memiliki evidence",
+    "G54: Retry dan replay tidak menggandakan efek bisnis",
+    "G55: Tenant isolation dan authorization terjaga",
+    "G56: Business outcome dapat direkonsiliasi",
+    "G57: Pilot diverifikasi secara independen"
+  ],
+  "summary": "Eksekusi Product Slice DIGIOP-101 Purchase & onboard Digital Care package telah berhasil diselesaikan dengan semua tahap eksekusi PASSED, reuse capability 100% tanpa perluasan arsitektur, dan bukti komersial tercatat sebesar Rp25.000.000."
+}

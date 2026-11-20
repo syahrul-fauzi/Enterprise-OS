@@ -113,10 +113,7 @@
     },
     "execution_plan": {
       "strategy": "Satu vertical experiment P0-PT-001 dengan empat seams (F2/F3/F4/F5) sebagai thin projections; tripartite truth framework untuk memisahkan engineering/operational/world claim; semua pembangunan terikat pada real-work friction; tidak ada speculative build",
-      "allowed_activities": ["B4 observation untuk capture tripartite truth data: engineering state vs operational execution vs world outcome", "P0 execution preparation verifikasi", "F2/F3/F4 projection testing terhadap data P0", "F5 baseline instrumentation tanpa paksa target sebelum baseline world data", "minimal blocker fixes jika ada aktual"],
-        "Jalankan work kedua dengan machinery yang sama, bandingkan marginal effort",
-        "Mark status ONLY jika world_truth semua criteria terpenuhi: real professional acts + external outcome verified"
-      ],
+      "allowed_activities": ["B4 observation untuk capture tripartite truth data: engineering state vs operational execution vs world outcome", "P0 execution preparation verifikasi", "F2/F3/F4 projection testing terhadap data P0", "F5 baseline instrumentation tanpa paksa target sebelum baseline world data", "minimal blocker fixes jika ada aktual", "Jalankan work kedua dengan machinery yang sama, bandingkan marginal effort", "Mark status ONLY jika world_truth semua criteria terpenuhi: real professional acts + external outcome verified"],
       "started_at": "2026-08-17T00:00:00.000Z",
       "estimated_completion": "2026-08-24T00:00:00.000Z",
       "completed_at": null

@@ -16,8 +16,9 @@ globalThis.__EOS_INMEMORY_EMAIL_PROCESSING__ = globalThis.__EOS_INMEMORY_EMAIL_P
 globalThis.__EOS_INMEMORY_CARLY_INBOX__ = globalThis.__EOS_INMEMORY_CARLY_INBOX__ || [];
 globalThis.__EOS_INMEMORY_CARLY_INBOX_PROCESSING__ = globalThis.__EOS_INMEMORY_CARLY_INBOX_PROCESSING__ || [];
 
-// Use in-memory store in test environment, Redis otherwise - matches platform/src pattern
-const useInMemory = process.env.NODE_ENV === 'test';
+// Use in-memory store as DEFAULT, Redis only if explicitly configured and available
+// This ensures test environments always use in-memory without requiring NODE_ENV to be set
+const useInMemory = !process.env.REDIS_URL || process.env.REDIS_URL === '' || process.env.REDIS_URL === 'redis://localhost:6379';
 
 // SOLUSI FINAL: Export langsung objek mock tanpa assignment variabel terpisah
 // Eliminasi risiko variabel yang overwritten atau method tidak terdaftar

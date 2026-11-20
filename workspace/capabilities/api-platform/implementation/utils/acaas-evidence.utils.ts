@@ -18,9 +18,10 @@ export async function safeRecordEvidenceACaaS(payload: {
 }): Promise<{ readonly ok: boolean }> {
   try {
     // 1. Validate EvidenceBoundary compliance sebelum memproses payload (spesifik untuk ACAAS boundary)
-    const hasValidAccess = validateBoundaryAccess("acaas", "evidence-gateway");
+    // acaas adalah capability di bawah business-os, dan evidence adalah bagian dari work-core
+    const hasValidAccess = validateBoundaryAccess("business-os", "work-core");
     if (!hasValidAccess) {
-      throw new Error("[ACAAS-EVIDENCE] Invalid domain access: acaas cannot access evidence-gateway directly (violates boundary rules)");
+      throw new Error("[ACAAS-EVIDENCE] Invalid domain access: business-os cannot access work-core (violates boundary rules)");
     }
 
     // 2. Panggil canonical safeRecordEvidence dari work-core - semua logika SHA-256, fallback, dan durability sudah terhandle

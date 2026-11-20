@@ -1,0 +1,141 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:eos:projects:schema:project:v1"
+title: EOS Project Context Contract Schema
+description: >
+  Machine-readable contract for every PROJECT.md file in the projects/ directory.
+  Defines the YAML front matter structure that all Project Context Contracts must follow.
+type: object
+additionalProperties: false
+required:
+  - schema_version
+  - project_key
+  - title
+  - project_type
+  - lifecycle
+  - ownership
+  - intent
+  - scope
+  - governance
+properties:
+  schema_version:
+    type: string
+    pattern: "^[0-9]+\\.[0-9]+$"
+    description: "Schema version for forward/backward compatibility"
+  project_key:
+    type: string
+    pattern: "^[a-z0-9-]+$"
+    description: "Stable, URL-safe project identifier - never changes"
+  title:
+    type: string
+    minLength: 1
+    description: "Human-readable project title"
+  project_type:
+    type: string
+    enum: ["platform", "capability", "integration", "research"]
+    description: "Project classification type"
+  lifecycle:
+    type: string
+    enum: ["proposed", "discovery", "approved", "active", "in-review", "completed", "archived"]
+    description: "Current project lifecycle state"
+  ownership:
+    type: object
+    additionalProperties: false
+    required: [governance_authority]
+    properties:
+      business_owner:
+        type: ["string", "null"]
+        description: "Business owner identifier - null when not assigned"
+      technical_owner:
+        type: ["string", "null"]
+        description: "Technical owner identifier - null when not assigned"
+      governance_authority:
+        type: string
+        minLength: 1
+        description: "Authority responsible for project governance"
+  intent:
+    type: object
+    additionalProperties: false
+    required: [mission]
+    properties:
+      mission:
+        type: string
+        minLength: 1
+        description: "Clear, concise project mission statement"
+      desired_outcome:
+        type: array
+        items: { type: string }
+        description: "List of verifiable desired outcomes"
+  scope:
+    type: object
+    additionalProperties: false
+    required: [included, excluded]
+    properties:
+      included:
+        type: array
+        items: { type: string }
+        description: "List of in-scope items and boundaries"
+      excluded:
+        type: array
+        items: { type: string }
+        description: "List of explicitly out-of-scope items"
+  governance:
+    type: object
+    additionalProperties: false
+    required: [change_policy, core_mutation, duplicate_primitives, duplicate_orchestrators]
+    properties:
+      change_policy:
+        type: string
+        const: "evidence-backed"
+        description: "All changes must be backed by verifiable evidence"
+      core_mutation:
+        type: string
+        const: "explicit-authorization"
+        description: "Core mutations require explicit authorization"
+      duplicate_primitives:
+        type: string
+        const: "prohibited"
+        description: "Duplicate primitives are prohibited"
+      duplicate_orchestrators:
+        type: string
+        const: "prohibited"
+        description: "Duplicate orchestrators are prohibited"
+  eos_integration:
+    type: object
+    additionalProperties: false
+    properties:
+      work_core:
+        type: string
+        const: "authoritative"
+        description: "Work Core remains authoritative for Work identity"
+      evidence_registry:
+        type: string
+        const: "canonical"
+        description: "Evidence Registry remains canonical for verification"
+      connector_ecosystem:
+        type: string
+        const: "integration-boundary"
+        description: "Connector Ecosystem remains integration boundary"
+  work_items:
+    type: array
+    items:
+      type: string
+      pattern: "^[A-Z0-9-]+$"
+    description: "List of canonical work_ids from Work Core that belong to this project"
+  evidence_links:
+    type: array
+    items:
+      type: string
+    description: "List of evidence file paths from Evidence Registry related to this project"
+  references:
+    type: object
+    additionalProperties: false
+    properties:
+      specifications:
+        type: string
+        description: "Path to project specifications directory"
+      decisions:
+        type: string
+        description: "Path to project decisions directory"
+      evidence:
+        type: string
+        description: "Path to project evidence directory"

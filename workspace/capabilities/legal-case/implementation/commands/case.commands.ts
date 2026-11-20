@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/index.js";
 import { getCaseByIdCommand } from "./get-case-by-id.command.js";
 import {
@@ -134,7 +135,7 @@ async function getSessionRepositoryLazy() {
           level: z.enum(["low", "medium", "high", "critical"]),
           rationale: z.string(),
           assessedBy: z.string(),
-          assessedAt: z.date(),
+          assessedAt: z.coerce.date(),
           mitigationSteps: z.array(z.string()).optional()
         });
 
@@ -650,11 +651,6 @@ const submitCase: CapabilityCommand<z.infer<typeof SubmitCaseSchema>> = {
 		const caseExists = await caseRepository.byId(CaseId(caseId));
 		if (!caseExists) throw new Error("Case not found");
 		console.log("[submit-case] Current case status:", caseExists.status);
-		if (caseExists.status !== "open") {
-			console.log("[submit-case] Updating case status from", caseExists.status, "to open");
-			caseExists.status = "open";
-			await caseRepository.save(caseExists);
-		}
 
 		// Fetch core WorkAggregate untuk boundary verification (hanya di production)
 		let coreWork: any = { tenantId: session.tenantId, workspaceId: session.workspaceId };
@@ -701,6 +697,8 @@ const submitCase: CapabilityCommand<z.infer<typeof SubmitCaseSchema>> = {
 			stateTransition: "open→submitted",
 			note: "Case submitted for review, acceptance contract initialized with required signers"
 		});
+
+		return updatedCase;
 	},
 };
 
@@ -727,7 +725,7 @@ const reviewCase: CapabilityCommand<z.infer<typeof ReviewCaseSchema>> = {
 		const caseRepository = await getCaseRepositoryLazy();
 		const caseExists = await caseRepository.byId(CaseId(caseId));
 		if (!caseExists) throw new Error("Case not found");
-		if (caseExists.status !== "submitted") throw new Error("Only submitted cases can be reviewed");
+		if (caseExists.status !== "under_review") throw new Error("Only under review cases can be reviewed");
 
 		// CORE-001: Hanya fetch core Work di production (bypass untuk in-memory test/development)
 		let coreWork: any = { tenantId: session.tenantId, workspaceId: session.workspaceId };
@@ -773,6 +771,8 @@ const reviewCase: CapabilityCommand<z.infer<typeof ReviewCaseSchema>> = {
 			stateTransition: "submitted→reviewed",
 			note: "Case moved to review, signature collection in progress"
 		});
+
+		return updatedCase;
 	},
 };
 
@@ -862,6 +862,8 @@ const approveCase: CapabilityCommand<z.infer<typeof ApproveCaseSchema>> = {
 				note: "Case approved, all required signatures collected"
 			});
 		}
+
+		return updatedCase;
 	},
 };
 
@@ -894,7 +896,7 @@ const markUnderReview: CapabilityCommand<z.infer<typeof MarkUnderReviewSchema>> 
 			workspaceId: session.workspaceId
 		});
 		if (!caseExists) throw new Error("Case not found");
-		if (caseExists.status !== "approved") throw new Error("Only approved cases can be marked under review");
+		if (caseExists.status !== "submitted") throw new Error("Only submitted cases can be marked under review");
 
 		// CORE-001: Hanya fetch core Work di production (bypass untuk in-memory test/development)
 		let coreWork: any = { tenantId: session.tenantId, workspaceId: session.workspaceId };
@@ -1005,12 +1007,6 @@ const closeCase: CapabilityCommand<z.infer<typeof CloseCaseSchema>> = {
 			throw new Error("Case not found");
 		}
 		console.log("[close-case] Current case status:", caseExists.status);
-		// AUDIT-001-009: Hanya under_review (bukan approved) yang bisa ditutup (pembayaran prasyarat)
-		if (caseExists.status !== "under_review") {
-			console.log("[close-case] Updating case status from", caseExists.status, "to under_review");
-			caseExists.status = "under_review";
-			await caseRepository.save(caseExists);
-		}
 
 		// Idempotent check - prevent duplicate closure
 		if (caseExists.status === "settled") {
@@ -1200,42 +1196,6 @@ export function registerLegalCaseCapability() {
 	if (typeof process !== 'undefined' && (process.env.NODE_ENV === 'test' || process.env.STANDALONE === 'true')) {
 		console.log("[Legal-Case] Test/standalone environment detected - enabling safe auto-registration");
 		// Register all commands in commands array for test environment
-		import("@repo/core-kernel/registry/capability-command-registry").then(({ capabilityRegistry }) => {
-			if (capabilityRegistry) {
-				Object.values(commands).forEach((command) => {
-					capabilityRegistry.register(command);
-				});
-				// Register legal-clarification-flow dan ai-legal-consultant sebagai CapabilityCommand (sesuai interface capabilityRegistry.register)
-			// Konversi dari registerCapability (deprecated) ke register untuk kompatibilitas dengan core-kernel registry
-			capabilityRegistry.register({
-				key: "legal.legal-clarification-flow.start",
-				name: "Legal Intent Clarification Start",
-				capability: "legal-case",
-				description: "Structured flow to collect missing information for legal intents",
-				handler: async () => true,
-				providerTypes: ["system", "ai"],
-				domainRestrictions: ["legal"],
-				requiredAuthorizations: ["legal:clarify", "tenant:ai_enabled"],
-				riskLevel: "low"
-			});
-			capabilityRegistry.register({
-				key: "legal.ai-legal-consultant.request",
-				name: "AI Legal Consultant Request",
-				capability: "legal-case",
-				description: "AI-powered consultation for complex legal intent discovery",
-				handler: async () => true,
-				providerTypes: ["ai"],
-				domainRestrictions: ["legal"],
-				requiredAuthorizations: ["ai:legal-consult", "tenant:ai_enabled"],
-				riskLevel: "medium"
-			});
-				console.log("[Legal-Case] All test commands registered successfully");
-			}
-		});
-		return;
-	}
-	// Register all commands in commands array - REUSE canonical @repo/core-kernel registry (frozen architecture)
-	import("@repo/core-kernel/registry/capability-command-registry").then(({ capabilityRegistry }) => {
 		if (capabilityRegistry) {
 			Object.values(commands).forEach((command) => {
 				capabilityRegistry.register(command);
@@ -1264,9 +1224,39 @@ export function registerLegalCaseCapability() {
 				requiredAuthorizations: ["ai:legal-consult", "tenant:ai_enabled"],
 				riskLevel: "medium"
 			});
-			console.log("[Legal-Case] AUDIT-001-005: Legal-Case capability registered successfully - all commands added to canonical capability registry");
+			console.log("[Legal-Case] All test commands registered successfully");
 		}
-	}).catch(err => {
-		console.error("[Legal-Case] AUDIT-001-005: Failed to register legal-case capability:", err);
-	});
+		return;
+	}
+	// Register all commands in commands array - REUSE canonical @repo/core-kernel registry (frozen architecture)
+	if (capabilityRegistry) {
+		Object.values(commands).forEach((command) => {
+			capabilityRegistry.register(command);
+		});
+		// Register legal-clarification-flow dan ai-legal-consultant sebagai CapabilityCommand (sesuai interface capabilityRegistry.register)
+		// Konversi dari registerCapability (deprecated) ke register untuk kompatibilitas dengan core-kernel registry
+		capabilityRegistry.register({
+			key: "legal.legal-clarification-flow.start",
+			name: "Legal Intent Clarification Start",
+			capability: "legal-case",
+			description: "Structured flow to collect missing information for legal intents",
+			handler: async () => true,
+			providerTypes: ["system", "ai"],
+			domainRestrictions: ["legal"],
+			requiredAuthorizations: ["legal:clarify", "tenant:ai_enabled"],
+			riskLevel: "low"
+		});
+		capabilityRegistry.register({
+			key: "legal.ai-legal-consultant.request",
+			name: "AI Legal Consultant Request",
+			capability: "legal-case",
+			description: "AI-powered consultation for complex legal intent discovery",
+			handler: async () => true,
+			providerTypes: ["ai"],
+			domainRestrictions: ["legal"],
+			requiredAuthorizations: ["ai:legal-consult", "tenant:ai_enabled"],
+			riskLevel: "medium"
+		});
+		console.log("[Legal-Case] AUDIT-001-005: Legal-Case capability registered successfully - all commands added to canonical capability registry");
+	}
 }

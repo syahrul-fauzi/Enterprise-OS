@@ -1,0 +1,68 @@
+{
+  "workId": "ecom-101",
+  "workTitle": "Shopee order fulfillment lifecycle",
+  "executionStatus": "ALL_PASSED",
+  "executionTimestamp": "2026-11-20T13:45:34.773Z",
+  "reusePercentage": 100,
+  "capabilitiesRequired": 7,
+  "capabilitiesFoundInGenesis": 7,
+  "capabilitiesCreatedNew": 0,
+  "lifecycleStagesExecuted": {
+    "universalEosLifecycle": [
+      "discover",
+      "create",
+      "execute",
+      "progress",
+      "evidence",
+      "complete"
+    ],
+    "marketplaceOrderLifecycle": [
+      "order_received",
+      "payment_verified",
+      "inventory_checked",
+      "fulfilled",
+      "in_transit",
+      "reconciled",
+      "completed"
+    ]
+  },
+  "capabilitiesUsed": [
+    "work-core:work-continuity",
+    "tenant-authority:isolation",
+    "connector-ecosystem:shopee-integration",
+    "payment-processing:verification",
+    "inventory-management:check",
+    "shipping-tracking:notification",
+    "governance-evidence:reconciliation"
+  ],
+  "commercialEvidence": {
+    "totalCommercialValueIdr": 45000000,
+    "valuePerOrderFulfillmentIdr": 150000,
+    "productId": "ecommerce-ops",
+    "servicePackage": "Managed Marketplace Order Fulfillment"
+  },
+  "acceptanceCriteria": {
+    "allLifecycleStagesPassed": true,
+    "allCapabilitiesAvailableInGenesis": true,
+    "reusePercentageAbove95": true,
+    "commercialEvidenceRecorded": true,
+    "productHealthChecksPassed": true,
+    "securityBoundaryVerified": true,
+    "orderSyncVerified": true,
+    "paymentVerificationVerified": true,
+    "inventoryCheckVerified": true,
+    "fulfillmentProcessVerified": true,
+    "shippingTrackingVerified": true,
+    "paymentReconciliationVerified": true
+  },
+  "testResults": {
+    "shopeeOrderFulfillmentE2ETest": "PASSED",
+    "orderSyncTest": "PASSED",
+    "paymentVerificationTest": "PASSED",
+    "inventoryCheckTest": "PASSED",
+    "fulfillmentProcessTest": "PASSED",
+    "shippingTrackingTest": "PASSED",
+    "paymentReconciliationTest": "PASSED"
+  },
+  "executionSummary": "ECOM-101 Shopee order fulfillment lifecycle berhasil dieksekusi dengan ALL PASSED, reuse percentage 100%, dan nilai komersial Rp45.000.000. Semua 6 tahap universal lifecycle dan 7 tahap order fulfillment berjalan normal tanpa error, dengan verifikasi sinkronisasi pesanan, verifikasi pembayaran, pengecekan inventory, proses fulfillment, pelacakan pengiriman, dan rekonsiliasi pembayaran terkonfirmasi."
+}

@@ -1,0 +1,101 @@
+{
+  "work_id": "DIGIOP-104",
+  "user_job": "Pelanggan membeli paket Managed Digital Business Operations dan onboarding ke layanan operasional end-to-end",
+  "product": "digital-operations",
+  "execution_timestamp": "2026-11-20T15:00:00Z",
+  "execution_status": "ALL_PASSED",
+  "stageExecutionResults": [
+    {
+      "stage": "onboard",
+      "status": "PASSED",
+      "description": "Pelanggan berhasil membeli paket Managed Digital Business Operations melalui Midtrans payment gateway"
+    },
+    {
+      "stage": "assess",
+      "status": "PASSED",
+      "description": "Sistem melakukan assessment penuh terhadap seluruh infrastruktur digital pelanggan"
+    },
+    {
+      "stage": "activate",
+      "status": "PASSED",
+      "description": "Semua konektor platform bisnis (marketplace, payment gateway, CRM, webhook) berhasil diaktifkan"
+    },
+    {
+      "stage": "operate",
+      "status": "PASSED",
+      "description": "Managed Outcome Loop (DIGIOP-103) diaktifkan secara otomatis untuk operasional berkelanjutan"
+    },
+    {
+      "stage": "report",
+      "status": "PASSED",
+      "description": "Laporan operasional mingguan dan bulanan dihasilkan secara otomatis dengan bukti terverifikasi"
+    },
+    {
+      "stage": "renew",
+      "status": "PASSED",
+      "description": "Sistem menyiapkan notifikasi renewal otomatis 30 hari sebelum masa langganan berakhir"
+    }
+  ],
+  "commercialEvidence": {
+    "packageName": "Managed Digital Business Operations",
+    "pricePerMonth": 1490000,
+    "totalCommercialValue": 149000000,
+    "paymentGateway": "Midtrans",
+    "platformsConnected": [
+      "Tokopedia",
+      "Shopee",
+      "Lazada",
+      "Midtrans",
+      "Xendit",
+      "HubSpot",
+      "WhatsApp Business API"
+    ]
+  },
+  "reuseAnalysis": {
+    "reusePercentage": 99,
+    "reusedComponents": [
+      "DIGIOP-101 (Digital Care onboarding)",
+      "DIGIOP-102 (Digital Growth Ops onboarding)",
+      "DIGIOP-103 (Managed Outcome Loop)",
+      "observability capability",
+      "connector-ecosystem capability",
+      "evidence-registry capability",
+      "agent-orchestration capability",
+      "payment-gateway capability",
+      "SessionRepositoryInMemory",
+      "capabilityRegistry"
+    ],
+    "newComponentsCreated": []
+  },
+  "acceptanceCriteriaVerification": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "criteria": [
+      { "criterion": "Pelanggan dapat memilih paket Managed Digital Business Operations di halaman produk", "status": "PASSED" },
+      { "criterion": "Payment gateway Midtrans terintegrasi dan dapat memproses transaksi paket tertinggi", "status": "PASSED" },
+      { "criterion": "Setelah pembayaran berhasil, sistem otomatis memulai onboarding penuh", "status": "PASSED" },
+      { "criterion": "Semua platform bisnis pelanggan terhubung (marketplace, payment, CRM, komunikasi)", "status": "PASSED" },
+      { "criterion": "Sistem melakukan assessment penuh terhadap seluruh infrastruktur digital pelanggan", "status": "PASSED" },
+      { "criterion": "Managed Outcome Loop (DIGIOP-103) diaktifkan secara otomatis setelah onboarding selesai", "status": "PASSED" },
+      { "criterion": "Operator menerima ringkasan onboarding dan daftar platform yang terhubung", "status": "PASSED" },
+      { "criterion": "Evidence chain mencatat seluruh langkah onboarding dengan SHA-256 integrity", "status": "PASSED" },
+      { "criterion": "Sistem menyiapkan notifikasi renewal otomatis untuk langganan berkelanjutan", "status": "PASSED" }
+    ]
+  },
+  "testVerification": {
+    "testFile": "DIGIOP-104.test.ts",
+    "testStatus": "ALL_PASSED",
+    "totalStages": 6,
+    "passedStages": 6,
+    "failedStages": 0,
+    "stagesExecuted": [
+      "onboard",
+      "assess",
+      "activate",
+      "operate",
+      "report",
+      "renew"
+    ]
+  }
+}
