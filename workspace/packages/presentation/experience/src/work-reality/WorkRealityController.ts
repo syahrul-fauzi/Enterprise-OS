@@ -73,38 +73,6 @@ export function useWorkRealityController({
     }, [workId])
   });
 
-  // When connection is restored, process offline queue (RET-001 offline sync trigger)
-  useEffect(() => {
-    if (isConnected && pendingOfflineActions.length > 0) {
-      console.log('[WorkRealityController] Connection restored - processing offline queue:', pendingOfflineActions.length);
-      void processOfflineQueue();
-    }
-  }, [isConnected, pendingOfflineActions.length, processOfflineQueue]);
-
-  // Function to process offline queue - replays pending actions in order when connection is restored (RET-001 offline sync)
-  const processOfflineQueue = useCallback(async () => {
-    if (pendingOfflineActions.length === 0 || !navigator.onLine) return;
-    
-    // Sort actions by timestamp to maintain execution order
-    const sorted = [...pendingOfflineActions].sort((a,b) => a.timestamp - b.timestamp);
-    const successful: number[] = [];
-
-    for (const [index, action] of sorted.entries()) {
-      try {
-        // Re-invoke the action with saved payload
-        await dispatchActionInternal(action.actionId, action.payload, true);
-        successful.push(index);
-      } catch (e) {
-        console.error('[WorkRealityController] Failed to replay offline action:', action.actionId, e);
-        // Keep failed actions in queue to retry next reconnection
-        break;
-      }
-    }
-
-    // Remove successfully processed actions from queue
-    setPendingOfflineActions(prev => prev.filter((_, idx) => !successful.includes(idx)));
-  }, [pendingOfflineActions, workId]);
-
   // Internal dispatch implementation that supports offline queueing
   const dispatchActionInternal = useCallback(async (
     actionId: string,
@@ -254,6 +222,38 @@ export function useWorkRealityController({
       throw error;
     }
   }, [workId]);
+
+  // Function to process offline queue - replays pending actions in order when connection is restored (RET-001 offline sync)
+  const processOfflineQueue = useCallback(async () => {
+    if (pendingOfflineActions.length === 0 || !navigator.onLine) return;
+    
+    // Sort actions by timestamp to maintain execution order
+    const sorted = [...pendingOfflineActions].sort((a,b) => a.timestamp - b.timestamp);
+    const successful: number[] = [];
+
+    for (const [index, action] of sorted.entries()) {
+      try {
+        // Re-invoke the action with saved payload
+        await dispatchActionInternal(action.actionId, action.payload, true);
+        successful.push(index);
+      } catch (e) {
+        console.error('[WorkRealityController] Failed to replay offline action:', action.actionId, e);
+        // Keep failed actions in queue to retry next reconnection
+        break;
+      }
+    }
+
+    // Remove successfully processed actions from queue
+    setPendingOfflineActions(prev => prev.filter((_, idx) => !successful.includes(idx)));
+  }, [pendingOfflineActions, workId]);
+
+  // When connection is restored, process offline queue (RET-001 offline sync trigger)
+  useEffect(() => {
+    if (isConnected && pendingOfflineActions.length > 0) {
+      console.log('[WorkRealityController] Connection restored - processing offline queue:', pendingOfflineActions.length);
+      void processOfflineQueue();
+    }
+  }, [isConnected, pendingOfflineActions.length, processOfflineQueue]);
 
   // Public dispatchAction that adds offline queue support
   const dispatchAction = useCallback(async (

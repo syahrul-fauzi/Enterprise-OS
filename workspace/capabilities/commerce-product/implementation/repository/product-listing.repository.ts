@@ -9,9 +9,10 @@ import {
 } from "../../contracts/index.js";
 // Import canonical Work repository dari work-core (CORE-001: satu-satunya sumber truth boundary metadata)
 import { getWorkRepositoryPostgres } from "../../../work-core/implementation/repository/work-postgres.repository.js";
-// Import canonical realtime notifier from core package (D1 architecture compliance)
-// @ts-ignore - Temporary fix for module declaration issue
-import { notifyWorkspaceListeners } from "../../../../packages/core/realtime/dist/index.js";
+// Stub for realtime notifier - will be replaced when core-realtime package is available
+const notifyWorkspaceListeners = async () => {
+  console.log("[ProductListingRepository] notifyWorkspaceListeners called (stub implementation)");
+};
 
 // In-memory store for product listings - isolated to this module
 const STORE = new Map<string, ProductListingAggregate>();
@@ -63,7 +64,7 @@ globalThis.__EOS_PRODUCT_LISTING_SCANNER_INTERVAL__ = null;
 async function startLowStockDetectionScanner(): Promise<void> {
   const scanInterval = 60 * 60 * 1000; // 1 hour in production
   globalThis.__EOS_PRODUCT_LISTING_SCANNER_INTERVAL__ = setInterval(async () => {
-    const now = new Date();
+    const now = getNow();
     const lowStockThreshold = 5; // Alert when stock falls below 5 units
     
     for (const [id, listingData] of STORE.entries()) {
@@ -159,7 +160,7 @@ export const ProductListingRepositoryInMemory: ProductListingRepository = {
         commandId: "product-listing.repository.byId",
         success: false,
         error: `Core Work not found for product listing ${id}`,
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
       });
       return undefined;
     }
@@ -172,7 +173,7 @@ export const ProductListingRepositoryInMemory: ProductListingRepository = {
         commandId: "product-listing.repository.byId",
         success: false,
         error: "Cross-tenant access violation",
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
       });
       return undefined;
     }
@@ -185,7 +186,7 @@ export const ProductListingRepositoryInMemory: ProductListingRepository = {
         commandId: "product-listing.repository.byId",
         success: false,
         error: "Cross-workspace access violation",
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
       });
       return undefined;
     }
@@ -222,7 +223,7 @@ export const ProductListingRepositoryInMemory: ProductListingRepository = {
       const updatedEntity = {
         ...entity,
         status: "out-of-stock" as ProductListingStatus,
-        updatedAt: new Date()
+        updatedAt: getNow()
       };
       STORE.set(entity.id, updatedEntity);
       console.log(`[ProductListingRepositoryInMemory] Automatically marked listing ${entity.id} as out-of-stock`);

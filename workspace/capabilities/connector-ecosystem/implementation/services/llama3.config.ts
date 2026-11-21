@@ -4,6 +4,7 @@
 // Maintains full backward API compatibility while adhering to EOS tenant isolation principles
 
 import { Pool } from 'pg';
+import { getNow } from "#core/kernel/timing/time-provider.js";
 
 // Initialize PostgreSQL connection pool (reuses service-directory database configuration)
 const pool = new Pool({
@@ -88,7 +89,7 @@ async function initializeDefaultTenantConfig() {
         };
         
         const record = toRecord(defaultTenantId, defaultConfig);
-        const now = new Date().toISOString();
+        const now = getNow().toISOString();
         
         await pool.query(
           `INSERT INTO tenant_channel_configs (tenant_id, channel_type, config_data, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)`,
@@ -143,7 +144,7 @@ export async function setLlama3ConfigForTenant(tenantId: string, config: Llama3C
     );
     
     const record = toRecord(tenantId, config);
-    const now = new Date().toISOString();
+    const now = getNow().toISOString();
     
     if (existing.rows.length === 0) {
       // Insert config baru

@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface CacheIsolationSession {
   sessionId: string;
   tenantId: string;
@@ -19,12 +20,12 @@ export class CacheIsolationContinuityService {
     ttl: number
   ): Promise<CacheIsolationSession> {
     const session: CacheIsolationSession = {
-      sessionId: `cache-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `cache-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       tenantId,
       cacheContext,
       cacheKey,
       ttl,
-      createdAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
       status: 'active'
     };
     this.sessions.set(session.sessionId, session);

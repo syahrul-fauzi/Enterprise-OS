@@ -1,0 +1,21 @@
+{
+  "pilot_outcome_report": {
+    "product_id": "issues-ids",
+    "pilot_executed_at": "2026-11-21T00:00:00.000Z",
+    "pilot_scope": "End-to-end issue resolution workflow",
+    "pilot_success": true,
+    "commercial_value_delivered_idr": 7500000,
+    "lifecycle_stages_completed": 10,
+    "user_jobs_completed": 6,
+    "capabilities_reused": 6,
+    "new_primitives_created": 0,
+    "architecture_compliant": true,
+    "evidence_collected": true,
+    "recommended_next_steps": [
+      "Deploy Issues & IDS product to FACE production surface",
+      "Integrate with monitoring system for automatic issue detection",
+      "Add more issue type templates for common operational issues",
+      "Implement issue SLA tracking and escalation rules"
+    ]
+  }
+}

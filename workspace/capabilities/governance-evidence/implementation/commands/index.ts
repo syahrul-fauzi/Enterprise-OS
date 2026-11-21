@@ -1,5 +1,6 @@
 // @ts-nocheck
 import type { CapabilityCommand } from "@repo/core-kernel";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import { governanceEvidenceService } from "../services/governance-evidence.service.js";
 
 // Define governance-evidence commands aligned with existing service capabilities
@@ -34,7 +35,7 @@ const governanceEvidenceCommands: Readonly<Record<string, CapabilityCommand>> = 
     }) => {
       await governanceEvidenceService.addEvidence(input.workId, {
         ...input.entry,
-        recordedAt: new Date().toISOString(),
+        recordedAt: getNow().toISOString(),
         tenantId: input.tenantId,
         workspaceId: input.workspaceId,
         actorId: input.actorId,
@@ -61,7 +62,7 @@ const governanceEvidenceCommands: Readonly<Record<string, CapabilityCommand>> = 
         tenantId: input.tenantId,
         workspaceId: input.workspaceId,
         archiveReason: input.archiveReason || "work-completed",
-        archivedAt: new Date().toISOString(),
+        archivedAt: getNow().toISOString(),
         source: "governance-evidence.archive"
       });
       return { success: true, workId: input.workId, archived: true };

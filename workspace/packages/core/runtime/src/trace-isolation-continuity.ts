@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface TraceIsolationSession {
   sessionId: string;
   traceId: string;
@@ -14,11 +15,11 @@ export class TraceIsolationContinuityService {
 
   createTraceIsolationSession(traceId: string, actorId: string, tenantId: string): TraceIsolationSession {
     const session: TraceIsolationSession = {
-      sessionId: `trace-session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `trace-session-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       traceId,
       actorId,
       tenantId,
-      createdAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
       status: 'active'
     };
     this.sessions.set(session.sessionId, session);
@@ -30,7 +31,7 @@ export class TraceIsolationContinuityService {
     const session = this.sessions.get(sessionId);
     if (session && session.status === 'active') {
       session.status = 'suspended';
-      session.suspendedAt = new Date().toISOString();
+      session.suspendedAt = getNow().toISOString();
       this.sessions.set(sessionId, session);
       console.log(`[TraceIsolationContinuity] Suspended session ${sessionId}`);
     }
@@ -41,7 +42,7 @@ export class TraceIsolationContinuityService {
     const session = this.sessions.get(sessionId);
     if (session && session.status === 'suspended') {
       session.status = 'active';
-      session.resumedAt = new Date().toISOString();
+      session.resumedAt = getNow().toISOString();
       this.sessions.set(sessionId, session);
       console.log(`[TraceIsolationContinuity] Resumed session ${sessionId}`);
     }

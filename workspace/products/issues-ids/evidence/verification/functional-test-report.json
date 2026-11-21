@@ -1,0 +1,38 @@
+{
+  "functional_test_report": {
+    "product_id": "issues-ids",
+    "report_generated_at": "2026-11-21T00:00:00.000Z",
+    "test_scope": "Full lifecycle issue resolution",
+    "functional_requirements_tested": [
+      "Issue reporting interface",
+      "Issue triage workflow",
+      "Issue analysis capabilities",
+      "Decision-making interface",
+      "Issue assignment system",
+      "Resolution execution tracking",
+      "Verification workflow",
+      "Work linking integration",
+      "Resume with new evidence",
+      "Issue archiving system"
+    ],
+    "functional_requirements_passed": 10,
+    "functional_requirements_failed": 0,
+    "functional_coverage_percent": 100,
+    "ui_affordances_tested": [
+      "Report Issue button",
+      "Triage Issue button",
+      "Analyze Issue button",
+      "Make Decision button",
+      "Assign Issue button",
+      "Execute Resolution button",
+      "Verify Resolution button",
+      "Link to Work button",
+      "Resume Issue button",
+      "Archive Issue button"
+    ],
+    "ui_affordances_functional": 10,
+    "server_authorization_preserved": true,
+    "canonical_state_maintained": true,
+    "evidence_chain_complete": true
+  }
+}

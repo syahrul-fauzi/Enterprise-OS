@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface WorkQueueIsolationSession {
   workQueueSessionId: string;
   workQueueDefinitionId: string;
@@ -16,17 +17,17 @@ export class WorkQueueIsolationContinuityService {
   private sessions: Map<string, WorkQueueIsolationSession> = new Map();
 
   createWorkQueueIsolationSession(workQueueDefinitionId: string, actor: string): WorkQueueIsolationSession {
-    const workQueueSessionId = `wq-sess-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+    const workQueueSessionId = `wq-sess-${getNow().getTime()}-${Math.random().toString(36).substring(2, 10)}`;
     const session: WorkQueueIsolationSession = {
       workQueueSessionId,
       workQueueDefinitionId,
       status: 'active',
-      isolationHash: `wq-hash-${workQueueDefinitionId}-${Date.now()}`,
-      createdAt: new Date().toISOString(),
+      isolationHash: `wq-hash-${workQueueDefinitionId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
       evidence: [
         {
           operation: 'createWorkQueueIsolationSession',
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           actor
         }
       ]
@@ -41,7 +42,7 @@ export class WorkQueueIsolationContinuityService {
       session.status = 'suspended';
       session.evidence.push({
         operation: 'suspendWorkQueueIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(workQueueSessionId, session);
@@ -53,10 +54,10 @@ export class WorkQueueIsolationContinuityService {
     const session = this.sessions.get(workQueueSessionId);
     if (session) {
       session.status = 'resumed';
-      session.lastResumedAt = new Date().toISOString();
+      session.lastResumedAt = getNow().toISOString();
       session.evidence.push({
         operation: 'resumeWorkQueueIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(workQueueSessionId, session);

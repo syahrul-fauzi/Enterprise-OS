@@ -14,7 +14,7 @@ import {
 } from "../contracts/consultation.contracts.ts";
 
 const seed = (): ConsultationAggregate[] => {
-  const now = new Date();
+  const now = getNow();
   const yesterday = new Date(now.getTime() - 1000 * 60 * 60 * 24);
   const twoHoursAgo = new Date(now.getTime() - 1000 * 60 * 60 * 2);
 

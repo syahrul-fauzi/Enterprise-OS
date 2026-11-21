@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface UsageIsolationSession {
   sessionId: string;
   tenantId: string;
@@ -12,11 +13,11 @@ export class UsageIsolationContinuityService {
 
   createUsageIsolationSession(tenantId: string, usageContext: Record<string, any>): UsageIsolationSession {
     const session: UsageIsolationSession = {
-      sessionId: `usage-session-${Date.now()}`,
+      sessionId: `usage-session-${getNow().getTime()}`,
       tenantId,
       usageContext,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
+      updatedAt: getNow().toISOString(),
       status: 'active'
     };
     this.sessions.set(session.sessionId, session);
@@ -28,7 +29,7 @@ export class UsageIsolationContinuityService {
     const session = this.sessions.get(sessionId);
     if (session) {
       session.status = 'suspended';
-      session.updatedAt = new Date().toISOString();
+      session.updatedAt = getNow().toISOString();
       console.log(`Usage isolation session suspended: ${sessionId}`);
     }
     return session;
@@ -38,7 +39,7 @@ export class UsageIsolationContinuityService {
     const session = this.sessions.get(sessionId);
     if (session) {
       session.status = 'resumed';
-      session.updatedAt = new Date().toISOString();
+      session.updatedAt = getNow().toISOString();
       console.log(`Usage isolation session resumed: ${sessionId}`);
     }
     return session;

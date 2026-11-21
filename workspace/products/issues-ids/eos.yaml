@@ -1,0 +1,74 @@
+version: "1.0"
+workspace:
+  name: issues-ids
+  display_name: Issues & IDS
+  description: Kategori pekerjaan universal untuk pelaporan issue, triase, deteksi insiden, dan resolusi insiden operasional
+lifecycle:
+  phase: D.1
+  status: ACTIVE
+  contract:
+    stages:
+      - name: issue_reported
+        description: Issue baru dilaporkan oleh pengguna atau terdeteksi oleh sistem monitoring sebagai canonical Work
+        terminal: false
+      - name: triage
+        description: Klasifikasi issue, set prioritas, verifikasi bukti awal
+        terminal: false
+      - name: analyze
+        description: Analisis akar masalah, kumpulkan bukti tambahan
+        terminal: false
+      - name: decide
+        description: Buat keputusan resolusi, tetapkan tindakan yang akan diambil
+        terminal: false
+      - name: assign
+        description: Assign issue ke tim atau penanggung jawab yang sesuai
+        terminal: false
+      - name: execute
+        description: Tim menjalankan tindakan resolusi yang telah disetujui
+        terminal: false
+      - name: verify
+        description: Verifikasi bahwa resolusi telah berhasil dan masalah teratasi
+        terminal: false
+      - name: link_work
+        description: Kaitkan issue dengan Work item terkait untuk pelacakan lintas domain
+        terminal: false
+      - name: resume
+        description: Lanjutkan issue dengan bukti baru jika diperlukan tindakan tambahan
+        terminal: false
+      - name: archive
+        description: Arsipkan semua bukti dan tandai issue sebagai selesai
+        terminal: true
+  real_user_jobs:
+    - id: issues-001
+      name: User melaporkan issue baru
+      description: Pengguna membuat laporan issue baru melalui antarmuka Issues & IDS
+      status: ready
+    - id: issues-002
+      name: User melakukan triase issue
+      description: Operator melakukan klasifikasi, prioritas, dan verifikasi bukti awal issue
+      status: ready
+    - id: issues-003
+      name: User membuat keputusan issue
+      description: Pengambil keputusan menentukan tindakan resolusi yang akan diambil untuk issue
+      status: ready
+    - id: issues-004
+      name: User mengaitkan issue dengan Work
+      description: Operator menghubungkan issue dengan Work item terkait untuk pelacakan lintas domain
+      status: ready
+    - id: issues-005
+      name: User melanjutkan issue dengan bukti baru
+      description: Operator menambahkan bukti baru dan melanjutkan proses resolusi issue
+      status: ready
+    - id: issues-006
+      name: User menyelesaikan issue
+      description: Issue diverifikasi selesai dan diarsipkan dengan semua bukti yang lengkap
+      status: ready
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 85
+    runtime_invocation_required: true
+governance:
+  baseline_locked: true
+  needs_audit: false
+  evidence_path: ./evidence

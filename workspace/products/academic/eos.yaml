@@ -30,9 +30,15 @@ lifecycle:
     - id: aca-101
       name: Manage academic program
       description: Full lifecycle manajemen program akademik dengan diskusi komunitas
-      status: active
+      status: completed
       requirements:
         - req-academic-001
+    - id: aca-102
+      name: Research publishing & citation management
+      description: Full lifecycle penerbitan penelitian, manajemen sitasi, dan kolaborasi antar peneliti
+      status: completed
+      requirements:
+        - req-academic-002
 quality:
   targets:
     evidence_required: true

@@ -150,7 +150,7 @@ export const DocumentRepositoryInMemory: DocumentRepository = {
       // New entity - initialize version
       (cloned as any).version = 1;
     }
-    (cloned as any).updatedAt = new Date();
+    (cloned as any).updatedAt = getNow();
     
     STORE.set(cloned.id, cloned);
     

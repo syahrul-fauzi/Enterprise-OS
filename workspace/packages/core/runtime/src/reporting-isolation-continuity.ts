@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface ReportingIsolationSession {
   sessionId: string;
   reportingId: string;
@@ -14,14 +15,14 @@ export class ReportingIsolationContinuityService {
 
   createReportingIsolationSession(reportingId: string, tenantId: string, parameters: Record<string, any> = {}): ReportingIsolationSession {
     const session: ReportingIsolationSession = {
-      sessionId: `reporting-session-${Date.now()}`,
+      sessionId: `reporting-session-${getNow().getTime()}`,
       reportingId,
       tenantId,
       status: 'active',
       parameters,
       context: {},
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: getNow().toISOString(),
+      updatedAt: getNow().toISOString()
     };
     this.sessions.set(session.sessionId, session);
     console.log(`Reporting isolation session created: ${session.sessionId}`);
@@ -32,7 +33,7 @@ export class ReportingIsolationContinuityService {
     const session = this.sessions.get(sessionId);
     if (session) {
       session.status = 'suspended';
-      session.updatedAt = new Date().toISOString();
+      session.updatedAt = getNow().toISOString();
       this.sessions.set(sessionId, session);
       console.log(`Reporting isolation session suspended: ${sessionId}`);
       return session;
@@ -44,7 +45,7 @@ export class ReportingIsolationContinuityService {
     const session = this.sessions.get(sessionId);
     if (session) {
       session.status = 'resumed';
-      session.updatedAt = new Date().toISOString();
+      session.updatedAt = getNow().toISOString();
       this.sessions.set(sessionId, session);
       console.log(`Reporting isolation session resumed: ${sessionId}`);
       return session;

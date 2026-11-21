@@ -1,4 +1,5 @@
 import { AsyncLocalStorage } from "async_hooks";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { randomUUID } from "crypto";
 
 export interface ExecutionContextOptions {
@@ -21,7 +22,7 @@ export class ExecutionContext {
     this.workItemId = options.workItemId || randomUUID();
     this.actorId = options.actorId || 'unknown-actor';
     this.tenantId = options.tenantId || 'default-tenant';
-    this.timestamp = options.timestamp || new Date().toISOString();
+    this.timestamp = options.timestamp || getNow().toISOString();
     this.metadata = options.metadata || {};
     this.invocationEvidence = [];
   }

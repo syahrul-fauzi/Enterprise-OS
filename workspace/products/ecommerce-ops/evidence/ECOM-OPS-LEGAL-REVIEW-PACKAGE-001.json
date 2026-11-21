@@ -1,0 +1,97 @@
+{
+  "packageId": "ECOM-OPS-LEGAL-REVIEW-PACKAGE-001",
+  "packageTimestamp": "2026-11-21T06:35:00.000Z",
+  "productName": "ecommerce-ops",
+  "reviewObjective": "Mendapatkan klasifikasi hukum, dasar hukum, kewajiban yang berlaku, gap kepatuhan, dan rekomendasi tindakan untuk Ecommerce-Ops",
+  "architectureFacts": {
+    "productType": "Ecommerce Order Fulfillment Automation Platform",
+    "reusePercentage": 100,
+    "corePrimitivesUsed": "Genesis bounded contexts (LeadProspect, SolutionArtifact, FinancialAssessment, ConversionAsset, ClientAccount)",
+    "noNewCorePrimitivesCreated": true,
+    "marketplacesIntegrated": [
+      "Shopee",
+      "Tokopedia",
+      "Lazada",
+      "TikTok Shop",
+      "WooCommerce"
+    ],
+    "pilotResults": {
+      "status": "COMPLETED",
+      "totalRevenueGeneratedIdr": 350000,
+      "totalTransactionsProcessed": 1,
+      "orderFulfillmentSuccessRate": 100.0,
+      "failureRate": 0.0
+    },
+    "runtimeCharacteristics": {
+      "executionTimePerOrderMs": 33,
+      "idempotencyGuaranteed": true,
+      "tenantIsolationEnforced": true,
+      "noCrossTenantLeakage": true
+    }
+  },
+  "legalReviewQuestions": [
+    {
+      "area": "PSE",
+      "question": "Apakah fungsi aktual Ecommerce-Ops termasuk lingkup PSE Privat berdasarkan Undang-Undang PSE No. 19 Tahun 2016 dan peraturan pelaksanaannya?",
+      "context": "Ecommerce-Ops adalah platform otomatisasi pemenuhan pesanan marketplace untuk UMKM retail, bukan platform perdagangan elektronik itu sendiri."
+    },
+    {
+      "area": "PMSE",
+      "question": "Apakah model layanan dan hubungan para pihak termasuk kegiatan PMSE yang diatur dalam peraturan tentang Penyelenggara Mikro Sistem Elektronik?",
+      "context": "Platform ini digunakan oleh merchant UMKM untuk mengelola pesanan dari berbagai marketplace."
+    },
+    {
+      "area": "Business role",
+      "question": "Apakah EOS bertindak sebagai penyedia teknologi, perantara, atau menjalankan fungsi lain dalam alur bisnis Ecommerce-Ops?",
+      "context": "EOS menyediakan otomatisasi alur kerja, tidak memiliki akses ke dana pembayaran, dan tidak bertindak sebagai penjual."
+    },
+    {
+      "area": "Data protection",
+      "question": "Apa kewajiban perlindungan data pribadi berdasarkan alur data aktual Ecommerce-Ops?",
+      "context": "Data yang diproses meliputi data pesanan, data pelanggan, dan data pengiriman dari marketplace yang terintegrasi."
+    },
+    {
+      "area": "Contract",
+      "question": "Apa kewajiban kontraktual EOS dan merchant berdasarkan model layanan yang berlaku?",
+      "context": "Hubungan antara EOS dan merchant adalah penyedia layanan teknologi otomatisasi."
+    },
+    {
+      "area": "Payment",
+      "question": "Siapa pihak yang bertanggung jawab atas penerimaan, pemrosesan, dan settlement pembayaran dalam alur Ecommerce-Ops?",
+      "context": "Pembayaran diproses langsung oleh marketplace, EOS tidak memegang atau memproses dana pembayaran."
+    },
+    {
+      "area": "Cross-border",
+      "question": "Apakah pemrosesan data atau layanan lintas negara menimbulkan kewajiban tambahan untuk Ecommerce-Ops?",
+      "context": "Semua pemrosesan data saat ini berlangsung di dalam yurisdiksi Indonesia."
+    }
+  ],
+  "requiredReviewOutputs": [
+    "Legal classification Ecommerce-Ops berdasarkan peraturan yang berlaku",
+    "Dasar hukum yang mengatur kegiatan Ecommerce-Ops",
+    "Daftar kewajiban kepatuhan yang berlaku",
+    "Gap kepatuhan jika ada yang perlu diperbaiki",
+    "Rekomendasi tindakan untuk memenuhi kewajiban kepatuhan"
+  ],
+  "governanceConstraints": {
+    "noComplianceClaimBeforeReview": true,
+    "productionNotAuthorized": true,
+    "statusG7": "BLOCKED",
+    "allWorkNonMutatingToCore": true
+  },
+  "attachedEvidence": [
+    "ECOM-101_EXECUTION_EVIDENCE.json",
+    "ECOM-102_EXECUTION_EVIDENCE.json",
+    "pilot-business-report.json",
+    "pilot-outcome-report.json",
+    "ecommerce-ops-genesis-context-mapping.json",
+    "ecom-101-independent-verification.json",
+    "functional-test-report.json"
+  ],
+  "nextSteps": [
+    "Sampaikan paket ini kepada legal reviewer yang berwenang",
+    "Tunggu hasil review dan klasifikasi hukum",
+    "Tindaklanjuti gap kepatuhan yang diidentifikasi",
+    "Perbarui status G4 menjadi VERIFIED setelah review selesai"
+  ]
+}

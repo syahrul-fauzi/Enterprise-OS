@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { RequirementRepositoryCurrent } from "../repository/index.js";
 import type { RequirementAggregate } from "../contracts/index.ts";
@@ -66,14 +67,14 @@ export const getRequirementsByOwnerCommand: CapabilityCommand = {
     const executionBoundary: ExecutionBoundary = {
       commandName: "requirement.getByOwner",
       capability: "requirement-management",
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     };
 
     const evidenceBoundary: EvidenceBoundary = {
       eventType: "REQUIREMENTS_ACCESSED",
       actorId,
       workspaceId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     };
 
     const presentationBoundary: PresentationBoundary = {

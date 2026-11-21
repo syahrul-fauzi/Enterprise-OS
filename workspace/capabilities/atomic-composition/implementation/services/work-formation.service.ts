@@ -1,5 +1,6 @@
 // @ts-nocheck
 import type { UniversalExpression } from "../contracts/universal-intent.contracts";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { atomicCompositionService } from "./composition.service";
 import { capabilityResolverService } from "./capability-resolver.service";
 import type { WorkBinding, ActorProjection } from "../contracts/atomic-composition.contracts";
@@ -60,7 +61,7 @@ export async function createCanonicalWorkFromIntent(
 
   // Generate canonical work ID using crypto.randomUUID() to maintain consistency with API
   const workId = crypto.randomUUID();
-  const now = new Date();
+  const now = getNow();
 
   // C-001: Extract required capabilities and suggested providers from understanding
   const resolutionRequirement = expression.understanding?.requirement;
@@ -154,7 +155,7 @@ export async function createCanonicalWorkFromIntent(
           command: "consultation.triage",
           output: triageOutput,
         },
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         tenantId,
         workspaceId
       });
@@ -173,7 +174,7 @@ export async function createCanonicalWorkFromIntent(
           command: "consultation.triage",
           error: (triageError as Error).message,
         },
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         tenantId,
         workspaceId
       });
@@ -205,7 +206,7 @@ export async function createCanonicalWorkFromIntent(
           };
           // Update work state to active after successful invocation
           canonicalWork.status = "active";
-          canonicalWork.updatedAt = new Date().toISOString();
+          canonicalWork.updatedAt = getNow().toISOString();
           
           // Add evidence of capability invocation
           canonicalWork.evidence.push({
@@ -286,7 +287,7 @@ export async function createCanonicalWorkFromIntent(
       executionEvidence: [{
         type: "capability-invoked",
         title: "Primary PT establishment capability executed",
-        content: `company-formation-management.pt-establishment.start invoked at ${new Date().toISOString()}`,
+        content: `company-formation-management.pt-establishment.start invoked at ${getNow().toISOString()}`,
         output: capabilityExecutionOutput
       }]
     });

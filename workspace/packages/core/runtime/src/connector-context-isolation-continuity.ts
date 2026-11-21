@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 export interface ConnectorContextIsolationSession {
   connectorSessionId: string;
@@ -12,18 +13,18 @@ export interface ConnectorContextIsolationSession {
 export class ConnectorContextIsolationContinuityService {
   async createConnectorContextIsolationSession(context: ExecutionContext, connectorType: string): Promise<ConnectorContextIsolationSession> {
     const session: ConnectorContextIsolationSession = {
-      connectorSessionId: `connector-session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      connectorSessionId: `connector-session-${getNow().getTime()}-${Math.random().toString(36).substring(2, 9)}`,
       connectorType,
       status: 'ACTIVE',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     context.invocationEvidence.push({
       operation: 'createConnectorContextIsolationSession',
       connectorSessionId: session.connectorSessionId,
       connectorType,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return session;
@@ -34,7 +35,7 @@ export class ConnectorContextIsolationContinuityService {
       operation: 'suspendConnectorContextIsolationSession',
       connectorSessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {
@@ -48,15 +49,15 @@ export class ConnectorContextIsolationContinuityService {
       connectorSessionId,
       connectorType: 'RESUMED',
       status: 'RESUMED',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     context.invocationEvidence.push({
       operation: 'resumeConnectorContextIsolationSession',
       connectorSessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return resumedSession;
@@ -73,7 +74,7 @@ export class ConnectorContextIsolationContinuityService {
       operation: 'verifyConnectorContextIsolationContinuity',
       connectorSessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {

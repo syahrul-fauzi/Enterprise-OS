@@ -1,0 +1,55 @@
+{
+  "work_id": "SV-ID-003",
+  "work_title": "Service Provider Performance Dashboard",
+  "status": "ALL_PASSED",
+  "execution_timestamp": "2026-11-20T00:00:00.000Z",
+  "reuse_percentage": 100,
+  "commercial_value_added": 35000000,
+  "acceptance_criteria": [
+    {
+      "criterion": "Semua fitur Services-ID terikat dan dapat diinvokasi",
+      "status": "PASSED"
+    },
+    {
+      "criterion": "Dashboard kinerja penyedia layanan tersedia dan dapat diakses",
+      "status": "PASSED"
+    },
+    {
+      "criterion": "Workflow layanan memiliki 6 tahap yang konsisten",
+      "status": "PASSED"
+    },
+    {
+      "criterion": "Integrasi dengan SV-ID-001 (Find/Request Service) berfungsi normal",
+      "status": "PASSED"
+    },
+    {
+      "criterion": "Integrasi dengan SV-ID-002 (Service Fulfillment) berfungsi normal",
+      "status": "PASSED"
+    },
+    {
+      "criterion": "Tidak ada komponen baru yang diperlukan — semua menggunakan kembali fondasi yang ada",
+      "status": "PASSED"
+    }
+  ],
+  "capabilities_verified": [
+    "identity.verification",
+    "access.management",
+    "sso.integration",
+    "performance.dashboard"
+  ],
+  "workflow_stages_verified": [
+    "discover",
+    "create",
+    "execute",
+    "progress",
+    "evidence",
+    "complete"
+  ],
+  "test_execution": {
+    "framework": "vitest",
+    "test_file": "e2e-service-provider-performance-dashboard.test.ts",
+    "total_tests": 3,
+    "passed": 3,
+    "failed": 0
+  }
+}

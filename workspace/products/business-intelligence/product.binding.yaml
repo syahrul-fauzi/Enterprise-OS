@@ -1,0 +1,24 @@
+product:
+  id: business-intelligence
+  display_name: Business Intelligence & Strategy Domain
+  category: Business Intelligence
+  phase: D.1
+capabilities:
+  - id: business-context
+    alias: business.context
+  - id: business-intelligence
+    alias: business.intelligence
+  - id: market-intelligence
+    alias: market.intelligence
+  - id: business-analytics
+    alias: business.analytics
+  - id: strategic-intelligence
+    alias: strategic.intelligence
+  - id: decision-intelligence
+    alias: decision.intelligence
+workflow:
+  definition: runtime/workflow-definition.ts
+context:
+  provider: runtime/product-context-provider.ts
+invokers:
+  location: runtime/capability-invokers.ts

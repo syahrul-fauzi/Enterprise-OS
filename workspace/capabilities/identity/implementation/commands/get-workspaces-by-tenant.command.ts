@@ -1,7 +1,9 @@
 // @ts-nocheck
 // @ts-nocheck
 import type { CapabilityCommand } from "../../../capability-dispatch/contracts/command.contracts.js";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import { z } from "zod";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 // Import shared identity types from contracts-core
 import { TenantId, ActorId, UserId, SessionId, WorkId, type MembershipAggregate, type WorkspaceAggregate } from "@repo/contracts-core";
 // Import 6-boundary validation function dari package kanonis
@@ -143,7 +145,7 @@ export const getWorkspacesByTenantCommand: GetWorkspacesByTenantCommand = {
     // 7. Map workspaces with their membership details (enforce only workspaces user is member of)
     const workspaceDetails = workspaces.map((w: WorkspaceAggregate) => {
       const membership = userMemberships.find((m: MembershipAggregate) => m.workspaceId === w.id);
-      const workspaceCreatedAt = w.createdAt ?? new Date();
+      const workspaceCreatedAt = w.createdAt ?? getNow();
       return {
         id: w.id,
         name: w.name,
@@ -154,7 +156,7 @@ export const getWorkspacesByTenantCommand: GetWorkspacesByTenantCommand = {
       };
     }).filter((ws: any) => ws.membershipId !== null); // Remove any workspaces user doesn't have membership for
 
-    const tenantCreatedAt = tenant.createdAt ?? new Date();
+    const tenantCreatedAt = tenant.createdAt ?? getNow();
     return {
       tenant: {
         id: tenant.id,

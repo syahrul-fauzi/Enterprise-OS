@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
@@ -60,7 +61,7 @@ export async function POST(request: Request) {
       event_type: "CommunicationSent",
       status: "sent",
       recipient_ids: [],
-      timestamp: new Date().toISOString(), // Required schema property
+      timestamp: getNow().toISOString(), // Required schema property
       session_id: session.id // Required schema property (session.id exists on WorkspaceSession)
     };
     await communicationRepository.save(event, {

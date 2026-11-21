@@ -347,7 +347,7 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
         entity.event_type,
         entity.content,
         entity.adapter_type,
-        (entity as any).timestamp || new Date(),
+        (entity as any).timestamp || getNow(),
         entity.status,
         (entity as any).message_id || null, // message_id from inbound webhook events
         (entity as any).metadata || null, // metadata from inbound webhook events
@@ -524,7 +524,7 @@ function mapRowToCommunicationEvent(row: any): CommunicationEvent {
     event_type: row.event_type,
     content: row.content,
     adapter_type: row.adapter_type,
-    timestamp: row.timestamp ? row.timestamp : new Date().toISOString(), // Store/serialize as ISO string to match interface contract
+    timestamp: row.timestamp ? row.timestamp : getNow().toISOString(), // Store/serialize as ISO string to match interface contract
     status: row.status,
   } as CommunicationEvent;
 }

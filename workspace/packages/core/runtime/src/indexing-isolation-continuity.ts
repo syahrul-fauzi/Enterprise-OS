@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface IndexingIsolationSession {
   sessionId: string;
   tenantId: string;
@@ -18,12 +19,12 @@ export class IndexingIsolationContinuityService {
     batchSize: number
   ): Promise<IndexingIsolationSession> {
     const session: IndexingIsolationSession = {
-      sessionId: `indexing-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `indexing-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       tenantId,
       indexName,
       documentCount: 0,
       batchSize,
-      createdAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
       status: 'active'
     };
     this.sessions.set(session.sessionId, session);

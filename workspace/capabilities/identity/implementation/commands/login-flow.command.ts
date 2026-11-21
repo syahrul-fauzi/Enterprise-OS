@@ -9,9 +9,11 @@ import {
   type WorkspaceId,
   ActorId,
 } from "@repo/contracts-core";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import { randomUUID } from "node:crypto";
 // Import 6-boundary validation function dari package kanonis
 import { validateBoundaryAccess } from "@repo/contracts-core";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 // Lazy load repositories untuk menghindari module cycle dan mematuhi 6-boundary compliance
 async function getUserRepositoryLazy() {
@@ -170,11 +172,11 @@ export const loginFlowCommand: LoginFlowCommand = {
       productId: "services-id.default",
       actorLabel: user.displayName || "User",
       isAgent: false,
-      issuedAt: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      issuedAt: getNow(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
       revokedAt: null,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week
+      expiresAt: new Date(getNow().getTime() + 7 * 24 * 60 * 60 * 1000), // 1 week
     });
 
     // W06-A2: Isi ExecutionContext terpercaya dan jalankan post-login context propagation

@@ -2,9 +2,11 @@
 // @ts-nocheck
 import type { CapabilityCommand } from "../../../capability-dispatch/contracts/command.contracts.js";
 import { z } from "zod";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import {
   TenantId,
 } from "@repo/contracts-core";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import {
   validateBoundaryAccess,
   type IdentityBoundary,
@@ -64,7 +66,7 @@ export const getTenantByIdCommand: GetTenantByIdCommand = {
       return undefined;
     }
 
-    const tenantCreatedAt = tenant.createdAt ?? new Date();
+    const tenantCreatedAt = tenant.createdAt ?? getNow();
     return {
       id: tenant.id,
       name: tenant.name,

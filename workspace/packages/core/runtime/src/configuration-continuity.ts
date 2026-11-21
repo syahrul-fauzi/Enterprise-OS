@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface ConfigurationSession {
@@ -16,11 +17,11 @@ export class ConfigurationContinuityService {
     workItemId: string
   ): Promise<ConfigurationSession> {
     const session: ConfigurationSession = {
-      sessionId: `config-session-${workItemId}-${Date.now()}`,
+      sessionId: `config-session-${workItemId}-${getNow().getTime()}`,
       workItemId,
       status: 'ACTIVE',
-      configurationHash: `config-hash-${workItemId}-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      configurationHash: `config-hash-${workItemId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'configuration-continuity.create-configuration-session', {
@@ -52,9 +53,9 @@ export class ConfigurationContinuityService {
       sessionId,
       workItemId: 'W-024',
       status: 'RESUMED',
-      configurationHash: `config-hash-resumed-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      configurationHash: `config-hash-resumed-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'configuration-continuity.resume-configuration-session', {

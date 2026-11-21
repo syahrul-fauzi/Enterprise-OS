@@ -1,0 +1,57 @@
+{
+  "frameworkId": "ECOM-OPS-G6-HUMAN-ACCEPTANCE-REVIEW-FRAMEWORK-001",
+  "frameworkCreatedAt": "2026-11-21T08:20:00.000Z",
+  "frameworkStatus": "FRAMEWORK PREPARED — AWAITING HUMAN ACCEPTANCE",
+  "roleSeparation": {
+    "agentResponsibilities": [
+      "Mengumpulkan evidence dari seluruh gate",
+      "Melakukan verifikasi teknis dan rekonsiliasi",
+      "Menghitung confidence score menggunakan formula yang terdokumentasi",
+      "Menyajikan hasil audit secara transparan",
+      "Memberikan rekomendasi teknis berdasarkan evidence"
+    ],
+    "humanAuthorityResponsibilities": [
+      "Meninjau hasil audit secara independen",
+      "Membuat keputusan acceptance atau penolakan berdasarkan kriteria",
+      "Menandatangani acceptance secara accountable",
+      "Mencatat alasan keputusan secara eksplisit",
+      "Menetapkan status gate menjadi VERIFIED atau meminta perbaikan tambahan"
+    ],
+    "invariant": "Agent tidak boleh menjadikan confidence score sebagai pengganti accountable human acceptance."
+  },
+  "reviewChecklist": [
+    {
+      "checklistItem": "Overall confidence score telah dihitung menggunakan formula pembobotan yang terdokumentasi dan dapat direproduksi",
+      "status": "COMPLETED",
+      "reference": "ECOM-OPS-CONFIDENCE-SCORE-CALCULATION-001.json"
+    },
+    {
+      "checklistItem": "Semua residual gap telah dijelaskan secara eksplisit dengan status RESOLVED atau PENDING",
+      "status": "COMPLETED",
+      "reference": "ECOM-OPS-RESIDUAL-GAP-RECONCILIATION-001.json"
+    },
+    {
+      "checklistItem": "Tiga kategori timestamp telah dipisahkan dengan jelas dan provenance konsisten",
+      "status": "COMPLETED",
+      "reference": "ECOM-OPS-TIMESTAMP-PROVENANCE-RECONCILIATION-001.json"
+    },
+    {
+      "checklistItem": "Tidak ada perubahan evidence historis yang dilakukan tanpa jejak versi dan alasan perubahan",
+      "status": "COMPLETED",
+      "reference": "ECOM-OPS-TIMESTAMP-PROVENANCE-RECONCILIATION-001.json"
+    },
+    {
+      "checklistItem": "Human acceptance review telah dilakukan oleh reviewer yang accountable",
+      "status": "PENDING",
+      "reference": "Akan diisi setelah review selesai"
+    }
+  ],
+  "acceptanceDecisionFields": {
+    "humanReviewerIdentity": "BELUM DIISI",
+    "reviewTimestamp": "BELUM DIISI",
+    "acceptanceDecision": "BELUM DIISI — ACCEPTED / REJECTED WITH COMMENTS",
+    "decisionReason": "BELUM DIISI",
+    "nextSteps": "BELUM DIISI"
+  },
+  "agentRecommendation": "Agent merekomendasikan G6 status AUDIT COMPLETED — ACCEPTANCE PENDING sampai human acceptance review selesai dilakukan. Agent tidak dapat memberikan acceptance akhir tanpa human authority."
+}

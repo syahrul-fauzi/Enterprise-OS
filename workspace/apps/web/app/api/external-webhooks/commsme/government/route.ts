@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
 
 // Minimal webhook endpoint to receive external system responses (OSS, Kemenkumham, DJP)
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
       externalStatus: status,
       externalReferenceId,
       responseData,
-      receivedAt: new Date().toISOString(),
+      receivedAt: getNow().toISOString(),
       sessionId: COM_SESSION_ID
     });
 
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
         system,
         status,
         externalReferenceId,
-        receivedAt: new Date().toISOString(),
+        receivedAt: getNow().toISOString(),
         responseData,
         idempotencyKey,
         capabilityInvocationOutput: output

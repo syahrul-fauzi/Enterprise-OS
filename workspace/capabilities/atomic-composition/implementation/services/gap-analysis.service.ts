@@ -4,6 +4,7 @@
 // Implements the core "CAN EOS FORM WORK NOW?" logic from the architecture proposal
 
 import { UniversalExpression, SufficiencyCheckResult, IntentResolutionRequirement } from "../contracts/universal-intent.contracts";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { IntentUnderstanding, DomainCandidate } from "../contracts/intent-understanding.contracts";
 
 // Minimum threshold for an intent to be considered sufficient
@@ -289,7 +290,7 @@ export class GapAnalysisService {
       work_id,
       tenant_id: DEFAULT_TENANT_ID,
       actor_id: "agent-eos-gap-analysis-system",
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       sessionId: SYSTEM_AGENT_SESSION_ID,
       // Extend base payload with gap-specific metadata (allowed by index signature)
       meta_gaps: gaps,
@@ -305,7 +306,7 @@ export class GapAnalysisService {
       resolutionRequirement,
       execution_halted: true,
       commander_notified: true,
-      notification_sent_at: new Date().toISOString()
+      notification_sent_at: getNow().toISOString()
     };
   }
 

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { agentOrchestrationService } from "../../../agent-orchestration/implementation/services/agent-orchestration.service.js";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { evidenceRegistryService } from "../../../evidence-registry/implementation/services/evidence-registry.service.js";
 import type { SearchEvidenceRegistryOutput, EvidenceRecord } from "../../../evidence-registry/implementation/contracts/evidence-registry.contracts.js";
 import { requirementService } from "../../../requirement-management/implementation/services/requirement.service.js";
@@ -227,7 +228,7 @@ export class KnowledgeGraphService {
           claimType: "warranty-claim",
           participants: ["ecommerce-ops", "lawyershub", "deal-coordinator", "value-metering"],
           primaryWorkId: "work-CROSS-INDUSTRY-001",
-          createdAt: new Date().toISOString()
+          createdAt: getNow().toISOString()
         }
       };
       this.addEdge(crossIndustryHyperEdge);

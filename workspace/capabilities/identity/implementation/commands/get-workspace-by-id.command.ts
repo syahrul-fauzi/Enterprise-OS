@@ -2,6 +2,7 @@
 // @ts-nocheck
 import { z } from "zod";
 import type { CapabilityCommand } from "../../../capability-dispatch/contracts/command.contracts.js";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import {
   WorkspaceId,
   UserId,
@@ -9,6 +10,7 @@ import {
   ActorId,
   SessionId,
 } from "@repo/contracts-core";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 // Import 6-boundary types and canonical validation function dari package yang benar
 import {
   validateBoundaryAccess,
@@ -95,7 +97,7 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
     // 1. Validate session exists and is valid (tenant isolation check) - ambil session dulu sebelum pakai
     const session = await sessionRepository.byId(sessionId);
     const sessionExpiresAt = session?.expiresAt ?? new Date(0);
-    if (!session || session.revokedAt !== null || sessionExpiresAt < new Date()) {
+    if (!session || session.revokedAt !== null || sessionExpiresAt < getNow()) {
       return undefined;
     }
 
@@ -136,7 +138,7 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
       evidenceChain: [{
         actorId: requestActorId,
         action: "retrieve-workspace",
-        timestamp: new Date(),
+        timestamp: getNow(),
         workspaceId: parentWorkspaceId
       }],
       outcomeVerified: false
@@ -182,8 +184,8 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
     );
     const tenant = await tenantRepository.byId(workspace.tenantId);
 
-    const workspaceCreatedAt = workspace.createdAt ?? new Date();
-    const workspaceUpdatedAt = workspace.updatedAt ?? new Date();
+    const workspaceCreatedAt = workspace.createdAt ?? getNow();
+    const workspaceUpdatedAt = workspace.updatedAt ?? getNow();
     const tenantResult = tenant
       ? {
           id: tenant.id,
@@ -195,7 +197,7 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
       ? {
           id: membership.id,
           role: membership.role,
-          joinedAt: (membership.joinedAt ?? new Date()).toISOString(),
+          joinedAt: (membership.joinedAt ?? getNow()).toISOString(),
         }
       : null;
 

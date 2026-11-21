@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/index.js";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/index.js";
@@ -187,7 +188,7 @@ export const recordEvidence: RecordEvidenceCommand = {
         // MANUAL PUSH LANGSUNG KE IN-MEMORY LOGS DI VITEST (SOLUSI FINAL)
          if (typeof process.env.VITEST !== 'undefined') {
            const finalEvent = {
-             timestamp_utc: new Date().toISOString(),
+             timestamp_utc: getNow().toISOString(),
              product_id: "digital-operations",
              plan_instance_id: null,
              plan_id: null,
@@ -198,7 +199,7 @@ export const recordEvidence: RecordEvidenceCommand = {
              success: true,
              input_digest: "",
              result_digest: "",
-             invocation_digest: "test-manual-push-" + Date.now(),
+             invocation_digest: "test-manual-push-" + getNow().getTime(),
              input: { entityRef, entityType, action },
              result: { recorded: true, entityRef, entityType, action, timestamp, details: details?? {} },
              decision_id: "DO-DIGITALGROWTHOPS-001",
@@ -220,7 +221,7 @@ export const recordEvidence: RecordEvidenceCommand = {
 
     return { 
       success: true, 
-      id: `evidence-${entityType}-${entityRef}-${Date.now()}` 
+      id: `evidence-${entityType}-${entityRef}-${getNow().getTime()}` 
     };
   },
 };

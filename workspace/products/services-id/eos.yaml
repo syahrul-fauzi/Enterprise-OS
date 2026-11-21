@@ -27,12 +27,24 @@ lifecycle:
         description: Layanan selesai, bukti terverifikasi
         terminal: true
   real_user_jobs:
-    - id: sreq-101
+    - id: sv-id-001
       name: Find/request a service
       description: Full lifecycle procurement layanan profesional dari pencarian hingga penyelesaian
-      status: active
+      status: completed
       requirements:
         - req-svc-001
+    - id: sv-id-002
+      name: Service Provider Registration and Verification
+      description: Pendaftaran dan verifikasi penyedia layanan profesional
+      status: completed
+      requirements:
+        - req-svc-002
+    - id: sv-id-003
+      name: Service provider performance dashboard
+      description: Dashboard kinerja penyedia layanan dengan metrik, rating, dan riwayat transaksi
+      status: completed
+      requirements:
+        - req-svc-003
 quality:
   targets:
     evidence_required: true

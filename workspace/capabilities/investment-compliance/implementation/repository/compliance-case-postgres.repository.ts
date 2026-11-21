@@ -229,7 +229,7 @@ class ComplianceCaseRepositoryPostgresImpl extends PostgresRepository<any> imple
     }
 
     // Upsert logic: insert jika tidak ada, update jika sudah ada
-    const updated = { ...entity, updatedAt: new Date() };
+    const updated = { ...entity, updatedAt: getNow() };
     const record = this.toRecord(updated);
     
     if (existing) {

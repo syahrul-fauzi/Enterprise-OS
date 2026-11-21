@@ -106,7 +106,7 @@ export class DeliveryRepositoryInMemory implements DeliveryRepository {
       
       console.log(`[DeliveryRepositoryInMemory] Recording critical state transition ${oldStatus} → ${delivery.status} by actor ${transitionActorId} (workspace: ${transitionWorkspaceId})`);
       existingEvidence.push({
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actorId: transitionActorId,
         workspaceId: transitionWorkspaceId,
         action: `critical_transition_${delivery.status}`,
@@ -119,7 +119,7 @@ export class DeliveryRepositoryInMemory implements DeliveryRepository {
     if (delivery.domainSpecificData?.retailCheckoutTimestamp) {
       console.log(`[DeliveryRepositoryInMemory] RET-001: Recording retail checkout timestamp for delivery ${delivery.id}: ${delivery.domainSpecificData.retailCheckoutTimestamp.toISOString()}`);
       existingEvidence.push({
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actorId: evidenceActorId,
         workspaceId: "workspace.retail.pos",
         action: "retail_checkout_completed",
@@ -133,7 +133,7 @@ export class DeliveryRepositoryInMemory implements DeliveryRepository {
     const saveActorId = isCritical ? transitionActorId : evidenceActorId;
     const saveWorkspaceId = isCritical ? transitionWorkspaceId : "workspace.merchant.online";
     existingEvidence.push({
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       actorId: saveActorId, // Gunakan transition actorId jika critical, gunakan ownerId untuk non-critical
       workspaceId: saveWorkspaceId,
       action: `save_${delivery.status}`,
@@ -162,14 +162,14 @@ export class DeliveryRepositoryInMemory implements DeliveryRepository {
   // Method untuk menambahkan evidence secara eksplisit (misal: GPS tracking, pickup proof)
   async addEvidence(deliveryId: string, entry: any): Promise<void> {
     const current = this.evidence.get(deliveryId) || [];
-    current.push({ ...entry, timestamp: new Date() });
+    current.push({ ...entry, timestamp: getNow() });
     this.evidence.set(deliveryId, current);
     
     // Update delivery version saat evidence ditambahkan (sesuai WorkRepositoryInMemory pattern)
     const delivery = this.mockDeliveries.get(deliveryId);
     if (delivery) {
       delivery.version = (delivery.version || 1) + 1;
-      delivery.updatedAt = new Date();
+      delivery.updatedAt = getNow();
       this.mockDeliveries.set(deliveryId, delivery);
     }
   }

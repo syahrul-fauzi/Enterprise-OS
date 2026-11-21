@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface RuntimeSession {
@@ -16,11 +17,11 @@ export class RuntimeContinuityService {
     workItemId: string
   ): Promise<RuntimeSession> {
     const session: RuntimeSession = {
-      sessionId: `runtime-session-${workItemId}-${Date.now()}`,
+      sessionId: `runtime-session-${workItemId}-${getNow().getTime()}`,
       workItemId,
       status: 'ACTIVE',
-      runtimeHash: `runtime-hash-${workItemId}-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      runtimeHash: `runtime-hash-${workItemId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'runtime-continuity.create-runtime-session', {
@@ -52,9 +53,9 @@ export class RuntimeContinuityService {
       sessionId,
       workItemId: 'W-026',
       status: 'RESUMED',
-      runtimeHash: `runtime-hash-resumed-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      runtimeHash: `runtime-hash-resumed-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'runtime-continuity.resume-runtime-session', {

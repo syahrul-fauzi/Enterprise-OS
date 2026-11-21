@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 export interface AuditLogIsolationSession {
   sessionId: string;
@@ -20,18 +21,18 @@ export class AuditLogIsolationContinuityService {
     retentionPolicy: string
   ): Promise<AuditLogIsolationSession> {
     const session: AuditLogIsolationSession = {
-      sessionId: `audit-log-isolation-session-${Date.now()}`,
+      sessionId: `audit-log-isolation-session-${getNow().getTime()}`,
       tenantId,
       auditContext,
       logStreamId,
       retentionPolicy,
-      createdAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
       status: 'active'
     };
     context.invocationEvidence.push({
       operation: 'createAuditLogIsolationSession',
       sessionId: session.sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return session;
   }
@@ -41,7 +42,7 @@ export class AuditLogIsolationContinuityService {
       operation: 'suspendAuditLogIsolationSession',
       sessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { suspended: true, sessionId };
   }
@@ -51,15 +52,15 @@ export class AuditLogIsolationContinuityService {
       sessionId,
       tenantId: context.actorId,
       auditContext: context.workItemId,
-      logStreamId: `stream-${Date.now()}`,
+      logStreamId: `stream-${getNow().getTime()}`,
       retentionPolicy: 'default',
-      createdAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
       status: 'resumed'
     };
     context.invocationEvidence.push({
       operation: 'resumeAuditLogIsolationSession',
       sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return session;
   }
@@ -74,7 +75,7 @@ export class AuditLogIsolationContinuityService {
       operation: 'verifyAuditLogIsolationContinuity',
       sessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { valid: true, checks };
   }

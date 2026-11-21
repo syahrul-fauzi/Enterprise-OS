@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { executionContext } from "./execution-context.js";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { recordRuntimeInvocation } from "./invocation-evidence.js";
 import type { ExecutionContext } from "./execution-context.js";
 import { ExecutionStatusRepository } from "./execution-status.js";
@@ -246,7 +247,7 @@ const ATOMIC_BUDGET_UPDATE_SCRIPT = `
 // Mengembalikan lock value jika berhasil, false jika tidak - untuk verifikasi pemilik saat release
 export async function acquireRedisTenantLock(tenantId: string): Promise<string | false> {
   const lockKey = `${LOCK_PREFIX}${tenantId}`;
-  const now = Date.now();
+  const now = getNow().getTime();
   const lockValue = now.toString();
   const redis = globalThis.__EOS_SHARED_REDIS_INSTANCE__;
   // Coba set lock dengan NX (hanya jika belum ada) dan PX (lease TTL)
@@ -336,7 +337,7 @@ export const executionTraces: Map<string, ObservedExecution[]> = new Map();
 // Auto-capture context dari ambient executionContext
 export function recordObservedExecution(execution: Omit<ObservedExecution, "timestamp_utc" | "is_reentry" | "context_trace_id" | "parent_context_trace_id" | "idempotency_key" | "circuit_breaker" | "concurrency"> & { logicalWorkId?: string }): void {
   const ambientCtx = executionContext.get();
-  const timestamp = new Date().toISOString();
+  const timestamp = getNow().toISOString();
   
   // PR-007: Ambil Work ID secara otomatis dari executionContext (100% trace correlation) - allow manual override
   const logicalWorkId = execution.logicalWorkId ?? ambientCtx?.logicalWorkId ?? ambientCtx?.workflow_id ?? "unknown-work";
@@ -482,7 +483,7 @@ export function shouldOpenCircuitBreaker(consecutiveFailures: number, threshold?
 // Checks if circuit breaker should reset to closed after cooldown period (pure calculation, PT-003 compliant)
 export function shouldResetCircuitBreaker(lastFailureTime: number, cooldownMs?: number): boolean {
   const circuitCooldown = cooldownMs ?? 30000; // Default 30 second cooldown
-  return Date.now() - lastFailureTime >= circuitCooldown;
+  return getNow().getTime() - lastFailureTime >= circuitCooldown;
 }
 
 // --- WORK-PROD-004: Production Monitoring & Observability Extensions ---
@@ -534,7 +535,7 @@ function createEmptyWorkMetrics(workId: string): WorkRealityMetrics {
     generalization_successes: 0,
     work_formation_quality_score: 0,
     work_formation_total: 0,
-    last_updated_utc: new Date().toISOString()
+    last_updated_utc: getNow().toISOString()
   };
 }
 
@@ -560,7 +561,7 @@ export function recordWorkExecutionMetrics(workId: string, executionTimeMs: numb
   existing.error_rate = existing.failed_executions / existing.total_executions;
   // Simplified p95 calculation (production would use proper percentile calculation)
   existing.p95_latency_ms = Math.max(existing.p95_latency_ms, executionTimeMs);
-  existing.last_updated_utc = new Date().toISOString();
+  existing.last_updated_utc = getNow().toISOString();
 
   workMetricsStore.set(workId, existing);
   
@@ -583,7 +584,7 @@ export function recordUnderstandingRecovery(workId: string, success: boolean): v
   const existing = workMetricsStore.get(workId) ?? createEmptyWorkMetrics(workId);
   existing.understanding_recovery_total += 1;
   if (success) existing.understanding_recovery_success += 1;
-  existing.last_updated_utc = new Date().toISOString();
+  existing.last_updated_utc = getNow().toISOString();
   workMetricsStore.set(workId, existing);
   console.log(`[PR-002-METRICS] work=${workId} | understanding_recovery=${success ? "SUCCESS" : "FAILED"} | total=${existing.understanding_recovery_total} | success_rate=${((existing.understanding_recovery_success / existing.understanding_recovery_total) * 100).toFixed(2)}%`);
 }
@@ -593,7 +594,7 @@ export function recordWrongUnderstandingCorrection(workId: string, corrected: bo
   const existing = workMetricsStore.get(workId) ?? createEmptyWorkMetrics(workId);
   existing.wrong_understanding_total += 1;
   if (corrected) existing.wrong_understanding_corrected += 1;
-  existing.last_updated_utc = new Date().toISOString();
+  existing.last_updated_utc = getNow().toISOString();
   workMetricsStore.set(workId, existing);
   console.log(`[PR-002-METRICS] work=${workId} | wrong_understanding_corrected=${corrected} | total=${existing.wrong_understanding_total} | correction_rate=${((existing.wrong_understanding_corrected / existing.wrong_understanding_total) * 100).toFixed(2)}%`);
 }
@@ -603,7 +604,7 @@ export function recordUnknownPreservation(workId: string, preserved: boolean): v
   const existing = workMetricsStore.get(workId) ?? createEmptyWorkMetrics(workId);
   existing.unknowns_total += 1;
   if (preserved) existing.unknowns_preserved += 1;
-  existing.last_updated_utc = new Date().toISOString();
+  existing.last_updated_utc = getNow().toISOString();
   workMetricsStore.set(workId, existing);
   console.log(`[PR-002-METRICS] work=${workId} | unknown_preserved=${preserved} | total=${existing.unknowns_total} | integrity_rate=${((existing.unknowns_preserved / existing.unknowns_total) * 100).toFixed(2)}%`);
 }
@@ -613,7 +614,7 @@ export function recordGeneralizationApplication(workId: string, success: boolean
   const existing = workMetricsStore.get(workId) ?? createEmptyWorkMetrics(workId);
   existing.generalization_applications += 1;
   if (success) existing.generalization_successes += 1;
-  existing.last_updated_utc = new Date().toISOString();
+  existing.last_updated_utc = getNow().toISOString();
   workMetricsStore.set(workId, existing);
   console.log(`[PR-002-METRICS] work=${workId} | generalization_application=${success ? "SUCCESS" : "FAILED"} | total=${existing.generalization_applications} | leverage_rate=${((existing.generalization_successes / existing.generalization_applications) * 100).toFixed(2)}%`);
 }
@@ -640,7 +641,7 @@ export async function executeBudgetOperation(
   const IS_MULTI_INSTANCE = getIsMultiInstance();
   const redis = globalThis.__EOS_SHARED_REDIS_INSTANCE__;
   console.log(`[BUDGET-OP-CHECK] Runtime mode: ${IS_MULTI_INSTANCE ? 'multi-instance' : 'single-instance'}, Redis available: ${!redis?._simulateUnavailable}`);
-  const now = Date.now();
+  const now = getNow().getTime();
   const nextMonth = new Date(now);
   nextMonth.setMonth(nextMonth.getMonth() + 1);
   nextMonth.setDate(1);
@@ -674,7 +675,7 @@ export async function executeBudgetOperation(
         active_reservations.push({
           id: reservationId,
           amount,
-          reserved_at: new Date().toISOString(),
+          reserved_at: getNow().toISOString(),
           status: "active"
         });
         total_reserved += amount;
@@ -715,7 +716,7 @@ export async function executeBudgetOperation(
       const has80PercentAlert = (currentUsage as any)?.alerts?.some((a: any) => a.type === '80%_THRESHOLD_REACHED');
       const alerts = (currentUsage as any)?.alerts || [];
       if (newTotalCommitted >= maxMonthlyBudget * 0.8 && !has80PercentAlert) {
-        alerts.push({ type: '80%_THRESHOLD_REACHED', triggered_at: new Date().toISOString(), current_total: newTotalCommitted, threshold: maxMonthlyBudget * 0.8 });
+        alerts.push({ type: '80%_THRESHOLD_REACHED', triggered_at: getNow().toISOString(), current_total: newTotalCommitted, threshold: maxMonthlyBudget * 0.8 });
         console.warn(`[BUDGET-ALERT-80%] tenant=${tenantId} | Penggunaan mencapai 80% dari batas bulanan (${newTotalCommitted}/${maxMonthlyBudget})`);
       }
 
@@ -724,7 +725,7 @@ export async function executeBudgetOperation(
         total_spent: current_spent,
         total_reserved: total_reserved,
         active_reservations,
-        last_updated_utc: new Date().toISOString(),
+        last_updated_utc: getNow().toISOString(),
         currency: currentUsage?.currency || "IDR",
         monthly_reset_utc: currentUsage?.monthly_reset_utc ?? monthly_reset_utc,
         alerts
@@ -828,8 +829,8 @@ export async function resetTenantMonthlyUsage(tenantId: string): Promise<void> {
       total_spent: 0,
       total_reserved: 0,
       currency: "IDR",
-      last_updated_utc: new Date().toISOString(),
-      monthly_reset_utc: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).toISOString()
+      last_updated_utc: getNow().toISOString(),
+      monthly_reset_utc: new Date(getNow().getFullYear(), getNow().getMonth() + 1, 1).toISOString()
     });
     // Reset idempotency keys juga saat reset bulanan untuk mencegah memory leak
     processedPaymentKeys.delete(tenantId);
@@ -860,7 +861,7 @@ export async function resetTenantMonthlyUsage(tenantId: string): Promise<void> {
 export async function recordWorkPayment(payment: Omit<WorkPayment, "issued_at_utc"> & { idempotency_key?: string }): Promise<void> {
   const recorded: WorkPayment & { idempotency_key?: string } = {
     ...payment,
-    issued_at_utc: new Date().toISOString()
+    issued_at_utc: getNow().toISOString()
   };
 
   // AC-PILOT-001: Cegah double billing - cek idempotency key sebelum memproses pembayaran
@@ -935,7 +936,7 @@ export async function recordWorkPayment(payment: Omit<WorkPayment, "issued_at_ut
     const currentUsage = tenantUsageStore.get(recorded.tenant_id);
     if (currentUsage?.monthly_reset_utc) {
       const resetDate = new Date(currentUsage.monthly_reset_utc);
-      const now = new Date();
+      const now = getNow();
       if (now >= resetDate) {
         console.log(`[MONTHLY-RESET] tenant=${recorded.tenant_id} | Melewati tanggal reset ${resetDate.toISOString()}, jalankan reset penggunaan bulanan`);
         await resetTenantMonthlyUsage(recorded.tenant_id);
@@ -992,8 +993,8 @@ export async function recordWorkPayment(payment: Omit<WorkPayment, "issued_at_ut
             triggered: false // Belum pernah dipicu
           },
           billing_period: {
-            current_period_start: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString(),
-            current_period_end: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString(),
+            current_period_start: new Date(getNow().getFullYear(), getNow().getMonth(), 1).toISOString(),
+            current_period_end: new Date(getNow().getFullYear(), getNow().getMonth() + 1, 0).toISOString(),
             reset_mechanism: "auto_monthly_reset" // Reset otomatis setiap bulan untuk mencegah budget selamanya terpakai
           }
         }
@@ -1079,7 +1080,7 @@ export async function recordWorkPayment(payment: Omit<WorkPayment, "issued_at_ut
     console.log(`[PAYMENT-MARGIN] tenant=${recorded.tenant_id} | work=${recorded.work_id} | billable_units=${recorded.billable_units} | price_unit=${recorded.price_unit} | actual_cost=${recorded.actual_cost} | revenue=${recorded.amount} | contribution_margin=${contributionMargin} | margin_percentage=${marginPercentage_rounded}% (raw: ${raw_marginPercentage.toFixed(4)}%)`);
 
     // Hitung tanggal reset bulanan berikutnya (pertama hari bulan depan)
-    const now = new Date();
+    const now = getNow();
     const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
     const monthly_reset_utc = nextMonth.toISOString();
 
@@ -1126,7 +1127,7 @@ export function updatePaymentStatus(paymentId: string, newStatus: WorkPayment["p
   payment.payment_status = newStatus;
   if (transactionId) payment.transaction_id = transactionId;
   if (newStatus === "paid") {
-    payment.paid_at_utc = new Date().toISOString();
+    payment.paid_at_utc = getNow().toISOString();
     payment.reconciliation_status = "reconciled";
   }
   
@@ -1453,7 +1454,7 @@ export function recordConnectionPoolMetrics(poolName: string, metrics: Omit<Conn
   poolMetricsStore.set(poolName, {
     ...metrics,
     pool_name: poolName,
-    last_updated_utc: new Date().toISOString()
+    last_updated_utc: getNow().toISOString()
   });
   
   console.log(`[DB_POOL] pool=${poolName} | total=${metrics.total_connections} | active=${metrics.active_connections} | idle=${metrics.idle_connections} | wait=${metrics.wait_count}`);

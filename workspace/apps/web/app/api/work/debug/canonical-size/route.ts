@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 
 // In-memory store (same as in create/route.ts) to track canonical state size
 let canonicalStoreSize = 0;
@@ -6,7 +7,7 @@ let canonicalStoreSize = 0;
 export async function GET() {
   return NextResponse.json({
     canonicalStoreSize,
-    timestamp: new Date().toISOString(),
+    timestamp: getNow().toISOString(),
     status: "active"
   });
 }

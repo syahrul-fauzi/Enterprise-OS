@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface WorkItemIsolationSession {
   workItemSessionId: string;
   workItemDefinitionId: string;
@@ -16,17 +17,17 @@ export class WorkItemIsolationContinuityService {
   private sessions: Map<string, WorkItemIsolationSession> = new Map();
 
   createWorkItemIsolationSession(workItemDefinitionId: string, actor: string): WorkItemIsolationSession {
-    const workItemSessionId = `wi-sess-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+    const workItemSessionId = `wi-sess-${getNow().getTime()}-${Math.random().toString(36).substring(2, 10)}`;
     const session: WorkItemIsolationSession = {
       workItemSessionId,
       workItemDefinitionId,
       status: 'active',
-      isolationHash: `wi-hash-${workItemDefinitionId}-${Date.now()}`,
-      createdAt: new Date().toISOString(),
+      isolationHash: `wi-hash-${workItemDefinitionId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
       evidence: [
         {
           operation: 'createWorkItemIsolationSession',
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           actor
         }
       ]
@@ -41,7 +42,7 @@ export class WorkItemIsolationContinuityService {
       session.status = 'suspended';
       session.evidence.push({
         operation: 'suspendWorkItemIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(workItemSessionId, session);
@@ -53,10 +54,10 @@ export class WorkItemIsolationContinuityService {
     const session = this.sessions.get(workItemSessionId);
     if (session) {
       session.status = 'resumed';
-      session.lastResumedAt = new Date().toISOString();
+      session.lastResumedAt = getNow().toISOString();
       session.evidence.push({
         operation: 'resumeWorkItemIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(workItemSessionId, session);

@@ -16,6 +16,7 @@ try {
 }
 // W-COMP-001: Import fs/path untuk load composition packages dari packages/compositions
 import { readFile } from 'fs/promises';
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { existsSync } from 'fs';
 import { join } from 'path';
 import yaml from "yaml";
@@ -264,8 +265,8 @@ export class AtomicCompositionService {
           role: "Enabler",
           authority: "execute",
           status: "active",
-          boundAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          boundAt: getNow().toISOString(),
+          updatedAt: getNow().toISOString(),
           workspaceId: workspaceId || ""
         };
         workBindings.push(capBinding);
@@ -284,8 +285,8 @@ export class AtomicCompositionService {
       role: "Value Reality Container",
       authority: "view",
       status: "active",
-      boundAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      boundAt: getNow().toISOString(),
+      updatedAt: getNow().toISOString(),
       workspaceId: workspaceId || ""
     };
     workBindings.push(lawyershubProductBinding);
@@ -302,8 +303,8 @@ export class AtomicCompositionService {
         role: "Value Creation Core",
         authority: "view",
         status: "active",
-        boundAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        boundAt: getNow().toISOString(),
+        updatedAt: getNow().toISOString(),
         workspaceId: workspaceId || ""
     };
     workBindings.push(workBinding);
@@ -322,8 +323,8 @@ export class AtomicCompositionService {
           role: actor.role || "Contributor",
           authority: actor.authority || "view",
           status: "active",
-          boundAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          boundAt: getNow().toISOString(),
+          updatedAt: getNow().toISOString(),
           workspaceId: workspaceId || ""
     };
     workBindings.push(actorBinding);
@@ -343,8 +344,8 @@ export class AtomicCompositionService {
           role: "Enabler",
           authority: "execute",
           status: "active",
-          boundAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          boundAt: getNow().toISOString(),
+          updatedAt: getNow().toISOString(),
           workspaceId: workspaceId
         };
         workBindings.push(capBinding);
@@ -400,7 +401,7 @@ export class AtomicCompositionService {
         minimumTrust: req.minimumTrust as any,
         authority: req.authority as any,
         resolved: false,
-        createdAt: new Date().toISOString(),
+        createdAt: getNow().toISOString(),
       };
       capabilityRequirements.push(capReq);
     }
@@ -442,8 +443,8 @@ export class AtomicCompositionService {
             role: this.getRoleForCapability(req.capabilityId),
             authority: req.authority as any,
             status: "pending",
-            boundAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            boundAt: getNow().toISOString(),
+            updatedAt: getNow().toISOString(),
             workspaceId: workspaceId || ""
           };
 
@@ -499,9 +500,9 @@ export class AtomicCompositionService {
       teamId,
       compositionId: rawCompositionId,
       authorization: "granted",
-      executionContext: { timestamp: new Date().toISOString() },
+      executionContext: { timestamp: getNow().toISOString() },
       idempotencyKey: `idempotency-${randomUUID()}`,
-      evidence: [{ workId: request.workId, action: "team.composed", timestamp: new Date().toISOString() }],
+      evidence: [{ workId: request.workId, action: "team.composed", timestamp: getNow().toISOString() }],
       uiMetadata: { status: "active" },
       input: request,
       assignments: actorAssignmentBindings.map(b => ({ 
@@ -519,7 +520,7 @@ export class AtomicCompositionService {
       team: { teamId, totalBindings: workBindingsWithAssignments.length, compositionId: rawCompositionId },
       unresolvedRequirements,
       success: unresolvedRequirements.length === 0,
-      resolutionTimestamp: new Date().toISOString()
+      resolutionTimestamp: getNow().toISOString()
     };
   }
 
@@ -538,7 +539,7 @@ export class AtomicCompositionService {
   }
 
   // Orphaned code after createTeam method fully commented out (fixed syntax error)
-  // const compositionStartTime = new Date().toISOString();
+  // const compositionStartTime = getNow().toISOString();
   // const workBindings: WorkBinding[] = [];
   // const resolvedActorIds: string[] = [];
   // const unresolvedRequirements: typeof requirements = [];
@@ -590,7 +591,7 @@ export class AtomicCompositionService {
   //     minimumTrust: req.minimumTrust as any,
   //     authority: req.authority as any,
   //     resolved: false,
-  //     createdAt: new Date().toISOString(),
+  //     createdAt: getNow().toISOString(),
   //   };
   //   capabilityRequirements.push(capReq);
   // }
@@ -635,8 +636,8 @@ export class AtomicCompositionService {
   //         role: this.getRoleForCapability(req.capabilityId),
   //         authority: req.authority as any,
   //         status: "pending",
-  //         boundAt: new Date().toISOString(),
-  //         completedAt: new Date().toISOString(), // Initialize with boundAt for pending (Zod requires string, not null)
+  //         boundAt: getNow().toISOString(),
+  //         completedAt: getNow().toISOString(), // Initialize with boundAt for pending (Zod requires string, not null)
   //         workspaceId: workspaceId
   //       };
   //
@@ -734,7 +735,7 @@ export class AtomicCompositionService {
       assignment.evidence = [action.evidence];
     }
     if (action.status === "COMPLETED") {
-      assignment.completedAt = new Date();
+      assignment.completedAt = getNow();
     }
     // Save updated assignment back to repository
     await this.repository.saveAssignment(assignment);
@@ -746,7 +747,7 @@ export class AtomicCompositionService {
       if (allCompleted && updatedComposition.team) {
         // Constitutional lifecycle: When all assignments complete, team is dissolved (ephemeral)
         (updatedComposition.team as any).status = "dissolved";
-        (updatedComposition.team as any).dissolvedAt = new Date().toISOString();
+        (updatedComposition.team as any).dissolvedAt = getNow().toISOString();
         await this.repository.saveTeam(updatedComposition.team);
         
         // Update the parent Work's status to completed (maintains single source of truth)
@@ -818,7 +819,7 @@ export class AtomicCompositionService {
     console.log(`✅ E2 P3: VERIFICATION PASSED - external evidence confirmed`);
     assignment.status = "COMPLETED";
       assignment.evidence = [`VERIFIED: ${verificationResult.evidence}`];
-      assignment.completedAt = new Date();
+      assignment.completedAt = getNow();
     
     await this.repository.saveAssignment(assignment);
 
@@ -828,7 +829,7 @@ export class AtomicCompositionService {
       const allCompleted = updatedComposition.assignments.every((a: any) => a.status === "COMPLETED");
       if (allCompleted && updatedComposition.team) {
         updatedComposition.team.status = "completed";
-        updatedComposition.team.dissolvedAt = new Date().toISOString();
+        updatedComposition.team.dissolvedAt = getNow().toISOString();
         await this.repository.saveTeam(updatedComposition.team);
       }
     }
@@ -891,7 +892,7 @@ export class AtomicCompositionService {
       assignment.evidence = [update.evidence];
     }
     if (update.status === "COMPLETED") {
-      assignment.completedAt = new Date();
+      assignment.completedAt = getNow();
     }
 
     // Save updated assignment back to repository
@@ -905,7 +906,7 @@ export class AtomicCompositionService {
         // Constitutional lifecycle: When all assignments complete, team is dissolved (ephemeral)
         // Use TeamProjection's canonical status: "dissolved" instead of "completed" to match contract
         (updatedComposition.team as any).status = "dissolved";
-        (updatedComposition.team as any).dissolvedAt = new Date().toISOString();
+        (updatedComposition.team as any).dissolvedAt = getNow().toISOString();
         await this.repository.saveTeam(updatedComposition.team);
         console.log(`[updateAssignmentStatus] All assignments completed - Team dissolved for composition: ${compositionId}`);
       }
@@ -975,7 +976,7 @@ export class AtomicCompositionService {
       return { 
         success: true, 
         recoveredCompositionId: compositionId,
-        recoveryTimestamp: new Date().toISOString(),
+        recoveryTimestamp: getNow().toISOString(),
         replacedActorId: failedActorId
       };
     }
@@ -1011,7 +1012,7 @@ export class AtomicCompositionService {
       return {
         success: false,
         error: "Failed to re-compose team after failure - insufficient available actors",
-        recoveryTimestamp: new Date().toISOString()
+        recoveryTimestamp: getNow().toISOString()
       };
     }
 
@@ -1022,13 +1023,13 @@ export class AtomicCompositionService {
       ...originalComposition,
       compositionId: recoveryResult.compositionId,
       recoveredFrom: compositionId, // Add recovery link for traceability
-      recoveredAt: new Date().toISOString()
+      recoveredAt: getNow().toISOString()
     } as any);
 
     return {
       success: true,
       recoveredCompositionId: recoveryResult.compositionId,
-      recoveryTimestamp: new Date().toISOString(),
+      recoveryTimestamp: getNow().toISOString(),
       replacedActorId: failedActorId
     };
   }

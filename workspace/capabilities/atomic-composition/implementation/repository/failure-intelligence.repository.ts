@@ -32,7 +32,7 @@ function initAuditLog(): void {
 // PR-001-P2: Audit trail logger - records all promotion lifecycle events
 function logAuditEvent(eventType: string, details: Record<string, unknown>): void {
   initAuditLog();
-  const timestamp = new Date().toISOString();
+  const timestamp = getNow().toISOString();
   const auditEntry = {
     id: randomUUID(),
     timestamp,
@@ -277,7 +277,7 @@ export class FailureIntelligenceRepository {
       console.log(`[DEBUG] clusterObservation: belum ada cluster di in-memory, buat baru`);
     }
 
-    const now = new Date().toISOString();
+    const now = getNow().toISOString();
     
     if (matchingCluster) {
       if (!matchingCluster.failureIds.includes(observation.id)) {
@@ -455,7 +455,7 @@ export class FailureIntelligenceRepository {
       variableFeatures: invariant.variableFeatures,
       evidenceCount: cluster.occurrenceCount,
       status: 'PENDING_VALIDATION',
-      createdAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
       sourceClusterFingerprint: cluster.fingerprintPattern
     };
     
@@ -516,7 +516,7 @@ export class FailureIntelligenceRepository {
       holdoutPassRate,
       negativeRejectRate,
       validationPassed,
-      validatedAt: new Date().toISOString()
+      validatedAt: getNow().toISOString()
     };
 
     const filePath = statePath("failure-intelligence", 'candidates', `${candidate.id}.json`);
@@ -554,7 +554,7 @@ export class FailureIntelligenceRepository {
 
     console.log(`[DEBUG] promoteCandidate: mempromosikan candidate ${candidateId} ke PROMOTED`);
     candidate.status = 'PROMOTED';
-    candidate.promotedAt = new Date().toISOString();
+    candidate.promotedAt = getNow().toISOString();
 
     const promotionId = `promotion-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const promotion = {
@@ -568,7 +568,7 @@ export class FailureIntelligenceRepository {
         successfulApplications: 0,
         observations: 0
       },
-      createdAt: new Date().toISOString()
+      createdAt: getNow().toISOString()
     };
 
     this.inMemoryPromotions.set(promotionId, promotion);

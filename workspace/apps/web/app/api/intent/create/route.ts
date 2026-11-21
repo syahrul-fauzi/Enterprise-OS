@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { cookies } from "next/headers";
 import type { IntentContract } from "@repo/presentation-features";
 import {
@@ -276,7 +277,7 @@ Apakah Anda ingin:
         context: universalExpression.understanding?.context || rawIntent.context || {},
         resolution: universalExpression.understanding?.state?.goal ? { objective: universalExpression.understanding.state.goal } : defaultResolution,
         status: "draft",
-        createdAt: new Date().toISOString()
+        createdAt: getNow().toISOString()
       };
     } else if (!isInformationRequest) {
       console.log("[API/INTENT/CREATE] ⚠️ Skipping IntentContract creation for non-information request, canFormWork:", canFormWork);
@@ -306,7 +307,7 @@ Apakah Anda ingin:
         canProceedToWork: true,
         evidence: {
           actorId: safeSession.actorId,
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           source: "eos-face",
           origin: origin
         },
@@ -363,7 +364,7 @@ Apakah Anda ingin:
           // Universal Intent: Buat title dari konten apapun (bukan cuma expression)
           title: typeof rawContent === 'string' 
             ? rawContent.substring(0, 100) 
-            : `[${rawType}] ${new Date().toLocaleString()}`,
+            : `[${rawType}] ${getNow().toLocaleString()}`,
           description: topHypothesis?.hypothesis || `Intent dari ${origin} type ${rawType}`,
           understanding: universalExpression.understanding ? {
             objective: topHypothesis?.hypothesis || universalExpression.understanding.state?.goal || rawContent,

@@ -3,11 +3,13 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import {
   TenantId,
   UserId,
   type TenantAggregate,
 } from "@repo/contracts-core";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 // Import 6-boundary contracts untuk compliance (canonical path untuk work-core)
 import { 
   validateBoundaryAccess,
@@ -101,7 +103,7 @@ export const createTenantWithSlugResolutionCommand: CreateTenantWithSlugResoluti
     const executionBoundary: ExecutionBoundary = {
       workspaceId,
       runtimeEnvironment: process.env.NODE_ENV || "development",
-      executionId: `tenant-${Date.now()}`,
+      executionId: `tenant-${getNow().getTime()}`,
       propagatedFrom: "api-route"
     };
 
@@ -154,7 +156,7 @@ export const createTenantWithSlugResolutionCommand: CreateTenantWithSlugResoluti
       name,
       slug,
       metadata: input.metadata || {},
-      createdAt: new Date(),
+      createdAt: getNow(),
       createdBy: actorId
     });
     

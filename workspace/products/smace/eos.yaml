@@ -30,9 +30,21 @@ lifecycle:
     - id: smace-101
       name: Generate product photography
       description: Full lifecycle produksi fotografi produk dari brief kreatif hingga paket aset terkirim
-      status: active
+      status: completed
       requirements:
         - req-smace-001
+    - id: smace-102
+      name: Generate social media content
+      description: Full lifecycle produksi konten media sosial dengan verifikasi brand compliance dan C2PA provenance
+      status: completed
+      requirements:
+        - req-smace-002
+    - id: smace-103
+      name: Generate social media content (Platform Integration)
+      description: Integrasi generasi konten dengan semua platform media sosial (Instagram, TikTok, LinkedIn, X)
+      status: completed
+      requirements:
+        - req-smace-003
 quality:
   targets:
     evidence_required: true

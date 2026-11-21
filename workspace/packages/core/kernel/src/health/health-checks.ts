@@ -3,6 +3,7 @@
 // Follows same server-only constraint pattern as session module
 // Import health checker class only from relative path (5 levels up to workspace root)
 import { DatabaseHealthChecker } from "../../../../../capabilities/shared/implementation/database/health.check.js";
+import { getNow } from "../time/time.provider.js";
 
 // Track Redis connection state (minimal implementation for D-002)
 let redisReconnectionState = {
@@ -65,17 +66,17 @@ async function checkRedisConnection(): Promise<RedisHealthReport> {
   } catch (e) {
     error = e instanceof Error ? e.message : "Redis check skipped - module not implemented";
     redisReconnectionState.attempts += 1;
-    redisReconnectionState.lastChecked = new Date();
+    redisReconnectionState.lastChecked = getNow();
   }
 
   const latency_ms = Date.now() - startTime;
-  redisReconnectionState.lastChecked = new Date();
+  redisReconnectionState.lastChecked = getNow();
 
   return {
     connected,
     latency_ms,
     error,
-    last_checked: new Date().toISOString()
+    last_checked: getNow().toISOString()
   };
 }
 
@@ -96,7 +97,7 @@ export async function runHealthChecks(): Promise<SystemHealthReport> {
       connected: true,
       latency_ms: 0,
       pool_stats: { total_connections: 1, idle_connections: 1, waiting_clients: 0 },
-      last_checked: new Date().toISOString(),
+      last_checked: getNow().toISOString(),
       error: undefined
     }];
     isDatabaseHealthy = true;
@@ -106,7 +107,7 @@ export async function runHealthChecks(): Promise<SystemHealthReport> {
       connected: false,
       latency_ms: 0,
       pool_stats: { total_connections: 0, idle_connections: 0, waiting_clients: 0 },
-      last_checked: new Date().toISOString(),
+      last_checked: getNow().toISOString(),
       error: dbError instanceof Error ? dbError.message : "Unknown database error"
     }];
   }
@@ -133,7 +134,7 @@ export async function runHealthChecks(): Promise<SystemHealthReport> {
 
   return {
     status,
-    timestamp: new Date().toISOString(),
+    timestamp: getNow().toISOString(),
     dependencies: {
       database: {
         status: isDatabaseHealthy ? "up" : "down",

@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface WorkflowDefinitionIsolationSession {
   workflowDefinitionSessionId: string;
   workflowDefinitionId: string;
@@ -16,17 +17,17 @@ export class WorkflowDefinitionIsolationContinuityService {
   private sessions: Map<string, WorkflowDefinitionIsolationSession> = new Map();
 
   createWorkflowDefinitionIsolationSession(workflowDefinitionId: string, actor: string): WorkflowDefinitionIsolationSession {
-    const workflowDefinitionSessionId = `wd-sess-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+    const workflowDefinitionSessionId = `wd-sess-${getNow().getTime()}-${Math.random().toString(36).substring(2, 10)}`;
     const session: WorkflowDefinitionIsolationSession = {
       workflowDefinitionSessionId,
       workflowDefinitionId,
       status: 'active',
-      isolationHash: `wd-hash-${workflowDefinitionId}-${Date.now()}`,
-      createdAt: new Date().toISOString(),
+      isolationHash: `wd-hash-${workflowDefinitionId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
       evidence: [
         {
           operation: 'createWorkflowDefinitionIsolationSession',
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           actor
         }
       ]
@@ -41,7 +42,7 @@ export class WorkflowDefinitionIsolationContinuityService {
       session.status = 'suspended';
       session.evidence.push({
         operation: 'suspendWorkflowDefinitionIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(workflowDefinitionSessionId, session);
@@ -53,10 +54,10 @@ export class WorkflowDefinitionIsolationContinuityService {
     const session = this.sessions.get(workflowDefinitionSessionId);
     if (session) {
       session.status = 'resumed';
-      session.lastResumedAt = new Date().toISOString();
+      session.lastResumedAt = getNow().toISOString();
       session.evidence.push({
         operation: 'resumeWorkflowDefinitionIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(workflowDefinitionSessionId, session);

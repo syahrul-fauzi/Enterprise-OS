@@ -1,6 +1,7 @@
 // Database health check API endpoint - Kubernetes liveness/readiness probe
 // Exposes POSTGRES connection status for orchestration systems
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { DatabaseHealthChecker } from "@capabilities/shared/implementation/database/health.check";
 import { getCommunicationRepositoryPostgres } from "@capabilities/communication/implementation/repository/communication.postgres.repository";
 import { getCaseRepositoryPostgres } from "@capabilities/legal-case/implementation/repository/case-postgres.repository";
@@ -31,7 +32,7 @@ export async function GET() {
     
     return NextResponse.json({
       ...k8sFormat,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
     }, { status: statusCode });
     
   } catch (error) {
@@ -39,7 +40,7 @@ export async function GET() {
     return NextResponse.json({
       status: "DOWN",
       error: error instanceof Error ? error.message : "Unknown health check failure",
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
     }, { status: 503 });
   }
 }

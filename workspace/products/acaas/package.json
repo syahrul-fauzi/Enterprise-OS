@@ -1,0 +1,12 @@
+{
+  "name": "@eos/acaas",
+  "version": "1.0.0",
+  "description": "ACaaS — Compliance-as-a-Service",
+  "main": "index.ts",
+  "scripts": {
+    "test": "node --import tsx --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "tsx": "^4.0.0"
+  }
+}

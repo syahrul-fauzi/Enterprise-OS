@@ -30,9 +30,15 @@ lifecycle:
     - id: vm-101
       name: Track and report AI/API/cloud usage consumption
       description: Full lifecycle pengukuran penggunaan resource dan atribusi biaya ke tenant/customer/Work
-      status: active
+      status: completed
       requirements:
         - req-vm-001
+    - id: vm-102
+      name: Cost Attribution & Margin Visibility Automation
+      description: Full lifecycle otomatisasi atribusi biaya, visibilitas margin, dan manajemen entitlement
+      status: completed
+      requirements:
+        - req-vm-002
 quality:
   targets:
     evidence_required: true

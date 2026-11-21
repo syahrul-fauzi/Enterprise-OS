@@ -8,7 +8,7 @@ import ast
 import sys
 from typing import List
 
-from fitness_functions.base import FitnessResult, FitnessStatus, Violation
+from .base import FitnessResult, FitnessStatus, Violation
 
 
 # List of forbidden domain-specific terms

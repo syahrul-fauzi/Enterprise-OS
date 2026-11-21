@@ -139,7 +139,7 @@ export const WorkRepositoryInMemory: any & {
       linkedToProduct: targetProductId,
       relatedProductIds: relatedProductIds,
       version: work.version + 1,
-      updatedAt: new Date()
+      updatedAt: getNow()
     };
 
     getStore().set(updatedWork.id as string, updatedWork);
@@ -168,7 +168,7 @@ export const WorkRepositoryInMemory: any & {
       if (work.status && work.status !== existingWork.status) {
         newStateHistory.push({
           status: work.status,
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           actorId: work.actorId || existingWork.actorId,
           note: (work as any).nextAction || `Status updated to ${work.status}`
         });
@@ -197,7 +197,7 @@ export const WorkRepositoryInMemory: any & {
         ...existingWork,
         ...workWithoutTransferMetadata,
         participants: mergedParticipants, // Gunakan merged participants bukan overwrite
-        updatedAt: new Date(),
+        updatedAt: getNow(),
         stateHistory: newStateHistory,
         boundariesCrossed: mergedBoundaries, // Overwrite with merged immutable list
       } as WorkAggregate;
@@ -206,8 +206,8 @@ export const WorkRepositoryInMemory: any & {
       const workId = `work_${id}`;
       
       const initialStateHistory = work.status && work.status !== "draft" 
-        ? [{ status: work.status, timestamp: new Date().toISOString(), actorId: work.actorId!, note: "Work created" }]
-        : [{ status: "draft" as const, timestamp: new Date().toISOString(), actorId: work.actorId!, note: "Work created" }];
+        ? [{ status: work.status, timestamp: getNow().toISOString(), actorId: work.actorId!, note: "Work created" }]
+        : [{ status: "draft" as const, timestamp: getNow().toISOString(), actorId: work.actorId!, note: "Work created" }];
       
       savedWork = {
         id: workId,
@@ -219,8 +219,8 @@ export const WorkRepositoryInMemory: any & {
         participants: work.participants || [work.actorId!],
         version: 1,
         stateHistory: initialStateHistory,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: getNow(),
+        updatedAt: getNow(),
         compositionId: work.compositionId || null,
         // DEL-001 FIX: Default claim_status untuk new work jika tidak diset
         claimStatus: work.claimStatus || "unclaimed",
@@ -243,7 +243,7 @@ export const WorkRepositoryInMemory: any & {
       work_id: savedWork.id,
       tenant_id: savedWork.tenantId,
       actor_id: savedWork.actorId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       sessionId: savedWork.sessionId || "test-session-unknown",
       metadata: evidenceMetadata
     });
@@ -320,7 +320,7 @@ export const WorkRepositoryInMemory: any & {
       activeExecutionId: executionId,
       leaseUntil: leaseUntil?.toISOString() || null,
       version: (work.version ?? 0) + 1,
-      updatedAt: new Date().toISOString()
+      updatedAt: getNow().toISOString()
     };
 
     // Tambahkan executionId ke previousExecutionIds jika belum ada
@@ -333,7 +333,7 @@ export const WorkRepositoryInMemory: any & {
     // Catat evidence untuk claim
     await this.addEvidence(workId, {
       type: "work_claimed",
-      timestamp: new Date(),
+      timestamp: getNow(),
       actorId,
       executionId,
       leaseUntil,
@@ -352,7 +352,7 @@ export const WorkRepositoryInMemory: any & {
       // Tambahkan lockedAt dan lockHolder untuk tracking lock
       const updatedWork = {
         ...work,
-        lockedAt: new Date().toISOString(),
+        lockedAt: getNow().toISOString(),
         lockHolder: "eos-work-core"
       };
       getStore().set(String(work.id), updatedWork);
@@ -381,7 +381,7 @@ export const WorkRepositoryInMemory: any & {
   // Implementasi markStaleClaims dari Postgres repository
   async markStaleClaims(): Promise<number> {
     let count = 0;
-    const now = new Date();
+    const now = getNow();
     for (const [id, work] of getStore().entries()) {
       if (work.claimStatus === "claimed" && work.leaseUntil && new Date(work.leaseUntil) < now) {
         const updated = {
@@ -391,14 +391,14 @@ export const WorkRepositoryInMemory: any & {
           activeExecutionId: undefined,
           leaseUntil: undefined,
           version: work.version + 1,
-          updatedAt: new Date().toISOString()
+          updatedAt: getNow().toISOString()
         };
         getStore().set(id, updated);
         count++;
         // Catat evidence untuk stale claim
         await this.addEvidence(work.workId, {
           type: "claim_stale",
-          timestamp: new Date(),
+          timestamp: getNow(),
           workId: work.workId,
           previousLeaseUntil: work.leaseUntil
         });
@@ -454,8 +454,8 @@ export const WorkRepositoryInMemory: any & {
         status: work.status || "created",
         version: 1,
         actorId: trustedActorId, // Enforce actor from trusted context (ignore input)
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: getNow().toISOString(),
+        updatedAt: getNow().toISOString(),
         // W06-A2: fix claimStatus type mismatch (pakai value yang sesuai dengan enum WorkAggregate)
         claimStatus: "UNCLAIMED",
         leaseUntil: undefined,
@@ -471,7 +471,7 @@ export const WorkRepositoryInMemory: any & {
       // Catat evidence untuk create
       await this.addEvidence(newWork.workId, {
         type: "work_created_bulk",
-        timestamp: new Date(),
+        timestamp: getNow(),
         actorId: newWork.actorId,
         metadata: { bulkCreate: true, workCount: works.length, correlationId: context.context_trace_id }
       });

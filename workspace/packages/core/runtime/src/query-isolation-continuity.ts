@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface QueryIsolationSession {
   sessionId: string;
   tenantId: string;
@@ -19,12 +20,12 @@ export class QueryIsolationContinuityService {
     queryParameters: Record<string, any>
   ): Promise<QueryIsolationSession> {
     const session: QueryIsolationSession = {
-      sessionId: `query-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `query-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       tenantId,
       queryContext,
       queryId,
       queryParameters,
-      createdAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
       status: 'active'
     };
     this.sessions.set(session.sessionId, session);

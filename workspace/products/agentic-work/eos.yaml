@@ -47,6 +47,42 @@ capabilities:
   - ai-agent-execution
   - governance-evidence
   - agent-orchestration
+lifecycle:
+  phase: D.2
+  status: ACTIVE
+  contract:
+    stages:
+      - name: discover
+        description: Pengguna menemukan dan memahami produk
+        terminal: false
+      - name: create
+        description: Pengguna membuat Work baru
+        terminal: false
+      - name: execute
+        description: Work berjalan dengan kolaborasi Human+AI
+        terminal: false
+      - name: progress
+        description: Update status Work secara berkala
+        terminal: false
+      - name: evidence
+        description: Mengumpulkan semua bukti eksekusi
+        terminal: false
+      - name: complete
+        description: Work selesai, evidence terverifikasi
+        terminal: true
+  real_user_jobs:
+    - id: aw-101
+      name: Business Launch Atomic Composition
+      description: Full lifecycle komposisi atomik peluncuran bisnis dengan kolaborasi Human+AI
+      status: completed
+      requirements:
+        - req-aw-001
+    - id: aw-102
+      name: Cross-Provider Collaboration Automation
+      description: Full lifecycle otomatisasi kolaborasi antar penyedia (Human, AI Agent, External Service), pencocokan kemampuan, dan pelacakan ekonomi
+      status: completed
+      requirements:
+        - req-aw-002
 quality:
   targets:
     evidence_required: true

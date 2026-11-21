@@ -5,6 +5,7 @@
  * DIBUAT UNTUK SIG-NEXT-001-W8: lawyershub→ilc cross-product handoff
  */
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import { decodeWorkspaceSession, WORKSPACE_SESSION_COOKIE } from "@repo/core-kernel";
 import { getWorkById } from "../create/route";
@@ -123,7 +124,7 @@ export async function POST(request: Request) {
       workId,
       linkedToProduct: (linkExistingResult as any).linkedToProduct,
       domainType: (linkExistingResult as any).domainType,
-      linkedAt: new Date().toISOString(),
+      linkedAt: getNow().toISOString(),
       message: "Work successfully linked to target product/domain"
     });
   } catch (error) {

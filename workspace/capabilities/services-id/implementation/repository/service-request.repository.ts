@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { recordRuntimeInvocation } from "@repo/core-runtime";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { ServiceRequestId, type ServiceRequestRepository, type ServiceRequestAggregate, ServiceRequestStatus, ServiceRequestPriority } from "../contracts/index";
 
 // In-memory store for service requests - isolated to this module
@@ -31,7 +32,7 @@ globalThis.__EOS_SERVICE_REQUEST_SCANNER_INTERVAL__ = null;
 async function startDeadlineDetectionScanner(): Promise<void> {
   const scanInterval = 60 * 60 * 1000; // 1 hour in production
   globalThis.__EOS_SERVICE_REQUEST_SCANNER_INTERVAL__ = setInterval(async () => {
-    const now = new Date();
+    const now = getNow();
     const warningWindow = 7 * 24 * 60 * 60 * 1000; // 7 days warning before deadline
     
     for (const [id, requestData] of STORE.entries()) {
@@ -94,8 +95,8 @@ export class ServiceRequestRepositoryInMemory implements ServiceRequestRepositor
       assigneeId: input.assigneeId,
       workId: input.workId,
       sourceDiscussionId: input.sourceDiscussionId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
       tenantId: input.tenantId,
       workspaceId: input.workspaceId,
       actorId: input.actorId,
@@ -142,8 +143,8 @@ export class ServiceRequestRepositoryInMemory implements ServiceRequestRepositor
     const updated: ServiceRequestAggregate = {
       ...item,
       status: "settled", // Always set to settled after processing
-      settledAt: new Date(),
-      updatedAt: new Date(),
+      settledAt: getNow(),
+      updatedAt: getNow(),
     };
     STORE.set(input.id, updated);
     
@@ -162,7 +163,7 @@ export class ServiceRequestRepositoryInMemory implements ServiceRequestRepositor
       workspace_id: input.workspaceId,
       actor_id: input.actorId,
       sessionId: "system-session-" + Date.now(), // Sesi sistem untuk automated settlement
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       settlement_proof: input.settlementProof,
     });
     

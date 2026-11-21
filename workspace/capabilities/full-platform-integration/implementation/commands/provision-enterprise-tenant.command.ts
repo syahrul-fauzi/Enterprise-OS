@@ -11,6 +11,7 @@ import {
   createActorId,
   createWorkspaceId
 } from "@repo/contracts-core";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 // Import 6-boundary contracts + WorkStatus untuk compliance (canonical path untuk work-core)
 import { 
   validateBoundaryAccess,
@@ -128,7 +129,7 @@ export const provisionEnterpriseTenantCommand: ProvisionEnterpriseTenantCommand 
       evidenceChain: [{
         actorId: actorId,
         action: "initiate-tenant-provisioning",
-        timestamp: new Date(),
+        timestamp: getNow(),
         workspaceId: workspaceId
       }],
       outcomeVerified: false
@@ -185,10 +186,10 @@ export const provisionEnterpriseTenantCommand: ProvisionEnterpriseTenantCommand 
         planTier,
         billingEmail,
         onboardingManagerId, // dedicated account manager dari DIGIOP-104 requirement
-        provisionedAt: new Date().toISOString(),
+        provisionedAt: getNow().toISOString(),
         provisionedBy: actorId
       },
-      createdAt: new Date(),
+      createdAt: getNow(),
       createdBy: actorId
     });
     

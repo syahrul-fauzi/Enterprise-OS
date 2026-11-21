@@ -13,12 +13,14 @@ import {
   type EvidenceBoundary, 
   type PresentationBoundary 
 } from "@repo/contracts-core";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import {
   MembershipId,
   type MembershipAggregate,
   type Role,
   type CreateMembershipInput,
 } from "@repo/contracts-core";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 // Lazy initialization untuk menghindari module cycle (Edge Runtime compatible)
 async function getMembershipRepositoryLazy() {
@@ -90,7 +92,7 @@ export const createMembershipCommand: CreateMembershipCommand = {
     const executionBoundary: ExecutionBoundary = {
       workspaceId,
       runtimeEnvironment: process.env.NODE_ENV || "development",
-      executionId: `membership-${Date.now()}`,
+      executionId: `membership-${getNow().getTime()}`,
       propagatedFrom: "api-route"
     };
 
@@ -141,9 +143,9 @@ export const createMembershipCommand: CreateMembershipCommand = {
       tenantId,
       workspaceId,
       role: input.role,
-      joinedAt: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      joinedAt: getNow(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
     };
     await membershipRepository.save(entity);
     return {

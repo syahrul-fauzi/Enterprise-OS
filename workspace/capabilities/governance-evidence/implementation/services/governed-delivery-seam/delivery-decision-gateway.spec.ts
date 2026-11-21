@@ -1,6 +1,7 @@
 // @ts-nocheck
 // @ts-ignore - bun:test is Bun's native test runner
 import { describe, it, expect, beforeEach } from "bun:test";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { DeliveryDecisionGatewayService, GovernanceDecisionRecord } from "./delivery-decision-gateway.service.js";
 import type { WorkspaceSession } from "../../../../../apps/web/lib/workspace-session.js";
 import { rmSync, existsSync } from "node:fs";
@@ -14,7 +15,7 @@ describe("DeliveryDecisionGatewayService - Gate 5 Boundary Compliance Test", () 
     tenantId: "test-tenant",
     workspaceId: "test-workspace",
     productId: "test-product-001",
-    issuedAt: new Date().toISOString(),
+    issuedAt: getNow().toISOString(),
   };
 
   const testLedgerPath = join(process.cwd(), "workspace/foundation/governance/decisions/gate5-decisions.jsonl");

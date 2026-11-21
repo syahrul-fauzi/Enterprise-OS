@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as fs from "node:fs";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import { agentOrchestrationService } from "../../../agent-orchestration/implementation/services/agent-orchestration.service.js";
@@ -621,7 +622,7 @@ async function executeAutomatedRemediation(incidentId: string, tenantId: string,
 }
 
 export function nowIso(): string {
-  return new Date().toISOString();
+  return getNow().toISOString();
 }
 
 export * from "../contracts/index.js";

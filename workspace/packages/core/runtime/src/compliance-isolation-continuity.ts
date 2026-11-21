@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface ComplianceIsolationSession {
   sessionId: string;
   complianceDomain: string;
@@ -16,8 +17,8 @@ export class ComplianceIsolationContinuityService {
       complianceDomain,
       tenantId,
       sessionParameters,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: getNow().toISOString(),
+      updatedAt: getNow().toISOString()
     };
     this.sessions.set(sessionId, session);
     this.logInvocation('createComplianceIsolationSession', { sessionId, complianceDomain, tenantId });
@@ -27,7 +28,7 @@ export class ComplianceIsolationContinuityService {
   suspendComplianceIsolationSession(sessionId: string): void {
     const session = this.sessions.get(sessionId);
     if (session) {
-      session.updatedAt = new Date().toISOString();
+      session.updatedAt = getNow().toISOString();
       this.sessions.set(sessionId, session);
       this.logInvocation('suspendComplianceIsolationSession', { sessionId });
     }
@@ -36,7 +37,7 @@ export class ComplianceIsolationContinuityService {
   resumeComplianceIsolationSession(sessionId: string): void {
     const session = this.sessions.get(sessionId);
     if (session) {
-      session.updatedAt = new Date().toISOString();
+      session.updatedAt = getNow().toISOString();
       this.sessions.set(sessionId, session);
       this.logInvocation('resumeComplianceIsolationSession', { sessionId });
     }

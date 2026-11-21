@@ -1,0 +1,107 @@
+{
+  "contract_id": "BPD-CONTRACT-001",
+  "contract_name": "Cross-Product Data Consumption Contract",
+  "contract_version": "1.0.0",
+  "contract_date": "2026-11-21",
+  "governance_boundaries": {
+    "new_pipeline_prohibited": true,
+    "new_connector_prohibited": true,
+    "production_access_not_authorized": true,
+    "tenant_isolation_enforced": true
+  },
+  "data_sources": [
+    {
+      "source_id": "ecommerce-ops",
+      "source_owner": "ecommerce-ops product team",
+      "source_status": "PREPARATION",
+      "environment_classification": "SANDBOX/STAGING ONLY",
+      "permitted_usage": "Cross-product intelligence analysis only - no production transaction claims",
+      "data_contract": {
+        "version": "1.0.0",
+        "exposed_signals": [
+          "marketplace_order_volume",
+          "fulfillment_status",
+          "product_listing_performance",
+          "customer_order_frequency"
+        ],
+        "metadata": {
+          "source_owner": "ecommerce-ops",
+          "tenant_scope": "per-tenant-isolated",
+          "data_freshness": "hourly-snapshot",
+          "quality_status": "sandbox-verified",
+          "provenance": "ecommerce-ops evidence registry",
+          "environment": "sandbox",
+          "permitted_usage": "intelligence-analysis-only"
+        }
+      }
+    },
+    {
+      "source_id": "digital-operations",
+      "source_owner": "digital-operations product team",
+      "source_status": "CONDITIONAL",
+      "environment_classification": "CONDITIONAL ONBOARDING",
+      "permitted_usage": "Cross-product intelligence analysis with evidence traceability",
+      "data_contract": {
+        "version": "1.0.0",
+        "exposed_signals": [
+          "customer_journey_completion_rate",
+          "incident_resolution_time",
+          "service_subscription_status",
+          "customer_support_interaction_volume"
+        ],
+        "metadata": {
+          "source_owner": "digital-operations",
+          "tenant_scope": "per-tenant-isolated",
+          "data_freshness": "hourly-snapshot",
+          "quality_status": "pilot-verified",
+          "provenance": "digital-operations evidence registry",
+          "environment": "conditional",
+          "permitted_usage": "intelligence-analysis-only"
+        }
+      }
+    },
+    {
+      "source_id": "deal-coordinator",
+      "source_owner": "deal-coordinator product team",
+      "source_status": "VERIFIED",
+      "environment_classification": "PIPELINE VERIFIED",
+      "permitted_usage": "Cross-product intelligence analysis with full evidence traceability",
+      "data_contract": {
+        "version": "1.0.0",
+        "exposed_signals": [
+          "commercial_pipeline_volume",
+          "agreement_conversion_rate",
+          "deal_fulfillment_status",
+          "reconciliation_completion_rate"
+        ],
+        "metadata": {
+          "source_owner": "deal-coordinator",
+          "tenant_scope": "per-tenant-isolated",
+          "data_freshness": "hourly-snapshot",
+          "quality_status": "pipeline-verified",
+          "provenance": "deal-coordinator evidence registry",
+          "environment": "verified",
+          "permitted_usage": "intelligence-analysis-only"
+        }
+      }
+    }
+  ],
+  "semantic_mapping": {
+    "business_context_normalization": {
+      "common_tenant_id": "shared tenant isolation key",
+      "common_time_dimension": "UTC timestamp alignment",
+      "common_business_unit": "cross-product business unit mapping"
+    },
+    "cross_product_correlation": {
+      "customer_service_vs_conversion": "digital-operations support signals vs ecommerce-ops order conversion",
+      "pipeline_vs_transaction": "deal-coordinator pipeline signals vs ecommerce-ops transaction volume",
+      "operational_vs_commercial": "digital-operations operational health vs deal-coordinator deal velocity"
+    }
+  },
+  "acceptance_gates": {
+    "three_sources_have_clear_contracts": "PENDING",
+    "no_duplicate_pipeline": "REQUIREMENT",
+    "no_duplicate_connector": "REQUIREMENT",
+    "tenant_isolation_verified": "REQUIREMENT"
+  }
+}

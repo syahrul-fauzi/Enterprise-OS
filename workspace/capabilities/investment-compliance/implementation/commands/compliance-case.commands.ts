@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
 import {
   getComplianceCaseRepositoryInMemory,
@@ -107,8 +108,8 @@ export function mapMcpPayloadToExecutionEnvelope(mcpPayload: {
 			payload: mcpPayload.intent_payload
 		},
 		correlationId: mcpPayload.correlation_id || generateUuid(),
-		issuedAt: new Date().toISOString(),
-		expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // Expire dalam 24 jam
+		issuedAt: getNow().toISOString(),
+		expiresAt: new Date(getNow().getTime() + 24 * 60 * 60 * 1000).toISOString() // Expire dalam 24 jam
 	};
 
 	// Validasi schema sebelum return - tidak boleh mengirim envelope yang tidak valid
@@ -126,7 +127,7 @@ export function mapMcpPayloadToExecutionEnvelope(mcpPayload: {
 		tenant_id: tenantId,
 		workspace_id: workspaceId,
 		sessionId: sessionId,
-		timestamp: new Date().toISOString(),
+		timestamp: getNow().toISOString(),
 		mcpEventId: executionEnvelope.eventId,
 		mcpCorrelationId: executionEnvelope.correlationId
 	});
@@ -300,7 +301,7 @@ const createComplianceCase: CapabilityCommand<
                   level: riskRating,
                   rationale: `Investment compliance case creation with ${riskRating} risk rating`,
                   assessedBy: session.actorId,
-                  assessedAt: new Date()
+                  assessedAt: getNow()
                 }
               );
 
@@ -340,7 +341,7 @@ const createComplianceCase: CapabilityCommand<
                 evidenceChain: [{
                   actorId: session.actorId,
                   action: "compliance-case-created",
-                  timestamp: new Date(),
+                  timestamp: getNow(),
                   workspaceId: session.workspaceId
                 }],
                 outcomeVerified: false
@@ -380,7 +381,7 @@ const createComplianceCase: CapabilityCommand<
         tenant_id: session.tenantId,
         workspace_id: session.workspaceId,
         sessionId: sessionIdValue,
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         linkedProductId: linkedProduct?.id || null,
         graphTraversalSuccess: !!linkedProduct
       });
@@ -468,7 +469,7 @@ const createComplianceCase: CapabilityCommand<
       level: riskRating,
       rationale: `Investment risk assessment for ${sector} sector, IDR ${investmentAmount}`,
       assessedBy: session.actorId,
-      assessedAt: new Date()
+      assessedAt: getNow()
     };
     
     // Hitung canonical execution frame menggunakan shared work-core utility
@@ -485,8 +486,8 @@ const createComplianceCase: CapabilityCommand<
       auditorId: undefined,
       status: defaultComplianceCaseStatus,
       priority: defaultComplianceCasePriority,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
       executionFrame, // Gunakan canonical execution frame dari work-core CMBCD
       actorId: session.actorId,
       tenantId: session.tenantId,
@@ -506,7 +507,7 @@ const createComplianceCase: CapabilityCommand<
       workspace_id: session.workspaceId,
       sessionId: sessionIdValue,
       actor_id: session.actorId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       integration_note: "ILC-001: Compliance case created as domain extension of core Work primitive"
     });
     }
@@ -621,7 +622,7 @@ const assignAuditorToCase: CapabilityCommand<z.infer<typeof AssignAuditorToCaseS
     const updatedCase = {
       ...caseExists,
       auditorId,
-      updatedAt: new Date()
+      updatedAt: getNow()
     };
     await complianceCaseRepository.save(updatedCase);
 
@@ -636,7 +637,7 @@ const assignAuditorToCase: CapabilityCommand<z.infer<typeof AssignAuditorToCaseS
       tenant_id: session.tenantId,
       workspace_id: session.workspaceId,
       sessionId: sessionId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       note: "ILC-001: Auditor assigned to compliance case via authority boundary check"
     });
 
@@ -754,7 +755,7 @@ const closeComplianceCase: CapabilityCommand<z.infer<typeof CloseComplianceCaseS
     }
 
     // Update case status menjadi closed
-    const closedAt = new Date();
+    const closedAt = getNow();
     const updatedCase = {
       ...caseExists,
       status: "closed" as const,

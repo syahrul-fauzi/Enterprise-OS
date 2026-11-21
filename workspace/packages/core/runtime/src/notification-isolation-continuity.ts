@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface NotificationIsolationSession {
   sessionId: string;
   tenantId: string;
@@ -19,12 +20,12 @@ export class NotificationIsolationContinuityService {
     notificationType: string
   ): Promise<NotificationIsolationSession> {
     const session: NotificationIsolationSession = {
-      sessionId: `notif-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `notif-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       tenantId,
       notificationContext,
       channelId,
       notificationType,
-      createdAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
       status: 'active'
     };
     this.sessions.set(session.sessionId, session);

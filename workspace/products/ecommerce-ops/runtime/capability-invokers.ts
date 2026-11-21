@@ -1,10 +1,10 @@
 import { 
-  complianceCaseCommands,
+  productListingCommands,
   mapMcpPayloadToExecutionEnvelope as mapMcpPayloadToExecutionEnvelopeStandar
-} from "../../../capabilities/investment-compliance/implementation/commands/compliance-case.commands.js";
+} from "../../../capabilities/commerce-product/implementation/commands/product-listing.commands.js";
 import { capabilityRegistry } from "../../../packages/core/kernel/src/registry/capability-command-registry.js";
 
-Object.values(complianceCaseCommands).forEach(command => {
+Object.values(productListingCommands).forEach(command => {
   capabilityRegistry.register(command);
 });
 

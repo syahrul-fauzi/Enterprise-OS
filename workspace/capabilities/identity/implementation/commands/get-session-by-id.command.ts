@@ -3,6 +3,7 @@
 console.log("[get-session-by-id.command.ts] FILE DILOAD SUKSES!");
 import { z } from "zod";
 import type { WorkspaceSession } from "@repo/core-kernel";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import {
   validateBoundaryAccess,
@@ -13,6 +14,7 @@ import {
   type EvidenceBoundary,
   type PresentationBoundary
 } from "@repo/contracts-core";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import type { SessionAggregate } from "@repo/contracts-core";
 
 // Lazy load repository untuk menghindari module cycle dan mematuhi 6-boundary compliance
@@ -100,9 +102,9 @@ export const getSessionByIdCommand: CapabilityCommand<
       return undefined;
     }
 
-    const sessionIssuedAt = aggregate.issuedAt ?? new Date();
-    const sessionExpiresAt = aggregate.expiresAt ?? new Date(Date.now() + 86400000);
-    if (sessionExpiresAt.getTime() <= Date.now()) {
+    const sessionIssuedAt = aggregate.issuedAt ?? getNow();
+    const sessionExpiresAt = aggregate.expiresAt ?? new Date(getNow().getTime() + 86400000);
+    if (sessionExpiresAt.getTime() <= getNow().getTime()) {
       console.log(`[getSessionByIdCommand] ❌ Session telah kedaluwarsa: ${sessionId}, expired: ${sessionExpiresAt.toISOString()}`);
       return undefined;
     }

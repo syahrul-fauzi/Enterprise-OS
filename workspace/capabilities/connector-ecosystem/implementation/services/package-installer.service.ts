@@ -4,6 +4,7 @@
 // Complies with all user requirements: no silent permissions, external identity validation, tenant isolation, Work Continuity
 
 import { z } from "zod";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { randomUUID } from "node:crypto";
 import { 
   createTenantId, 
@@ -87,7 +88,7 @@ export class CanonicalPackageInstallationLifecycle {
       sessionId: initiatorSessionId,
       workspaceId: workspaceId || process.env.EOS_DEFAULT_WORKSPACE_ID || "default-workspace",
       currentStep: "DISCOVERED",
-      startedAt: new Date(),
+      startedAt: getNow(),
       evidenceIds: [],
       canonicalActorId: createActorId(initiatorActorId),
       // W-008-03: Set initial metering state if limits are provided
@@ -205,7 +206,7 @@ export class CanonicalPackageInstallationLifecycle {
     console.log(`[Canonical Installer Lifecycle] STEP 3/7: INSTALLING package adapter`);
     
     // Register package with EOS connector ecosystem (no automatic permissions)
-    await this.recordLifecycleEvidence("installation_completed", { installedAt: new Date() });
+    await this.recordLifecycleEvidence("installation_completed", { installedAt: getNow() });
     this.state.currentStep = "INSTALLED";
     
     return { success: true };
@@ -387,7 +388,7 @@ export class CanonicalPackageInstallationLifecycle {
 
     // Finalize package enablement
     this.state.currentStep = "ENABLED";
-    this.state.completedAt = new Date();
+    this.state.completedAt = getNow();
     
     await this.recordLifecycleEvidence("package_enabled", { 
       enabledAt: this.state.completedAt,
@@ -428,7 +429,7 @@ export class CanonicalPackageInstallationLifecycle {
         actorId: this.state.initiatorActorId,
         tenantId: this.state.tenantId,
         eventType,
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         payload: data
       });
       

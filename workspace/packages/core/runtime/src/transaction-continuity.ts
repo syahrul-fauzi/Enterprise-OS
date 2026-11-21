@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface TransactionSession {
@@ -14,12 +15,12 @@ export interface TransactionSession {
 export class TransactionContinuityService {
   async createTransactionSession(context: ExecutionContext, actorId: string, workItemId: string): Promise<TransactionSession> {
     const session: TransactionSession = {
-      sessionId: `transaction-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `transaction-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       actorId,
       workItemId,
       status: 'ACTIVE',
-      transactionHash: `transaction-hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      transactionHash: `transaction-hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
     await InvocationEvidence.record(context, 'createTransactionSession', { actorId, workItemId, session });
     return session;
@@ -36,9 +37,9 @@ export class TransactionContinuityService {
       actorId: context.actorId,
       workItemId: context.workItemId,
       status: 'RESUMED',
-      transactionHash: `transaction-hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      transactionHash: `transaction-hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
     await InvocationEvidence.record(context, 'resumeTransactionSession', { sessionId, session });
     return session;

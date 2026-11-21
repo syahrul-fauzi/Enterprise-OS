@@ -47,6 +47,42 @@ capabilities:
   - ai-agent-execution
   - governance-evidence
   - agent-orchestration
+lifecycle:
+  phase: D.2
+  status: ACTIVE
+  contract:
+    stages:
+      - name: discover
+        description: Pengguna menemukan dan memahami produk
+        terminal: false
+      - name: create
+        description: Pengguna membuat Work baru
+        terminal: false
+      - name: execute
+        description: Work berjalan dengan kolaborasi Human+AI
+        terminal: false
+      - name: progress
+        description: Update status Work secara berkala
+        terminal: false
+      - name: evidence
+        description: Mengumpulkan semua bukti eksekusi
+        terminal: false
+      - name: complete
+        description: Work selesai, evidence terverifikasi
+        terminal: true
+  real_user_jobs:
+    - id: hai-101
+      name: Human+AI Work Coordination
+      description: Full lifecycle koordinasi Work antara Human dan AI Agent, pembagian tugas, dan pelacakan status
+      status: completed
+      requirements:
+        - req-hai-001
+    - id: hai-102
+      name: Ephemeral Team Composition Automation
+      description: Full lifecycle otomatisasi komposisi tim sementara, pencocokan kemampuan, dan pengukuran ekonomi
+      status: completed
+      requirements:
+        - req-hai-002
 quality:
   targets:
     evidence_required: true

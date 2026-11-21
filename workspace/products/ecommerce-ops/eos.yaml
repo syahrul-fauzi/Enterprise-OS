@@ -30,9 +30,15 @@ lifecycle:
     - id: ecom-101
       name: Shopee order fulfillment lifecycle
       description: Full cycle manajemen pesanan Shopee mulai dari sinkronisasi hingga penutupan pesanan
-      status: active
+      status: completed
       requirements:
         - req-ecom-001
+    - id: ecom-102
+      name: Marketplace order fulfillment automation
+      description: Automasi penuh manajemen pesanan lintas marketplace (Shopee, Tokopedia, Lazada, TikTok Shop, WooCommerce)
+      status: completed
+      requirements:
+        - req-ecom-002
 quality:
   targets:
     evidence_required: true

@@ -33,9 +33,21 @@ lifecycle:
     - id: dc-101
       name: Manage commercial agreement from request to reconciliation
       description: Full cycle koordinasi kesepakatan bisnis dari permintaan hingga penyelesaian pembayaran
-      status: active
+      status: completed
       requirements:
         - req-dc-001
+    - id: dc-102
+      name: Automate deal negotiation
+      description: Full cycle otomatisasi negosiasi kesepakatan, term proposal, counterparty matching, dan agreement tracking
+      status: completed
+      requirements:
+        - req-dc-002
+    - id: dc-103
+      name: Automate invoice reconciliation
+      description: Full cycle otomatisasi rekonsiliasi invoice, payment verification, dan outcome reconciliation
+      status: completed
+      requirements:
+        - req-dc-003
 quality:
   targets:
     evidence_required: true

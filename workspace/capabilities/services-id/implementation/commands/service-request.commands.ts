@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "#core/kernel/timing/time-provider.js";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import {
   CreateServiceRequestOutput,
   ServiceRequestId,
@@ -87,7 +89,7 @@ const createServiceRequest: CapabilityCommand<
 
     // Calculate next billing date if this is a recurring subscription
     const nextBillingDate = validated.isRecurring && validated.recurringIntervalDays 
-      ? new Date(Date.now() + validated.recurringIntervalDays * 24 * 60 * 60 * 1000) 
+      ? new Date(getNow().getTime() + validated.recurringIntervalDays * 24 * 60 * 60 * 1000) 
       : undefined;
 
     const aggregate: ServiceRequestAggregate = {
@@ -98,8 +100,8 @@ const createServiceRequest: CapabilityCommand<
       status: "draft",
       priority: validated.priority || "medium",
       category: validated.category,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
       // DIGISC-007: Subscription tracking untuk managed service recurring triggers
       subscriptionId: validated.subscriptionId,
       subscriptionType: validated.subscriptionType,
@@ -174,7 +176,7 @@ const createServiceRequestFromWork: CapabilityCommand<{
       capability: "services-id",
       command: "service-request.createFromWork",
       workspace_id: input.coreWork.execution?.workspaceId || null,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       graph_link_created: true,
       linked_product_id: linkedProduct?.id || null,
       graph_traversal_success: !!linkedProduct
@@ -241,9 +243,9 @@ const updateServiceRequest: CapabilityCommand<
     const updated: ShallowMutable<ServiceRequestAggregate> = { ...existing };
     if (validated.status) {
       updated.status = validated.status;
-      updated.updatedAt = new Date();
+      updated.updatedAt = getNow();
       if (validated.status === "closed") {
-        updated.closedAt = new Date();
+        updated.closedAt = getNow();
       }
     }
 

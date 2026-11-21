@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 export interface AgentRuntimeIsolationSession {
   agentSessionId: string;
@@ -12,16 +13,16 @@ export interface AgentRuntimeIsolationSession {
 export class AgentRuntimeIsolationContinuityService {
   async createAgentRuntimeIsolationSession(context: ExecutionContext, agentType: string): Promise<AgentRuntimeIsolationSession> {
     const session: AgentRuntimeIsolationSession = {
-      agentSessionId: `agent-runtime-session-${Date.now()}`,
+      agentSessionId: `agent-runtime-session-${getNow().getTime()}`,
       agentType,
       status: 'ACTIVE',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
     context.invocationEvidence.push({
       operation: 'createAgentRuntimeIsolationSession',
       agentSessionId: session.agentSessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return session;
   }
@@ -31,7 +32,7 @@ export class AgentRuntimeIsolationContinuityService {
       operation: 'suspendAgentRuntimeIsolationSession',
       agentSessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { suspended: true, agentSessionId };
   }
@@ -41,14 +42,14 @@ export class AgentRuntimeIsolationContinuityService {
       agentSessionId,
       agentType: 'UNKNOWN',
       status: 'RESUMED',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
     context.invocationEvidence.push({
       operation: 'resumeAgentRuntimeIsolationSession',
       agentSessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return session;
   }
@@ -63,7 +64,7 @@ export class AgentRuntimeIsolationContinuityService {
       operation: 'verifyAgentRuntimeIsolationContinuity',
       agentSessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { valid: true, checks };
   }

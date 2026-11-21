@@ -3,7 +3,9 @@
   "product": "ecommerce-ops",
   "journey_id": "ECOM-101",
   "journey_description": "Ecommerce Order Fulfillment - Marketplace Order Processing for UMKM Retail",
-  "test_timestamp": "2026-11-15T[timestamp]",
+  "test_timestamp": "2026-11-15T06:03:00.000Z",
+  "test_authority": "Test Execution Agent",
+  "executor_identity": "eos-test-agent@eos-system",
   "test_status": "PASSED",
   "lifecycle_stages_executed": [
     "discover",

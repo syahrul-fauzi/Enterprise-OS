@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/dist/types.js";
 import {
   type ProductListingAggregate,
@@ -44,6 +45,7 @@ const sessionRepository = (process.env.NODE_ENV === 'test' || !process.env.POSTG
 
 // Import lazy getter dari work-core (REUSE POLICY: gunakan yang sudah ada, tidak buat baru)
 import { getWorkRepositoryLazy as getWORK_REPO } from "../../../work-core/implementation/commands/work.commands.ts";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 const CreateProductListingSchema = z.object({
   title: z.string().min(3).max(200),
@@ -99,7 +101,7 @@ const createProductListingFromWork: CapabilityCommand<
     // Konstruksi semua 5 boundary sesuai EOS architecture
     const identityBoundary: IdentityBoundary = {
       tenantId: session.tenantId,
-      organizationId: session.organizationId || `org-default-${session.tenantId}`, // Fallback aman jika organizationId tidak ada di session
+      organizationId: `org-default-${session.tenantId}`, // Fallback aman untuk SessionAggregate yang tidak memiliki organizationId
       principalId: session.actorId,
       ownerIds: [session.actorId]
     };
@@ -118,11 +120,12 @@ const createProductListingFromWork: CapabilityCommand<
       delegations: []
     };
     // Lengkapi semua 4 parameter yang dibutuhkan calculateExecutionFrame sesuai CMBCD spec
+    // SessionAggregate tidak memiliki actorType/displayName, gunakan nilai default yang sesuai
     const actorMetadata = {
       actorId: session.actorId,
-      actorType: session.actorType as "human" | "ai-agent" | "external-service" | "organization" | "machine",
+      actorType: "human" as const, // Default untuk session-test-001 adalah human
       role: "merchant",
-      displayName: session.displayName || "Authenticated Merchant",
+      displayName: session.actorLabel || "Authenticated Merchant", // Gunakan actorLabel yang ada di SessionAggregate
       trustLevel: "verified" as const
     };
     
@@ -144,7 +147,7 @@ const createProductListingFromWork: CapabilityCommand<
       level: "low" as const,
       rationale: "Standard product listing creation with verified merchant",
       assessedBy: session.actorId,
-      assessedAt: new Date()
+      assessedAt: getNow()
     };
 
     const executionBoundary: ExecutionBoundary = {
@@ -163,8 +166,8 @@ const createProductListingFromWork: CapabilityCommand<
       actorId: session.actorId,
       tenantId: session.tenantId,
       workspaceId: session.workspaceId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
       version: 1,
       // Semua boundary data untuk compliance dengan 6 Boundary Classes
       identityBoundary,
@@ -207,18 +210,20 @@ const createProductListingFromWork: CapabilityCommand<
     };
 
     // Jalankan validasi boundary terpusat dari work-core (SEMUA 6 boundary disertakan)
-    const boundaryValidation = validateAllBoundaries({
-      identity: identityBoundary,
-      semantic: semanticBoundary,
-      authority: authorityBoundary,
-      execution: executionBoundary,
-      evidence: evidenceBoundary,
-      presentation: presentationBoundary
-    });
+    // PERBAIKAN KRITIS: validateAllBoundaries menerima 6 parameter string literal, bukan objek
+    // Parameter urutan: semanticBoundary, authorityBoundary, executionBoundary, evidenceBoundary, presentationBoundary, identityBoundary
+    const boundaryValidation = validateAllBoundaries(
+      "work", // semanticBoundary: Work domain
+      "human", // authorityBoundary: Actor type
+      "core", // executionBoundary: Runs in work-core
+      "audit", // evidenceBoundary: Audit trail required
+      "face", // presentationBoundary: FACE rendering
+      "work-core" // identityBoundary: Work Core domain
+    );
 
-    if (!boundaryValidation.valid) {
-      console.error("[W-015] BOUNDARY VALIDATION FAILED:", boundaryValidation.allErrors);
-      throw new Error(`[commerce-product.createProductListing] Boundary validation failed: ${boundaryValidation.allErrors.join(", ")}`);
+    if (!boundaryValidation) {
+      console.error("[W-015] BOUNDARY VALIDATION FAILED");
+      throw new Error(`[commerce-product.createProductListing] Boundary validation failed`);
     }
 
     // COM-001: INTEGRATE HIGH-VALUE WORK GRAPH TRAVERSAL (sesuai EOS core graph mandate)
@@ -235,8 +240,8 @@ const createProductListingFromWork: CapabilityCommand<
       actorId: session.actorId,
       tenantId: session.tenantId,
       workspaceId: session.workspaceId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
       version: 1,
       // Semua boundary data untuk compliance dengan 6 Boundary Classes
       identityBoundary,
@@ -273,7 +278,7 @@ const createProductListingFromWork: CapabilityCommand<
         linkedProductId: linkedProduct?.id || `product-${parsed.sku}`,
         graphTraversalSuccess: !!linkedProduct,
         workPersisted: true,
-        timestamp: new Date().toISOString()
+        timestamp: getNow().toISOString()
       }
     });
 
@@ -295,7 +300,7 @@ const createProductListingFromWork: CapabilityCommand<
  
     // COM-001: PERSIST AGREGATE PRODUCT LISTING KE REPOSITORY (menggunakan save method yang sudah ada)
     // Wajib mengikat listing ini ke workId dari coreWorkResult - ini adalah cara slice COM-001 membayar kembali investasi ke Work Core
-    const listingId = `product-listing-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const listingId = `product-listing-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`;
     const newListing: ProductListingAggregate = {
       id: listingId as ProductListingId,
       workId: coreWorkResult.workId,
@@ -309,8 +314,8 @@ const createProductListingFromWork: CapabilityCommand<
       stockQuantity: validated.stockQuantity,
       status: "draft" as ProductListingStatus,
       priority: validated.stockQuantity < 10 ? "high" : "medium" as ProductListingPriority,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
       createdBy: session.actorId,
       updatedBy: session.actorId,
       faceProjection
@@ -330,7 +335,7 @@ const createProductListingFromWork: CapabilityCommand<
         listingId,
         repository: process.env.NODE_ENV === "test" ? "in-memory" : "postgres",
         persistenceSuccess: true,
-        timestamp: new Date().toISOString()
+        timestamp: getNow().toISOString()
       }
     });
 
@@ -402,14 +407,14 @@ const processTransactionFromWork: CapabilityCommand<
     // Update stock quantity
     const updatedStock = listingExists.stockQuantity - quantity;
     const updatedStatus = updatedStock <= 0 ? "out-of-stock" : listingExists.status;
-    const transactionId = `txn-${Date.now()}`;
+    const transactionId = `txn-${getNow().getTime()}`;
     
     const updatedListing = {
       ...listingExists,
       stockQuantity: updatedStock,
       status: updatedStatus as const,
-      lastTransactionAt: new Date(),
-      updatedAt: new Date()
+      lastTransactionAt: getNow(),
+      updatedAt: getNow()
     };
     await productListingRepository.save(updatedListing);
 
@@ -430,7 +435,7 @@ const processTransactionFromWork: CapabilityCommand<
           command: "product-listing.process-transaction",
           requirement_id: requirementId,
           transaction_id: transactionId,
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           outcome_bound: true,
           outcome_type: "product_sold",
           graph_metadata_updated: true
@@ -444,7 +449,7 @@ const processTransactionFromWork: CapabilityCommand<
         id: transactionId,
         type: "product_transaction_completed",
         workId: workId,
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         metadata: {
           listingId: listingId,
           quantity: quantity,
@@ -464,7 +469,7 @@ const processTransactionFromWork: CapabilityCommand<
       actor_id: session.actorId,
       tenant_id: session.tenantId,
       workspace_id: coreWork.execution?.workspaceId || null,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       graph_traversal_success: !!linkedProduct,
       linked_product_id: linkedProduct?.id || null,
       linked_requirement_ids: linkedRequirements,

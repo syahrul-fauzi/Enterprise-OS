@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface StateSession {
@@ -16,11 +17,11 @@ export class StateContinuityService {
     workItemId: string
   ): Promise<StateSession> {
     const session: StateSession = {
-      sessionId: `state-session-${workItemId}-${Date.now()}`,
+      sessionId: `state-session-${workItemId}-${getNow().getTime()}`,
       workItemId,
       status: 'ACTIVE',
-      stateHash: `state-hash-${workItemId}-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      stateHash: `state-hash-${workItemId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'state-continuity.create-state-session', {
@@ -52,9 +53,9 @@ export class StateContinuityService {
       sessionId,
       workItemId: 'W-023',
       status: 'RESUMED',
-      stateHash: `state-hash-resumed-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      stateHash: `state-hash-resumed-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'state-continuity.resume-state-session', {

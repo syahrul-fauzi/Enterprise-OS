@@ -1,4 +1,6 @@
 // @ts-nocheck: Skip TypeScript checks to unblock Lawyers Hub staging deployment
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import { WorkRepositoryInMemory } from '../repository/work-inmemory.repository.js';
 import { MembershipRepositoryInMemory } from '../../../identity/implementation/repositories/membership.inmemory.js';
 import { safeRecordEvidence } from '../utils/evidence.utils.js';
@@ -11,14 +13,19 @@ export const createWork = {
   schema: {
     input: {
       type: 'object',
-      required: ['work_type', 'actor_id', 'tenant_id', 'workspace_id'],
+      required: [],
       properties: {
         work_type: { type: 'string' },
+        domainType: { type: 'string' },
         actor_id: { type: 'string' },
+        actorId: { type: 'string' },
         tenant_id: { type: 'string' },
+        tenantId: { type: 'string' },
         workspace_id: { type: 'string' },
+        workspaceId: { type: 'string' },
         title: { type: 'string' },
         description: { type: 'string' },
+        domainSpecificData: { type: 'object' },
         initial_state: { type: 'object' }
       }
     },
@@ -26,18 +33,26 @@ export const createWork = {
   },
   execute: async (input, context = {}) => {
     const workRepository = await getWorkRepositoryLazy();
+    
+    // Mendukung kedua format parameter: snake_case dan camelCase (UI mengirim domainType bukan work_type)
+    const work_type = input.work_type || input.domainType || input.workType;
+    const actor_id = input.actor_id || input.actorId || context.actor_id || context.actorId;
+    const tenant_id = input.tenant_id || input.tenantId || context.tenant_id || context.tenantId;
+    const workspace_id = input.workspace_id || input.workspaceId || context.workspace_id || context.workspaceId;
+    
     const workToSave = {
-      workType: input.work_type,
-      actorId: input.actor_id,
-      tenantId: input.tenant_id,
-      workspaceId: input.workspace_id,
+      workType: work_type,
+      actorId: actor_id,
+      tenantId: tenant_id,
+      workspaceId: workspace_id,
       title: input.title || '',
       description: input.description || '',
+      domainSpecificData: input.domainSpecificData || {},
       state: input.initial_state || {},
       status: 'active',
       version: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: getNow().toISOString(),
+      updatedAt: getNow().toISOString()
     };
     console.log('DEBUG: workToSave:', workToSave);
     const work = await workRepository.save(workToSave, context);
@@ -115,7 +130,7 @@ export const claimWorkAuthority = {
       tenantId: new_tenant_id,
       workspaceId: new_workspace_id,
       version: work.version + 1,
-      updatedAt: new Date().toISOString(),
+      updatedAt: getNow().toISOString(),
       // Tambahkan metadata transfer ke dalam objek work agar repository.save() merekam bukti yang benar
       transferMetadata: {
         sourceActorId: work.actorId,
@@ -231,10 +246,10 @@ export const getEvidenceByWorkId = {
       tenantId: contextTenantId,
       workspaceId: contextWorkspaceId,
       sessionId: contextSessionId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       details: {
         locationHistory: locationTimeline,
-        reconstructedAt: new Date().toISOString()
+        reconstructedAt: getNow().toISOString()
       },
       meta_locationTimeline: locationTimeline
     };
@@ -304,13 +319,13 @@ export const linkExistingWork = {
       relatedProductIds: updatedRelatedProductIds,
       domainSpecificData: { ...(work.domainSpecificData || {}), ...domain_specific_data },
       version: work.version + 1,
-      updatedAt: new Date().toISOString(),
+      updatedAt: getNow().toISOString(),
       linkMetadata: {
         targetProductId: target_product_id,
         previousDomainType: work.domainType,
         newDomainType: domain_type,
         linkedByActorId: contextActorId,
-        linkedAt: new Date().toISOString()
+        linkedAt: getNow().toISOString()
       }
     }, context);
 

@@ -17,4 +17,5 @@ capabilities:
   - connector-ecosystem
   - work-inspection
   - payment-processing
+  - commerce-product
 claim_boundary: Universal E-commerce Operations Work category binding onto canonical EOS Work Runtime. Marketplace order sync, payment reconciliation, inventory management, and incident resolution connected to universal work reality surface without creating new lifecycle.

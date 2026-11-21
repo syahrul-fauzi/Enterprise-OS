@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface ActorSession {
@@ -16,11 +17,11 @@ export class ActorContinuityService {
     workItemId: string
   ): Promise<ActorSession> {
     const session: ActorSession = {
-      sessionId: `actor-session-${workItemId}-${Date.now()}`,
+      sessionId: `actor-session-${workItemId}-${getNow().getTime()}`,
       workItemId,
       status: 'ACTIVE',
-      actorHash: `actor-hash-${workItemId}-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      actorHash: `actor-hash-${workItemId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'actor-continuity.create-actor-session', {
@@ -52,9 +53,9 @@ export class ActorContinuityService {
       sessionId,
       workItemId: 'W-028',
       status: 'RESUMED',
-      actorHash: `actor-hash-resumed-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      actorHash: `actor-hash-resumed-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'actor-continuity.resume-actor-session', {

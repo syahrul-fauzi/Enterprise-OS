@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import {
   CreateConsultationOutput,
   TriageConsultationOutput,
@@ -23,6 +24,7 @@ import {
   LearningCandidateStatus,
 } from "../contracts/consultation.contracts.ts";
 import { executionContext } from "@repo/core-runtime";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 // Lazy import capability registry untuk menghindari module cycle dan path issues (SAMA PERSIS dengan semua capability lain)
 // Import pakai path relatif absolut sesuai pola canonical yang digunakan di work-core, identity, dan semua capability EOS
 async function getCapabilityRegistry() {
@@ -100,7 +102,7 @@ export async function validateAndClaimEdgeWork(
           action: "edge.work_not_found",
           actor_id: deviceActorId,
           details: { eventId, logicalWorkId, reason: "Work tidak terdaftar di work-core" },
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           capability: "consultation",
           command: "validateAndClaimEdgeWork",
           work_id: logicalWorkId,
@@ -129,7 +131,7 @@ export async function validateAndClaimEdgeWork(
       action: "edge.processing_started",
       actor_id: deviceActorId,
       details: { eventId, logicalWorkId, executionSessionId, version: claimedWork.version },
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       tenant_id: claimedWork.tenantId,
       workspace_id: claimedWork.workspaceId,
       capability: "consultation",
@@ -147,7 +149,7 @@ export async function validateAndClaimEdgeWork(
       action: "edge.claim_failed",
       actor_id: deviceActorId,
       details: { eventId, logicalWorkId, error: error.message },
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       tenant_id: work.tenantId,
       workspace_id: work.workspaceId,
       capability: "consultation",
@@ -233,7 +235,7 @@ function addStage(
     ...stages,
     {
       stage,
-      recordedAt: new Date(),
+      recordedAt: getNow(),
       recordedBy,
       summary,
       controlIds: controlIds.length > 0 ? controlIds : undefined,
@@ -254,7 +256,7 @@ function addLog(
     {
       decision,
       by,
-      at: new Date(),
+      at: getNow(),
       reason,
       controlIds: controlIds.length > 0 ? controlIds : undefined,
     } as DecisionLogEntry,
@@ -303,7 +305,7 @@ export const createConsultation: CreateConsultationCommand = {
 
     // P0 FIX: Deklarasikan workId dari workIdValue untuk binding ke series (CORE-001 compliance)
     const workId = workIdValue;
-    const now = new Date();
+    const now = getNow();
     const consultationId = newConsultationId();
 
     let effectiveSeriesId: ConsultationSeriesId;
@@ -529,7 +531,7 @@ export const triageConsultation: TriageConsultationCommand = {
     }
 
     const mutable = { ...current } as DeepMutable<ConsultationAggregate>;
-    const now = new Date();
+    const now = getNow();
     mutable.updatedAt = now;
 
     const controlsApplied: EosConsultationControlId[] = [];
@@ -1602,7 +1604,7 @@ export const triageConsultation: TriageConsultationCommand = {
             work_id: mutable.id,
             tenant_id: session.tenantId,
             actor_id: session.actorId,
-            timestamp: new Date().toISOString(),
+            timestamp: getNow().toISOString(),
             sessionId: session.id,
             workspace_id: session.workspaceId,
             evidences: stages,
@@ -1659,7 +1661,7 @@ export const triageConsultation: TriageConsultationCommand = {
             work_id: mutable.id,
             tenant_id: session.tenantId,
             actor_id: session.actorId,
-            timestamp: new Date().toISOString(),
+            timestamp: getNow().toISOString(),
             sessionId: session.id,
             workspace_id: session.workspaceId,
             evidences: stages,
@@ -1764,7 +1766,7 @@ export const triageConsultation: TriageConsultationCommand = {
             work_id: mutable.id,
             tenant_id: session.tenantId,
             actor_id: session.actorId,
-            timestamp: new Date().toISOString(),
+            timestamp: getNow().toISOString(),
             sessionId: session.id,
             workspace_id: session.workspaceId,
             evidences: stages,
@@ -1888,7 +1890,7 @@ export const triageConsultation: TriageConsultationCommand = {
             await ConsultationRepositoryInMemory.saveEpisode(updatedEpisode);
             const epFacts: ConsultationFact[] = (episode.facts ?? []).concat(
               (mutable.missingFields ?? []).map(field => ({
-                key: `unresolved_${field}_${Date.now().toString(36)}`,
+                key: `unresolved_${field}_${getNow().getTime().toString(36)}`,
                 value: field,
                 epistemicStatus: "OBSERVED" as const,
                 recordedAt: now,
@@ -2086,7 +2088,7 @@ export const resolveConsultation: ResolveConsultationCommand = {
       throw new Error(`[consultation.resolve] Cannot modify already resolved consultation: ${id}`);
     }
 
-    const now = new Date();
+    const now = getNow();
     const controlsApplied: readonly EosConsultationControlId[] = current.decisionContract?.controlsApplied ?? [];
     let stages: ConsultationStageEvidence[] = [...(current.decisionContract?.stages ?? [])];
     let decisionLog: DecisionLogEntry[] = [...(current.decisionContract?.decisionLog ?? [])];
@@ -2235,7 +2237,7 @@ export const pauseConsultation: PauseConsultationCommand = {
       throw new Error(`[consultation.pause] Consultation is already paused: ${id}`);
     }
 
-    const now = new Date();
+    const now = getNow();
     const controlsApplied: readonly EosConsultationControlId[] = current.decisionContract?.controlsApplied ?? [];
     let stages: ConsultationStageEvidence[] = [...(current.decisionContract?.stages ?? [])];
     let decisionLog: DecisionLogEntry[] = [...(current.decisionContract?.decisionLog ?? [])];
@@ -2349,7 +2351,7 @@ export const resumeConsultation: ResumeConsultationCommand = {
     const mutable = { ...current } as DeepMutable<ConsultationAggregate>;
     const currentForRead: ConsultationAggregate = mutable;
 
-    const now = new Date();
+    const now = getNow();
     const controlsApplied: readonly EosConsultationControlId[] = currentForRead.decisionContract?.controlsApplied ?? [];
     let stages: ConsultationStageEvidence[] = [...(currentForRead.decisionContract?.stages ?? [])];
     let decisionLog: DecisionLogEntry[] = [...(currentForRead.decisionContract?.decisionLog ?? [])];
@@ -2697,7 +2699,7 @@ export const createConsultationSeries: CreateConsultationSeriesCommand = {
     const tenantId = session.tenantId;
     const workspaceId = session.workspaceId;
 
-    const now = new Date();
+    const now = getNow();
     const series: ConsultationSeries = {
       id: newConsultationSeriesId(),
       tenantId,
@@ -2771,7 +2773,7 @@ export const createConsultationEpisode: CreateConsultationEpisodeCommand = {
       throw new Error(`[consultation.createEpisode] Consultation not found: ${consultationId}`);
     }
 
-    const now = new Date();
+    const now = getNow();
     const episode: ConsultationEpisode = {
       id: newConsultationEpisodeId(),
       seriesId: ConsultationSeriesId(seriesId),
@@ -2926,7 +2928,7 @@ export const extractLearningCandidate: ExtractLearningCandidateCommand = {
       if (!validEpisodeIds.has(typedEpId)) throw new Error(`[learning.extract-candidate] Episode ${epId} not in series`);
     }
 
-    const now = new Date();
+    const now = getNow();
     const candidateId = crypto.randomUUID();
     const newCandidate = {
       id: candidateId,
@@ -3015,7 +3017,7 @@ export const approveLearningCandidate: ApproveLearningCandidateCommand = {
     const candidateIdx = (series.learningCandidates ?? []).findIndex(c => c.id === id);
     if (candidateIdx === -1) throw new Error(`[learning.approve-candidate] Learning candidate not found: ${id}`);
 
-    const now = new Date();
+    const now = getNow();
     const updatedCandidates = [...(series.learningCandidates ?? [])].map(c => ({
       ...c,
       sourceEpisodes: [...c.sourceEpisodes] as ConsultationEpisodeId[],
@@ -3128,7 +3130,7 @@ export const createObservabilityIncident: CreateObservabilityIncidentCommand = {
       ...consultation,
       linkedWorkItems: [...(consultation.linkedWorkItems || []), linkedWorkItem],
       status: "HANDOFF",
-      updatedAt: new Date(),
+      updatedAt: getNow(),
     };
     await ConsultationRepositoryInMemory.save(updatedConsultation);
 
@@ -3150,7 +3152,7 @@ export const createObservabilityIncident: CreateObservabilityIncidentCommand = {
           routedTo: "observability/incident.create",
           spinePreserved: true // Critical: consultation spine preserved across domains
         },
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         sessionId, workspace_id: workspaceId
       }
     );

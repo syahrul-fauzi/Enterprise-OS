@@ -2,6 +2,7 @@
 // WorkRepositoryPostgres type tidak diperlukan lagi - semua repository menggunakan getWorkRepositoryLazy
 // import { getEvidenceRepositoryPostgres, type EvidenceRepositoryPostgres } from "../../../evidence-registry/implementation/repository/evidence-postgres.repository.js";
 import type { WorkAggregate, WorkStatus, ActorId } from "@repo/contracts-core";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { createSessionId, createTenantId, createWorkspaceId, createActorId, newWorkId } from "@repo/contracts-core";
 import { safeRecordEvidence } from "../../../work-core/implementation/utils/evidence.utils.js";
 import type { ConnectorDefinition, ConnectorSyncResult } from "../contracts/index.js";
@@ -268,7 +269,7 @@ export async function handleMalaysiaCourtWebhookUpdate(payload: {
       work_id: updatedWork.workId,
       tenant_id: updatedWork.tenantId,
       actor_id: "malaysia-ecourt-mycourt-platform" as ActorId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       payload: {
         case_id: payload.case_id,
         case_number: payload.case_number,
@@ -779,11 +780,11 @@ export async function handleFormsWebhookUpdate(formPayload: {
       workspaceId: "service-management",
       actorId: "forms-adapter-system",
       createdAt: new Date(created_at).toISOString(),
-      updatedAt: new Date().toISOString(),
+      updatedAt: getNow().toISOString(),
       evidence: [{
         type: "external_form_submission",
         title: `Form submission from ${contactName} at ${companyName}`,
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         source: "external-forms-platform"
       }]
     } as any);
@@ -865,13 +866,13 @@ export async function handleEmailWebhookUpdate(emailPayload: {
       // Update existing work with new email content - preserve continuity
       const updatedWork = await workRepository.save({
         ...existingWork,
-        description: `${existingWork.description}\n\n[New email ${message_id} received at ${new Date().toISOString()}]\nFrom: ${from}\n${text}`,
-        updatedAt: new Date().toISOString(),
+        description: `${existingWork.description}\n\n[New email ${message_id} received at ${getNow().toISOString()}]\nFrom: ${from}\n${text}`,
+        updatedAt: getNow().toISOString(),
         status: status === "archived" || status === "deleted" ? "completed" : "active",
         evidence: [...((existingWork as any).evidence ?? []), {
           type: "email_received",
           title: `New email received in thread ${thread_id}`,
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           source: "external-email-platform"
         }]
       });
@@ -902,7 +903,7 @@ export async function handleEmailWebhookUpdate(emailPayload: {
       workspaceId: "communication-management",
       actorId: "email-adapter-system",
       createdAt: new Date(received_at).toISOString(),
-      updatedAt: new Date().toISOString(),
+      updatedAt: getNow().toISOString(),
       evidence: [{
         type: "email_thread_created",
         title: `New email thread started from ${from}`,
@@ -1069,7 +1070,7 @@ export async function handleMidtransWebhookUpdate(midtransPayload: {
       }
     } catch (e) {
       console.warn(`[Midtrans Webhook] Invalid transaction_time format: ${transaction_time}, using current time as fallback`);
-      parsedTransactionTime = new Date();
+      parsedTransactionTime = getNow();
     }
 
     // Use lazy repository initialization that works in all environments (test/production)
@@ -1165,7 +1166,7 @@ export async function handleMidtransWebhookUpdate(midtransPayload: {
           work_id: updatedWork.workId,
           tenant_id: defaultTenantId,
           actor_id: defaultActorId,
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           meta_midtransOrderId: order_id,
           meta_transactionId: transaction_id,
           meta_packageType: packageType,
@@ -1288,7 +1289,7 @@ export async function syncEOSToMidtrans(workId: string, newStatus: string): Prom
           "metadata": {
             "eos_work_id": work.workId,
             "eos_delivery_status": newStatus,
-            "last_updated": new Date().toISOString()
+            "last_updated": getNow().toISOString()
           }
         })
       });
@@ -1435,11 +1436,11 @@ export async function handleIlcWebhookUpdate(ilcPayload: {
     // This is core Work Continuity - preserving full history across actor/interface changes
     const updatedWork = await workRepository.save({
       ...existingWork,
-      updatedAt: ilcPayload.timestamp ? new Date(ilcPayload.timestamp).toISOString() : new Date().toISOString(),
+      updatedAt: ilcPayload.timestamp ? new Date(ilcPayload.timestamp).toISOString() : getNow().toISOString(),
       evidence: [...((existingWork as any).evidence ?? []), {
         type: "discussion_message_added",
         title: `New ILC message in ${ilcPayload.discussion_topic} from ${ilcPayload.sender_id}`,
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         source: "ilc-institutional-platform",
         message: ilcPayload.message,
         sender_role: ilcPayload.sender_role
@@ -2382,7 +2383,7 @@ export class ConnectorEcosystemService {
           const errorMessage = "eventId tidak valid atau tidak ada dalam ExecutionEnvelope";
           console.error(`[connector-ecosystem.processIncomingEdgeEvent] ${errorMessage}`);
           const fallbackWorkId = newWorkId();
-          const currentTimestamp = new Date().toISOString();
+          const currentTimestamp = getNow().toISOString();
           await safeRecordEvidence({
             capability: "connector-ecosystem",
             command: "process-incoming-edge-event",
@@ -2402,7 +2403,7 @@ export class ConnectorEcosystemService {
       // EDGE-DEVICE-001: Langkah 1 - Cek deduplikasi event (MQTT QoS 1 idempotensi)
       if (this.eventDeduplicationSet.has(input.eventId)) {
         const fallbackWorkId = newWorkId();
-        const currentTimestamp = new Date().toISOString();
+        const currentTimestamp = getNow().toISOString();
         console.log(`[connector-ecosystem.processIncomingEdgeEvent] Duplikat event ditolak, eventId: ${input.eventId}`);
         await safeRecordEvidence({
           capability: "connector-ecosystem",
@@ -2426,7 +2427,7 @@ export class ConnectorEcosystemService {
       
       if (!targetWork) {
         const fallbackWorkId = newWorkId();
-        const currentTimestamp = new Date().toISOString();
+        const currentTimestamp = getNow().toISOString();
         await safeRecordEvidence({
           capability: "connector-ecosystem",
           command: "process-incoming-edge-event",
@@ -2460,7 +2461,7 @@ export class ConnectorEcosystemService {
       });
 
       // Catat evidence sukses
-      const currentTimestamp = new Date().toISOString();
+      const currentTimestamp = getNow().toISOString();
       await safeRecordEvidence({
         capability: "connector-ecosystem",
         command: "process-incoming-edge-event",
@@ -2484,7 +2485,7 @@ export class ConnectorEcosystemService {
       // Catat evidence error
       try {
         const fallbackWorkId = newWorkId();
-        const currentTimestamp = new Date().toISOString();
+        const currentTimestamp = getNow().toISOString();
         const { safeRecordEvidence } = await import("@capabilities/work-core/implementation/utils/evidence.utils.js");
         await safeRecordEvidence({
           capability: "connector-ecosystem",
@@ -2523,7 +2524,7 @@ export class ConnectorEcosystemService {
       const payload = JSON.stringify({
         workId: input.workId,
         status: input.status,
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         correlationId: input.correlationId
       });
 
@@ -2621,7 +2622,7 @@ export class ConnectorEcosystemService {
           work_id: work.workId,
           tenant_id: work.tenantId,
           actor_id: "eos-connector-ecosystem",
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           meta_provider: envelopeConfig.providerName,
           meta_envelopeId: createEnvelopeResult.envelopeId
         });
@@ -3470,7 +3471,7 @@ export class ConnectorEcosystemService {
             createdBy: "JOURNEY_ENGINE_ID",
             updatedBy: "JOURNEY_ENGINE_ID",
             createdAt: new Date(issue.created_at * 1000).toISOString(),
-            updatedAt: new Date().toISOString()
+            updatedAt: getNow().toISOString()
           });
           importedWorks.push(newWork);
           
@@ -3597,7 +3598,7 @@ export class ConnectorEcosystemService {
             createdBy: "JOURNEY_ENGINE_ID",
             updatedBy: "JOURNEY_ENGINE_ID",
             createdAt: new Date(project.created_at * 1000).toISOString(),
-            updatedAt: new Date().toISOString()
+            updatedAt: getNow().toISOString()
           });
           // Add to local cache to persist across sync calls (workaround MockPool bug)
           localCache.push(newWork);
@@ -3704,7 +3705,7 @@ export class ConnectorEcosystemService {
         if (!existingWork) {
           // Create new canonical Work for this external Zendesk ticket - TIDAK PERLU UBAH CORE
           // Generate required canonical identifiers (repository will handle full WorkAggregate composition)
-          const tempWorkId = new Date().getTime().toString();
+          const tempWorkId = getNow().getTime().toString();
           const newWork = await workRepository.save({
             id: tempWorkId as any, // Temporary ID yang akan diolah oleh repository
             compositionId: "zendesk-default-composition" as any, // Composition ID minimal
@@ -3720,7 +3721,7 @@ export class ConnectorEcosystemService {
             workspaceId: WorkspaceId("customer-support-workspace"),
             actorId: "JOURNEY_ENGINE_ID" as any,
             createdAt: new Date(ticket.created_at * 1000),
-            updatedAt: new Date(),
+            updatedAt: getNow(),
             // PlatformMetadata - field yang sudah ada di WorkAggregate, menampung semua data spesifik Zendesk
             platformMetadata: {
               subdomain: ticket.subdomain,
@@ -3892,7 +3893,7 @@ export class ConnectorEcosystemService {
           const payload = JSON.stringify({
             workId: work.workId,
             status: work.status,
-            timestamp: new Date().toISOString(),
+            timestamp: getNow().toISOString(),
             logicalWorkId: work.logicalWorkId || work.workId // Pastikan logicalWorkId selalu ada sesuai kontrak universal
           });
           
@@ -4023,7 +4024,7 @@ export class ConnectorEcosystemService {
           const payload = JSON.stringify({
             workId: work.workId,
             status: work.status,
-            timestamp: new Date().toISOString(),
+            timestamp: getNow().toISOString(),
             logicalWorkId: work.logicalWorkId || work.workId // Pastikan logicalWorkId selalu ada sesuai kontrak universal
           });
           
@@ -4094,8 +4095,8 @@ export class ConnectorEcosystemService {
                 platformSource: "websocket-audio-platform",
                 externalId: validatedEvent.data.deviceId,
                 logicalWorkId: validatedEvent.data.logicalWorkId,
-                createdAt: new Date(),
-                updatedAt: new Date()
+                createdAt: getNow(),
+                updatedAt: getNow()
               };
               targetWork = await workRepository.save(newWork);
               console.log('[WebSocket Audio Adapter] New voice Work created:', targetWork.workId);
@@ -4148,11 +4149,11 @@ export class ConnectorEcosystemService {
               const updatedWork = await workRepository.save({
                 ...targetWork,
                 intentUnderstanding: understanding,
-                updatedAt: new Date().toISOString(),
+                updatedAt: getNow().toISOString(),
                 evidence: [...currentEvidence, {
                   type: "voice_intent_processed",
                   title: `Voice intent processed: ${domain}/${understanding.interpretedObjective}`,
-                  timestamp: new Date().toISOString(),
+                  timestamp: getNow().toISOString(),
                   source: "websocket-audio-adapter",
                   transcript: transcript,
                   domain: domain,
@@ -4295,7 +4296,7 @@ export async function handleWhatsAppWebhookUpdate(whatsappPayload: any): Promise
 
     // Create canonical WorkAggregate fully compliant with work-core contract (C7 requirement met)
     const newWork: Partial<WorkAggregate> = {
-      id: new Date().getTime().toString() as any,
+      id: getNow().getTime().toString() as any,
       compositionId: "whatsapp-default-composition" as any,
       tenantId: (global as any).currentTenantId || "default-tenant",
       workspaceId: (global as any).currentWorkspaceId || "customer-support-workspace",
@@ -4308,7 +4309,7 @@ export async function handleWhatsAppWebhookUpdate(whatsappPayload: any): Promise
       platformSource: "whatsapp",
       externalId: `${firstMessage.from}_${firstMessage.id}`, // W03 format: {phone}_{message_id}
       createdAt: new Date(parseInt(firstMessage.timestamp) * 1000), // Gunakan timestamp dari Meta API
-      updatedAt: new Date()
+      updatedAt: getNow()
     };
 
     const savedWork = await workRepository.save(newWork);
@@ -4319,7 +4320,7 @@ export async function handleWhatsAppWebhookUpdate(whatsappPayload: any): Promise
         workId: savedWork.workId,
         eventType: "whatsapp_message_received",
         payload: firstMessage,
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor: "meta-whatsapp-cloud-api"
       });
     }
@@ -4493,7 +4494,7 @@ export async function handleSignatureProviderWebhookUpdate(signaturePayload: {
         lastSignedAt: signaturePayload.signedAt,
         lastEventAt: Date.now()
       },
-      updatedAt: new Date().toISOString()
+      updatedAt: getNow().toISOString()
     });
 
     // Trigger WorkInspectionAgent hanya jika semua signer selesai (SIGNATURE_COMPLETE)
@@ -4578,7 +4579,7 @@ export async function syncEOSToSignatureProvider(workId: string, envelopeConfig:
         work_id: work.workId,
         tenant_id: work.tenantId,
         actor_id: "eos-connector-ecosystem",
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         meta_provider: envelopeConfig.providerName,
         meta_envelopeId: createEnvelopeResult.envelopeId
       });
@@ -4623,7 +4624,7 @@ export async function getMidtransPaymentStatus(transactionId: string): Promise<s
       const evidencePath = statePath('verification', `midtrans-status-${transactionId}.json`);
       await fs.writeFile(evidencePath, JSON.stringify({
         transactionId,
-        retrievedAt: new Date().toISOString(),
+        retrievedAt: getNow().toISOString(),
         transactionStatus: data.transaction_status,
         fullResponse: data,
         verificationResult: "PASSED"
@@ -4661,7 +4662,7 @@ export async function getMidtransPaymentStatus(transactionId: string): Promise<s
       const evidenceContent = JSON.stringify({
         work_id: "W05-MIDTRANS",
         transactionId,
-        retrievedAt: new Date().toISOString(),
+        retrievedAt: getNow().toISOString(),
         environment: process.env.NODE_ENV || 'development',
         transactionStatus: "pending", // Jangan mengubah pending menjadi paid sebelum status provider membenarkannya
         signatureVerificationResult, // Signature verification yang false tetap dipertahankan sebagai gap
@@ -4708,7 +4709,7 @@ export async function getMidtransPaymentStatus(transactionId: string): Promise<s
       const errorPath = statePath('verification', `midtrans-error-${transactionId}.json`);
       await fs.writeFile(errorPath, JSON.stringify({
         transactionId,
-        failedAt: new Date().toISOString(),
+        failedAt: getNow().toISOString(),
         error: error instanceof Error ? error.message : String(error),
         verificationResult: "FAILED"
       }, null, 2));
@@ -4780,7 +4781,7 @@ async function initializePaymentGateway(input: {
       platformMetadata: {
         ...(targetWork.platformMetadata || {}),
         paymentGateway: input.paymentGateway,
-        lastInitializedAt: new Date().toISOString(),
+        lastInitializedAt: getNow().toISOString(),
         correlationId: input.correlationId,
         actorId: input.actorId,
         businessMetadata: input.metadata || {}

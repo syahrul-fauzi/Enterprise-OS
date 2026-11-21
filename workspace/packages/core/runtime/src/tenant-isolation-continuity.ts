@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 export interface TenantIsolationSession {
   sessionId: string;
@@ -13,17 +14,17 @@ export interface TenantIsolationSession {
 export class TenantIsolationContinuityService {
   async createTenantIsolationSession(context: ExecutionContext, actorId: string, workItemId: string): Promise<TenantIsolationSession> {
     const session: TenantIsolationSession = {
-      sessionId: `tenant-isolation-session-${Date.now()}`,
+      sessionId: `tenant-isolation-session-${getNow().getTime()}`,
       actorId,
       workItemId,
       status: 'ACTIVE',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
     context.invocationEvidence.push({
       operation: 'createTenantIsolationSession',
       sessionId: session.sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return session;
   }
@@ -33,7 +34,7 @@ export class TenantIsolationContinuityService {
       operation: 'suspendTenantIsolationSession',
       sessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { suspended: true, sessionId };
   }
@@ -44,14 +45,14 @@ export class TenantIsolationContinuityService {
       actorId: context.actorId,
       workItemId: context.workItemId,
       status: 'RESUMED',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
     context.invocationEvidence.push({
       operation: 'resumeTenantIsolationSession',
       sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return session;
   }
@@ -66,7 +67,7 @@ export class TenantIsolationContinuityService {
       operation: 'verifyTenantIsolationContinuity',
       sessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { valid: true, checks };
   }

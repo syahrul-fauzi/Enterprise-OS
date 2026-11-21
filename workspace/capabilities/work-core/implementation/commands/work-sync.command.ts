@@ -1,5 +1,7 @@
 // @ts-nocheck: Skip TypeScript checks to unblock Lawyers Hub staging deployment
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 // Gunakan alias canonical @repo/core-kernel sesuai package exports (hanya dist path yang diizinkan)
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import { validateBoundaryAccess, validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary, type WorkAggregate, WorkId, TenantId, ActorId } from "@repo/contracts-core";
@@ -43,7 +45,7 @@ async function syncCoreWork(input: SyncWorkRequest, context: any): Promise<{
       work_id: input.workId || "unknown",
       tenant_id: trustedTenantId || "unknown",
       actor_id: trustedActorId || "unknown",
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       sessionId: sessionId || "unknown",
       decision_id: "W06-A2-AUDIT-DENY-002"
     });
@@ -98,16 +100,16 @@ async function syncCoreWork(input: SyncWorkRequest, context: any): Promise<{
   };
   
   const evidenceBoundary: EvidenceBoundary = {
-    evidenceIds: [`work-sync-${Date.now()}`],
+    evidenceIds: [`work-sync-${getNow().getTime()}`],
     evidenceChain: [{
       actorId: sourceActorId,
       action: "initiate-work-sync",
-      timestamp: new Date(),
+      timestamp: getNow(),
       workspaceId: (input as any).workspaceId || "unknown-workspace"
     }, {
       actorId: targetActorId,
       action: "receive-synced-work",
-      timestamp: new Date(),
+      timestamp: getNow(),
       workspaceId: (input as any).workspaceId || "unknown-workspace"
     }],
     outcomeVerified: false
@@ -166,7 +168,7 @@ async function syncCoreWork(input: SyncWorkRequest, context: any): Promise<{
   const updatedWork: Partial<WorkAggregate> = {
     ...work,
     actorId: input.targetActorId as any,
-    updatedAt: new Date(),
+    updatedAt: getNow(),
   };
   
   await workRepository.save(updatedWork as WorkAggregate);
@@ -176,7 +178,7 @@ async function syncCoreWork(input: SyncWorkRequest, context: any): Promise<{
   return {
     success: true,
     workId: input.workId,
-    syncedAt: new Date().toISOString(),
+    syncedAt: getNow().toISOString(),
     contextLossRate: 0,
   };
 }

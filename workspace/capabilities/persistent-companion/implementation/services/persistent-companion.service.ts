@@ -6,6 +6,7 @@
  * for work spread across all external platforms
  */
 import type { WorkId } from "@repo/contracts-core";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import type { WorkInspectionResult } from "../../../work-inspection/implementation/contracts/work-inspection.contracts";
 import { WorkInspectionAgent } from "../../../work-inspection/implementation/services/inspection.agent.service";
 
@@ -53,9 +54,9 @@ export class PersistentWorkCompanion {
     const state: UserCompanionState = {
       userId,
       tenantId,
-      attachedAt: new Date(),
+      attachedAt: getNow(),
       trackedWorks: [],
-      lastFullInspectionAt: new Date(),
+      lastFullInspectionAt: getNow(),
       activeBottlenecks: new Map(),
       executedActions: [],
     };
@@ -117,7 +118,7 @@ export class PersistentWorkCompanion {
       for (const workId of state.trackedWorks) {
         await this.inspectUserWork(userId, workId);
       }
-      state.lastFullInspectionAt = new Date();
+      state.lastFullInspectionAt = getNow();
     }
   }
 

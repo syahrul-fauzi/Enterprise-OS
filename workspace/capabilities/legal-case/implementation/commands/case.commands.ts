@@ -2,6 +2,7 @@
 import { z } from "zod";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/index.js";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { getCaseByIdCommand } from "./get-case-by-id.command.js";
 import {
   getCaseRepositoryInMemory,
@@ -10,6 +11,8 @@ import {
   defaultCasePriority,
   defaultCaseStatus,
 } from "../repository/index.js";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
+import { caseQueries } from "../queries/case.queries.js";
 import {
   // Import canonical shared utilities from Work Continuity Substrate (Rule of Two compliance)import {
   calculateExecutionFrame,
@@ -330,7 +333,7 @@ const createCase: CapabilityCommand<
 				capability: "legal-case",
 				command: "create-case",
 				workspace_id: workspaceId,
-				timestamp: new Date().toISOString(),
+				timestamp: getNow().toISOString(),
 				sessionId: sessionId,
 				graph_link_created: true,
 				linked_product_id: linkedProduct?.id || null,
@@ -385,8 +388,8 @@ const createCase: CapabilityCommand<
 			lawyerId: undefined, // Fix: undefined sesuai contract (bukan null)
 			status: "draft",
 			priority: defaultCasePriority,
-			createdAt: new Date(),
-			updatedAt: new Date(),
+			createdAt: getNow(),
+			updatedAt: getNow(),
 			// PROD-002-10: Full CMBCD fields initialization (dengan branded types yang benar)
 			actorMetadata: castedActorMetadata,
 			allowedCapabilities: [...initialCapabilities], // Fix: mutable copy readonly array
@@ -418,7 +421,7 @@ const createCase: CapabilityCommand<
 				const updatedCase: CaseAggregate = {
 					...newCase,
 					status: "open",
-					updatedAt: new Date()
+					updatedAt: getNow()
 				};
 				await caseRepository.save(updatedCase);
 				console.log(`[LH-LEGAL-001] ✅ State transition: draft → open for workId: ${coreWorkResult.workId}`);
@@ -433,7 +436,7 @@ const createCase: CapabilityCommand<
 				work_id: coreWorkResult.workId,
 				tenant_id: sessionTenantId,
 				actor_id: sessionActorId,
-				timestamp: new Date().toISOString(),
+				timestamp: getNow().toISOString(),
 				workspace_id: sessionWorkspaceId,
 				capability: "legal-case",
 				command: "update-case-state",
@@ -466,6 +469,9 @@ const AddCaseEvidenceSchema = z.object({
 		type: z.string(),
 		data: z.string(),
 	}),
+	timelineEntry: z.object({
+		text: z.string(),
+	}).optional(),
 });
 
 const addCaseEvidenceCommand: CapabilityCommand<
@@ -476,7 +482,7 @@ const addCaseEvidenceCommand: CapabilityCommand<
 	capability: "legal-case",
 	execute: async (input) => {
 		const parsed = AddCaseEvidenceSchema.parse(input);
-		const { caseId, sessionId, evidence } = parsed;
+		const { caseId, sessionId, evidence, timelineEntry } = parsed;
 		
 		// Validasi session terlebih dahulu (sesuai pattern semua perintah legal-case)
 		const sessionRepository = await getSessionRepositoryLazy();
@@ -496,6 +502,22 @@ const addCaseEvidenceCommand: CapabilityCommand<
 			throw new Error("[legal-case.add-case-evidence] Case not found");
 		}
 
+		// Update case dengan timeline entry jika disediakan
+		let updatedCase = caseExists;
+		if (timelineEntry) {
+			updatedCase = {
+				...caseExists,
+				activity: [...(caseExists.activity || []), {
+					id: `timeline-entry-${getNow().getTime()}`,
+					at: getNow(),
+					text: timelineEntry.text,
+					actorId: sessionActorId
+				}],
+				updatedAt: getNow()
+			};
+			await caseRepository.save(updatedCase);
+		}
+
 		// Gunakan safeRecordEvidence dari work-core untuk menyimpan evidence ke ledger yang benar
 		await safeRecordEvidence({
 			work_id: caseExists.workId,
@@ -504,21 +526,24 @@ const addCaseEvidenceCommand: CapabilityCommand<
 			capability: "legal-case",
 			command: "add-case-evidence",
 			workspace_id: sessionWorkspaceId,
-			timestamp: new Date().toISOString(),
+			timestamp: getNow().toISOString(),
 			sessionId: sessionId,
 			evidence_added: true,
 			evidence_name: evidence.name,
 			evidence_type: evidence.type,
 			linked_case_id: caseId,
-			note: `Evidence added to legal case: ${evidence.name}`
+			timeline_entry_added: timelineEntry ? true : false,
+			timeline_entry_text: timelineEntry?.text,
+			note: timelineEntry ? `Timeline entry added: ${timelineEntry.text}` : `Evidence added to legal case: ${evidence.name}`
 		});
 
-		console.log("[legal-case.add-case-evidence] ✅ Evidence added successfully to case", caseId, evidence.name);
+		console.log("[legal-case.add-case-evidence] ✅ Operation completed successfully for case", caseId);
 		return {
 			success: true,
 			caseId,
 			evidenceName: evidence.name,
-			workId: caseExists.workId
+			workId: caseExists.workId,
+			timelineEntryAdded: timelineEntry ? true : false
 		};
 	},
 };
@@ -594,10 +619,10 @@ const assignLawyerToCase: CapabilityCommand<
 				calculatedExecutionFrame: newComputedFrame,
 				propagated_from: "cross-capability" as const
 			},
-			updatedAt: new Date(),
+			updatedAt: getNow(),
 			// Add evidence untuk actor change transition
 			evidence: [...(caseExists.evidence || []), {
-				timestamp: new Date().toISOString(),
+				timestamp: getNow().toISOString(),
 				actorId: session.actorId,
 				transitionType: "actor-assigned",
 				previousActorId: caseExists.actorMetadata.actorId,
@@ -617,7 +642,7 @@ const assignLawyerToCase: CapabilityCommand<
 			lawyer_id: lawyerId,
 			actor_id: session.actorId,
 			tenant_id: session.tenantId,
-			timestamp: new Date().toISOString(),
+			timestamp: getNow().toISOString(),
 			sessionId: session.sessionId,
 			note: "LH-LEGAL-001: Lawyer assigned to case via authority boundary check"
 		});
@@ -666,7 +691,7 @@ const submitCase: CapabilityCommand<z.infer<typeof SubmitCaseSchema>> = {
 		}
 
 		// Update case status menjadi submitted
-		const updatedCase = { ...caseExists, status: "submitted" as const, submittedAt: new Date(), updatedAt: new Date() };
+		const updatedCase = { ...caseExists, status: "submitted" as const, submittedAt: getNow(), updatedAt: getNow() };
 		await caseRepository.save(updatedCase);
 
 		// Update core Work state menjadi SIGNATURE_REQUIRED (work-core status mapping) + setup acceptanceContract
@@ -692,7 +717,7 @@ const submitCase: CapabilityCommand<z.infer<typeof SubmitCaseSchema>> = {
 			actor_id: session.actorId,
 			tenant_id: session.tenantId,
 			workspace_id: coreWork.workspaceId, // Wajib sesuai EOS MASTER EVIDENCE REQUIREMENT - work tidak bisa tanpa workspace
-			timestamp: new Date().toISOString(),
+			timestamp: getNow().toISOString(),
 			sessionId: session.sessionId,
 			stateTransition: "open→submitted",
 			note: "Case submitted for review, acceptance contract initialized with required signers"
@@ -741,7 +766,7 @@ const reviewCase: CapabilityCommand<z.infer<typeof ReviewCaseSchema>> = {
 		}
 
 		// Update case status menjadi reviewed
-		const updatedCase = { ...caseExists, status: "reviewed" as const, reviewedAt: new Date(), updatedAt: new Date() };
+		const updatedCase = { ...caseExists, status: "reviewed" as const, reviewedAt: getNow(), updatedAt: getNow() };
 		await caseRepository.save(updatedCase);
 
 		// Update core Work state menjadi SIGNATURE_PENDING (work-core status mapping)
@@ -766,7 +791,7 @@ const reviewCase: CapabilityCommand<z.infer<typeof ReviewCaseSchema>> = {
 			actor_id: session.actorId,
 			tenant_id: session.tenantId,
 			workspace_id: coreWork.workspaceId || undefined,
-			timestamp: new Date().toISOString(),
+			timestamp: getNow().toISOString(),
 			sessionId: session.sessionId,
 			stateTransition: "submitted→reviewed",
 			note: "Case moved to review, signature collection in progress"
@@ -828,7 +853,7 @@ const approveCase: CapabilityCommand<z.infer<typeof ApproveCaseSchema>> = {
 		}
 
 		// Update case status menjadi approved
-		const updatedCase = { ...caseExists, status: "approved" as const, approvedAt: new Date(), updatedAt: new Date() };
+		const updatedCase = { ...caseExists, status: "approved" as const, approvedAt: getNow(), updatedAt: getNow() };
 		await caseRepository.save(updatedCase);
 
 		// Update core Work state menjadi SIGNATURE_COMPLETE (work-core status mapping)
@@ -856,7 +881,7 @@ const approveCase: CapabilityCommand<z.infer<typeof ApproveCaseSchema>> = {
 				actor_id: session.actorId,
 				tenant_id: session.tenantId,
 				workspace_id: coreWork.workspaceId || undefined,
-				timestamp: new Date().toISOString(),
+				timestamp: getNow().toISOString(),
 				sessionId: session.sessionId,
 				stateTransition: "reviewed→approved",
 				note: "Case approved, all required signatures collected"
@@ -915,8 +940,8 @@ const markUnderReview: CapabilityCommand<z.infer<typeof MarkUnderReviewSchema>> 
 		const updatedCase = { 
 			...caseExists, 
 			status: "under_review" as const, 
-			underReviewAt: new Date(), 
-			updatedAt: new Date(),
+			underReviewAt: getNow(), 
+			updatedAt: getNow(),
 			paymentAmount // Simpan jumlah pembayaran untuk referensi selanjutnya
 		};
 		await caseRepository.save(updatedCase);
@@ -933,7 +958,7 @@ const markUnderReview: CapabilityCommand<z.infer<typeof MarkUnderReviewSchema>> 
 					recipient: "PT Legal Hub Indonesia",
 					payer: coreWork.metadata?.clientName || "Unknown Client",
 					description: `Legal Case Retention Fee - Case ID: ${caseId}`,
-					dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 hari dari sekarang
+					dueDate: new Date(getNow().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 hari dari sekarang
 				});
 				paymentTransactionId = paymentResult.transactionId;
 				console.log(`[legal-case.mark-under-review] Payment triggered successfully: txn=${paymentTransactionId}`);
@@ -946,7 +971,7 @@ const markUnderReview: CapabilityCommand<z.infer<typeof MarkUnderReviewSchema>> 
 						...coreWork.platformMetadata,
 						paymentTransactionId,
 						paymentAmount,
-						paymentDueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+						paymentDueDate: new Date(getNow().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString()
 					}
 				});
 			} catch (paymentError) {
@@ -964,7 +989,7 @@ const markUnderReview: CapabilityCommand<z.infer<typeof MarkUnderReviewSchema>> 
 			actor_id: session.actorId,
 			tenant_id: session.tenantId,
 			workspace_id: coreWork.workspaceId || undefined,
-			timestamp: new Date().toISOString(),
+			timestamp: getNow().toISOString(),
 			stateTransition: "approved→under_review",
 			note: `Case marked under review, payment triggered. Transaction ID: ${paymentTransactionId || "PENDING"}`,
 			metadata: { paymentAmount, paymentTransactionId }
@@ -1045,7 +1070,7 @@ const closeCase: CapabilityCommand<z.infer<typeof CloseCaseSchema>> = {
 		}
 
 		// Update case status menjadi settled
-		const closedAt = new Date();
+		const closedAt = getNow();
 		const updatedCase = {
 			...caseExists,
 			status: "settled" as const,
@@ -1130,7 +1155,7 @@ const closeCase: CapabilityCommand<z.infer<typeof CloseCaseSchema>> = {
 					capability: "legal-case",
 					command: "case.close",
 					requirement_id: requirementId,
-					timestamp: new Date().toISOString(),
+					timestamp: getNow().toISOString(),
 					sessionId: session.sessionId,
 					outcome_bound: true,
 					outcome_type: "case_resolved",
@@ -1145,7 +1170,7 @@ const closeCase: CapabilityCommand<z.infer<typeof CloseCaseSchema>> = {
 				id: `outcome-${caseId}`,
 				type: "case_closed",
 				workId: caseExists.workId,
-				timestamp: new Date().toISOString(),
+				timestamp: getNow().toISOString(),
 				metadata: {
 					caseId: caseId,
 					closedAt: closedAt
@@ -1163,7 +1188,7 @@ const closeCase: CapabilityCommand<z.infer<typeof CloseCaseSchema>> = {
 				actor_id: session.actorId,
 				tenant_id: session.tenantId,
 				workspace_id: coreWork.workspaceId || undefined,
-				timestamp: new Date().toISOString(),
+				timestamp: getNow().toISOString(),
 				sessionId: session.sessionId,
 				graph_traversal_success: !!linkedCase,
 				linked_case_id: linkedCase?.id || null,
@@ -1178,16 +1203,387 @@ const closeCase: CapabilityCommand<z.infer<typeof CloseCaseSchema>> = {
 	},
 };
 
+const UpdateCaseStatusSchema = z.object({
+	caseId: z.string().min(1),
+	sessionId: z.string().min(1),
+	newStatus: z.enum(["draft", "open", "under_review", "settled", "closed"]),
+	statusReason: z.string().optional()
+});
+
+const updateCaseStatus: CapabilityCommand<
+	z.infer<typeof UpdateCaseStatusSchema>,
+	CaseAggregate & { statusTransition: string; faceProjection?: any }
+> = {
+	kind: "command",
+	name: "update-case-status",
+	capability: "legal-case",
+	version: "1.0.0",
+	execute: async (input) => {
+		const parsed = UpdateCaseStatusSchema.parse(input);
+		const { caseId, sessionId, newStatus, statusReason } = parsed;
+		
+		const sessionRepository = await getSessionRepositoryLazy();
+		const session = await sessionRepository.byId(sessionId as any);
+		if (!session || session.revokedAt !== null) {
+			throw new Error("[legal-case.update-case-status] Invalid or revoked session - authentication violation");
+		}
+		const { tenantId: sessionTenantId, workspaceId: sessionWorkspaceId, actorId: sessionActorId } = session;
+
+		const caseRepository = await getCaseRepositoryLazy();
+		const caseExists = await caseRepository.byId(CaseId(caseId), {
+			tenantId: sessionTenantId,
+			workspaceId: sessionWorkspaceId
+		});
+		if (!caseExists) {
+			throw new Error("Case not found");
+		}
+
+		const validTransitions: Record<string, string[]> = {
+			"draft": ["open"],
+			"open": ["under_review", "settled"],
+			"under_review": ["open", "settled"],
+			"settled": ["closed"],
+			"closed": []
+		};
+
+		const currentStatus = caseExists.status;
+		const allowedTransitions = validTransitions[currentStatus] || [];
+		if (!allowedTransitions.includes(newStatus)) {
+			throw new Error(`Invalid status transition: ${currentStatus} → ${newStatus}. Allowed transitions: ${allowedTransitions.join(", ")}`);
+		}
+
+		const statusTransition = `${currentStatus}→${newStatus}`;
+		const updatedAt = getNow();
+		const updatedCase = {
+			...caseExists,
+			status: newStatus,
+			statusReason: statusReason || caseExists.statusReason,
+			updatedAt
+		};
+		await caseRepository.save(updatedCase);
+
+		const capabilityRegistry = await getCapabilityRegistry();
+		if (capabilityRegistry?.invoke) {
+			try {
+				await capabilityRegistry.invoke("work-core", "work.update-status", {
+					workId: caseExists.workId,
+					newStatus: newStatus === "settled" ? "completed" : newStatus === "closed" ? "archived" : "in_progress",
+					sessionId,
+					actorId: sessionActorId
+				});
+			} catch (workUpdateError) {
+				console.warn("[legal-case.update-case-status] Core Work update failed, but case status updated locally:", workUpdateError);
+			}
+		}
+
+		const faceProjection = buildWorkFaceProjection({
+			workId: caseExists.workId as WorkId,
+			tenantId: sessionTenantId,
+			organizationId: "lawyershub.legal",
+			principalId: sessionActorId,
+			ownerIds: [sessionActorId, caseExists.lawyerId as ActorId],
+			domain: "legal-case",
+			intent: "legal-matter-resolution",
+			currentState: newStatus === "settled" ? "completed" : newStatus === "closed" ? "archived" : "in_progress",
+			requirements: [],
+			constraints: [],
+			decisions: [],
+			actorCapabilities: new Map(),
+			policyEnforcements: [],
+			authorizations: new Map(),
+			delegations: [],
+			workspaceId: sessionWorkspaceId,
+			runtimeEnvironment: "web" as const,
+			executorIds: [sessionActorId],
+			executionFrame: caseExists.executionFrame,
+			supportedFaces: ["web", "api"],
+			defaultLayout: "case-view",
+			mobileEnabled: true,
+			apiEnabled: true,
+			displayName: `Case: ${caseExists.title}`,
+			summary: `Case status updated to ${newStatus}`,
+			priority: caseExists.priority,
+			uiFilters: ["status", "priority", "updatedAt"],
+			hideFromSurfaces: [],
+			currentActorId: sessionActorId,
+			canCurrentActorAct: true,
+			nextAvailableActions: newStatus === "open" ? ["update-case", "assign-lawyer", "add-evidence"] : [],
+			evidenceCount: caseExists.evidenceCount || 0,
+			actorCount: caseExists.lawyerId ? 2 : 1
+		});
+
+		if (session.sessionId) {
+			await safeRecordEvidence({
+				capability: "legal-case",
+				command: "update-case-status",
+				case_id: caseId,
+				work_id: caseExists.workId,
+				actor_id: sessionActorId,
+				tenant_id: sessionTenantId,
+				workspace_id: sessionWorkspaceId,
+				timestamp: getNow().toISOString(),
+				sessionId: session.sessionId,
+				status_transition: statusTransition,
+				new_status: newStatus,
+				status_reason: statusReason,
+				note: `LH-CASE-007: Case status updated ${statusTransition}`
+			});
+		}
+
+		console.log(`[LH-CASE-007] ✅ Case ${caseId} status updated: ${statusTransition} (work: ${caseExists.workId})`);
+		return { ...updatedCase, statusTransition, faceProjection };
+	},
+};
+
+const DeleteCaseSchema = z.object({
+	caseId: z.string().min(1),
+	sessionId: z.string().min(1)
+});
+
+const deleteCase: CapabilityCommand<
+	z.infer<typeof DeleteCaseSchema>,
+	{ deleted: boolean; caseId: string; workId?: string }
+> = {
+	kind: "command",
+	name: "delete-case",
+	capability: "legal-case",
+	version: "1.0.0",
+	execute: async (input) => {
+		const { caseId, sessionId } = DeleteCaseSchema.parse(input);
+		
+		const sessionRepository = await getSessionRepositoryLazy();
+		const session = await sessionRepository.byId(sessionId as any);
+		if (!session || session.revokedAt !== null) {
+			throw new Error("[legal-case.delete-case] Invalid or revoked session - authentication violation");
+		}
+
+		const caseRepository = await getCaseRepositoryLazy();
+		const caseExists = await caseRepository.byId(CaseId(caseId), {
+			tenantId: session.tenantId,
+			workspaceId: session.workspaceId
+		});
+		if (!caseExists) {
+			throw new Error("Case not found");
+		}
+
+		const capabilityRegistry = await getCapabilityRegistry();
+		if (capabilityRegistry?.invoke) {
+			try {
+				await capabilityRegistry.invoke("work-core", "delete", {
+					workId: caseExists.workId,
+					sessionId,
+					tenantId: session.tenantId,
+					workspaceId: session.workspaceId,
+					actorId: session.actorId
+				});
+			} catch (workDeleteError) {
+				console.warn("[legal-case.delete-case] Core Work delete failed, but case deletion proceeding:", workDeleteError);
+			}
+		}
+
+		const deleted = await caseRepository.remove(CaseId(caseId), {
+			tenantId: session.tenantId,
+			workspaceId: session.workspaceId
+		});
+
+		if (session.sessionId) {
+			await safeRecordEvidence({
+				capability: "legal-case",
+				command: "delete-case",
+				case_id: caseId,
+				work_id: caseExists.workId,
+				actor_id: session.actorId,
+				tenant_id: session.tenantId,
+				workspace_id: session.workspaceId,
+				timestamp: getNow().toISOString(),
+				sessionId: session.sessionId,
+				deleted: deleted,
+				note: "LH-CASE-005: Case deleted successfully"
+			});
+		}
+
+		console.log(`[LH-CASE-005] ✅ Case ${caseId} deleted successfully (work: ${caseExists.workId})`);
+		return { deleted, caseId, workId: caseExists.workId };
+	},
+};
+
+const ArchiveCaseSchema = z.object({
+	caseId: z.string().min(1),
+	sessionId: z.string().min(1)
+});
+
+const archiveCase: CapabilityCommand<z.infer<typeof ArchiveCaseSchema>> = {
+	kind: "command",
+	name: "legal-case.archive",
+	capability: "legal-case",
+	version: "1.0.0",
+	execute: async (input) => {
+		const { caseId, sessionId } = ArchiveCaseSchema.parse(input);
+		
+		const sessionRepository = await getSessionRepositoryLazy();
+		const session = await sessionRepository.byId(sessionId as any);
+		if (!session || session.revokedAt !== null) {
+			throw new Error("[legal-case.archive-case] Invalid or revoked session - authentication violation");
+		}
+
+		const caseRepository = await getCaseRepositoryLazy();
+		const caseExists = await caseRepository.byId(CaseId(caseId), {
+			tenantId: session.tenantId,
+			workspaceId: session.workspaceId
+		});
+		if (!caseExists) throw new Error("Case not found");
+		if (caseExists.status !== "settled") throw new Error("Only settled cases can be archived");
+
+		let coreWork: any = { tenantId: session.tenantId, workspaceId: session.workspaceId };
+		if (process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
+			const workRepository = getWorkRepositoryPostgres();
+			coreWork = await workRepository.byWorkId(caseExists.workId);
+			if (!coreWork) throw new Error("[legal-case.archive-case] Core Work not found - cannot archive orphaned case");
+		}
+
+		if (coreWork.tenantId !== session.tenantId || coreWork.workspaceId !== session.workspaceId) {
+			throw new Error("[legal-case.archive-case] Cross-tenant access blocked - authority boundary violation");
+		}
+
+		const archivedAt = getNow();
+		const updatedCase = {
+			...caseExists,
+			status: "archived" as const,
+			archivedAt,
+			updatedAt: archivedAt
+		};
+		await caseRepository.save(updatedCase);
+
+		const capabilityRegistry = await getCapabilityRegistry();
+		if (capabilityRegistry?.invoke) {
+			try {
+				await capabilityRegistry.invoke("work-core", "update", {
+					workId: caseExists.workId,
+					status: "archived",
+					archivedAt: archivedAt.toISOString()
+				});
+			} catch (workUpdateError) {
+				console.warn("[legal-case.archive-case] Core Work update failed, but case archived locally:", workUpdateError);
+			}
+		}
+
+		if (session.sessionId) {
+			await safeRecordEvidence({
+				capability: "legal-case",
+				command: "legal-case.archive",
+				case_id: caseId,
+				work_id: caseExists.workId,
+				actor_id: session.actorId,
+				tenant_id: session.tenantId,
+				workspace_id: session.workspaceId,
+				timestamp: getNow().toISOString(),
+				sessionId: session.sessionId,
+				stateTransition: "settled→archived",
+				note: "Case archived successfully"
+			});
+		}
+
+		console.log(`[LH-CASE-013] ✅ Case ${caseId} archived successfully (work: ${caseExists.workId})`);
+		return updatedCase;
+	},
+};
+
+const ReopenCaseSchema = z.object({
+	caseId: z.string().min(1),
+	sessionId: z.string().min(1)
+});
+
+const reopenCase: CapabilityCommand<z.infer<typeof ReopenCaseSchema>> = {
+	kind: "command",
+	name: "legal-case.reopen",
+	capability: "legal-case",
+	version: "1.0.0",
+	execute: async (input) => {
+		console.log("[legal-case.reopen] REQUEST received:", input);
+		const { caseId, sessionId } = ReopenCaseSchema.parse(input);
+
+		const sessionRepository = await getSessionRepositoryLazy();
+		const session = await sessionRepository.byId(sessionId as any);
+		if (!session || session.revokedAt !== null) {
+			throw new Error("[legal-case.reopen] Invalid or revoked session - authentication violation");
+		}
+
+		const caseRepository = await getCaseRepositoryLazy();
+		const caseExists = await caseRepository.byId(CaseId(caseId), {
+			tenantId: session.tenantId,
+			workspaceId: session.workspaceId
+		});
+		if (!caseExists) throw new Error("Case not found");
+		if (caseExists.status !== "archived") throw new Error("Only archived cases can be reopened");
+
+		let coreWork: any = { tenantId: session.tenantId, workspaceId: session.workspaceId };
+		if (process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
+			const workRepository = getWorkRepositoryPostgres();
+			coreWork = await workRepository.byWorkId(caseExists.workId);
+			if (!coreWork) throw new Error("[legal-case.reopen] Core Work not found - cannot reopen orphaned case");
+		}
+
+		if (coreWork.tenantId !== session.tenantId || coreWork.workspaceId !== session.workspaceId) {
+			throw new Error("[legal-case.reopen] Cross-tenant access blocked - authority boundary violation");
+		}
+
+		const reopenedAt = getNow();
+		const updatedCase = {
+			...caseExists,
+			status: "draft" as const,
+			reopenedAt,
+			updatedAt: reopenedAt
+		};
+		await caseRepository.save(updatedCase);
+
+		const capabilityRegistry = await getCapabilityRegistry();
+		if (capabilityRegistry?.invoke) {
+			try {
+				await capabilityRegistry.invoke("work-core", "update", {
+					workId: caseExists.workId,
+					status: "draft",
+					reopenedAt: reopenedAt.toISOString()
+				});
+			} catch (workUpdateError) {
+				console.warn("[legal-case.reopen] Core Work update failed, but case reopened locally:", workUpdateError);
+			}
+		}
+
+		if (session.sessionId) {
+			await safeRecordEvidence({
+				capability: "legal-case",
+				command: "legal-case.reopen",
+				case_id: caseId,
+				work_id: caseExists.workId,
+				actor_id: session.actorId,
+				tenant_id: session.tenantId,
+				workspace_id: session.workspaceId,
+				timestamp: getNow().toISOString(),
+				sessionId: session.sessionId,
+				stateTransition: "archived→draft",
+				note: "Case reopened successfully"
+			});
+		}
+
+		console.log(`[LH-CASE-014] ✅ Case ${caseId} reopened successfully (work: ${caseExists.workId})`);
+		return updatedCase;
+	},
+};
+
 export const commands = {
 	"create-case": createCase,
 	"case.getById": getCaseByIdCommand,
-	"add-case-evidence": addCaseEvidenceCommand, // New command matching test requirement (replaces old add-evidence-to-case)
+	"add-case-evidence": addCaseEvidenceCommand,
 	"assign-lawyer-to-case": assignLawyerToCase,
 	"legal-case.close": closeCase,
+	"delete-case": deleteCase,
+	"legal-case.archive": archiveCase,
+	"legal-case.reopen": reopenCase,
 	"legal-case.submit": submitCase,
 	"legal-case.review": reviewCase,
 	"legal-case.approve": approveCase,
-	"legal-case.mark-under-review": markUnderReview, // AUDIT-001-009: Payment trigger command
+	"legal-case.mark-under-review": markUnderReview,
+	"update-case-status": updateCaseStatus,
 };
 
 // Register legal-case commands with canonical capability registry (aligns with work-core pattern)
@@ -1199,6 +1595,16 @@ export function registerLegalCaseCapability() {
 		if (capabilityRegistry) {
 			Object.values(commands).forEach((command) => {
 				capabilityRegistry.register(command);
+			});
+			// Register case queries
+			Object.entries(caseQueries).forEach(([queryName, queryHandler]) => {
+				capabilityRegistry.register({
+					key: `legal-case.${queryName}`,
+					name: queryName,
+					capability: "legal-case",
+					version: "1.0.0",
+					execute: queryHandler.execute
+				});
 			});
 			// Register legal-clarification-flow dan ai-legal-consultant sebagai CapabilityCommand (sesuai interface capabilityRegistry.register)
 			// Konversi dari registerCapability (deprecated) ke register untuk kompatibilitas dengan core-kernel registry
@@ -1224,7 +1630,7 @@ export function registerLegalCaseCapability() {
 				requiredAuthorizations: ["ai:legal-consult", "tenant:ai_enabled"],
 				riskLevel: "medium"
 			});
-			console.log("[Legal-Case] All test commands registered successfully");
+			console.log("[Legal-Case] All test commands and queries registered successfully");
 		}
 		return;
 	}
@@ -1232,6 +1638,20 @@ export function registerLegalCaseCapability() {
 	if (capabilityRegistry) {
 		Object.values(commands).forEach((command) => {
 			capabilityRegistry.register(command);
+		});
+		// Register case queries
+		Object.entries(caseQueries).forEach(([queryName, queryHandler]) => {
+			capabilityRegistry.register({
+				key: `legal-case.${queryName}`,
+				name: `Legal Case Query: ${queryName}`,
+				capability: "legal-case",
+				description: `Query handler for ${queryName}`,
+				handler: queryHandler,
+				providerTypes: ["system"],
+				domainRestrictions: ["legal"],
+				requiredAuthorizations: ["legal:read"],
+				riskLevel: "low"
+			});
 		});
 		// Register legal-clarification-flow dan ai-legal-consultant sebagai CapabilityCommand (sesuai interface capabilityRegistry.register)
 		// Konversi dari registerCapability (deprecated) ke register untuk kompatibilitas dengan core-kernel registry
@@ -1257,6 +1677,6 @@ export function registerLegalCaseCapability() {
 			requiredAuthorizations: ["ai:legal-consult", "tenant:ai_enabled"],
 			riskLevel: "medium"
 		});
-		console.log("[Legal-Case] AUDIT-001-005: Legal-Case capability registered successfully - all commands added to canonical capability registry");
+		console.log("[Legal-Case] AUDIT-001-005: Legal-Case capability registered successfully - all commands and queries added to canonical capability registry");
 	}
 }

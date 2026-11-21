@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface EvidenceChainLink {
@@ -33,10 +34,10 @@ export class EvidenceChainService {
     evidenceData: Record<string, any>
   ): Promise<EvidenceChainLink> {
     const link: EvidenceChainLink = {
-      linkId: `link-${Date.now()}`,
+      linkId: `link-${getNow().getTime()}`,
       evidenceType,
-      evidenceHash: `hash-${chainId}-${evidenceType}-${Date.now()}`,
-      timestamp: new Date().toISOString(),
+      evidenceHash: `hash-${chainId}-${evidenceType}-${getNow().getTime()}`,
+      timestamp: getNow().toISOString(),
       actor: context.actor,
       previousLinkId: null
     };

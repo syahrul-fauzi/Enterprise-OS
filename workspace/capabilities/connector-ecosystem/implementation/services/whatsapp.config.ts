@@ -3,6 +3,7 @@
 // 97% reuse from telegram.config.ts (PostgreSQL pattern), adapted for WhatsApp Business Platform requirements
 // Reuses tenant_channel_configs table and RLS session context from service-directory patterns
 import { Pool, getPool } from "../../../identity/implementation/repositories/base.repository.js";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 
 // Lazy initialization with in-memory fallback for test/development environments
 // In production, uses PostgreSQL with RLS; in test/development, uses in-memory store (same as Telegram pattern)
@@ -133,7 +134,7 @@ export async function setWhatsAppConfigForTenant(tenantId: string, config: Omit<
     );
     
     const record = toRecord(tenantId, fullConfig);
-    const now = new Date().toISOString();
+    const now = getNow().toISOString();
     
     if (existing.rows.length > 0) {
       // Update existing

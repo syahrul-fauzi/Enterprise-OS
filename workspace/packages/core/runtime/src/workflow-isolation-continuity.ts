@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 async function logInvocationEvidence(context: ExecutionContext, action: string, data: Record<string, any>) {
@@ -17,11 +18,11 @@ export interface WorkflowIsolationSession {
 export class WorkflowIsolationContinuityService {
   async createWorkflowIsolationSession(context: ExecutionContext, workflowDefinitionId: string): Promise<WorkflowIsolationSession> {
     const session: WorkflowIsolationSession = {
-      workflowSessionId: `workflow-session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      workflowSessionId: `workflow-session-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       workflowDefinitionId,
       status: 'ACTIVE',
-      isolationHash: Buffer.from(`${workflowDefinitionId}-${context.tenantId}-${Date.now()}`).toString('hex'),
-      createdAt: new Date().toISOString()
+      isolationHash: Buffer.from(`${workflowDefinitionId}-${context.tenantId}-${getNow().getTime()}`).toString('hex'),
+      createdAt: getNow().toISOString()
     };
     
     logInvocationEvidence(context, 'createWorkflowIsolationSession', { workflowDefinitionId, session });
@@ -41,7 +42,7 @@ export class WorkflowIsolationContinuityService {
       status: 'RESUMED',
       isolationHash: '',
       createdAt: '',
-      lastResumedAt: new Date().toISOString()
+      lastResumedAt: getNow().toISOString()
     };
     
     logInvocationEvidence(context, 'resumeWorkflowIsolationSession', { workflowSessionId, session });

@@ -33,9 +33,21 @@ lifecycle:
     - id: dops-101
       name: Submit and run data processing job
       description: Full lifecycle eksekusi pekerjaan ETL/ELT atau operasi data dari pengajuan hingga penyelesaian
-      status: active
+      status: completed
       requirements:
         - req-data-001
+    - id: dops-102
+      name: Automate data pipeline
+      description: Full lifecycle otomatisasi definisi, penjadwalan, eksekusi, dan monitoring pipeline data
+      status: completed
+      requirements:
+        - req-data-002
+    - id: dops-103
+      name: Automate data pipeline scaling
+      description: Full lifecycle otomatisasi scaling pipeline data berdasarkan beban kerja, monitoring, dan penyesuaian resource
+      status: completed
+      requirements:
+        - req-data-003
 quality:
   targets:
     evidence_required: true

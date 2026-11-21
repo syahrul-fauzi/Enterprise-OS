@@ -27,12 +27,24 @@ lifecycle:
         description: Kasus selesai, evidence terverifikasi
         terminal: true
   real_user_jobs:
-    - id: case-101
+    - id: lh-case-101
       name: Create/manage legal matter
       description: Full lifecycle manajemen kasus hukum litigasi perusahaan
-      status: active
+      status: completed
       requirements:
         - req-lh-001
+    - id: lh-case-102
+      name: Legal Document Generation
+      description: Generasi dokumen hukum otomatis dengan compliance check dan legal templates
+      status: completed
+      requirements:
+        - req-lh-002
+    - id: lh-case-103
+      name: Automate legal intake
+      description: Full lifecycle otomatisasi intake kasus hukum dari formulir klien hingga penugasan advokat
+      status: completed
+      requirements:
+        - req-lh-003
 quality:
   targets:
     evidence_required: true

@@ -2,12 +2,19 @@
   "name": "@repo/presentation-experience",
   "version": "0.1.0",
   "sideEffects": false,
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "exports": {
-    ".": "./dist/index.js",
-    "./*": "./dist/*.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    }
   },
   "license": "MIT",
   "scripts": {

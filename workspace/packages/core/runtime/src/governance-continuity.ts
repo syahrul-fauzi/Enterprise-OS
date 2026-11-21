@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface GovernanceSession {
@@ -14,12 +15,12 @@ export interface GovernanceSession {
 export class GovernanceContinuityService {
   async createGovernanceSession(context: ExecutionContext, actorId: string, workItemId: string): Promise<GovernanceSession> {
     const session: GovernanceSession = {
-      sessionId: `gov-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `gov-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       actorId,
       workItemId,
       status: 'ACTIVE',
-      governanceHash: `gov-hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      governanceHash: `gov-hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
     await InvocationEvidence.record(context, 'createGovernanceSession', { actorId, workItemId, session });
     return session;
@@ -36,9 +37,9 @@ export class GovernanceContinuityService {
       actorId: context.actorId,
       workItemId: context.workItemId,
       status: 'RESUMED',
-      governanceHash: `gov-hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      governanceHash: `gov-hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
     await InvocationEvidence.record(context, 'resumeGovernanceSession', { sessionId, session });
     return session;

@@ -5,6 +5,7 @@
  * Reuse pattern dari /api/work/sync dan /api/work/add-participant yang sudah teruji
  */
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import type { CapabilityResolutionRequest } from "../../../../../../capabilities/atomic-composition/implementation/contracts/atomic-composition.contracts";
 
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
       workId,
       teamId: compositionResult.teamId,
       compositionId: compositionResult.compositionId,
-      composedAt: new Date().toISOString(),
+      composedAt: getNow().toISOString(),
       message: "Work composition completed successfully via atomic-composition engine"
     });
   } catch (error) {

@@ -12,7 +12,7 @@ import {
   SearchCasesInput,
   SearchCasesOutput,
 } from "../../contracts/index.js";
-import { createCase, closeCase, assignLawyer } from "../commands/index.js";
+import { createCase, closeCase, assignLawyer, deleteCase } from "../commands/index.js";
 import { getCase, searchCases } from "../queries/index.js";
 import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
 
@@ -76,6 +76,13 @@ export class CaseService {
   }
   async listCases(): Promise<readonly CaseAggregate[]> {
     return await caseRepository.list();
+  }
+  async deleteCase(input: { caseId: string; sessionId: string }): Promise<{ deleted: boolean; caseId: string; workId?: string }> {
+    const commandInput = {
+      caseId: input.caseId,
+      sessionId: input.sessionId
+    };
+    return await deleteCase.execute(commandInput);
   }
 }
 

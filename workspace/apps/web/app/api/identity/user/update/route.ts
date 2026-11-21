@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { z } from "zod";
 import {
   WORKSPACE_SESSION_COOKIE,
@@ -51,7 +52,7 @@ export async function PATCH(request: Request) {
         ...currentUser,
         ...(profileData.displayName && { displayName: profileData.displayName }),
         ...(profileData.email && { email: profileData.email }),
-        updatedAt: new Date(),
+        updatedAt: getNow(),
       };
 
       await userRepository.save(updatedUser);
@@ -88,7 +89,7 @@ export async function PATCH(request: Request) {
       const updatedUser = {
         ...currentUser,
         passwordHash: newPasswordHash,
-        updatedAt: new Date(),
+        updatedAt: getNow(),
       };
 
       await userRepository.save(updatedUser);

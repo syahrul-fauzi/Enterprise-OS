@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/index.js";
 import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
 import { getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/index.js";
@@ -130,11 +131,11 @@ export const getCaseByIdCommand: CapabilityCommand<GetCaseByIdInput, Promise<Get
     };
     
     const evidenceBoundary: EvidenceBoundary = {
-      evidenceIds: [`case-access-${Date.now()}`],
+      evidenceIds: [`case-access-${getNow().getTime()}`],
       evidenceChain: [{
         actorId: finalActorId,
         action: "get-case-by-id",
-        timestamp: new Date(),
+        timestamp: getNow(),
         workspaceId: finalWorkspaceId
       }],
       outcomeVerified: false

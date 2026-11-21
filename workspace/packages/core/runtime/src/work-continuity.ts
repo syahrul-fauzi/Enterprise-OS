@@ -1,4 +1,5 @@
 import { recordRuntimeInvocation } from "./invocation-evidence.js";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 // In-memory store untuk envelope yang sedang di-handoff (hanya untuk unblocking, nanti pindah ke persistence)
 const handoffStore = new Map();
@@ -27,7 +28,7 @@ export async function handoff_work(envelope: WorkHandoffEnvelope): Promise<boole
   // Simpan envelope untuk diambil oleh target_actor
   const enrichedEnvelope = {
     ...envelope,
-    handed_off_at: new Date().toISOString()
+    handed_off_at: getNow().toISOString()
   };
   handoffStore.set(envelope.work_id, enrichedEnvelope);
   

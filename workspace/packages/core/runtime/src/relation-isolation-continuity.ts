@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface RelationIsolationSession {
   sessionId: string;
   relationId: string;
@@ -18,16 +19,16 @@ export class RelationIsolationContinuityService {
 
   createRelationIsolationSession(relationId: string, tenantId: string, actor: string, context: Record<string, any> = {}): RelationIsolationSession {
     const session: RelationIsolationSession = {
-      sessionId: `relation-session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `relation-session-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       relationId,
       tenantId,
       status: 'active',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
+      updatedAt: getNow().toISOString(),
       invocationEvidence: [
         {
           operation: 'create',
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           actor,
           context
         }
@@ -42,10 +43,10 @@ export class RelationIsolationContinuityService {
     if (!session) return null;
     
     session.status = 'suspended';
-    session.updatedAt = new Date().toISOString();
+    session.updatedAt = getNow().toISOString();
     session.invocationEvidence.push({
       operation: 'suspend',
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       actor,
       context
     });
@@ -57,10 +58,10 @@ export class RelationIsolationContinuityService {
     if (!session) return null;
     
     session.status = 'active';
-    session.updatedAt = new Date().toISOString();
+    session.updatedAt = getNow().toISOString();
     session.invocationEvidence.push({
       operation: 'resume',
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       actor,
       context
     });

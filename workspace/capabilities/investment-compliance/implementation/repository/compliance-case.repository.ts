@@ -51,7 +51,7 @@ globalThis.__EOS_COMPLIANCE_CASE_SCANNER_INTERVAL__ = null;
 async function startDeadlineDetectionScanner(): Promise<void> {
   const scanInterval = 60 * 60 * 1000; // 1 hour in production
   globalThis.__EOS_COMPLIANCE_CASE_SCANNER_INTERVAL__ = setInterval(async () => {
-    const now = new Date();
+    const now = getNow();
     const warningWindow = 7 * 24 * 60 * 60 * 1000; // 7 days warning before deadline
     
     for (const [id, caseData] of STORE.entries()) {
@@ -230,7 +230,7 @@ export const ComplianceCaseRepositoryInMemory: ComplianceCaseRepository = {
     }
 
     // Simpan entity yang diupdate ke store
-    const updated = { ...entity, updatedAt: new Date() };
+    const updated = { ...entity, updatedAt: getNow() };
     STORE.set(entity.id, updated);
     
     // Catat runtime invocation untuk audit dan observability

@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 export interface GovernanceContextIsolationSession {
   governanceSessionId: string;
@@ -12,18 +13,18 @@ export interface GovernanceContextIsolationSession {
 export class GovernanceContextIsolationContinuityService {
   async createGovernanceContextIsolationSession(context: ExecutionContext, governanceType: string): Promise<GovernanceContextIsolationSession> {
     const session: GovernanceContextIsolationSession = {
-      governanceSessionId: `governance-session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      governanceSessionId: `governance-session-${getNow().getTime()}-${Math.random().toString(36).substring(2, 9)}`,
       governanceType,
       status: 'ACTIVE',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     context.invocationEvidence.push({
       operation: 'createGovernanceContextIsolationSession',
       governanceSessionId: session.governanceSessionId,
       governanceType,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return session;
@@ -34,7 +35,7 @@ export class GovernanceContextIsolationContinuityService {
       operation: 'suspendGovernanceContextIsolationSession',
       governanceSessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {
@@ -48,15 +49,15 @@ export class GovernanceContextIsolationContinuityService {
       governanceSessionId,
       governanceType: 'RESUMED',
       status: 'RESUMED',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     context.invocationEvidence.push({
       operation: 'resumeGovernanceContextIsolationSession',
       governanceSessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return resumedSession;
@@ -73,7 +74,7 @@ export class GovernanceContextIsolationContinuityService {
       operation: 'verifyGovernanceContextIsolationContinuity',
       governanceSessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {

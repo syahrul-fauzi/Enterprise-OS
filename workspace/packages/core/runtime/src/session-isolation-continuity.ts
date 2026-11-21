@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface SessionIsolationSession {
   sessionSessionId: string;
   sessionDefinitionId: string;
@@ -16,17 +17,17 @@ export class SessionIsolationContinuityService {
   private sessions: Map<string, SessionIsolationSession> = new Map();
 
   createSessionIsolationSession(sessionDefinitionId: string, actor: string): SessionIsolationSession {
-    const sessionSessionId = `sess-sess-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+    const sessionSessionId = `sess-sess-${getNow().getTime()}-${Math.random().toString(36).substring(2, 10)}`;
     const session: SessionIsolationSession = {
       sessionSessionId,
       sessionDefinitionId,
       status: 'active',
-      isolationHash: `sess-hash-${sessionDefinitionId}-${Date.now()}`,
-      createdAt: new Date().toISOString(),
+      isolationHash: `sess-hash-${sessionDefinitionId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
       evidence: [
         {
           operation: 'createSessionIsolationSession',
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           actor
         }
       ]
@@ -41,7 +42,7 @@ export class SessionIsolationContinuityService {
       session.status = 'suspended';
       session.evidence.push({
         operation: 'suspendSessionIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(sessionSessionId, session);
@@ -53,10 +54,10 @@ export class SessionIsolationContinuityService {
     const session = this.sessions.get(sessionSessionId);
     if (session) {
       session.status = 'resumed';
-      session.lastResumedAt = new Date().toISOString();
+      session.lastResumedAt = getNow().toISOString();
       session.evidence.push({
         operation: 'resumeSessionIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(sessionSessionId, session);

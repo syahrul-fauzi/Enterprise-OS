@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 export interface ActorIsolationSession {
   sessionId: string;
@@ -13,17 +14,17 @@ export interface ActorIsolationSession {
 export class ActorIsolationContinuityService {
   async createActorIsolationSession(context: ExecutionContext, actorId: string, workItemId: string): Promise<ActorIsolationSession> {
     const session: ActorIsolationSession = {
-      sessionId: `actor-isolation-session-${Date.now()}`,
+      sessionId: `actor-isolation-session-${getNow().getTime()}`,
       actorId,
       workItemId,
       status: 'ACTIVE',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
     context.invocationEvidence.push({
       operation: 'createActorIsolationSession',
       sessionId: session.sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return session;
   }
@@ -33,7 +34,7 @@ export class ActorIsolationContinuityService {
       operation: 'suspendActorIsolationSession',
       sessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { suspended: true, sessionId };
   }
@@ -44,14 +45,14 @@ export class ActorIsolationContinuityService {
       actorId: context.actorId,
       workItemId: context.workItemId,
       status: 'RESUMED',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
     context.invocationEvidence.push({
       operation: 'resumeActorIsolationSession',
       sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return session;
   }
@@ -66,7 +67,7 @@ export class ActorIsolationContinuityService {
       operation: 'verifyActorIsolationContinuity',
       sessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { valid: true, checks };
   }

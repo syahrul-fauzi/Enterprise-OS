@@ -53,8 +53,8 @@
 //       lawyerId: "lawyer-001",
 //       customerId: session.actorId,
 //       notaryId: "notary-001",
-//       createdAt: new Date().toISOString(),
-//       updatedAt: new Date().toISOString(),
+//       createdAt: getNow().toISOString(),
+//       updatedAt: getNow().toISOString(),
 //       _eos_slice: "EOS-FACE-GOLDEN-001",
 //       _eos_note: "This is the test case for the golden vertical slice - validates end-to-end work detail view"
 //     }, { status: 200 });

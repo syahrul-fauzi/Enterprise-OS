@@ -1,0 +1,44 @@
+{
+  "formulaId": "ECOM-OPS-CONFIDENCE-SCORE-FORMULA-001",
+  "formulaName": "ECOM-OPS Evidence Readiness Confidence Scoring Formula",
+  "formulaVersion": "1.0",
+  "createdAt": "2026-11-21T07:20:00.000Z",
+  "createdBy": "eos-evidence-engine",
+  "description": "Formula pembobotan yang terdokumentasi dan dapat direproduksi untuk menghitung overall confidence score G6 Evidence Readiness",
+  "dimensionWeights": {
+    "G6-01_completeness": {
+      "weight": 0.20,
+      "rationale": "Completeness adalah dasar utama — semua bukti harus ada sebelum verifikasi dapat dilakukan",
+      "range": "0.0 - 1.0"
+    },
+    "G6-02_provenance": {
+      "weight": 0.20,
+      "rationale": "Provenance menjamin asal usul bukti dapat dipercaya dan diaudit",
+      "range": "0.0 - 1.0"
+    },
+    "G6-03_traceability": {
+      "weight": 0.15,
+      "rationale": "Traceability memastikan rantai requirement → work → execution → evidence lengkap",
+      "range": "0.0 - 1.0"
+    },
+    "G6-04_integrity": {
+      "weight": 0.15,
+      "rationale": "Integrity menjamin tidak ada kontradiksi antara bukti satu dengan yang lain",
+      "range": "0.0 - 1.0"
+    },
+    "G6-05_verification": {
+      "weight": 0.20,
+      "rationale": "Verification memastikan bukti telah diverifikasi oleh pihak yang berwenang",
+      "range": "0.0 - 1.0"
+    },
+    "G6-06_governance": {
+      "weight": 0.10,
+      "rationale": "Governance memastikan batas otorisasi dan kebijakan dipatuhi",
+      "range": "0.0 - 1.0"
+    }
+  },
+  "totalWeightSum": 1.0,
+  "calculationFormula": "overallConfidenceScore = Σ (dimensionScore * dimensionWeight) untuk semua enam dimensi",
+  "reproducibilityGuarantee": "Perhitungan dapat direproduksi oleh siapa saja dengan menggunakan skor dimensi dan bobot yang tercantum dalam file ini",
+  "auditTrailRequirement": "Setiap perubahan bobot formula harus dicatat dengan versi baru dan alasan perubahan yang jelas"
+}

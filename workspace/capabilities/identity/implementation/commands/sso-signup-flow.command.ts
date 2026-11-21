@@ -1,6 +1,7 @@
 // @ts-nocheck
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import { randomUUID } from "node:crypto";
 import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "@repo/core-kernel";
 import { slugifyForTenant } from "../services/password.service.js";
@@ -33,6 +34,7 @@ import {
 import { oidcLoginFlowCommand } from "./oidc-login-flow.command.js";
 import * as jose from "jose";
 import { validateBoundaryAccess } from "@repo/contracts-core";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 const DEFAULT_SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 
@@ -183,7 +185,7 @@ export const ssoSignupFlowCommand: SsoSignupFlowCommand = {
 
       // Create session for existing user (reuse signup-and-session pattern)
       const ttl = DEFAULT_SESSION_TTL_SECONDS;
-      const now = new Date();
+      const now = getNow();
       const expires = new Date(now.getTime() + ttl * 1000);
       const sessionEntity = {
         id: newSessionId(),
@@ -265,8 +267,8 @@ export const ssoSignupFlowCommand: SsoSignupFlowCommand = {
       displayName,
       passwordHash: "", // SSO users have no password - per identity model, empty string for SSO-only accounts
       tenantId: undefined as any, // Temporary value, will be updated after tenant creation
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
     };
     await userRepo.save(userEntity);
     records.push({ ok: true, commandKey: "identity.registerUser" });
@@ -277,8 +279,8 @@ export const ssoSignupFlowCommand: SsoSignupFlowCommand = {
       name: `${displayName} Personal`,
       slug,
       ownerId: userEntity.id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
     };
     await tenantRepo.save(tenantEntity);
     records.push({ ok: true, commandKey: "identity.createTenant" });
@@ -295,8 +297,8 @@ export const ssoSignupFlowCommand: SsoSignupFlowCommand = {
       name: "Professional Workspace",
       slug: workspaceSlugBase,
       productId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
     };
     await workspaceRepo.save(workspaceEntity);
     records.push({ ok: true, commandKey: "identity.createWorkspace" });
@@ -308,16 +310,16 @@ export const ssoSignupFlowCommand: SsoSignupFlowCommand = {
       tenantId: tenantEntity.id,
       workspaceId: workspaceEntity.id,
       role: "owner" as Role,
-      joinedAt: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      joinedAt: getNow(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
     };
     await membershipRepo.save(membershipEntity);
     records.push({ ok: true, commandKey: "identity.createMembership" });
 
     // Create session (reuse signup-and-session's session creation)
     const ttl = DEFAULT_SESSION_TTL_SECONDS;
-    const now = new Date();
+    const now = getNow();
     const expires = new Date(now.getTime() + ttl * 1000);
     const sessionEntity = {
       id: newSessionId(),

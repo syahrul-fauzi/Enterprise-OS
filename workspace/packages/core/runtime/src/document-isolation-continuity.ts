@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface DocumentIsolationSession {
   documentSessionId: string;
   documentId: string;
@@ -16,17 +17,17 @@ export class DocumentIsolationContinuityService {
   private sessions: Map<string, DocumentIsolationSession> = new Map();
 
   createDocumentIsolationSession(documentId: string, actor: string): DocumentIsolationSession {
-    const documentSessionId = `doc-sess-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+    const documentSessionId = `doc-sess-${getNow().getTime()}-${Math.random().toString(36).substring(2, 10)}`;
     const session: DocumentIsolationSession = {
       documentSessionId,
       documentId,
       status: 'active',
-      isolationHash: `doc-hash-${documentId}-${Date.now()}`,
-      createdAt: new Date().toISOString(),
+      isolationHash: `doc-hash-${documentId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
       evidence: [
         {
           operation: 'createDocumentIsolationSession',
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           actor
         }
       ]
@@ -41,7 +42,7 @@ export class DocumentIsolationContinuityService {
       session.status = 'suspended';
       session.evidence.push({
         operation: 'suspendDocumentIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(documentSessionId, session);
@@ -53,10 +54,10 @@ export class DocumentIsolationContinuityService {
     const session = this.sessions.get(documentSessionId);
     if (session) {
       session.status = 'resumed';
-      session.lastResumedAt = new Date().toISOString();
+      session.lastResumedAt = getNow().toISOString();
       session.evidence.push({
         operation: 'resumeDocumentIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(documentSessionId, session);

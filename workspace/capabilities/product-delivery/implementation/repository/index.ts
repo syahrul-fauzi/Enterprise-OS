@@ -148,7 +148,7 @@ export class DeliveryRepositoryInMemory implements DeliveryRepository {
   private store = new Map<string, DeliveryAggregate>();
 
   async save(delivery: DeliveryAggregate): Promise<DeliveryAggregate> {
-    this.store.set(delivery.id, { ...delivery, updatedAt: new Date() });
+    this.store.set(delivery.id, { ...delivery, updatedAt: getNow() });
     return this.store.get(delivery.id)!;
   }
 

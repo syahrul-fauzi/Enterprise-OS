@@ -2,6 +2,7 @@
 // FIX-UI-001: Minimal execution status tracking for real-time UI updates
 // In-memory fallback for test environments (NO Redis required) - aligned with platform/src implementation
 import type { ObservedExecution } from "./execution-observability.js";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 declare global {
   var __EOS_INMEMORY_EXECUTION_STATUSES__: Map<string, any>;
 }
@@ -71,6 +72,8 @@ export interface ExecutionStatus {
   }>;
 }
 
+const KILL_SWITCH_KEY = 'eos:global:kill_switch';
+
 export const ExecutionStatusRepository = {
   async setStatus(executionId: string, status: ExecutionStatus['current'], actor?: string): Promise<void> {
     const key = `execution:${executionId}:status`;
@@ -78,11 +81,11 @@ export const ExecutionStatusRepository = {
     const current: ExecutionStatus = existing ? JSON.parse(existing) : {
       executionId,
       current: "loading",
-      updatedAt: new Date().toISOString(),
+      updatedAt: getNow().toISOString(),
       transitions: []
     };
     current.current = status;
-    current.updatedAt = new Date().toISOString();
+    current.updatedAt = getNow().toISOString();
     current.transitions.push({
       status,
       timestamp: current.updatedAt,
@@ -100,5 +103,26 @@ export const ExecutionStatusRepository = {
   async deleteStatus(executionId: string): Promise<void> {
     const key = `execution:${executionId}:status`;
     await redis.del(key);
+  },
+
+  async getKillSwitchState(): Promise<{ kill_switch_triggered: boolean; reason?: string; triggeredAt?: string }> {
+    const result = await redis.get(KILL_SWITCH_KEY);
+    return result ? JSON.parse(result) : { kill_switch_triggered: false };
+  },
+
+  async armKillSwitch(reason: string): Promise<void> {
+    await redis.set(KILL_SWITCH_KEY, JSON.stringify({
+      kill_switch_triggered: true,
+      reason,
+      triggeredAt: getNow().toISOString()
+    }));
+  },
+
+  async triggerKillSwitch(reason: string): Promise<void> {
+    await this.armKillSwitch(reason);
+  },
+
+  async resetKillSwitch(): Promise<void> {
+    await redis.del(KILL_SWITCH_KEY);
   }
 };

@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface IsolatedRuntime {
@@ -16,11 +17,11 @@ export class RuntimeIsolationService {
     runtimeType: string
   ): Promise<IsolatedRuntime> {
     const runtime: IsolatedRuntime = {
-      runtimeId: `runtime-${tenantId}-${Date.now()}`,
+      runtimeId: `runtime-${tenantId}-${getNow().getTime()}`,
       tenantId,
       status: 'CREATED',
-      isolationHash: `isolation-${tenantId}-${runtimeType}-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      isolationHash: `isolation-${tenantId}-${runtimeType}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'runtime-isolation.create', {

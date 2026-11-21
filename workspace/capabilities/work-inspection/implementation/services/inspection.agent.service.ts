@@ -10,6 +10,7 @@
 // import { CommunicationRepositoryPostgres } from "@capabilities/communication/implementation/repository/communication.postgres.repository.js";
 // import { CaseRepositoryPostgres } from "@capabilities/legal-case/implementation/repository/case.postgres.repository.js";
 import { getWorkRepositoryPostgres } from "@capabilities/work-core/implementation/repository/work-postgres.repository";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import type { WorkAggregate } from "../contracts/work-inspection.contracts";
 import {
   WorkContext,
@@ -101,7 +102,7 @@ export class WorkInspectionAgent {
 
       try {
         await this.inspectWork(workId);
-        this.lastScanAt.set(workId, new Date());
+        this.lastScanAt.set(workId, getNow());
       } catch (error) {
         console.error(`[WorkInspectionAgent] Failed to inspect work ${workId}:`, error);
       }
@@ -130,7 +131,7 @@ export class WorkInspectionAgent {
     // 5. UPDATE: Record the inspection and update Work state
     const inspectionResult: WorkInspectionResult = {
       workId,
-      inspectedAt: new Date(),
+      inspectedAt: getNow(),
       state: currentState,
       bottlenecks,
       missingActions,
@@ -168,8 +169,8 @@ export class WorkInspectionAgent {
       status: "in_progress",
       domainType: "service-request",
       platformMetadata: {},
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
+      updatedAt: getNow().toISOString(),
     };
     
     // Attempt to find work in repository, use fallback if not found
@@ -213,7 +214,7 @@ export class WorkInspectionAgent {
       actors: this.extractActors(finalWork, communicationEvents as any[]),
       artifacts: this.extractArtifacts(finalWork),
       state: this.extractInitialState(finalWork),
-      lastInspectedAt: new Date(),
+      lastInspectedAt: getNow(),
     };
   }
 
@@ -222,7 +223,7 @@ export class WorkInspectionAgent {
    */
   private inspectCurrentState(workContext: WorkContext): WorkContext["state"] {
     const { legalCase, communicationEvents, work } = workContext;
-    const now = new Date();
+    const now = getNow();
     // Use platformMetadata?.stageEnteredAt for EXTERNAL platform works (GitHub, Shopee, Zendesk) that have explicit stage timestamps
     // Fallback to work.updatedAt / createdAt for legacy internal works
     const platformMetadata: any = work.platformMetadata || {};
@@ -256,7 +257,7 @@ export class WorkInspectionAgent {
   private detectBottlenecks(workContext: WorkContext, currentState: WorkContext["state"]): DetectedBottleneck[] {
     const bottlenecks: DetectedBottleneck[] = [];
     const { communicationEvents, actors, work } = workContext;
-    const now = new Date();
+    const now = getNow();
 
     // SPECIAL CASE: Ecommerce orders (Shopee marketplace) - detect shipping delays
     if (work.domainType === "ecommerce-order" && work.workMode === "continuous") {

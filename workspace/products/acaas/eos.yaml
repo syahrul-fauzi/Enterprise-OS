@@ -1,0 +1,26 @@
+schema_version: "1.0"
+product_key: "acaas"
+title: "ACaaS — Compliance-as-a-Service"
+version: "1.0.0"
+status: "active"
+
+capabilities:
+  - key: "compliance.assessment"
+    description: "Melakukan penilaian kepatuhan bisnis terhadap persyaratan regulasi"
+  - key: "compliance.monitoring"
+    description: "Memantau kepatuhan berkelanjutan terhadap perubahan regulasi"
+  - key: "compliance.evidence"
+    description: "Menghasilkan bukti kepatuhan yang terverifikasi"
+  - key: "compliance.automation"
+    description: "Mengotomatiskan alur kerja kepatuhan"
+
+work_items:
+  - key: "ACAAS-101"
+    title: "Compliance Assessment"
+    status: "completed"
+  - key: "ACAAS-102"
+    title: "Compliance Automation"
+    status: "completed"
+  - key: "ACAAS-103"
+    title: "Compliance Evidence Automation"
+    status: "completed"

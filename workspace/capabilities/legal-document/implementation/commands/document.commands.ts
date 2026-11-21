@@ -1,5 +1,6 @@
 // @ts-nocheck
 import {
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
   ArchiveDocumentInput,
   ArchiveDocumentOutput,
   CreateDocumentInput,
@@ -103,7 +104,7 @@ export const createDocument: CreateDocumentCommand = {
     if (trimmed.length === 0) {
       throw new Error("[document.create] Document title cannot be empty");
     }
-    const now = new Date();
+    const now = getNow();
     const entity: DocumentAggregate & { tenantId?: string; workspaceId?: string; actorId?: string } = {
       id: newDocumentId(),
       title: trimmed,
@@ -205,7 +206,7 @@ export const signDocument: SignDocumentCommand = {
     if (!input.signer) {
       throw new Error(`[document.sign] Signer is required to sign document: ${input.id}`);
     }
-    const signedAt = new Date();
+    const signedAt = getNow();
     const next: DocumentAggregate = {
       ...current,
       status: "signed",
@@ -309,7 +310,7 @@ export const archiveDocument: ArchiveDocumentCommand = {
         tenantId: input.tenantId,
         workspaceId: input.workspaceId,
         workId: current.workId,
-        payload: { input, result: { id: current.id, status: "archived", archivedAt: current.archivedAt ?? new Date() } },
+        payload: { input, result: { id: current.id, status: "archived", archivedAt: current.archivedAt  ?? getNow() } },
         status: "COMPLETED",
       });
       
@@ -319,7 +320,7 @@ export const archiveDocument: ArchiveDocumentCommand = {
         sourceRef: "legal-document/commands/archiveDocument",
         success: true,
         input: input,
-        result: { id: current.id, status: "archived", archivedAt: current.archivedAt ?? new Date() },
+        result: { id: current.id, status: "archived", archivedAt: current.archivedAt  ?? getNow() },
         productId: "legal-document",
         inputRefs: [`document:${input.id}`],
         outputRefs: [`archived-document:${current.id}`],
@@ -328,10 +329,10 @@ export const archiveDocument: ArchiveDocumentCommand = {
       return {
         id: current.id,
         status: "archived",
-        archivedAt: current.archivedAt ?? new Date(),
+        archivedAt: current.archivedAt  ?? getNow(),
       };
     }
-    const archivedAt = new Date();
+    const archivedAt = getNow();
     const next: DocumentAggregate = {
       ...current,
       status: "archived",
@@ -419,7 +420,7 @@ export const reviewDocument: ReviewDocumentCommand = {
         `[document.review] Cannot review document in terminal status="${current.status}": ${input.id}`
       );
     }
-    const reviewedAt = new Date();
+    const reviewedAt = getNow();
     const next: DocumentAggregate = {
       ...current,
       status: input.approval ? "review" : "draft",

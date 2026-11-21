@@ -98,7 +98,7 @@ lifecycle:
     - id: digiop-101
       name: Purchase & onboard Digital Care package
       description: Pelanggan membeli paket Digital Care dan mengonboarding aset WordPress/WooCommerce mereka
-      status: active
+      status: completed
       requirements:
         - midtrans-payment-source-of-truth
         - package-installation-automation
@@ -110,7 +110,7 @@ lifecycle:
     - id: digiop-102
       name: Purchase & onboard Digital Growth Ops package
       description: Pelanggan membeli paket Digital Growth Ops dan mengonboarding toko Shopify/Tokopedia/Shopee
-      status: active
+      status: completed
       requirements:
         - midtrans-payment-source-of-truth
         - multi-platform-integration
@@ -123,7 +123,7 @@ lifecycle:
     - id: digiop-103
       name: Manage ongoing digital operations (Managed Outcome Loop)
       description: Kelola operasional digital berkelanjutan dengan SENSE→UNDERSTAND→DECIDE→ACT→VERIFY→LEARN sesuai paket yang dibeli
-      status: active
+      status: completed
       requirements:
         - managed-outcome-loop-execution
         - evidence-recording
@@ -137,7 +137,7 @@ lifecycle:
     - id: digiop-104
       name: Purchase & onboard Managed Digital Business Operations
       description: Pelanggan membeli paket enterprise dan mengonboarding seluruh operasi bisnis digital mereka
-      status: active
+      status: completed
       requirements:
         - midtrans-payment-source-of-truth
         - full-platform-integration

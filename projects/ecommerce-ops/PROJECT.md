@@ -3,7 +3,7 @@ schema_version: "1.0"
 project_key: "ecommerce-ops"
 title: "Ecommerce-Ops — Marketplace Order Fulfillment Operations"
 project_type: "business-vertical"
-lifecycle: "active"
+lifecycle: "preparation"
 
 ownership:
   business_owner: null
@@ -37,7 +37,12 @@ references:
   evidence: "../../workspace/products/ecommerce-ops/evidence/"
 
 execution_priority: "highest"
-readiness: "ready"
+readiness: "PREPARATION — NOT AUTHORIZED FOR PRODUCTION"
+operational_constraints:
+  - "Tanpa owner assignment hanya boleh melakukan persiapan non-mutating"
+  - "Tidak boleh mengaktifkan pilot produksi sebelum semua acceptance gates G1-G7 ECOM-OPS-PILOT-READINESS-001 terpenuhi"
+  - "Tidak boleh membuat primitive baru — harus menggunakan Work Core, Evidence Registry, capability yang sudah tersedia"
+  - "Status regulatory review: CONDITIONAL — LEGAL CLASSIFICATION REQUIRED"
 ---
 
 # Ecommerce-Ops — Marketplace Order Fulfillment Operations

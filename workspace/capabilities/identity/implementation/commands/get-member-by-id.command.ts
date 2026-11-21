@@ -1,7 +1,9 @@
 // @ts-nocheck
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import type { CapabilityCommand } from "@repo/core-kernel";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { UserRepositoryPostgres } from "../repositories/index.js";
 import type { UserId } from "@repo/contracts-core";
 // Import canonical boundary validation utilities from work-core (Rule of Two compliance)
@@ -85,7 +87,7 @@ export const getMemberByIdCommand: CapabilityCommand<GetMemberByIdInput, GetMemb
     const executionBoundary: ExecutionBoundary = {
       workspaceId,
       runtimeEnvironment: process.env.NODE_ENV || "development",
-      executionId: `get-member-${Date.now()}`,
+      executionId: `get-member-${getNow().getTime()}`,
       propagatedFrom: "api-route"
     };
 
@@ -122,8 +124,8 @@ export const getMemberByIdCommand: CapabilityCommand<GetMemberByIdInput, GetMemb
     }
 
     // Transform user aggregate to presentation-ready member format
-    const userCreatedAt = user.createdAt ?? new Date();
-    const userUpdatedAt = user.updatedAt ?? new Date();
+    const userCreatedAt = user.createdAt ?? getNow();
+    const userUpdatedAt = user.updatedAt ?? getNow();
     return {
       type: "researcher", // FIXME: Hardcoded as 'researcher' because UserAggregate no longer has a 'type' property.
       id: memberId,

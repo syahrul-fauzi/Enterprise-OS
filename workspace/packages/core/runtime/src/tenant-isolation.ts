@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface TenantSession {
@@ -18,12 +19,12 @@ export class TenantIsolationService {
     workItemId: string
   ): Promise<TenantSession> {
     const session: TenantSession = {
-      sessionId: `tenant-session-${tenantId}-${workItemId}-${Date.now()}`,
+      sessionId: `tenant-session-${tenantId}-${workItemId}-${getNow().getTime()}`,
       tenantId,
       workItemId,
       status: 'ACTIVE',
-      tenantHash: `tenant-hash-${tenantId}-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      tenantHash: `tenant-hash-${tenantId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'tenant-isolation.create-tenant-session', {
@@ -57,9 +58,9 @@ export class TenantIsolationService {
       tenantId: 'tenant-001',
       workItemId: 'W-021',
       status: 'RESUMED',
-      tenantHash: `tenant-hash-resumed-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      tenantHash: `tenant-hash-resumed-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'tenant-isolation.resume-tenant-session', {

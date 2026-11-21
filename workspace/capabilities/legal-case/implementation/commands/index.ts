@@ -7,7 +7,8 @@ const {
   "create-case": createCase,
   "close-case": closeCase,
   "assign-lawyer-to-case": assignLawyerToCase,
-  "add-evidence-to-case": addEvidenceToCase
+  "add-evidence-to-case": addEvidenceToCase,
+  "delete-case": deleteCase
 } = commands;
 // Canonical Work aliases - Case = Work specialization for legal domain
 // Menyelaraskan dengan EOS Face context: Intent → Work
@@ -16,9 +17,11 @@ export {
   closeCase, 
   assignLawyerToCase as assignLawyer,
   addEvidenceToCase,
+  deleteCase,
   createCase as createWork,
   closeCase as closeWork,
-  addEvidenceToCase as addEvidenceToWork
+  addEvidenceToCase as addEvidenceToWork,
+  deleteCase as deleteWork
 };
 // Hanya export yang dibutuhkan untuk EOS Face Spine
 export type * from "./case.commands.js";

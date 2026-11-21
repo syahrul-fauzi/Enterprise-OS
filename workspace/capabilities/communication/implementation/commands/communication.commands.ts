@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { executionContext } from "@repo/core-runtime";
 // Import SEMUA canonical types dan factory functions dari SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)
@@ -88,8 +89,8 @@ class WhatsAppAdapter {
       return {
         success: true,
         receipt: {
-          whatsapp_message_id: `whatsapp-mock-${Date.now()}`,
-          delivered_at: new Date().toISOString(),
+          whatsapp_message_id: `whatsapp-mock-${getNow().getTime()}`,
+          delivered_at: getNow().toISOString(),
           mock_mode: true
         }
       };
@@ -141,7 +142,7 @@ class WhatsAppAdapter {
         receipts.push({
           recipient: to,
           message_id: responseData.messages[0].id,
-          sent_at: new Date().toISOString()
+          sent_at: getNow().toISOString()
         });
         
         console.log(`[WhatsAppAdapter] Message sent to ${to}, ID: ${responseData.messages[0].id}`);
@@ -186,8 +187,8 @@ const EmailAdapter = {
         // For development: Log and store as sent
         receipts.push({
           recipient: recipient,
-          message_id: `email-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          sent_at: new Date().toISOString()
+          message_id: `email-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
+          sent_at: getNow().toISOString()
         });
       }
       
@@ -236,8 +237,8 @@ const MobilePushAdapter = {
         // For development: Log and store as sent
         receipts.push({
           recipient: recipient,
-          message_id: `mobilepush-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          sent_at: new Date().toISOString()
+          message_id: `mobilepush-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
+          sent_at: getNow().toISOString()
         });
       }
       
@@ -278,8 +279,8 @@ const SmsAdapter = {
         // For development: Log and store as sent
         receipts.push({
           recipient: recipient,
-          message_id: `sms-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          sent_at: new Date().toISOString()
+          message_id: `sms-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
+          sent_at: getNow().toISOString()
         });
       }
       
@@ -351,7 +352,7 @@ const SendCommunicationCommand: CapabilityCommand = {
 
     // 3. Create communication event with proper typing
     const eventId = newCommunicationEventId();
-    const now = new Date().toISOString();
+    const now = getNow().toISOString();
     
     const communicationEvent: CommunicationEvent = {
       event_id: eventId,
@@ -547,7 +548,7 @@ const AgenticNotifyCommand: CapabilityCommand = {
 
     // 4. Create communication event with system agent as actor
     const eventId = newCommunicationEventId();
-    const now = new Date().toISOString();
+    const now = getNow().toISOString();
     
     const communicationEvent: CommunicationEvent = {
       event_id: eventId,

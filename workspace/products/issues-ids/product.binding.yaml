@@ -1,0 +1,16 @@
+version: "1.0"
+status: ACTIVE
+product:
+  id: issues-ids
+  display_name: Issues & IDS
+experience:
+  surface: web
+  route: /products/issues-ids
+capabilities:
+  - consultation
+  - work-core
+  - governance-evidence
+  - workflow-engine
+  - observability
+  - identity
+claim_boundary: Issues & Incident Detection System (IDS) product binding onto canonical EOS Work Runtime. Issue reporting, triage, decision-making, and incident resolution connected to universal work reality surface without creating new lifecycle primitives.

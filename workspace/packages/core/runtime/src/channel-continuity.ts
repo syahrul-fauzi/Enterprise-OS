@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface ChannelSession {
@@ -16,11 +17,11 @@ export class ChannelContinuityService {
     workItemId: string
   ): Promise<ChannelSession> {
     const session: ChannelSession = {
-      sessionId: `channel-session-${workItemId}-${Date.now()}`,
+      sessionId: `channel-session-${workItemId}-${getNow().getTime()}`,
       workItemId,
       status: 'ACTIVE',
-      channelHash: `channel-hash-${workItemId}-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      channelHash: `channel-hash-${workItemId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'channel-continuity.create-channel-session', {
@@ -52,9 +53,9 @@ export class ChannelContinuityService {
       sessionId,
       workItemId: 'W-027',
       status: 'RESUMED',
-      channelHash: `channel-hash-resumed-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      channelHash: `channel-hash-resumed-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'channel-continuity.resume-channel-session', {

@@ -1,0 +1,69 @@
+{
+  "pilot_id": "BPD-PILOT-001",
+  "pilot_version": "1.0.0",
+  "pilot_objective": "Menjalankan satu use case intelligence lintas tiga produk existing untuk mengidentifikasi hubungan antara customer service aktivitas, conversion rate, dan commercial pipeline",
+  "governance_boundaries": {
+    "new_pipeline_prohibited": true,
+    "new_connector_prohibited": true,
+    "production_access_not_authorized": true,
+    "tenant_isolation_enforced": true,
+    "untraceable_intelligence_claims_prohibited": true
+  },
+  "pilot_use_case": {
+    "use_case_name": "Cross-Product Conversion Correlation",
+    "use_case_description": "Menganalisis hubungan antara aktivitas customer service di Digital Operations, conversion rate di Ecommerce-Ops, dan lead qualification rate di Deal Coordinator",
+    "research_questions": [
+      "Apakah peningkatan customer service resolution rate berhubungan dengan peningkatan conversion rate ecommerce?",
+      "Apakah lead qualification rate di Deal Coordinator berhubungan dengan peningkatan transaksi marketplace?",
+      "Di mana letak peluang pertumbuhan tertinggi dari korelasi lintas produk ini?"
+    ]
+  },
+  "data_sources_used": [
+    {
+      "source_id": "digital-operations",
+      "signals_used": [
+        "customer_resolution_time",
+        "customer_satisfaction_score",
+        "service_ticket_volume"
+      ],
+      "evidence_link": "digital-operations.evidence.pilot-outcome-report.json",
+      "environment_classification": "SANDBOX/STAGING"
+    },
+    {
+      "source_id": "ecommerce-ops",
+      "signals_used": [
+        "conversion_rate",
+        "transaction_volume",
+        "cart_abandonment_rate"
+      ],
+      "evidence_link": "ecommerce-ops.evidence.pilot-outcome-report.json",
+      "environment_classification": "SANDBOX/STAGING"
+    },
+    {
+      "source_id": "deal-coordinator",
+      "signals_used": [
+        "lead_qualification_rate",
+        "pipeline_velocity",
+        "deal_close_rate"
+      ],
+      "evidence_link": "deal-coordinator.evidence.pilot-outcome-report.json",
+      "environment_classification": "VERIFIED PIPELINE"
+    }
+  ],
+  "traceability_requirements": {
+    "every_intelligence_claim_must_have_source_reference": true,
+    "every_correlation_must_have_evidence_link": true,
+    "every_recommendation_must_have_data_support": true,
+    "untraceable_claims_prohibited": true
+  },
+  "reuse_verification": {
+    "existing_intelligence_layers_used": 5,
+    "existing_capabilities_reused": 12,
+    "new_components_created": 0,
+    "reuse_percentage": 100
+  },
+  "gate_verification": {
+    "untraceable_intelligence_claims": 0,
+    "gate_status": "PENDING"
+  }
+}

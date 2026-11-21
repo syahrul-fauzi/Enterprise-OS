@@ -1,5 +1,6 @@
 // @ts-nocheck
 import type { WorkBinding } from "../contracts/atomic-composition.contracts.js";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { atomicCompositionService } from "./composition.service.js";
 // Import canonical realtime notifier from core package (D1 architecture compliance)
 // @ts-ignore
@@ -73,7 +74,7 @@ class AIAgentExecutionService {
       actorId: binding.actorProjectionId ?? "",
       prompt: this.generatePromptForCapability(binding.capabilityReference ?? "", workTitle),
       status: "pending",
-      startedAt: new Date().toISOString(),
+      startedAt: getNow().toISOString(),
       workspaceId: workspaceId // Simpan workspaceId untuk filtering nanti
     };
 
@@ -277,7 +278,7 @@ class AIAgentExecutionService {
       
       // Update task status
       task.status = "completed";
-      task.completedAt = new Date().toISOString();
+      task.completedAt = getNow().toISOString();
       task.result = aiResult;
       task.evidenceUrl = `/evidence/ai-output-${task.bindingId}.json`;
 

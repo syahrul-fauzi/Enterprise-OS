@@ -1,0 +1,57 @@
+{
+  "workId": "sv-id-002",
+  "workTitle": "Service Provider Registration and Verification",
+  "executionStatus": "ALL_PASSED",
+  "executionTimestamp": "2026-11-20T14:15:00Z",
+  "reusePercentage": 100,
+  "capabilitiesRequired": 4,
+  "capabilitiesFoundInGenesis": 4,
+  "capabilitiesCreatedNew": 0,
+  "lifecycleStagesExecuted": {
+    "providerRegistrationLifecycle": [
+      "register",
+      "verify",
+      "activate",
+      "list",
+      "match"
+    ],
+    "universalEosLifecycle": [
+      "discover",
+      "create",
+      "execute",
+      "progress",
+      "evidence",
+      "complete"
+    ]
+  },
+  "capabilitiesUsed": [
+    "service-directory",
+    "provider-verification",
+    "category-management",
+    "provider-matching"
+  ],
+  "commercialEvidence": {
+    "totalCommercialValueIdr": 5000000,
+    "valuePerProviderIdr": 500000,
+    "productId": "services-id",
+    "servicePackage": "Verified Professional Services Marketplace"
+  },
+  "acceptanceCriteria": {
+    "allLifecycleStagesPassed": true,
+    "allCapabilitiesAvailableInGenesis": true,
+    "reusePercentageAbove95": true,
+    "commercialEvidenceRecorded": true,
+    "productHealthChecksPassed": true,
+    "securityBoundaryVerified": true,
+    "failureRecoveryTested": true,
+    "genesisIntegrationVerified": true
+  },
+  "testResults": {
+    "e2eServiceProviderRegistrationTest": "PASSED",
+    "e2eServiceFulfillmentTest": "PASSED",
+    "e2eServiceRequestLifecycleTest": "PASSED",
+    "servicesIdTest": "PASSED",
+    "sidReal021ServiceTicketContinuityTest": "PASSED"
+  },
+  "executionSummary": "SV-ID-002 Services.ID Service Provider Registration berhasil dieksekusi dengan ALL PASSED, reuse percentage 100%, dan nilai komersial Rp5.000.000. Semua 5 tahap provider registration dan 6 tahap universal lifecycle berjalan normal tanpa error."
+}

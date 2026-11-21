@@ -1,0 +1,26 @@
+{
+  "calculationId": "ECOM-OPS-CONFIDENCE-SCORE-CALCULATION-001",
+  "calculationTimestamp": "2026-11-21T08:05:00.000Z",
+  "executorIdentity": "eos-evidence-engine@eos-system",
+  "objective": "Rekalkulasi overall confidence score G6 menggunakan formula pembobotan yang terdokumentasi dan dapat direproduksi",
+  "weightingFormula": {
+    "description": "Weighted average dengan bobot yang ditetapkan berdasarkan kritisitas dimensi",
+    "dimensions": [
+      {"dimensionId": "G6-01", "dimensionName": "Completeness", "score": 0.92, "weight": 0.18},
+      {"dimensionId": "G6-02", "dimensionName": "Provenance", "score": 0.95, "weight": 0.18},
+      {"dimensionId": "G6-03", "dimensionName": "Traceability", "score": 1.00, "weight": 0.17},
+      {"dimensionId": "G6-04", "dimensionName": "Integrity", "score": 1.00, "weight": 0.17},
+      {"dimensionId": "G6-05", "dimensionName": "Verification", "score": 0.88, "weight": 0.15},
+      {"dimensionId": "G6-06", "dimensionName": "Governance", "score": 1.00, "weight": 0.15}
+    ],
+    "weightSum": 1.00,
+    "calculation": "(0.92 * 0.18) + (0.95 * 0.18) + (1.00 * 0.17) + (1.00 * 0.17) + (0.88 * 0.15) + (1.00 * 0.15)",
+    "overallConfidenceScore": 0.950
+  },
+  "previousScoreComparison": {
+    "previouslyReportedScore": 0.99,
+    "discrepancyReason": "Skor sebelumnya tidak memiliki dasar perhitungan yang terdokumentasi dan tidak cocok dengan rata-rata hitung sederhana (~0.958)",
+    "correction": "Menggunakan formula pembobotan yang jelas dan terdokumentasi"
+  },
+  "recommendation": "Overall confidence score G6 = 0.950. Formula pembobotan telah didokumentasikan dan dapat direproduksi."
+}

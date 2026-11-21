@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface PackageManifest {
@@ -19,12 +20,12 @@ export class PackageManifestService {
     dependencies: Record<string, string>
   ): Promise<PackageManifest> {
     const manifest: PackageManifest = {
-      manifestId: `manifest-${Date.now()}`,
+      manifestId: `manifest-${getNow().getTime()}`,
       packageName,
       version,
       dependencies,
-      integrityHash: `hash-${packageName}-${version}-${Date.now()}`,
-      generatedAt: new Date().toISOString(),
+      integrityHash: `hash-${packageName}-${version}-${getNow().getTime()}`,
+      generatedAt: getNow().toISOString(),
       status: 'GENERATED'
     };
 
@@ -70,7 +71,7 @@ export class PackageManifestService {
       version: '1.0.0',
       dependencies: {},
       integrityHash: 'hash-valid',
-      generatedAt: new Date().toISOString(),
+      generatedAt: getNow().toISOString(),
       status: 'PUBLISHED'
     };
   }

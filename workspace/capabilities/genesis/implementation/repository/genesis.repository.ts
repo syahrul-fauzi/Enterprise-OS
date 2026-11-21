@@ -36,7 +36,7 @@ export class GenesisRepository {
     if (existing) {
       return existing
     }
-    const now = new Date().toISOString()
+    const now = getNow().toISOString()
     const newProspect: LeadProspect = {
       ...prospect,
       id,
@@ -52,7 +52,7 @@ export class GenesisRepository {
     const prospect = this.leadProspects.get(id)
     if (!prospect) return null
     prospect.status = status
-    prospect.updatedAt = new Date().toISOString()
+    prospect.updatedAt = getNow().toISOString()
     prospect.evidenceRefs.push(...evidenceRefs)
     return prospect
   }
@@ -78,7 +78,7 @@ export class GenesisRepository {
     if (existing) {
       return existing
     }
-    const now = new Date().toISOString()
+    const now = getNow().toISOString()
     const newArtifact: SolutionArtifact = {
       ...artifact,
       id,
@@ -94,7 +94,7 @@ export class GenesisRepository {
     const artifact = this.solutionArtifacts.get(id)
     if (!artifact) return null
     artifact.status = status
-    artifact.updatedAt = new Date().toISOString()
+    artifact.updatedAt = getNow().toISOString()
     artifact.evidenceRefs.push(...evidenceRefs)
     return artifact
   }
@@ -120,7 +120,7 @@ export class GenesisRepository {
     if (existing) {
       return existing
     }
-    const now = new Date().toISOString()
+    const now = getNow().toISOString()
     const newAssessment: FinancialAssessment = {
       ...assessment,
       id,
@@ -136,7 +136,7 @@ export class GenesisRepository {
     const assessment = this.financialAssessments.get(id)
     if (!assessment) return null
     assessment.status = status
-    assessment.updatedAt = new Date().toISOString()
+    assessment.updatedAt = getNow().toISOString()
     if (updates) {
       Object.assign(assessment, updates)
     }
@@ -167,7 +167,7 @@ export class GenesisRepository {
     if (existing) {
       return existing
     }
-    const now = new Date().toISOString()
+    const now = getNow().toISOString()
     const newAsset: ConversionAsset = {
       ...asset,
       id,
@@ -183,7 +183,7 @@ export class GenesisRepository {
     const asset = this.conversionAssets.get(id)
     if (!asset) return null
     asset.status = status
-    asset.updatedAt = new Date().toISOString()
+    asset.updatedAt = getNow().toISOString()
     asset.evidenceRefs.push(...evidenceRefs)
     return asset
   }
@@ -209,7 +209,7 @@ export class GenesisRepository {
     if (existing) {
       return existing
     }
-    const now = new Date().toISOString()
+    const now = getNow().toISOString()
     const newAccount: ClientAccount = {
       ...account,
       id,
@@ -225,7 +225,7 @@ export class GenesisRepository {
     const account = this.clientAccounts.get(id)
     if (!account) return null
     account.status = status
-    account.updatedAt = new Date().toISOString()
+    account.updatedAt = getNow().toISOString()
     account.evidenceRefs.push(...evidenceRefs)
     return account
   }

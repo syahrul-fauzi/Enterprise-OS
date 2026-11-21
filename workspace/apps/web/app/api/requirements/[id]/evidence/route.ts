@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { cookies } from "next/headers";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
@@ -94,7 +95,7 @@ export async function GET(
       evidenceCount: evidence.length,
       evidenceChain: {
         actorId: session.actorId,
-        accessedAt: new Date().toISOString(),
+        accessedAt: getNow().toISOString(),
         source: "eos-face",
         canInspect: true,
         canReconstruct: true

@@ -13,6 +13,7 @@ import {
   type WorkspaceAggregate,
   type MembershipAggregate,
 } from "@repo/contracts-core";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import { passwordService, slugifyForTenant } from "../services/password.service.js";
 import {
   getUserRepositoryPostgres,
@@ -25,6 +26,7 @@ import {
   MembershipRepositoryInMemory,
 } from "../repositories/index.js";
 import { validateBoundaryAccess } from "@repo/contracts-core";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 function newUserId(): UserId {
   return UserId(`user-${randomUUID()}`);
@@ -104,8 +106,8 @@ export const signupFlowCommand: SignupFlowCommand = {
         displayName: displayName.trim(),
         passwordHash: passwordService.hash(password),
         tenantId: tenantId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: getNow(),
+        updatedAt: getNow(),
       };
       await userRepository.save(userEntity);
 
@@ -127,8 +129,8 @@ export const signupFlowCommand: SignupFlowCommand = {
           name: `${displayName} Personal`,
           slug: slug,
           ownerId: userEntity.id,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: getNow(),
+          updatedAt: getNow(),
         };
         await tenantRepository.save(tenantEntity);
 
@@ -140,8 +142,8 @@ export const signupFlowCommand: SignupFlowCommand = {
             name: "Professional Workspace",
             slug: slugifyForTenant("Professional Workspace"),
             productId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: getNow(),
+            updatedAt: getNow(),
           };
           await workspaceRepository.save(workspaceEntity);
 
@@ -153,9 +155,9 @@ export const signupFlowCommand: SignupFlowCommand = {
               tenantId: tenantEntity.id,
               workspaceId: workspaceEntity.id,
               role: "owner",
-              joinedAt: new Date(),
-              createdAt: new Date(),
-              updatedAt: new Date(),
+              joinedAt: getNow(),
+              createdAt: getNow(),
+              updatedAt: getNow(),
             };
             await membershipRepository.save(membershipEntity);
           } catch (membershipError) {

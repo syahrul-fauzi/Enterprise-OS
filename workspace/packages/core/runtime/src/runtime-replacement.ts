@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface RuntimeReplacement {
@@ -18,10 +19,10 @@ export class RuntimeReplacementService {
     toVersion: string
   ): Promise<RuntimeReplacement> {
     const replacement: RuntimeReplacement = {
-      replacementId: `replacement-${Date.now()}`,
+      replacementId: `replacement-${getNow().getTime()}`,
       fromRuntimeVersion: fromVersion,
       toRuntimeVersion: toVersion,
-      initiatedAt: new Date().toISOString(),
+      initiatedAt: getNow().toISOString(),
       status: 'PENDING',
       rollbackAvailable: true,
       evidence: []
@@ -48,7 +49,7 @@ export class RuntimeReplacementService {
       replacementId,
       fromRuntimeVersion: '1.0.0',
       toRuntimeVersion: '1.1.0',
-      initiatedAt: new Date().toISOString(),
+      initiatedAt: getNow().toISOString(),
       status: 'COMPLETED',
       rollbackAvailable: true,
       evidence: [`evidence-${replacementId}-1`, `evidence-${replacementId}-2`]
@@ -86,7 +87,7 @@ export class RuntimeReplacementService {
       replacementId,
       fromRuntimeVersion: '1.1.0',
       toRuntimeVersion: '1.0.0',
-      initiatedAt: new Date().toISOString(),
+      initiatedAt: getNow().toISOString(),
       status: 'ROLLED_BACK',
       rollbackAvailable: false,
       evidence: [`evidence-${replacementId}-rollback`]

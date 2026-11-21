@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface WorkItemDefinitionIsolationSession {
   workItemDefinitionSessionId: string;
   workItemDefinitionId: string;
@@ -16,17 +17,17 @@ export class WorkItemDefinitionIsolationContinuityService {
   private sessions: Map<string, WorkItemDefinitionIsolationSession> = new Map();
 
   createWorkItemDefinitionIsolationSession(workItemDefinitionId: string, actor: string): WorkItemDefinitionIsolationSession {
-    const workItemDefinitionSessionId = `wid-sess-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+    const workItemDefinitionSessionId = `wid-sess-${getNow().getTime()}-${Math.random().toString(36).substring(2, 10)}`;
     const session: WorkItemDefinitionIsolationSession = {
       workItemDefinitionSessionId,
       workItemDefinitionId,
       status: 'active',
-      isolationHash: `wid-hash-${workItemDefinitionId}-${Date.now()}`,
-      createdAt: new Date().toISOString(),
+      isolationHash: `wid-hash-${workItemDefinitionId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
       evidence: [
         {
           operation: 'createWorkItemDefinitionIsolationSession',
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           actor
         }
       ]
@@ -41,7 +42,7 @@ export class WorkItemDefinitionIsolationContinuityService {
       session.status = 'suspended';
       session.evidence.push({
         operation: 'suspendWorkItemDefinitionIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(workItemDefinitionSessionId, session);
@@ -53,10 +54,10 @@ export class WorkItemDefinitionIsolationContinuityService {
     const session = this.sessions.get(workItemDefinitionSessionId);
     if (session) {
       session.status = 'resumed';
-      session.lastResumedAt = new Date().toISOString();
+      session.lastResumedAt = getNow().toISOString();
       session.evidence.push({
         operation: 'resumeWorkItemDefinitionIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(workItemDefinitionSessionId, session);

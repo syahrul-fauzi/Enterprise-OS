@@ -1,5 +1,6 @@
 // @ts-nocheck: Skip TypeScript checks to unblock Lawyers Hub staging deployment
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { validateBoundaryAccess, validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary } from "@repo/contracts-core";
 import {
@@ -99,11 +100,11 @@ export const getCommunityDiscussionByIdCommand: CapabilityCommand<GetCommunityDi
     };
     
     const evidenceBoundary: EvidenceBoundary = {
-      evidenceIds: [`discussion-access-${Date.now()}`],
+      evidenceIds: [`discussion-access-${getNow().getTime()}`],
       evidenceChain: [{
         actorId,
         action: "get-community-discussion-by-id",
-        timestamp: new Date(),
+        timestamp: getNow(),
         workspaceId
       }],
       outcomeVerified: false

@@ -52,7 +52,7 @@ globalThis.__EOS_CASE_SCANNER_INTERVAL__ = null;
 async function startDeadlineDetectionScanner(): Promise<void> {
   const scanInterval = 60 * 60 * 1000; // 1 hour in production
   globalThis.__EOS_CASE_SCANNER_INTERVAL__ = setInterval(async () => {
-    const now = new Date();
+    const now = getNow();
     const warningWindow = 7 * 24 * 60 * 60 * 1000; // 7 days warning before deadline
     
     for (const [id, caseData] of STORE.entries()) {
@@ -178,7 +178,7 @@ export const CaseRepositoryInMemory: CaseRepository = {
 
   async save(entity: CaseAggregate, context?: { tenantId: string; workspaceId: string; actorId: string }) {
     const existing = STORE.get(entity.id);
-    const updated = { ...entity, updatedAt: new Date() };
+    const updated = { ...entity, updatedAt: getNow() };
     
     // Enforce tenant isolation on save
     if (process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && context) {

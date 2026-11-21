@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { cookies } from "next/headers";
 import {
   WORKSPACE_SESSION_COOKIE,
@@ -58,7 +59,7 @@ export async function GET(
       evidenceCount: work.evidence.length,
       evidenceChain: {
         actorId: decodedSession.actorId,
-        accessedAt: new Date().toISOString(),
+        accessedAt: getNow().toISOString(),
         source: "eos-face",
         canInspect: true,
         canReconstruct: true // Per PRIORITY 04: ACTION→EXECUTION→EVIDENCE→INSPECT→RECONSTRUCT
@@ -113,7 +114,7 @@ export async function POST(
       type,
       title,
       content: content || "",
-      uploadedAt: new Date().toISOString(),
+      uploadedAt: getNow().toISOString(),
       source: "eos-face-upload",
       uploadedBy: decodedSession.actorId,
       metadata: metadata || {}
@@ -121,7 +122,7 @@ export async function POST(
 
     // Mutate the canonical work record (single source of truth, no parallel execution)
     work.evidence.push(newEvidence);
-    work.updatedAt = new Date().toISOString();
+    work.updatedAt = getNow().toISOString();
     
     // Persist updated evidence to PostgreSQL source of truth FIRST
     const dbRecord = toWorkAggregate(work);
@@ -139,7 +140,7 @@ export async function POST(
       evidence: work.evidence,
       evidenceChain: {
         actorId: decodedSession.actorId,
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         source: "eos-face",
         mutation: "addEvidence",
         canInspect: true,

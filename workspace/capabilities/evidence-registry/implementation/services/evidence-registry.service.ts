@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { requirementService } from "../../../requirement-management/implementation/index.js";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import type {
   AssessEvidenceInput,
   AssessEvidenceOutput,
@@ -427,7 +428,7 @@ export class EvidenceRegistryService {
       provider_metrics: providerMetrics,
       categoryBreakdown,
       diversityBreakdown,
-      calculatedAt: new Date().toISOString(),
+      calculatedAt: getNow().toISOString(),
     };
 
     // Record runtime invocation for governance and audit
@@ -466,7 +467,7 @@ async function startCohortObservationScanner(): Promise<void> {
   const L1_COMMAND_CENTER_WORKSPACE_ID = "eos-command-center-l1-production";
   
   globalThis.__EOS_L1_COHORT_SCANNER_INTERVAL__ = setInterval(async () => {
-    const now = new Date();
+    const now = getNow();
     console.log("[EvidenceRegistryService] Scanning for triggered cohort observation gates...");
     
     // Scan all active L1 cohort execution files from .eos-state/command-center
@@ -521,7 +522,7 @@ async function startCohortObservationScanner(): Promise<void> {
               result: {
                 metricsSnapshot: metrics,
                 pass: false,
-                triggeredAt: new Date().toISOString(),
+                triggeredAt: getNow().toISOString(),
                 escalationTriggered: true,
                 cohortExpansionPaused: true,
                 reason: "Metrics below required thresholds"
@@ -569,7 +570,7 @@ async function startCohortObservationScanner(): Promise<void> {
               result: {
                 metricsSnapshot: metrics,
                 pass: true,
-                triggeredAt: new Date().toISOString(),
+                triggeredAt: getNow().toISOString(),
                 readyForL13Expansion: true
               },
               work_id: cohort.parentWorkId,
@@ -589,7 +590,7 @@ async function startCohortObservationScanner(): Promise<void> {
               const observationGateWork = workQueue.work_items.find((w: any) => w.work_id === "work-l1-observation-gate-001");
               if (observationGateWork) {
                 observationGateWork.status = "COMPLETED";
-                observationGateWork.completed_at = new Date().toISOString();
+                observationGateWork.completed_at = getNow().toISOString();
               }
               
               // Update current phase to L1.3 preparation

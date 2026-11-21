@@ -2,6 +2,7 @@
 import type { CapabilityCommand } from "../types.js";
 import type { ExecutionFrame } from "@capabilities/work-core/contracts/work.contracts";
 import { randomUUID } from "crypto";
+import { getNow } from "../time/time.provider.js";
 
 // Map untuk menyimpan mapping externalId ke complianceCheckId (untuk idempotensi test)
 const externalIdToComplianceCheckId = new Map();
@@ -75,14 +76,8 @@ export function createRegistry() {
     // W06-A3: Inisialisasi correlation ID dari input (inherited) atau buat baru
     const correlation_id = input?.context_trace_id || providedExecutionContext?.context_trace_id || randomUUID();
     const execution_id = randomUUID();
-    console.log(`🔍 DEBUG: capabilityRegistry.invoke - Mencoba memanggil command: ${capability}.${commandName}`);
-    console.log(`🔍 DEBUG: capabilityRegistry.invoke - correlation_id: ${correlation_id}`);
-    console.log(`🔍 DEBUG: capabilityRegistry.invoke - execution_id: ${execution_id}`);
-    console.log(`🔍 DEBUG: capabilityRegistry.invoke - Input yang dikirim:`, JSON.stringify(input).substring(0, 500) + "...");
-    console.log(`🔍 DEBUG: capabilityRegistry.invoke - Provided execution context:`, providedExecutionContext ? "EXPLICIT CONTEXT PROVIDED (W06-A2 compliant)" : "using async local storage");
     
     const killSwitchState = await ExecutionStatusRepository.getKillSwitchState();
-    console.log(`🔍 DEBUG: capabilityRegistry.invoke - Kill switch state:`, killSwitchState);
     
     if (killSwitchState.kill_switch_triggered) {
       const error = `[KILL-SWITCH-ACTIVE] Command ${capability}.${commandName} diblokir: kill switch telah dipicu. Alasan: ${killSwitchState.reason}. Dipicu oleh: ${killSwitchState.triggered_by_actor_id} pada ${killSwitchState.triggered_at_utc}. correlation_id: ${correlation_id}`;
@@ -91,13 +86,6 @@ export function createRegistry() {
     }
 
     const { command, attemptedKeys, candidates } = await this.resolveByParts(capability, commandName);
-    console.log(`🔍 DEBUG: capabilityRegistry.invoke - resolveByParts hasil (correlation_id=${correlation_id}):`, {
-      commandFound: !!command,
-      attemptedKeys,
-      candidates,
-      totalCandidates: candidates.length,
-      resolvedCommandKey: command ? `${capability}.${commandName}` : null
-    });
     
     if (!command) {
       if (process.env.NODE_ENV === 'test') {
@@ -200,7 +188,7 @@ export function createRegistry() {
           // Field tambahan yang diharapkan test G5
           executionCost: 0,
           processingTimeMs: 100,
-          timestamp: new Date().toISOString()
+          timestamp: getNow().toISOString()
         };
         console.warn(`[capabilityRegistry.invoke] ⚠️ Command ${capability}.${commandName} not registered in test mode; returning simulated fallback.`);
         // Simpan hasil ke map untuk konsistensi getResult test
@@ -213,7 +201,7 @@ export function createRegistry() {
             correlation_id,
             execution_id,
             command_key: `${capability}.${commandName}`,
-            invoked_at: new Date().toISOString()
+            invoked_at: getNow().toISOString()
           }
         };
       }
@@ -223,13 +211,10 @@ export function createRegistry() {
       throw new Error(error);
     }
     
-    console.log(`🔍 DEBUG: capabilityRegistry.invoke - Command ditemukan! Menjalankan execute/handler dengan correlation_id=${correlation_id}...`);
     // W06-A3: Propagate correlation ID ke input handler untuk trace berkelanjutan
     // W06-A2-R1: HARDENED TRUST BOUNDARY - NEVER allow untrusted context override
           // Fallback for test environments where executionContext might not be initialized
           const ctxFromExecution = typeof executionContext?.get === 'function' ? executionContext.get() : null;
-          console.log(`[capabilityRegistry.invoke] 🔍 DEBUG: executionContext.get() returned:`, JSON.stringify(ctxFromExecution, null, 2));
-          console.log(`[capabilityRegistry.invoke] 🔍 DEBUG: providedExecutionContext:`, JSON.stringify(providedExecutionContext, null, 2));
 
           const inputDerivedContext = process.env.NODE_ENV === 'test' ? {
             actor_id: input?.actorId ?? input?.actor_id ?? "test-actor",
@@ -269,14 +254,13 @@ export function createRegistry() {
           const result = typeof command.execute === 'function' 
             ? await command.execute(inputWithTrace, executionContextToPass) 
             : await command.handler(inputWithTrace, executionContextToPass);
-    console.log(`🔍 DEBUG: capabilityRegistry.invoke - Command berhasil dijalankan! correlation_id=${correlation_id}, Hasil:`, result);
     return {
       ...result,
       _execution_trace: {
         correlation_id,
         execution_id,
         command_key: `${capability}.${commandName}`,
-        invoked_at: new Date().toISOString()
+        invoked_at: getNow().toISOString()
       }
     };
   },
@@ -285,17 +269,12 @@ export function createRegistry() {
   async invokeAsync(input: any): Promise<any> {
     // Parse input yang digunakan di route.ts: { capability, command, context, payload }
     const { capability, command: commandName, context, payload } = input;
-    console.log(`🔍 DEBUG: capabilityRegistry.invokeAsync - Meneruskan ke invoke(): ${capability}.${commandName}`);
     // W06-A2 FIX: Pisahkan context dan payload dengan benar, JANGAN menggabungkan semua ke satu object
     // invoke() memiliki signature invoke(capability, commandName, payload, executionContext)
     return this.invoke(capability, commandName, payload, context);
   },
 
   register(command: CapabilityCommand): void {
-    console.log(`🔍 DEBUG: capabilityRegistry.register - Mulai mendaftarkan command:`);
-    console.log(`🔍 DEBUG: capabilityRegistry.register - command.name: ${command.name}`);
-    console.log(`🔍 DEBUG: capabilityRegistry.register - command.capability: ${command.capability}`);
-    console.log(`🔍 DEBUG: capabilityRegistry.register - command.execute/handler exists: ${!!command.execute || !!command.handler}`);
     
     let commandKey: string;
           // Selalu gabungkan capability dan name jika command memiliki field capability, terlepas dari apakah name mengandung dot
@@ -307,46 +286,37 @@ export function createRegistry() {
             } else {
               commandKey = `${command.capability}.${command.name}`;
             }
-            console.log(`🔍 DEBUG: capabilityRegistry.register - command.capability + command.name: ${commandKey}`);
           } 
           // Fallback jika tidak ada capability yang diset
           else {
             commandKey = command.name;
-            console.log(`🔍 DEBUG: capabilityRegistry.register - Pakai command.name sebagai fallback (tidak ada capability): ${commandKey}`);
           }
 
     // Cegah registrasi ganda (tambah log untuk debugging)
     if (this.capabilityCommands[commandKey]) {
       console.warn(`[capabilityRegistry] ⚠️ Command ${commandKey} sudah terdaftar, skip registrasi ulang`);
-      console.log(`🔍 DEBUG: capabilityRegistry.register - Total commands tetap: ${Object.keys(this.capabilityCommands).length}`);
       return;
     }
     
     this.capabilityCommands[commandKey] = command;
     console.log(`[capabilityRegistry] ✅ Mendaftarkan command: ${commandKey}`);
-    console.log(`🔍 DEBUG: capabilityRegistry.register - Berhasil menyimpan command di key: ${commandKey}`);
     
     // Juga simpan dengan format capability.name jika command.name belum mengandung prefix (untuk backward compatibility)
     if (!command.name.includes('.') && command.capability) {
       const alternativeKey = `${command.capability}.${command.name}`;
-      console.log(`🔍 DEBUG: capabilityRegistry.register - Melakukan dual-registration untuk backward compatibility: ${alternativeKey}`);
       if (!this.capabilityCommands[alternativeKey]) {
         this.capabilityCommands[alternativeKey] = command;
         console.log(`[capabilityRegistry] Dual-registered command: ${alternativeKey}`);
-        console.log(`🔍 DEBUG: capabilityRegistry.register - Dual-registration berhasil: ${alternativeKey}`);
-      } else {
-        console.log(`🔍 DEBUG: capabilityRegistry.register - Dual-registration dilewati, key sudah ada: ${alternativeKey}`);
       }
     }
     
     // Log semua command yang terdaftar setelah registrasi
     console.log(`[capabilityRegistry] Total commands registered: ${Object.keys(this.capabilityCommands).length}`);
-    console.log(`🔍 DEBUG: capabilityRegistry.register - Semua key yang terdaftar sekarang:`, Object.keys(this.capabilityCommands));
   },
 
   // listCommandKeys() SINKRON dan TIDAK BERGANTUNG pada loadCapabilityCommands() apapun - VERSI TERBARU 2026-10-22
   listCommandKeys(): string[] {
-    console.log(`[capabilityRegistry] 🚀 VERSI BARU listCommandKeys() dipanggil pada ${new Date().toISOString()}`);
+    console.log(`[capabilityRegistry] 🚀 VERSI BARU listCommandKeys() dipanggil pada ${getNow().toISOString()}`);
     console.log(`[capabilityRegistry] 📋 listCommandKeys() mengembalikan:`, Object.keys(this.capabilityCommands));
     return Object.keys(this.capabilityCommands);
   },
@@ -361,13 +331,10 @@ export function createRegistry() {
     console.log(`[capabilityRegistry] ✅ Mendaftarkan query: ${queryName}`);
     this.capabilityQueries[queryName] = queryHandler;
     console.log(`[capabilityRegistry] Total queries registered: ${Object.keys(this.capabilityQueries).length}`);
-    console.log(`🔍 DEBUG: capabilityRegistry.registerQuery - Semua query yang terdaftar sekarang:`, Object.keys(this.capabilityQueries));
   },
 
   // Menjalankan query yang sudah terdaftar di registry
   async executeQuery(queryName: string, input: any): Promise<any> {
-    console.log(`🔍 DEBUG: capabilityRegistry.executeQuery - Mencoba menjalankan query: ${queryName}`);
-    console.log(`🔍 DEBUG: capabilityRegistry.executeQuery - Input yang dikirim:`, JSON.stringify(input).substring(0, 500) + "...");
     
     const query = this.capabilityQueries[queryName];
     if (!query) {
@@ -375,10 +342,7 @@ export function createRegistry() {
       console.error(error);
       throw new Error(error);
     }
-    
-    console.log(`🔍 DEBUG: capabilityRegistry.executeQuery - Query ditemukan! Menjalankan handler...`);
     const result = await query.execute(input);
-    console.log(`🔍 DEBUG: capabilityRegistry.executeQuery - Query berhasil dijalankan! Hasil:`, result);
     return result;
   },
 
@@ -407,21 +371,16 @@ export function createRegistry() {
     command: CapabilityCommand | undefined;
     candidates: string[];
   }> {
-    console.log(`🔍 DEBUG: capabilityRegistry.resolveByParts - Mencari command: ${capability}.${commandName}`);
-    console.log(`🔍 DEBUG: capabilityRegistry.resolveByParts - Semua key yang tersedia:`, Object.keys(this.capabilityCommands));
     
     // Hapus panggilan loadCapabilityCommands() - semua command di-load secara eksplisit
     const attemptedKeys: string[] = [];
     const directKey = `${capability}.${commandName}`;
     attemptedKeys.push(directKey);
-    console.log(`🔍 DEBUG: capabilityRegistry.resolveByParts - Mencoba direct key: ${directKey}`);
 
     // Coba langsung dulu
     let command = this.capabilityCommands[directKey];
-    console.log(`🔍 DEBUG: capabilityRegistry.resolveByParts - command ditemukan di direct key? ${!!command}`);
     
     if (command) {
-      console.log(`🔍 DEBUG: capabilityRegistry.resolveByParts - Berhasil menemukan command!`);
       return { attemptedKeys, command, candidates: [] };
     }
 

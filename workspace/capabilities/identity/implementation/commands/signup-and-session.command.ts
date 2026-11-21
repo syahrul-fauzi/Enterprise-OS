@@ -1,6 +1,7 @@
 // @ts-nocheck
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import { randomUUID } from "node:crypto";
 import { validateBoundaryAccess } from "@repo/contracts-core";
 import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "@repo/core-kernel";
@@ -13,6 +14,7 @@ import {
   SessionId,
 } from "@repo/contracts-core";
 import { passwordService } from "../services/password.service.js";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import {
   getUserRepositoryPostgres,
   getTenantRepositoryPostgres,
@@ -133,8 +135,8 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
       email: trimmedEmail,
       displayName: displayName.trim(),
       passwordHash: passwordService.hash(password),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
     };
     await userRepo.save(userEntity);
 
@@ -154,8 +156,8 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
       name: `${displayName} Personal`,
       slug,
       ownerId: userEntity.id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
     };
     await tenantRepo.save(tenantEntity);
 
@@ -166,8 +168,8 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
       name: "Professional Workspace",
       slug: workspaceSlugBase,
       productId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
     };
     await workspaceRepo.save(workspaceEntity);
 
@@ -177,14 +179,14 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
       tenantId: tenantEntity.id,
       workspaceId: workspaceEntity.id,
       role: "owner",
-      joinedAt: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      joinedAt: getNow(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
     };
     await membershipRepo.save(membershipEntity);
 
     const ttl = DEFAULT_SESSION_TTL_SECONDS;
-    const now = new Date();
+    const now = getNow();
     const expires = new Date(now.getTime() + ttl * 1000);
     const sessionEntity: any = {
       id: newSessionId(),
@@ -241,7 +243,7 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
           tenantId: tenantEntity.id,
           workspaceId: workspaceEntity.id,
           productId,
-          issuedAt: (sessionEntity.issuedAt ?? new Date()).toISOString(),
+          issuedAt: (sessionEntity.issuedAt ?? getNow()).toISOString(),
         } as WorkspaceSession),
         options: {
           httpOnly: true,

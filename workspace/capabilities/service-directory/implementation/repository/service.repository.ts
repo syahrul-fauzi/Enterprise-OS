@@ -25,13 +25,13 @@ import { ServiceRequestId as createServiceRequestId, ServiceProviderId as create
 
 // Date helpers
 function d(daysAgo: number) {
-  const date = new Date();
+  const date = getNow();
   date.setDate(date.getDate() - daysAgo);
   return date;
 }
 
 function dFuture(daysFromNow: number) {
-  const date = new Date();
+  const date = getNow();
   date.setDate(date.getDate() + daysFromNow);
   return date;
 }
@@ -72,7 +72,7 @@ const baseRisk = {
   level: "low" as const,
   rationale: "Verified enterprise service provider with established track record",
   assessedBy: defaultAdminActorId,
-  assessedAt: new Date(),
+  assessedAt: getNow(),
   mitigationSteps: []
 };
 
@@ -271,11 +271,11 @@ const seedRequests = (): ServiceRequestAggregate[] => [
     requesterPhone: "+6280000000000",
     providerId: createServiceProviderId("sp-003"),
     proposedPrice: "Rp 150.000.000",
-    priceAcceptedAt: new Date(),
+    priceAcceptedAt: getNow(),
     budget: "Rp 150.000.000",
     deadline: dFuture(45),
     createdAt: new Date(Date.now() - 86400000),
-    updatedAt: new Date(),
+    updatedAt: getNow(),
     // PROD-002-10: TEST DATA - CMBCD fields for test validation
     actorMetadata: { ...requestBaseActorMetadata, actorId: createActorId("actor-test-budi-001"), displayName: "TEST: Budi Santoso", trustLevel: "unverified" as const },
     allowedCapabilities: ["test:read", "test:execute"],
@@ -409,7 +409,7 @@ export const ServiceRequestRepositoryInMemory = {
     const updated: ServiceRequestAggregate = { 
       ...cloneRequest(record), 
       ...updates, 
-      updatedAt: new Date() 
+      updatedAt: getNow() 
     };
     REQUEST_STORE.set(id, updated);
     return cloneRequest(updated);
@@ -455,7 +455,7 @@ export const ServiceRequestRepositoryInMemory = {
     return all.filter((r) => r.workId === workId);
   },
   async save(entity: ServiceRequestAggregate) {
-    const updated: ServiceRequestAggregate = { ...cloneRequest(entity), updatedAt: new Date() };
+    const updated: ServiceRequestAggregate = { ...cloneRequest(entity), updatedAt: getNow() };
     REQUEST_STORE.set(updated.id, updated);
     return cloneRequest(updated);
   },
@@ -476,8 +476,8 @@ export const ServiceRequestRepositoryInMemory = {
         priority: "low", // Default priority for batch-created requests
         requesterName: "System Batch Creator",
         budget: entity.budget,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: getNow(),
+        updatedAt: getNow(),
         // PROD-002-10: CMBCD fields mandatory for all ServiceRequestAggregate instances
         actorMetadata: { ...requestBaseActorMetadata },
         allowedCapabilities: [...requestBaseAllowedCapabilities],

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { DatabaseHealthChecker } from "@repo/capabilities-shared/database/health.check";
 import { getCommunicationRepositoryPostgres } from "@repo/capabilities-communication/repository/communication.postgres.repository";
 import { getCaseRepositoryPostgres } from "@capabilities/legal-case/repository/case-postgres.repository";
@@ -28,7 +29,7 @@ export async function GET(request: Request) {
       ...k8sFormat,
       status: healthReport.overall_healthy ? "ready" : "degraded",
       service: "eos-core-web",
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       correlationId,
     }, {
       status: statusCode,
@@ -42,7 +43,7 @@ export async function GET(request: Request) {
       status: "DOWN",
       service: "eos-core-web",
       error: error instanceof Error ? error.message : "Unknown health check failure",
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       correlationId,
     }, {
       status: 503,

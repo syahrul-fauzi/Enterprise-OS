@@ -7,19 +7,21 @@ import {
   type CreateWorkspaceInput,
   type WorkspaceAggregate,
 } from "@repo/contracts-core";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 // Import 6-boundary contracts untuk compliance (canonical path untuk work-core)
 import { 
   validateBoundaryAccess,
-  validateAllBoundaries,
-  IdentityBoundary,
-  SemanticBoundary,
-  AuthorityBoundary,
-  ExecutionBoundary,
-  EvidenceBoundary,
-  PresentationBoundary
+  validateAllBoundaries, 
+  type IdentityBoundary, 
+  type SemanticBoundary, 
+  type AuthorityBoundary, 
+  type ExecutionBoundary, 
+  type EvidenceBoundary, 
+  type PresentationBoundary 
 } from "@repo/contracts-core";
 import { WorkspaceRepositoryPostgres } from "../repositories/index.js";
 import { slugifyForTenant } from "../services/password.service.js";
+import { getNow } from "@repo/core-kernel";
 
 // Lazy initialization untuk menghindari module cycle (Edge Runtime compatible)
 async function getWorkspaceRepositoryLazy() {
@@ -44,7 +46,7 @@ type CreateWorkspaceCommand = CapabilityCommand<
 export const createWorkspaceCommand: CreateWorkspaceCommand = {
   kind: "command",
   name: "identity.createWorkspace",
-  version: "2.1.0", // 6-boundary compliant, lazy repository
+  version: "2.2.0", // 6-boundary compliant, same pattern as create-tenant.command.ts
 
   async execute(input) {
     const workspaceRepository = await getWorkspaceRepositoryLazy();
@@ -58,8 +60,9 @@ export const createWorkspaceCommand: CreateWorkspaceCommand = {
     const requestTenantId = input.actorContext?.tenantId || input.tenantId || "unknown-tenant";
     const workspaceId = input.actorContext?.workspaceId || "unknown-parent-workspace";
     const actorId = input.actorContext?.actorId || "system-actor";
+    const resourceOwnerId = actorId; // Pemilik resource adalah actor yang membuat workspace
 
-    // 6-boundary validation sesuai aturan kanonis EOS
+    // 6-boundary validation sesuai pola kanonis create-tenant.command.ts
     const identityBoundary: IdentityBoundary = { 
       tenantId: requestTenantId, 
       organizationId: "identity.enterprise-os", 
@@ -69,33 +72,29 @@ export const createWorkspaceCommand: CreateWorkspaceCommand = {
     const semanticBoundary: SemanticBoundary = { 
       domain: "identity", 
       intent: "create-new-workspace", 
-      currentState: "active", 
-      requirements: [], 
-      constraints: ["workspace name must be unique per tenant", "slug generated from name"], 
-      decisions: [] 
+      currentState: "executing"
     };
     const authorityBoundary: AuthorityBoundary = { 
-      requiredPermissions: ["workspace:create"], 
-      grantedPermissions: ["workspace:create"], 
-      authorized: true, 
-      authorizationTime: new Date().toISOString() 
+      allowedActions: ["create"], 
+      restrictedFields: [], 
+      requesterId: actorId, 
+      resourceOwnerId
     };
     const executionBoundary: ExecutionBoundary = { 
-      environment: process.env.NODE_ENV === "production" ? "production" : "development", 
-      runtime: "nodejs", 
-      region: "default", 
-      invokedAt: new Date().toISOString() 
+      workspaceId,
+      runtimeEnvironment: process.env.NODE_ENV || "development",
+      executionId: `workspace-${getNow().getTime()}`,
+      propagatedFrom: "api-route"
     };
     const evidenceBoundary: EvidenceBoundary = { 
-      required: true, 
-      stored: false, 
-      retentionPeriod: "730d", 
-      evidenceIds: [] 
+      evidenceRequired: true,
+      evidenceRetentionPeriod: "730d",
+      auditLogEnabled: true
     };
     const presentationBoundary: PresentationBoundary = { 
-      surface: "api", 
-      userAgent: "system", 
-      locale: "en-US" 
+      uiFilters: ["id", "tenantId", "name", "slug", "productId", "createdAt"],
+      hideFromSurfaces: [],
+      priority: "high"
     };
 
     const boundaryValidation = validateAllBoundaries({ 
@@ -108,14 +107,15 @@ export const createWorkspaceCommand: CreateWorkspaceCommand = {
     });
     if (!boundaryValidation.valid) throw new Error(`Boundary validation failed: ${boundaryValidation.allErrors.join(", ")}`);
 
+    const now = getNow();
     const entity: WorkspaceAggregate = {
       id: newWorkspaceId(),
       tenantId: input.tenantId,
       name: input.name.trim(),
       slug: slugifyForTenant(input.name.trim()),
       productId: input.productId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: now,
+      updatedAt: now,
     };
     await workspaceRepository.save(entity);
     return {

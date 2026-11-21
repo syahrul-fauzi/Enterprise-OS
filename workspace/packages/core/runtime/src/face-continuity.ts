@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface FaceSession {
@@ -14,12 +15,12 @@ export interface FaceSession {
 export class FaceContinuityService {
   async createFaceSession(context: ExecutionContext, actorId: string, workItemId: string): Promise<FaceSession> {
     const session: FaceSession = {
-      sessionId: `face-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `face-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       actorId,
       workItemId,
       status: 'ACTIVE',
-      faceHash: `face-hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      faceHash: `face-hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
     await InvocationEvidence.record(context, 'createFaceSession', { actorId, workItemId, session });
     return session;
@@ -36,9 +37,9 @@ export class FaceContinuityService {
       actorId: context.actorId,
       workItemId: context.workItemId,
       status: 'RESUMED',
-      faceHash: `face-hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      faceHash: `face-hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
     await InvocationEvidence.record(context, 'resumeFaceSession', { sessionId, session });
     return session;

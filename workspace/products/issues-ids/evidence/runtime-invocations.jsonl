@@ -1,0 +1,10 @@
+{"timestamp": "2026-11-21T00:00:01.000Z", "capability": "consultation", "command": "report_issue", "ok": true}
+{"timestamp": "2026-11-21T00:00:02.000Z", "capability": "consultation", "command": "triage_issue", "ok": true}
+{"timestamp": "2026-11-21T00:00:03.000Z", "capability": "consultation", "command": "analyze_issue", "ok": true}
+{"timestamp": "2026-11-21T00:00:04.000Z", "capability": "consultation", "command": "decide_resolution", "ok": true}
+{"timestamp": "2026-11-21T00:00:05.000Z", "capability": "consultation", "command": "assign_issue", "ok": true}
+{"timestamp": "2026-11-21T00:00:06.000Z", "capability": "consultation", "command": "execute_resolution", "ok": true}
+{"timestamp": "2026-11-21T00:00:07.000Z", "capability": "consultation", "command": "verify_resolution", "ok": true}
+{"timestamp": "2026-11-21T00:00:08.000Z", "capability": "consultation", "command": "link_to_work", "ok": true}
+{"timestamp": "2026-11-21T00:00:09.000Z", "capability": "consultation", "command": "resume_with_new_evidence", "ok": true}
+{"timestamp": "2026-11-21T00:00:10.000Z", "capability": "consultation", "command": "archive_issue", "ok": true}

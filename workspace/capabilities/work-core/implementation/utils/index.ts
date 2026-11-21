@@ -40,7 +40,7 @@ export { calculateExecutionFrame } from "./cmbdc.utils.js";
 export { safeRecordEvidence } from "./evidence.utils.js";
 export { safeNotifyWorkspaceListeners } from "./realtime.utils.js";
 export { buildWorkFaceProjection } from "./face-projection.utils.js";
-export { validateAllBoundaries, validateIdentityBoundary, validateAuthorityBoundary, validateNoCircularDependencies, validateBoundaryAccess } from "@repo/contracts-core";
+export { validateAllBoundaries, validateNoCircularDependencies, validateBoundaryAccess } from "@repo/contracts-core";
 export { runArchitectureFitnessChecks } from "./architecture-fitness-checks.js";
 export type { FitnessCheckResult } from "@repo/contracts-core";
 

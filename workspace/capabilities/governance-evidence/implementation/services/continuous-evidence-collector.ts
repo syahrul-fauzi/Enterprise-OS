@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as fs from "node:fs";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import { GovernanceEvidenceService } from "./governance-evidence.service.js";
@@ -40,7 +41,7 @@ function initDirectories(): void {
 
 // Simple logger untuk audit trail
 function log(message: string): void {
-  const timestamp = new Date().toISOString();
+  const timestamp = getNow().toISOString();
   const logMessage = `[${timestamp}] ${message}\n`;
   console.log(logMessage.trim());
   writeFileSync(COLLECTION_CONFIG.LOG_PATH, logMessage, { flag: 'a' });
@@ -49,7 +50,7 @@ function log(message: string): void {
 // Save decisions to history
 function saveDecisionHistory(decisions: GovernanceConfidenceVerdict[]): void {
   const entry = {
-    timestamp: new Date().toISOString(),
+    timestamp: getNow().toISOString(),
     decisions: decisions.map(d => ({
       capability_id: d.capability_id,
       confidence_score: d.confidence_score,

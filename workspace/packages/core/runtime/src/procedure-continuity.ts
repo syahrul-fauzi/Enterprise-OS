@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface ProcedureSession {
@@ -14,12 +15,12 @@ export interface ProcedureSession {
 export class ProcedureContinuityService {
   async createProcedureSession(context: ExecutionContext, actorId: string, workItemId: string): Promise<ProcedureSession> {
     const session: ProcedureSession = {
-      sessionId: `proc-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `proc-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       actorId,
       workItemId,
       status: 'ACTIVE',
-      procedureHash: `proc-hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      procedureHash: `proc-hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
     await InvocationEvidence.record(context, 'createProcedureSession', { actorId, workItemId, session });
     return session;
@@ -36,9 +37,9 @@ export class ProcedureContinuityService {
       actorId: context.actorId,
       workItemId: context.workItemId,
       status: 'RESUMED',
-      procedureHash: `proc-hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      procedureHash: `proc-hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
     await InvocationEvidence.record(context, 'resumeProcedureSession', { sessionId, session });
     return session;

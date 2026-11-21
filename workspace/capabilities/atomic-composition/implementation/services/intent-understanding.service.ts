@@ -28,6 +28,7 @@ import type {
   FailureObservation,
   FailureFingerprint
 } from "../contracts/intent-understanding.contracts";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { FailureIntelligenceRepository } from '../repository/failure-intelligence.repository';
 import type {
   UniversalExpression,
@@ -209,7 +210,7 @@ Important rules:
         hypotheses: [],
         evidenceCollected: ["ai-understanding-generated"],
         confidence: 0.8,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: getNow().toISOString()
       }
     };
   }
@@ -339,7 +340,7 @@ Important rules:
         hypotheses: aiOutput.hypotheses || ["Expression classified as generic domain"],
         evidenceCollected: ["ai-interpretation-completed"],
         confidence: Array.isArray(aiOutput.domainCandidates) ? Math.max(...aiOutput.domainCandidates.map((d: any) => d.confidence)) : 0.7,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: getNow().toISOString()
       }
     };
   }
@@ -390,7 +391,7 @@ class RuleBasedProvider implements IntentUnderstandingProvider {
     console.log("[RULEBASED PROVIDER] Processing input:", inputString, "lowercased:", lowerExpression);
     
     // Build UnderstandingEvidence object untuk Adaptive Intelligence tracking
-    const now = new Date().toISOString();
+    const now = getNow().toISOString();
     const knownFacts: string[] = [`Raw expression processed: ${inputString}`];
     const unknowns: string[] = [];
     const hypotheses: string[] = [];
@@ -513,7 +514,7 @@ class RuleBasedProvider implements IntentUnderstandingProvider {
           hypotheses: ["Butuh konsultasi bisnis lebih lanjut"],
           evidenceCollected: ["ambiguous-pattern-matched", "no-specific-knowledge-match"],
           confidence: 0.7,
-          lastUpdated: new Date().toISOString()
+          lastUpdated: getNow().toISOString()
         }
       };
     }
@@ -901,7 +902,7 @@ Apakah Anda ingin:
     const hypotheses: string[] = [];
     const attemptedStrategies: string[] = [];
     let confidence = 0.8;
-    const now = new Date().toISOString();
+    const now = getNow().toISOString();
     
     // SCENARIO 1: Knowledge base match ditemukan
     let bestMatch: { key: string; value: { answer: string } } | null = null;
@@ -1118,7 +1119,7 @@ function createInitialUnderstandingEvent(type: string, actorId: string, metadata
     id: crypto.randomUUID(),
     type: type,
     actorId: actorId,
-    timestamp: new Date().toISOString(),
+    timestamp: getNow().toISOString(),
     metadata: metadata
   };
 }
@@ -1128,7 +1129,7 @@ function generateHypothesisFromUnderstanding(understanding: IntentUnderstanding)
     id: crypto.randomUUID(),
     hypothesis: understanding.interpretedObjective,
     confidence: understanding.understandingEvidence.confidence,
-    createdAt: new Date().toISOString(),
+    createdAt: getNow().toISOString(),
     domain: understanding.context.domain || "generic"
   };
 }
@@ -1167,7 +1168,7 @@ export async function createUniversalExpression(
   actorId: string
 ): Promise<UniversalExpression> {
   // Step 1: Initialize the universal expression with RECEIVED status (NEW ARCHITECTURE)
-  const now = new Date();
+  const now = getNow();
   const expression: UniversalExpression = {
     id: crypto.randomUUID(),
     origin: input.origin as ExpressionOrigin,
@@ -1192,7 +1193,7 @@ export async function createUniversalExpression(
   
   // Step 2: Transition to CAPTURED after successful initialization
   expression.status = "CAPTURED";
-  expression.updatedAt = new Date();
+  expression.updatedAt = getNow();
   // Add first understanding event to audit trail
   const history: UnderstandingEvent[] = [
     createInitialUnderstandingEvent("expression_received", actorId, { status: "RECEIVED" }),
@@ -1205,7 +1206,7 @@ export async function createUniversalExpression(
     await sleep(1);
     // Step 3: Run understanding engine - transition to UNDERSTANDING (NEW ARCHITECTURE)
     expression.status = "UNDERSTANDING";
-    expression.updatedAt = new Date();
+    expression.updatedAt = getNow();
     history.push(createInitialUnderstandingEvent("understanding_started", actorId, { status: "UNDERSTANDING" }));
     console.log(`[UNIVERSAL EXPRESSION] Lifecycle transition: CAPTURED → UNDERSTANDING, updatedAt=${expression.updatedAt.toISOString()}`);
     
@@ -1237,13 +1238,13 @@ export async function createUniversalExpression(
     await sleep(1);
     if (understandingState.isSufficient) {
       expression.status = "UNDERSTANDING_SUFFICIENT";
-      expression.updatedAt = new Date();
+      expression.updatedAt = getNow();
       expression.understanding.history.push(createInitialUnderstandingEvent("sufficiency_achieved", actorId, { status: "UNDERSTANDING_SUFFICIENT" }));
       console.log(`[UNIVERSAL EXPRESSION] Lifecycle transition: UNDERSTANDING → UNDERSTANDING_SUFFICIENT, updatedAt=${expression.updatedAt.toISOString()}`);
       console.log(`[UNIVERSAL EXPRESSION] Understanding is sufficient, preparing for resolution`);
     } else {
       expression.status = "UNDERSTANDING_INSUFFICIENT";
-      expression.updatedAt = new Date();
+      expression.updatedAt = getNow();
       expression.understanding.history.push(createInitialUnderstandingEvent("understanding_updated", actorId, { status: "UNDERSTANDING_INSUFFICIENT" }));
       console.log(`[UNIVERSAL EXPRESSION] Lifecycle transition: UNDERSTANDING → UNDERSTANDING_INSUFFICIENT, updatedAt=${expression.updatedAt.toISOString()}`);
       console.log(`[UNIVERSAL EXPRESSION] Understanding insufficient: ${understandingState.sufficiencyReason}`);
@@ -1257,7 +1258,7 @@ export async function createUniversalExpression(
     || "Saya ingin memastikan saya memahami Anda dengan benar. Bisakah Anda menjelaskan lebih detail?";
       
       expression.conversation?.turns.push({
-        timestamp: new Date(),
+        timestamp: getNow(),
         actorId: "eos-system",
         content: firstQuestion,
         role: "eos",
@@ -1292,7 +1293,7 @@ export async function createUniversalExpression(
       await sleep(1);
       // If sufficient, mark as RESOLVED and automatically trigger work formation
       expression.status = "RESOLVING";
-      expression.updatedAt = new Date();
+      expression.updatedAt = getNow();
       expression.understanding.history.push(createInitialUnderstandingEvent("resolution_started", actorId, { status: "RESOLVING" }));
       console.log(`[UNIVERSAL EXPRESSION] Lifecycle transition: UNDERSTANDING_SUFFICIENT → RESOLVING, updatedAt=${expression.updatedAt.toISOString()}`);
       console.log(`[UNIVERSAL EXPRESSION] Expression ${expression.id} is ready for work formation`);
@@ -1309,7 +1310,7 @@ export async function createUniversalExpression(
           
           // Update expression to WORK_FORMED status - lifecycle complete!
           expression.status = "WORK_FORMED";
-          expression.updatedAt = new Date();
+          expression.updatedAt = getNow();
           expression.workId = workResult.workId;
           expression.understanding.history.push(createInitialUnderstandingEvent("work_formed", actorId, { status: "WORK_FORMED", workId: workResult.workId }));
           console.log(`[UNIVERSAL EXPRESSION] Lifecycle transition: RESOLVING → WORK_FORMED, updatedAt=${expression.updatedAt.toISOString()}`);
@@ -1318,13 +1319,13 @@ export async function createUniversalExpression(
           // If work formation fails, log but keep expression as RESOLVING - user can manually retry
           console.error(`[UNIVERSAL EXPRESSION] Work formation failed for expression ${expression.id}:`, workError);
           expression.status = "FAILED";
-          expression.updatedAt = new Date();
+          expression.updatedAt = getNow();
           expression.understanding.history.push(createInitialUnderstandingEvent("work_formation_failed", actorId, { status: "FAILED" }));
         }
       } else {
         // Block Work creation for info requests or insufficient understanding
         expression.status = "RESOLVED";
-        expression.updatedAt = new Date();
+        expression.updatedAt = getNow();
         expression.understanding.history.push(createInitialUnderstandingEvent("work_formation_blocked", actorId, { 
           status: "RESOLVED"
         }));
@@ -1377,7 +1378,7 @@ export async function createUniversalExpression(
     // If any step fails, mark as FAILED for monitoring
     await sleep(1);
     expression.status = "FAILED";
-    expression.updatedAt = new Date();
+    expression.updatedAt = getNow();
     console.log(`[UNIVERSAL EXPRESSION] Lifecycle transition: ANY → FAILED, updatedAt=${expression.updatedAt.toISOString()}`);
     console.error(`[UNIVERSAL EXPRESSION] Failed to process expression ${expression.id}:`, error);
     throw error;

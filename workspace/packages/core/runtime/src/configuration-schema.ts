@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface ConfigurationSchema {
@@ -20,12 +21,12 @@ export class ConfigurationSchemaService {
     required: string[]
   ): Promise<ConfigurationSchema> {
     const schema: ConfigurationSchema = {
-      schemaId: `schema-${Date.now()}`,
+      schemaId: `schema-${getNow().getTime()}`,
       schemaName,
       version,
       properties,
       required,
-      generatedAt: new Date().toISOString(),
+      generatedAt: getNow().toISOString(),
       status: 'GENERATED'
     };
 
@@ -71,7 +72,7 @@ export class ConfigurationSchemaService {
       version: '1.0.0',
       properties: {},
       required: [],
-      generatedAt: new Date().toISOString(),
+      generatedAt: getNow().toISOString(),
       status: 'APPLIED'
     };
   }

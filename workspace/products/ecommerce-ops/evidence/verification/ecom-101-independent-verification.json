@@ -1,8 +1,9 @@
 {
   "verification_id": "ecom-101-verification-001",
   "product": "ecommerce-ops",
-  "verification_timestamp": "2026-11-15T[timestamp]",
+  "verification_timestamp": "2026-11-15T06:15:00.000Z",
   "verification_authority": "Independent Verification Agent",
+  "executor_identity": "eos-verification-agent@eos-system",
   "overall_status": "ALL_GATES_PASSED",
   "acceptance_gates": {
     "G50": {

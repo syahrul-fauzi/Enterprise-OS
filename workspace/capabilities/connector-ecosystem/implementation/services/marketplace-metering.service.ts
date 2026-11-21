@@ -2,6 +2,7 @@
 // W-008-03: Marketplace metering and billing system - implements Work execution economy
 // Reuse existing canonical primitives dari execution-observability dan API platform
 import { executeBudgetOperation, getTenantUsage } from "@repo/core-runtime";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import type { TenantCostLimits } from "@repo/core-runtime";
 import { safeRecordEvidence } from "../../../work-core/implementation/utils/evidence.utils.js";
 import type { BasePackageManifest } from "../contracts/marketplace.contracts.js";
@@ -83,7 +84,7 @@ export class MarketplaceMeteringService {
       reservationId,
       budgetStatus: "PENDING",
       billed: false,
-      createdAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
       evidenceIds: []
     };
 
@@ -281,7 +282,7 @@ export class MarketplaceMeteringService {
         average_execution_duration_ms: Math.round(averageDuration),
         cost_per_completed_work: completedRecords.length > 0 ? totalCost / completedRecords.length : 0
       },
-      generated_at: new Date().toISOString()
+      generated_at: getNow().toISOString()
     };
 
     // Catat evidence untuk akses statistik (audit trail)

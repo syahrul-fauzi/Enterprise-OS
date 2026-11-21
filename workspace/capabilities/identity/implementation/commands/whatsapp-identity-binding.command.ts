@@ -1,7 +1,9 @@
 // @ts-nocheck
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import { validateBoundaryAccess } from "@repo/contracts-core";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "@repo/core-kernel";
 import { slugifyForTenant } from "../services/password.service.cjs";
 import {
@@ -178,8 +180,8 @@ export const whatsappIdentityBindingCommand: WhatsappIdentityBindingCommand = {
         displayName: `Pengguna WhatsApp ${phoneNumber.slice(-4)}`,
         externalId: `whatsapp:${normalizedPhone}`, // Simpan identitas eksternal terikat
         externalChannel: "whatsapp",
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: getNow(),
+        updatedAt: getNow(),
       };
       await userRepo.save(newUser);
       userEntity = newUser as unknown as UserAggregate;
@@ -216,8 +218,8 @@ export const whatsappIdentityBindingCommand: WhatsappIdentityBindingCommand = {
           id: newTenantId(),
           name: `Tenant WhatsApp ${phoneNumber.slice(-4)}`,
           slug,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: getNow(),
+          updatedAt: getNow(),
         };
         await tenantRepo.save(newTenant);
         tenantEntity = newTenant as unknown as TenantAggregate;
@@ -227,8 +229,8 @@ export const whatsappIdentityBindingCommand: WhatsappIdentityBindingCommand = {
           id: newWorkspaceId(),
           tenantId: newTenant.id,
           name: "Workspace Default WhatsApp",
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: getNow(),
+          updatedAt: getNow(),
         };
         await workspaceRepo.save(newWorkspace);
         workspaceEntity = newWorkspace as unknown as WorkspaceAggregate;
@@ -250,8 +252,8 @@ export const whatsappIdentityBindingCommand: WhatsappIdentityBindingCommand = {
         id: newTenantId(),
         name: `Tenant WhatsApp ${phoneNumber.slice(-4)}`,
         slug,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: getNow(),
+        updatedAt: getNow(),
       };
       await tenantRepo.save(newTenant);
       tenantEntity = newTenant as unknown as TenantAggregate;
@@ -260,8 +262,8 @@ export const whatsappIdentityBindingCommand: WhatsappIdentityBindingCommand = {
         id: newWorkspaceId(),
         tenantId: newTenant.id,
         name: "Workspace Default WhatsApp",
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: getNow(),
+        updatedAt: getNow(),
       };
       await workspaceRepo.save(newWorkspace);
       workspaceEntity = newWorkspace as unknown as WorkspaceAggregate;
@@ -278,15 +280,15 @@ export const whatsappIdentityBindingCommand: WhatsappIdentityBindingCommand = {
       tenantId: tenantEntity.id,
       workspaceId: workspaceEntity.id,
       role,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
     };
     await membershipRepo.save(newMembership);
     records.push({ ok: true, commandKey: "identity.createMembership" });
 
     // Buat session baru untuk user
     const sessionId = newSessionId();
-    const sessionExpiresAt = new Date(Date.now() + DEFAULT_SESSION_TTL_SECONDS * 1000);
+    const sessionExpiresAt = new Date(getNow().getTime() + DEFAULT_SESSION_TTL_SECONDS * 1000);
     const newSession = {
       id: sessionId,
       userId: userEntity.id,
@@ -294,7 +296,7 @@ export const whatsappIdentityBindingCommand: WhatsappIdentityBindingCommand = {
       workspaceId: workspaceEntity.id,
       actorId: ActorId(`actor-${userEntity.id}`),
       expiresAt: sessionExpiresAt,
-      createdAt: new Date(),
+      createdAt: getNow(),
     };
     await sessionRepo.save(newSession);
     records.push({ ok: true, commandKey: "identity.createSession" });

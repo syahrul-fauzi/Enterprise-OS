@@ -1,0 +1,38 @@
+{
+  "reconciliationId": "ECOM-OPS-TIMESTAMP-PROVENANCE-RECONCILIATION-001",
+  "reconciliationTimestamp": "2026-11-21T08:15:00.000Z",
+  "executorIdentity": "eos-recon@eos-system + eos-verification@eos-system",
+  "objective": "Memisahkan tiga kategori timestamp dan memverifikasi provenance konsisten",
+  "timestampCategories": [
+    {
+      "category": "eventTimestamp",
+      "description": "Waktu kejadian aktual yang dijelaskan dalam evidence",
+      "examples": ["2026-11-15T06:03:00.000Z", "2026-11-15T06:15:00.000Z"],
+      "note": "Ini adalah waktu ketika audit awal dilakukan pada tanggal 15 November"
+    },
+    {
+      "category": "evidenceCreationTimestamp",
+      "description": "Waktu ketika file evidence dibuat",
+      "examples": ["2026-11-20T07:00:00.000Z", "2026-11-21T08:00:00.000Z"],
+      "note": "Ini adalah waktu ketika file evidence ditulis ke disk"
+    },
+    {
+      "category": "verificationTimestamp",
+      "description": "Waktu ketika verifikasi atau rekonsiliasi tambahan dilakukan",
+      "examples": ["2026-11-21T08:05:00.000Z", "2026-11-21T08:10:00.000Z"],
+      "note": "Ini adalah waktu ketika pemeriksaan rekonsiliasi G6-AC-01 sampai G6-AC-04 dilakukan"
+    }
+  ],
+  "dateDifferenceExplanation": "Perbedaan tanggal antara 15 November, 20 November, dan 21 November adalah normal dan diharapkan. Ini mencerminkan urutan kejadian: audit awal → pembuatan file evidence → rekonsiliasi tambahan.",
+  "executorIdentityAudit": {
+    "verified": true,
+    "findings": "Semua file evidence mencatat executor identity secara eksplisit. Identitas agent otomatis dicatat sebagai identitas eksekutor, bukan sebagai pengganti human accountable reviewer.",
+    "agentIdentities": ["eos-evidence-engine@eos-system", "eos-recon@eos-system", "eos-verification@eos-system"],
+    "humanReviewerNote": "Identitas human reviewer belum dicatat karena human acceptance review belum dilakukan."
+  },
+  "historicalEvidenceCheck": {
+    "noUnauthorizedChanges": true,
+    "note": "Tidak ada perubahan evidence historis yang dilakukan tanpa jejak versi dan alasan perubahan. Semua koreksi didokumentasikan secara eksplisit."
+  },
+  "recommendation": "Tiga kategori timestamp telah dipisahkan dengan jelas. Provenance konsisten. Tidak ada penggunaan timestamp historis sebagai waktu verifikasi baru."
+}

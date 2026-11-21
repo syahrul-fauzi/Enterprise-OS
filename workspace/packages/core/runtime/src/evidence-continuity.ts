@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { EvidenceService } from './evidence-service.js';
 
 export interface EvidenceSession {
@@ -19,18 +20,18 @@ export class EvidenceContinuityService {
 
   async createEvidenceSession(context: ExecutionContext, workItemId: string): Promise<EvidenceSession> {
     const session: EvidenceSession = {
-      sessionId: `evid-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `evid-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       workItemId,
       status: 'ACTIVE',
-      evidenceHash: Buffer.from(`${workItemId}-${Date.now()}`).toString('base64'),
-      createdAt: new Date().toISOString()
+      evidenceHash: Buffer.from(`${workItemId}-${getNow().getTime()}`).toString('base64'),
+      createdAt: getNow().toISOString()
     };
 
     await this.evidenceService.recordInvocationEvidence(context, {
       operation: 'createEvidenceSession',
       workItemId,
       sessionId: session.sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return session;
@@ -41,7 +42,7 @@ export class EvidenceContinuityService {
       operation: 'suspendEvidenceSession',
       sessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {
@@ -55,15 +56,15 @@ export class EvidenceContinuityService {
       sessionId,
       workItemId: 'resumed',
       status: 'RESUMED',
-      evidenceHash: Buffer.from(`resumed-${sessionId}-${Date.now()}`).toString('base64'),
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      evidenceHash: Buffer.from(`resumed-${sessionId}-${getNow().getTime()}`).toString('base64'),
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     await this.evidenceService.recordInvocationEvidence(context, {
       operation: 'resumeEvidenceSession',
       sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return resumedSession;
@@ -81,7 +82,7 @@ export class EvidenceContinuityService {
       operation: 'verifyEvidenceContinuity',
       sessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {

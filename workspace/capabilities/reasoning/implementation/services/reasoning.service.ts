@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { recordRuntimeInvocation } from "@repo/core-runtime";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { ReasoningContractRepositoryInMemory } from "../repository/reasoning.repository.ts";
 import type { 
   CognitiveAdapter, 
@@ -154,7 +155,7 @@ export class ReasoningService {
         workId: context.workId,
         tenantId: context.tenantId,
         wakeReason: wakeReason,
-        timestamp: new Date(),
+        timestamp: getNow(),
         maxActiveDurationMs: 300000, // 5 menit maksimal aktif
         constraints: context.constraints
       };

@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface QueueIsolationSession {
   sessionId: string;
   tenantId: string;
@@ -19,12 +20,12 @@ export class QueueIsolationContinuityService {
     maxConcurrency: number
   ): Promise<QueueIsolationSession> {
     const session: QueueIsolationSession = {
-      sessionId: `queue-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `queue-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       tenantId,
       queueContext,
       queueName,
       maxConcurrency,
-      createdAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
       status: 'active'
     };
     this.sessions.set(session.sessionId, session);

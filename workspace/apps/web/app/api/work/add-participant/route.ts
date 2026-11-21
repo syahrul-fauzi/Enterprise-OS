@@ -5,6 +5,7 @@
  * DIBUAT UNTUK RET-001: inventory manager-only authority activation
  */
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 
 export async function POST(request: Request) {
@@ -44,7 +45,7 @@ export async function POST(request: Request) {
       success: (addParticipantResult as any).success,
       workId,
       participants: (addParticipantResult as any).participants,
-      addedAt: new Date().toISOString(),
+      addedAt: getNow().toISOString(),
       message: "Inventory manager successfully added as participant with restricted authority"
     });
   } catch (error) {

@@ -16,14 +16,14 @@ import { usePageStates } from "@repo/presentation-hooks";
 function hydrateSessionState(caseId: string) {
   if (typeof window === "undefined") return null;
   try {
-    const stored = window.localStorage.getItem(`eos-work-view-case-${caseId}`);
+    const stored = window.localStorage.getItem(`eos-work-view-${caseId}`);
     if (!stored) return null;
     const parsed = JSON.parse(stored);
     // Only use if stored within 24h to avoid stale data
     if (Date.now() - parsed.timestamp < 86400000) {
       return parsed.state;
     }
-    window.localStorage.removeItem(`eos-work-view-case-${caseId}`);
+    window.localStorage.removeItem(`eos-work-view-${caseId}`);
     return null;
   } catch (e) {
     console.warn("[CaseDetailPage] Failed to hydrate local storage state:", e);
@@ -341,6 +341,16 @@ function deriveActivity(caseData: CaseAggregate | null, docs: DocumentAggregate[
         text: "Case closed",
       });
     }
+    // Add manual timeline entries stored in case aggregate
+    if (caseData.activity && Array.isArray(caseData.activity)) {
+      for (const entry of caseData.activity) {
+        entries.push({
+          id: entry.id,
+          at: new Date(entry.at),
+          text: entry.text,
+        });
+      }
+    }
   }
   for (const d of docs) {
     entries.push({
@@ -444,6 +454,7 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
   // Hapus setCaseData lokal karena kita sudah pakai setSuccess dari usePageStates
   // const [caseData, setCaseData] = useState<CaseAggregate | null>(savedState?.caseData ?? null);
   const [documents, setDocuments] = useState<DocumentAggregate[]>(savedState?.documents ?? []);
+  const [evidenceRecords, setEvidenceRecords] = useState<readonly any[]>(savedState?.evidenceRecords ?? []);
   const [evidenceCount, setEvidenceCount] = useState<number>(savedState?.evidenceCount ?? 0);
   const [decisionsCount, setDecisionsCount] = useState<number>(savedState?.decisionsCount ?? 0);
   const [showAssignLawyer, setShowAssignLawyer] = useState<boolean>(savedState?.showAssignLawyer ?? false);
@@ -452,6 +463,9 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
   const [executingCommand, setExecutingCommand] = useState<string | null>(null);
   // State untuk tracking hasil eksekusi command (success/error) - User readiness requirement
   const [commandResult, setCommandResult] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  // State untuk timeline entry form
+  const [showTimelineForm, setShowTimelineForm] = useState(false);
+  const [timelineEntryText, setTimelineEntryText] = useState("");
 
   // Auto-dismiss command result banner setelah 5 detik (improve user experience)
   useEffect(() => {
@@ -470,6 +484,122 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
   // Use cached session if API session not yet loaded - preserve state across refresh
   const currentSession = session ?? cachedSession;
   const isAuthenticated = authenticated || Boolean(currentSession?.actorId && currentSession.actorId !== "anonymous.user");
+
+  // Load all case-related data from capabilities
+  const loadAll = useCallback(async () => {
+    setLoading();
+    setError(null);
+    try {
+      const caseResp = await fetch("/api/capabilities/legal-case/case.getById", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ caseId }),
+      });
+      let caseAggregate: CaseAggregate | null = null;
+      if (caseResp.ok) {
+        const caseJson = await caseResp.json();
+        caseAggregate = (caseJson.output ?? caseJson.record ?? null) as CaseAggregate | null;
+      }
+      if (caseAggregate) {
+        setSuccess(caseAggregate);
+      } else {
+        setEmpty();
+      }
+
+      const [docsResp, evResp, decResp] = await Promise.allSettled([
+        Promise.resolve(null),
+        fetch("/api/capabilities/evidence-registry/evidence.listByWorkId", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            workId: caseId,
+            sessionId: currentSession?.sessionId,
+            tenantId: currentSession?.tenantId,
+            workspaceId: currentSession?.workspaceId
+          })
+        }).catch(() => null),
+        fetch("/api/governance/decisions", { cache: "no-store" }).catch(() => null),
+      ]);
+
+      if (docsResp.status === "fulfilled" && docsResp.value?.ok) {
+        const docsJson = await docsResp.value.json();
+        const items = (docsJson.output?.items ?? docsJson.items ?? []) as DocumentAggregate[];
+        setDocuments(items);
+      } else {
+        setDocuments([]);
+      }
+
+      if (
+        evResp.status === "fulfilled" &&
+        evResp.value &&
+        typeof evResp.value === "object" &&
+        "ok" in evResp.value &&
+        (evResp.value as Response).ok
+      ) {
+        try {
+          const evJson = await (evResp.value as Response).json();
+          const items = evJson.output?.items ?? evJson.items ?? [];
+          setEvidenceRecords(items);
+          setEvidenceCount(Number(evJson.output?.total ?? evJson.total ?? items.length));
+        } catch {
+          setEvidenceRecords([]);
+          setEvidenceCount(0);
+        }
+      } else {
+        setEvidenceRecords([]);
+        setEvidenceCount(0);
+      }
+
+      if (
+        decResp.status === "fulfilled" &&
+        decResp.value &&
+        typeof decResp.value === "object" &&
+        "ok" in decResp.value &&
+        (decResp.value as Response).ok
+      ) {
+        try {
+          const decJson = await (decResp.value as Response).json();
+          const items = Array.isArray(decJson) ? decJson : (decJson.items ?? decJson.decisions ?? []);
+          setDecisionsCount(Array.isArray(items) ? items.length : Number(decJson.total ?? 0));
+        } catch {
+          setDecisionsCount(0);
+        }
+      } else {
+        setDecisionsCount(0);
+      }
+
+      if (currentSession) {
+        try {
+          const commResp = await fetch("/api/capabilities/communication/communication.listEvents", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              work_id: caseId,
+              sessionId: currentSession.sessionId,
+              tenantId: currentSession.tenantId,
+              workspaceId: currentSession.workspaceId
+            }),
+          });
+          
+          if (commResp.ok) {
+            const commJson = await commResp.json();
+            if (commJson.output?.events) {
+              setCommunicationEvents(commJson.output.events);
+            }
+          }
+        } catch (commErr) {
+          console.error("[CaseDetailPage] Failed to load communication events:", commErr);
+        }
+      }
+    } catch (raw) {
+      setError(raw instanceof Error ? raw.message : String(raw));
+    } finally {
+    }
+  }, [caseId, currentSession]);
+
+  useEffect(() => {
+    void loadAll();
+  }, [loadAll]);
 
   // Fungsi untuk mengeksekusi transition command ke endpoint API legal-case (FACE UI flow)
   const executeCaseTransition = useCallback(async (transition: string, additionalPayload?: Record<string, unknown>) => {
@@ -565,123 +695,16 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
       caseData,
       documents,
       evidenceCount,
+      evidenceRecords,
       decisionsCount,
       showAssignLawyer,
       currentPerspective, // Save perspective to localStorage for continuity
       actorId: currentSession?.actorId,
       tenantId: currentSession?.tenantId
     });
-  }, [caseId, caseData, documents, evidenceCount, decisionsCount, showAssignLawyer, currentPerspective, currentSession?.actorId, currentSession?.tenantId]);
+  }, [caseId, caseData, documents, evidenceCount, evidenceRecords, decisionsCount, showAssignLawyer, currentPerspective, currentSession?.actorId, currentSession?.tenantId]);
 
-  const loadAll = useCallback(async () => {
-    setLoading();
-    setError(null);
-    try {
-      const caseResp = await fetch("/api/capabilities/legal-case/case.getById", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ caseId }),
-      });
-      let caseAggregate: CaseAggregate | null = null;
-      if (caseResp.ok) {
-        const caseJson = await caseResp.json();
-        caseAggregate = (caseJson.output ?? caseJson.record ?? null) as CaseAggregate | null;
-      }
-      // Gunakan setSuccess dari usePageStates untuk update canonical state (FACE-RECON-002 compliance)
-      if (caseAggregate) {
-        setSuccess(caseAggregate);
-      } else {
-        setEmpty();
-      }
 
-      const workId = caseAggregate?.workId;
-      const matterId = caseId;
-
-      const [docsResp, evResp, decResp] = await Promise.allSettled([
-        Promise.resolve(null), // legal-document capability commented-out in manifest; short-circuit
-        Promise.resolve(null), // evidence-registry capability commented-out in manifest; short-circuit
-        fetch("/api/governance/decisions", { cache: "no-store" }).catch(() => null),
-      ]);
-
-      if (docsResp.status === "fulfilled" && docsResp.value?.ok) {
-        const docsJson = await docsResp.value.json();
-        const items = (docsJson.output?.items ?? docsJson.items ?? []) as DocumentAggregate[];
-        setDocuments(items);
-      } else {
-        setDocuments([]);
-      }
-
-      if (
-        evResp.status === "fulfilled" &&
-        evResp.value &&
-        typeof evResp.value === "object" &&
-        "ok" in evResp.value &&
-        (evResp.value as Response).ok
-      ) {
-        try {
-          const evJson = await (evResp.value as Response).json();
-          setEvidenceCount(Number(evJson.output?.total ?? evJson.total ?? 0));
-        } catch {
-          setEvidenceCount(0);
-        }
-      } else {
-        setEvidenceCount(0);
-      }
-
-      if (
-        decResp.status === "fulfilled" &&
-        decResp.value &&
-        typeof decResp.value === "object" &&
-        "ok" in decResp.value &&
-        (decResp.value as Response).ok
-      ) {
-        try {
-          const decJson = await (decResp.value as Response).json();
-          const items = Array.isArray(decJson) ? decJson : (decJson.items ?? decJson.decisions ?? []);
-          setDecisionsCount(Array.isArray(items) ? items.length : Number(decJson.total ?? 0));
-        } catch {
-          setDecisionsCount(0);
-        }
-      } else {
-        setDecisionsCount(0);
-      }
-
-      // Fetch communication events for this work_id (caseId)
-      if (currentSession) {
-        try {
-          const commResp = await fetch("/api/capabilities/communication/communication.listEvents", {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({
-              work_id: caseId,
-              sessionId: currentSession.sessionId,
-              tenantId: currentSession.tenantId,
-              workspaceId: currentSession.workspaceId
-            }),
-          });
-          
-          if (commResp.ok) {
-            const commJson = await commResp.json();
-            if (commJson.output?.events) {
-              setCommunicationEvents(commJson.output.events);
-            }
-          }
-        } catch (commErr) {
-          console.error("[CaseDetailPage] Failed to load communication events:", commErr);
-          // Don't block page load if communication events fail to load
-        }
-      }
-    } catch (raw) {
-      // Gunakan setError dari usePageStates untuk canonical error state (FACE-RECON-002 compliance)
-      setError(raw instanceof Error ? raw.message : String(raw));
-    } finally {
-      // setLoading(false) tidak perlu dipanggil karena setError/setSuccess sudah mengupdate status
-    }
-  }, [caseId]);
-
-  useEffect(() => {
-    void loadAll();
-  }, [loadAll]);
 
   const steps = useMemo(() => deriveSteps(caseData, documents), [caseData, documents]);
   const artifacts = useMemo(
@@ -703,10 +726,17 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
       text: event.content
     }));
     
-    // Merge both activity streams and sort by newest first
-    return [...systemActivity, ...commActivity]
+    // Convert evidence records to ActivityEntry format
+    const evidenceActivity: ActivityEntry[] = evidenceRecords.map(record => ({
+      id: record.id || `evidence-${record.timestamp || Date.now()}`,
+      at: new Date(record.timestamp || record.createdAt || Date.now()),
+      text: `Bukti: ${record.name || record.type || 'Catatan bukti'}`
+    }));
+    
+    // Merge all activity streams and sort by newest first
+    return [...systemActivity, ...commActivity, ...evidenceActivity]
       .sort((a, b) => b.at.getTime() - a.at.getTime());
-  }, [caseData, documents, communicationEvents]);
+  }, [caseData, documents, communicationEvents, evidenceRecords]);
 
   // Get paginated subset of activity entries using shared usePageStates pagination
   const paginatedActivity = useMemo(() => {
@@ -1228,6 +1258,91 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
                 />
               </div>
             )}
+
+            {/* Add Timeline Entry Button/Form - invokes add-case-evidence command with timelineEntry */}
+            <div className="mt-6 border-t border-slate-100 pt-4">
+              {!showTimelineForm ? (
+                <button
+                  type="button"
+                  onClick={() => setShowTimelineForm(true)}
+                  className="w-full rounded-xl border border-dashed border-slate-200 py-3 text-sm font-medium text-slate-500 hover:border-sky-300 hover:text-sky-600 hover:bg-sky-50 transition-all"
+                >
+                  + Tambah entri timeline manual
+                </button>
+              ) : (
+                <form
+                  className="flex flex-col gap-3"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!timelineEntryText.trim() || !currentSession || !caseData) return;
+
+                    try {
+                      setExecutingCommand("add-timeline-entry");
+                      const resp = await fetch("/api/capabilities/legal-case/add-case-evidence", {
+                        method: "POST",
+                        headers: { "content-type": "application/json" },
+                        body: JSON.stringify({
+                          caseId: caseId,
+                          sessionId: currentSession.sessionId,
+                          evidence: {
+                            name: "Timeline Entry",
+                            description: timelineEntryText.trim(),
+                            type: "timeline",
+                            data: "{}"
+                          },
+                          timelineEntry: {
+                            text: timelineEntryText.trim()
+                          }
+                        }),
+                      });
+
+                      if (resp.ok) {
+                        setTimelineEntryText("");
+                        setShowTimelineForm(false);
+                        setCommandResult({ type: "success", message: "Entri timeline berhasil ditambahkan" });
+                        // Refresh case data to show new timeline entry
+                        await loadAll();
+                      } else {
+                        setCommandResult({ type: "error", message: "Gagal menambahkan entri timeline" });
+                      }
+                    } catch (err) {
+                      console.error("[CaseDetailPage] Failed to add timeline entry:", err);
+                      setCommandResult({ type: "error", message: "Terjadi kesalahan saat menambahkan entri timeline" });
+                    } finally {
+                      setExecutingCommand(null);
+                    }
+                  }}
+                >
+                  <textarea
+                    value={timelineEntryText}
+                    onChange={(e) => setTimelineEntryText(e.target.value)}
+                    placeholder="Masukkan entri timeline..."
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200 resize-none"
+                    rows={3}
+                    required
+                  />
+                  <div className="flex gap-2 justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowTimelineForm(false);
+                        setTimelineEntryText("");
+                      }}
+                      className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={executingCommand === "add-timeline-entry"}
+                      className="px-4 py-2 text-sm font-medium bg-sky-600 text-white rounded-xl hover:bg-sky-700 disabled:opacity-50"
+                    >
+                      {executingCommand === "add-timeline-entry" ? "Menyimpan..." : "Simpan Entri"}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
 
             {/* Send New Communication Form - invokes communication.send command */}
             <form 

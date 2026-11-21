@@ -1,0 +1,44 @@
+version: "1.0"
+workspace:
+  name: business-intelligence
+  display_name: Business Intelligence & Strategy Domain
+  description: Domain Business Intelligence yang mengubah data bisnis, bukti, dan konteks menjadi insight, rekomendasi strategis, dan keputusan yang dapat ditindaklanjuti untuk semua jenis bisnis
+lifecycle:
+  phase: D.1
+  status: ACTIVE
+  contract:
+    stages:
+      - name: onboard
+        description: Onboard data bisnis dari klien/potensial klien ke dalam sistem BPD
+        terminal: false
+      - name: assess
+        description: Analisis kondisi bisnis saat ini, performa, dan posisi pasar
+        terminal: false
+      - name: activate
+        description: Aktifkan kemampuan intelligence untuk menghasilkan insight bisnis awal
+        terminal: false
+      - name: analyze
+        description: Analisis mendalam tentang peluang pasar, tren penjualan, dan area perbaikan
+        terminal: false
+      - name: recommend
+        description: Hasilkan rekomendasi strategis dan keputusan yang dapat ditindaklanjuti
+        terminal: false
+      - name: learn
+        description: Catat hasil implementasi rekomendasi dan perbarui model intelligence untuk iterasi berikutnya
+        terminal: true
+  real_user_jobs:
+    - id: bi-pilot-001
+      name: Business Intelligence Pilot untuk UMKM Batik Jaya
+      description: Pilot Business Intelligence untuk klien potensial UMKM Batik Jaya sebagai use case awal
+      status: in_progress
+      requirements:
+        - req-bi-001
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 85
+    runtime_invocation_required: true
+governance:
+  baseline_locked: true
+  needs_audit: false
+  evidence_path: ./evidence

@@ -347,8 +347,8 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
           tenant_id: entityTenantId,
           workspace_id: entityWorkspaceId,
           work_id: entityWorkId,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          created_at: getNow().toISOString(),
+          updated_at: getNow().toISOString(),
         };
         
         await client.query(

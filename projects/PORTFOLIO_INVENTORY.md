@@ -1,7 +1,7 @@
 # EOS Project Portfolio — Inventory & Classification
 
-**Last Updated:** 2026-11-20
-**Status:** CENSUS COMPLETED — Classification in Progress
+**Last Updated:** 2026-11-21
+**Status:** CENSUS COMPLETED — Classification Final
 
 ---
 
@@ -11,15 +11,25 @@ Portfolio Census telah selesai dilakukan terhadap seluruh repository EOS. Beriku
 
 ---
 
-## 1. Project Intelligence Layer Registry
+## 1. Portfolio Classification Final
 
-Saat ini hanya ada **satu Project resmi** di `projects/*`:
+Berdasarkan rekonsiliasi dan arahan klasifikasi:
+
+| Kategori | Jumlah | Deskripsi |
+|----------|--------|-----------|
+| **Operational/Business Projects** | 14 | Project dengan outcome bisnis tersendiri, memiliki `PROJECT.md`, status `lifecycle: active` |
+| **Umbrella Project** | 1 | `main` — berfungsi sebagai induk portofolio dan fondasi platform |
+| **Total Project Aktif** | **15** | Semua terverifikasi memiliki `PROJECT.md` dan status aktif |
+
+---
+
+## 2. Umbrella Project
 
 | Project Key | Type | Lifecycle | Governance |
 |-------------|------|-----------|------------|
-| `main` | Platform | ACTIVE | EOS Governance |
+| `main` | Umbrella Platform | ACTIVE | EOS Governance |
 
-**Deskripsi:** EOS Main Project — umbrella platform project yang mencakup seluruh arsitektur dan fondasi EOS.
+**Deskripsi:** EOS Main Project — umbrella platform project yang mencakup seluruh arsitektur, fondasi, dan koordinasi portofolio EOS.
 
 ---
 
@@ -31,7 +41,7 @@ Saat ini hanya ada **satu Project resmi** di `projects/*`:
 |----|-------------|------|-------------|---------------------|----------|
 | 1 | `lawyershub` | LawyersHub | D.2 ACTIVE | `case-101` Create/manage legal matter | ✅ Lengkap, test coverage >80% |
 | 2 | `services-id` | Services.ID | D.2 ACTIVE | `sreq-101` Find/request a service | ✅ Lengkap, test coverage >80% |
-| 3 | `ecommerce-ops` | E-commerce Ops | D.2 ACTIVE | `ecom-101` Shopee order fulfillment | ✅ Lengkap, test coverage >85% |
+| 3 | `ecommerce-ops` | E-commerce Ops | PREPARATION — NOT AUTHORIZED FOR PRODUCTION | `ecom-101` Shopee order fulfillment | ✅ Lengkap, regulatory status: CONDITIONAL — LEGAL CLASSIFICATION REQUIRED |
 
 ### Kategori B: Product & Commercial Initiatives (Produk Komersial dengan Paket Layanan)
 
@@ -67,17 +77,38 @@ Saat ini hanya ada **satu Project resmi** di `projects/*`:
 
 ---
 
-## 3. Portfolio Status Summary
+## 3. Operational/Business Projects (14 Project)
+
+| No | Project Key | Nama | Status Fase | Real User Job Aktif |
+|----|-------------|------|-------------|---------------------|
+| 1 | `lawyershub` | LawyersHub | D.2 ACTIVE | `case-101` Create/manage legal matter |
+| 2 | `services-id` | Services.ID | D.2 ACTIVE | `sreq-101` Find/request a service |
+| 3 | `ecommerce-ops` | E-commerce Ops | PREPARATION — NOT AUTHORIZED FOR PRODUCTION | `ecom-101` Shopee order fulfillment |
+| 4 | `digital-operations` | Managed Digital Business Operations | D.2 ACTIVE | `digiop-101/102/103/104` Purchase & onboard packages |
+| 5 | `smace` | SMACE - Sovereign Multi-Modal Agentic Content Engine | D.2 ACTIVE | `smace-101` Generate product photography |
+| 6 | `deal-coordinator` | Commercial Agreement & Fulfillment Coordination | D.2 ACTIVE | `dc-101` Commercial agreement coordination |
+| 7 | `acaas` | ACaaS - Compliance-as-a-Service | PILOT COMPLETED | Belum ada direktori produk terpisah |
+| 8 | `value-metering` | Operational Economics & Value Measurement | D.2 ACTIVE | `val-101` Value tracking |
+| 9 | `agentic-work` | Agentic Work Execution | D.2 BETA | `agw-101` Agentic work execution |
+| 10 | `human-ai-collab` | Human+AI Work Organization | D.2 BETA | `hai-101` Human-AI work coordination |
+| 11 | `dataops` | Data/Ops Work | D.2 ACTIVE | `dops-101` Data processing job |
+| 12 | `ilc` | ILC - Institutional Coordination | D.2 ACTIVE | `ins-101` Institutional initiative management |
+| 13 | `academic` | Academic Community | D.2 ACTIVE | `aca-101` Academic program management |
+| 14 | `admin-support` | Admin & Support | D.2 ACTIVE | `adm-101` IT ticket resolution |
+
+---
+
+## 4. Portfolio Status Summary
 
 | Metrik | Jumlah |
 |--------|--------|
-| Total inisiatif teridentifikasi | 15 |
-| Project resmi di Project Intelligence Layer | 1 (`main`) |
-| Produk dengan direktori `workspace/products/*` | 13 |
-| Inisiatif dengan status D.2 ACTIVE | 12 |
-| Inisiatif dengan status D.2 BETA | 2 |
-| Inisiatif pilot selesai belum ada direktori | 1 (`acaas`) |
-| Sub-inisiatif tercakup dalam project lain | 1 (`WordPress Fix`) |
+| Total Project Aktif | 15 |
+| Operational/Business Projects | 14 |
+| Umbrella Project | 1 (`main`) |
+| Project dengan status D.2 ACTIVE | 12 |
+| Project dengan status D.2 BETA | 2 |
+| Project dengan status Pilot Completed | 1 (`acaas`) |
+| Project dengan Work vertikal aktif | 1 (`ecommerce-ops` - ECOM-OPS-PILOT-READINESS-001) |
 
 ---
 
@@ -93,9 +124,25 @@ Saat ini hanya ada **satu Project resmi** di `projects/*`:
 
 ---
 
-## 5. Langkah Berikutnya
+## 5. Project Prioritization & Work Status
 
-1. **Portfolio Assessment**: Menetapkan owner, tujuan, dependensi, nilai bisnis, dan risiko untuk masing-masing Project
-2. **Execution Prioritization**: Menetapkan urutan eksekusi Project dengan nilai bisnis tertinggi
-3. **Project Registration**: Membuat `PROJECT.md` untuk masing-masing Project yang aktif di Project Intelligence Layer
-4. **ACaaS Onboarding**: Membuat direktori produk terpisah untuk ACaaS karena bukti pilotnya sudah lengkap
+| Project | Prioritas | Status Work | Regulatory |
+|---------|-----------|-------------|------------|
+| `ecommerce-ops` | Highest | **ECOM-OPS-PILOT-READINESS-001** — Persiapan controlled pilot, `NOT AUTHORIZED FOR PRODUCTION` | `CONDITIONAL — LEGAL CLASSIFICATION REQUIRED` |
+| `lawyershub` | High | D.2 ACTIVE, semua test passed |
+| `services-id` | High | D.2 ACTIVE, semua test passed |
+| `digital-operations` | High | D.2 ACTIVE, service catalog lengkap |
+
+---
+
+## 6. Langkah Berikutnya
+
+1. **Ecommerce-Ops Pilot Readiness**: Menyelesaikan acceptance gates G1-G7 ECOM-OPS-PILOT-READINESS-001 sebelum otorisasi pilot produksi
+2. **Owner Assignment**: Menetapkan Business Owner dan Technical Owner untuk Ecommerce-Ops sebagai syarat mutlak sebelum pilot
+3. **Regulatory Classification**: Melakukan review legal PSE/PMSE berdasarkan fungsi aktual sistem Ecommerce-Ops, bukan hanya label model bisnis
+4. **Connector Verification**: Menyiapkan kerangka verifikasi konektor marketplace dan payment gateway produksi melalui akses resmi
+5. **Pilot Control Plan**: Menyusun draf pilot control plan dengan batas tenant, transaksi, biaya, risiko, rollback, dan human escalation
+6. **Portfolio Alignment**: Memastikan 14 Operational/Business Projects lain tidak kehilangan prioritas, owner, atau peluang bisnis
+7. **ACaaS Onboarding**: Membuat direktori produk terpisah untuk ACaaS karena bukti pilotnya sudah lengkap
+
+**Batasan saat ini**: Tanpa owner assignment yang jelas, hanya boleh melakukan persiapan non-mutating, tidak boleh mengaktifkan pilot produksi.

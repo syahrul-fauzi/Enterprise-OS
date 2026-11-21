@@ -19,6 +19,7 @@ import {
   type VerifyRequirementInput,
   type VerifyRequirementOutput,
 } from "../contracts/index.ts";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import {
   defaultRequirementPriority,
   defaultRequirementStatus,
@@ -188,7 +189,7 @@ export const createRequirement: CreateRequirementCommand = {
     if (cleanTitle.length === 0) {
       throw new Error("[requirement.create] Requirement title cannot be empty");
     }
-    const now = new Date();
+    const now = getNow();
     const entityId = newRequirementId();
     const entity: RequirementAggregate = {
       id: entityId,
@@ -475,7 +476,7 @@ export const approveRequirement: ApproveRequirementCommand = {
       throw new Error(`[requirement.approve] Only original owner can approve requirement: ${id} (actor: ${session.actorId}, owner: ${current.owner})`);
     }
     // C14 Invariant: Preserve work identity (W1 remains intact)
-    const approvedAt = new Date();
+    const approvedAt = getNow();
     const next: RequirementAggregate = {
       ...current,
       status: "approved",
@@ -652,7 +653,7 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
         `[requirement.markImplemented] Requirement must be in delivery before implementation is recorded: ${id}`,
       );
     }
-    const implementedAt = new Date();
+    const implementedAt = getNow();
     const next: RequirementAggregate = {
       ...current,
       status: "implemented",
@@ -751,7 +752,7 @@ export const requestRequirementReview: RequestRequirementReviewCommand = {
       );
     }
 
-    const requestedAt = new Date();
+    const requestedAt = getNow();
     const currentVersion = (current as any).version ?? 0;
     
     const next: RequirementAggregate = {
@@ -843,7 +844,7 @@ export const verifyRequirement: VerifyRequirementCommand = {
         `[requirement.verify] Requirement must be implemented before verification: ${id}`,
       );
     }
-    const verifiedAt = new Date();
+    const verifiedAt = getNow();
     const next: RequirementAggregate = {
       ...current,
       status: "verified",
@@ -952,7 +953,7 @@ export const completeRequirementReview: CompleteRequirementReviewCommand = {
       throw new Error(`[requirement.completeReview] Requirement must be in_review to complete review: ${id} (current status: ${current.status})`);
     }
 
-    const reviewCompletedAt = new Date();
+    const reviewCompletedAt = getNow();
     const currentVersion = (current as any).version ?? 0;
     const next: RequirementAggregate = {
       ...current,
@@ -1066,7 +1067,7 @@ export const rejectRequirementReview: RejectRequirementReviewCommand = {
       throw new Error(`[requirement.rejectReview] Requirement must be in_review to reject review: ${id} (current status: ${current.status})`);
     }
 
-    const reviewRejectedAt = new Date();
+    const reviewRejectedAt = getNow();
     const currentVersion = (current as any).version ?? 0;
     const next: RequirementAggregate = {
       ...current,
@@ -1176,7 +1177,7 @@ export const archiveRequirement: ArchiveRequirementCommand = {
         tenantId: tenantId,
         workspaceId: workspaceId,
         workId: current.workId,
-        payload: { input, result: { id: current.id, status: "archived", archivedAt: current.archivedAt ?? new Date() } },
+        payload: { input, result: { id: current.id, status: "archived", archivedAt: current.archivedAt  ?? getNow() } },
         status: "COMPLETED",
       });
       
@@ -1186,7 +1187,7 @@ export const archiveRequirement: ArchiveRequirementCommand = {
         sourceRef: "requirement-management/commands/archiveRequirement",
         success: true,
         input: input,
-        result: { id: current.id, status: "archived", archivedAt: current.archivedAt ?? new Date() },
+        result: { id: current.id, status: "archived", archivedAt: current.archivedAt  ?? getNow() },
         productId: "requirement-management",
         inputRefs: [`requirement:${input.id}`],
         outputRefs: [`archived-requirement:${current.id}`],
@@ -1195,11 +1196,11 @@ export const archiveRequirement: ArchiveRequirementCommand = {
       return {
         id: current.id,
         status: "archived",
-        archivedAt: current.archivedAt ?? new Date(),
+        archivedAt: current.archivedAt  ?? getNow(),
       };
     }
 
-    const archivedAt = new Date();
+    const archivedAt = getNow();
     const next: RequirementAggregate = {
       ...current,
       status: "archived",

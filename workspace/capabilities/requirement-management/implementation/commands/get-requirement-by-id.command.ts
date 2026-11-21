@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { RequirementRepositoryCurrent } from "../repository/index.js";
 import type { RequirementAggregate } from "../contracts/index.ts";
@@ -66,11 +67,11 @@ export const getRequirementByIdCommand: CapabilityCommand = {
     };
 
     const evidenceBoundary: EvidenceBoundary = {
-      evidenceIds: [`req-get-${Date.now()}`],
+      evidenceIds: [`req-get-${getNow().getTime()}`],
       evidenceChain: [{
         actorId,
         action: "get-requirement-by-id",
-        timestamp: new Date(),
+        timestamp: getNow(),
         workspaceId
       }],
       outcomeVerified: false

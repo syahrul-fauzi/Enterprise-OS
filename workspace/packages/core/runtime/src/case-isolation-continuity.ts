@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface CaseIsolationSession {
   caseSessionId: string;
   caseId: string;
@@ -16,17 +17,17 @@ export class CaseIsolationContinuityService {
   private sessions: Map<string, CaseIsolationSession> = new Map();
 
   createCaseIsolationSession(caseId: string, actor: string): CaseIsolationSession {
-    const caseSessionId = `case-sess-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+    const caseSessionId = `case-sess-${getNow().getTime()}-${Math.random().toString(36).substring(2, 10)}`;
     const session: CaseIsolationSession = {
       caseSessionId,
       caseId,
       status: 'active',
-      isolationHash: `case-hash-${caseId}-${Date.now()}`,
-      createdAt: new Date().toISOString(),
+      isolationHash: `case-hash-${caseId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
       evidence: [
         {
           operation: 'createCaseIsolationSession',
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           actor
         }
       ]
@@ -41,7 +42,7 @@ export class CaseIsolationContinuityService {
       session.status = 'suspended';
       session.evidence.push({
         operation: 'suspendCaseIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(caseSessionId, session);
@@ -53,10 +54,10 @@ export class CaseIsolationContinuityService {
     const session = this.sessions.get(caseSessionId);
     if (session) {
       session.status = 'resumed';
-      session.lastResumedAt = new Date().toISOString();
+      session.lastResumedAt = getNow().toISOString();
       session.evidence.push({
         operation: 'resumeCaseIsolationSession',
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actor
       });
       this.sessions.set(caseSessionId, session);

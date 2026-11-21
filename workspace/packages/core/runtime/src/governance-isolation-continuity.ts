@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 async function logInvocationEvidence(context: ExecutionContext, action: string, data: Record<string, any>) {
@@ -17,11 +18,11 @@ export interface GovernanceIsolationSession {
 export class GovernanceIsolationContinuityService {
   async createGovernanceIsolationSession(context: ExecutionContext, governanceDomain: string): Promise<GovernanceIsolationSession> {
     const session: GovernanceIsolationSession = {
-      governanceSessionId: `governance-session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      governanceSessionId: `governance-session-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       governanceDomain,
       status: 'ACTIVE',
-      isolationHash: Buffer.from(`${governanceDomain}-${context.tenantId}-${Date.now()}`).toString('hex'),
-      createdAt: new Date().toISOString()
+      isolationHash: Buffer.from(`${governanceDomain}-${context.tenantId}-${getNow().getTime()}`).toString('hex'),
+      createdAt: getNow().toISOString()
     };
     
     logInvocationEvidence(context, 'createGovernanceIsolationSession', { governanceDomain, session });
@@ -41,7 +42,7 @@ export class GovernanceIsolationContinuityService {
       status: 'RESUMED',
       isolationHash: '',
       createdAt: '',
-      lastResumedAt: new Date().toISOString()
+      lastResumedAt: getNow().toISOString()
     };
     
     logInvocationEvidence(context, 'resumeGovernanceIsolationSession', { governanceSessionId, session });

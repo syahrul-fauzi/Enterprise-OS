@@ -312,7 +312,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
     );
     
     // Return work dengan lock yang aktif
-    return this.toAggregate({...work, lockedAt: new Date().toISOString(), lockHolder: "eos-work-core"});
+    return this.toAggregate({...work, lockedAt: getNow().toISOString(), lockHolder: "eos-work-core"});
   }
 
   // W06-A2: Helper untuk generate lock key dari workId (hash string menjadi integer 64-bit)
@@ -415,7 +415,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       work_id: "product-" + newProduct.id,
       tenant_id: newProduct.tenantId,
       actor_id: newProduct.ownerId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       sessionId: SYSTEM_AGENT_SESSION_ID,
       productId: newProduct.id
     });
@@ -442,7 +442,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
     await safeRecordEvidence({ 
       type: "requirement.created", 
       requirementId: newRequirement.id, 
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       capability: "work-core",
       command: "createRequirement",
       work_id: null,
@@ -458,13 +458,13 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
     const newOutcome: OutcomeNode = {
       ...outcome,
       id: outcomeId,
-      outcomeTimestamp: outcome.outcomeTimestamp || new Date()
+      outcomeTimestamp: outcome.outcomeTimestamp || getNow()
     };
     // Simpan ke tabel outcomes (PostgreSQL) - sesuai migration 015 schema dengan tenant_id
     await writePool!.query(
       `INSERT INTO outcomes (id, work_id, type, description, evidence_ids, actor_id, tenant_id, created_at)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-      [newOutcome.id, newOutcome.workId, newOutcome.type, newOutcome.description, newOutcome.evidenceIds, newOutcome.actorId, newOutcome.tenantId, new Date()]
+      [newOutcome.id, newOutcome.workId, newOutcome.type, newOutcome.description, newOutcome.evidenceIds, newOutcome.actorId, newOutcome.tenantId, getNow()]
     );
     await safeRecordEvidence({ 
       workspace_id: DEFAULT_WORKSPACE_ID,
@@ -473,7 +473,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       work_id: newOutcome.workId,
       tenant_id: newOutcome.tenantId,
       actor_id: newOutcome.actorId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       sessionId: SYSTEM_AGENT_SESSION_ID,
       outcomeId: newOutcome.id
     });
@@ -530,7 +530,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       productId,
       outcomeId: newOutcome.id,
       workId: outcome.workId,
-      timestamp: new Date()
+      timestamp: getNow()
     });
 
     return newOutcome;
@@ -585,7 +585,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       type: "work.linked-to-product",
       productId,
       workId,
-      timestamp: new Date()
+      timestamp: getNow()
     });
   }
 
@@ -659,7 +659,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       const actorId = entry.actor_id || entry.actorId;
       const type = entry.command || entry.type || "work.evidence";
       const content = entry.details || entry;
-      const timestamp = entry.timestamp ? new Date(entry.timestamp) : new Date();
+      const timestamp = entry.timestamp ? new Date(entry.timestamp) : getNow();
       const checksum = entry.meta_checksum || null;
       const executionId = entry.executionId || entry.execution_id || null;
       const contextTraceId = entry.context_trace_id || null;
@@ -865,7 +865,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       if (work.status && work.status !== existingWork.status) {
         newStateHistory.push({
           status: work.status,
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           actorId: work.actorId || existingWork.actorId,
           note: (work as any).nextAction || `Status updated to ${work.status}`
         });
@@ -892,7 +892,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
         ...existingWork,
         ...work,
         participants: mergedParticipants, // Gunakan merged participants bukan overwrite
-        updatedAt: new Date(),
+        updatedAt: getNow(),
         stateHistory: newStateHistory,
         boundariesCrossed: mergedBoundaries, // Overwrite with merged immutable list
       } as WorkAggregate;
@@ -901,8 +901,8 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       const workId = `work_${id}`;
       
       const initialStateHistory = work.status && work.status !== "draft" 
-        ? [{ status: work.status, timestamp: new Date().toISOString(), actorId: work.actorId!, note: "Work created" }]
-        : [{ status: "draft" as const, timestamp: new Date().toISOString(), actorId: work.actorId!, note: "Work created" }];
+        ? [{ status: work.status, timestamp: getNow().toISOString(), actorId: work.actorId!, note: "Work created" }]
+        : [{ status: "draft" as const, timestamp: getNow().toISOString(), actorId: work.actorId!, note: "Work created" }];
       
       savedWork = {
         id: workId,
@@ -914,8 +914,8 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
         participants: work.participants || [work.actorId!],
         version: 1,
         stateHistory: initialStateHistory,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: getNow(),
+        updatedAt: getNow(),
         compositionId: work.compositionId || null,
         // DEL-001 FIX: Default claim_status untuk new work jika tidak diset
         claimStatus: work.claimStatus || "unclaimed",
@@ -932,7 +932,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       work_id: finalSaved.id,
       tenant_id: finalSaved.tenantId,
       actor_id: finalSaved.actorId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       sessionId: finalSaved.sessionId || SYSTEM_AGENT_SESSION_ID,
       details: { status: finalSaved.status, version: finalSaved.version }
     });
@@ -995,8 +995,8 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
           tenant_id: workTenantId,
           workspace_id: workWorkspaceId,
           actor_id: work.actorId || createActorId("system"),
-          created_at: work.createdAt || new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          created_at: work.createdAt || getNow().toISOString(),
+          updated_at: getNow().toISOString(),
           linked_expression_id: work.linkedExpressionId || null,
           claim_status: work.claimStatus || "unclaimed",
         };
@@ -1081,7 +1081,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       // 4. Check if there is an active claim that cannot be reclaimed
       const hasActiveClaim = workRecord.claim_status === 'CLAIMED';
       const leaseUntil = workRecord.lease_until ? new Date(workRecord.lease_until) : null;
-      const isStale = leaseUntil && leaseUntil < new Date();
+      const isStale = leaseUntil && leaseUntil < getNow();
       const canReclaim = allowReclaim && (workRecord.claim_status === 'STALE' || isStale);
       
       if (hasActiveClaim && !canReclaim) {
@@ -1137,7 +1137,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
           claimStatus: 'CLAIMED',
           previousExecutionCount: previousExecutions.length
         },
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         sessionId: updatedWork.sessionId,
         tenantId: updatedWork.tenantId,
         workspaceId: updatedWork.workspaceId,
@@ -1193,7 +1193,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
         action: "work.claim.stale",
         actorId: "system",
         details: { reason: "lease_expired" },
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         tenantId: null,
         workspaceId: null,
       });

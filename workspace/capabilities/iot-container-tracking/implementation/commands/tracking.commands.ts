@@ -6,6 +6,7 @@ import {
   UpdateStatusInputSchema,
   type ProvisionContainerInput,
 } from '../contracts/tracking.contracts';
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import { containerTrackingRepository } from '../repository/ContainerTrackingRepositoryInMemory';
 import { safeRecordEvidence } from '@capabilities/work-core/implementation/utils/evidence.utils';
 
@@ -28,7 +29,7 @@ const provision: CapabilityCommand = {
       container_id,
       status: 'provisioned' as const,
       location_history: [],
-      last_updated: new Date().toISOString(),
+      last_updated: getNow().toISOString(),
     };
 
     await containerTrackingRepository.save(newData);
@@ -40,7 +41,7 @@ const provision: CapabilityCommand = {
       capability: 'iot-container-tracking',
       command: 'provision',
       workspace_id: null,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       container_provisioned: true,
       container_id,
     });

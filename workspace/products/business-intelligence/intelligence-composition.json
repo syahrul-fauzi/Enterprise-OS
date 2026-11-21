@@ -1,0 +1,131 @@
+{
+  "composition_id": "BPD-COMPOSITION-001",
+  "composition_version": "1.0.0",
+  "governance_boundaries": {
+    "new_pipeline_prohibited": true,
+    "new_connector_prohibited": true,
+    "production_access_not_authorized": true,
+    "tenant_isolation_enforced": true,
+    "duplicate_orchestrator_prohibited": true,
+    "duplicate_workflow_engine_prohibited": true
+  },
+  "intelligence_layers": [
+    {
+      "layer_id": "BPD-LAYER-001",
+      "layer_name": "Business Context Normalization",
+      "layer_responsibility": "Menormalkan konteks bisnis dari ketiga sumber produk ke dalam skema semantik yang seragam",
+      "input_signals": [
+        "ecommerce-ops.commerce_signals",
+        "digital-operations.customer_signals",
+        "deal-coordinator.pipeline_signals"
+      ],
+      "output_artifacts": [
+        "normalized_business_context.json"
+      ],
+      "reuse_verification": {
+        "existing_capabilities": [
+          "semantic-mapping.capabilities.primitive",
+          "context-normalization.capabilities.primitive"
+        ],
+        "new_components_required": 0
+      }
+    },
+    {
+      "layer_id": "BPD-LAYER-002",
+      "layer_name": "Cross-Product Correlation",
+      "layer_responsibility": "Mengidentifikasi hubungan korelasi antara sinyal dari ketiga produk",
+      "input_signals": [
+        "normalized_business_context.json"
+      ],
+      "output_artifacts": [
+        "cross_product_correlation_matrix.json"
+      ],
+      "reuse_verification": {
+        "existing_capabilities": [
+          "correlation-analysis.capabilities.primitive",
+          "relationship-detection.capabilities.primitive"
+        ],
+        "new_components_required": 0
+      }
+    },
+    {
+      "layer_id": "BPD-LAYER-003",
+      "layer_name": "Business Performance Analysis",
+      "layer_responsibility": "Menghitung metrik kinerja bisnis gabungan dari ketiga produk",
+      "input_signals": [
+        "cross_product_correlation_matrix.json",
+        "ecommerce-ops.performance_metrics",
+        "digital-operations.service_metrics",
+        "deal-coordinator.pipeline_metrics"
+      ],
+      "output_artifacts": [
+        "business_performance_dashboard.json"
+      ],
+      "reuse_verification": {
+        "existing_capabilities": [
+          "metrics-aggregation.capabilities.primitive",
+          "performance-analysis.capabilities.primitive"
+        ],
+        "new_components_required": 0
+      }
+    },
+    {
+      "layer_id": "BPD-LAYER-004",
+      "layer_name": "Opportunity Intelligence",
+      "layer_responsibility": "Mengidentifikasi peluang pertumbuhan dan hambatan operasional dari korelasi lintas produk",
+      "input_signals": [
+        "business_performance_dashboard.json"
+      ],
+      "output_artifacts": [
+        "opportunity_identification_report.json"
+      ],
+      "reuse_verification": {
+        "existing_capabilities": [
+          "opportunity-detection.capabilities.primitive",
+          "growth-analysis.capabilities.primitive"
+        ],
+        "new_components_required": 0
+      }
+    },
+    {
+      "layer_id": "BPD-LAYER-005",
+      "layer_name": "Strategic Recommendations",
+      "layer_responsibility": "Menghasilkan rekomendasi keputusan bisnis yang dapat ditindaklanjuti berdasarkan intelligence gabungan",
+      "input_signals": [
+        "opportunity_identification_report.json"
+      ],
+      "output_artifacts": [
+        "strategic_recommendations.json"
+      ],
+      "reuse_verification": {
+        "existing_capabilities": [
+          "recommendation-engine.capabilities.primitive",
+          "decision-support.capabilities.primitive"
+        ],
+        "new_components_required": 0
+      }
+    }
+  ],
+  "data_flow_sequence": [
+    "1. Data Consumption: BPD mengonsumsi sinyal dari ketiga produk melalui kontrak data yang terkontrol",
+    "2. Layer 1: Normalisasi konteks bisnis ke skema semantik seragam",
+    "3. Layer 2: Deteksi korelasi lintas produk",
+    "4. Layer 3: Analisis kinerja bisnis gabungan",
+    "5. Layer 4: Identifikasi peluang dan hambatan",
+    "6. Layer 5: Generasi rekomendasi strategis",
+    "7. Output: Rekomendasi diteruskan ke EOS Work untuk proses otorisasi"
+  ],
+  "reuse_verification_summary": {
+    "total_intelligence_layers": 5,
+    "existing_capabilities_reused": 10,
+    "new_components_created": 0,
+    "reuse_percentage": 100,
+    "leverage_level": "MAXIMUM"
+  },
+  "gate_verification": {
+    "duplicate_pipeline_count": 0,
+    "duplicate_infrastructure_count": 0,
+    "new_pipeline_created": false,
+    "gate_status": "PASSED"
+  }
+}

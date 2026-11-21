@@ -13,5 +13,5 @@ export const retailInventoryWorkspace = {
     "workspace.retail.warehouse-main",
     "workspace.ai.retail-assistant-portal"
   ],
-  createdAt: new Date().toISOString(),
+  schemaVersion: "1.0.0",
 } as const;

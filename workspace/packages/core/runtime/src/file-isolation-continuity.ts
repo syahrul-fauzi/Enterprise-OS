@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface FileIsolationSession {
   sessionId: string;
   tenantId: string;
@@ -19,12 +20,12 @@ export class FileIsolationContinuityService {
     accessPattern: string
   ): Promise<FileIsolationSession> {
     const session: FileIsolationSession = {
-      sessionId: `file-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `file-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       tenantId,
       fileContext,
       fileId,
       accessPattern,
-      createdAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
       status: 'active'
     };
     this.sessions.set(session.sessionId, session);

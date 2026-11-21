@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 export interface EvidenceStoreIsolationSession {
   evidenceStoreSessionId: string;
@@ -12,18 +13,18 @@ export interface EvidenceStoreIsolationSession {
 export class EvidenceStoreIsolationContinuityService {
   async createEvidenceStoreIsolationSession(context: ExecutionContext, evidenceStoreType: string): Promise<EvidenceStoreIsolationSession> {
     const session: EvidenceStoreIsolationSession = {
-      evidenceStoreSessionId: `evidence-store-session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      evidenceStoreSessionId: `evidence-store-session-${getNow().getTime()}-${Math.random().toString(36).substring(2, 9)}`,
       evidenceStoreType,
       status: 'ACTIVE',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     context.invocationEvidence.push({
       operation: 'createEvidenceStoreIsolationSession',
       evidenceStoreSessionId: session.evidenceStoreSessionId,
       evidenceStoreType,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return session;
@@ -34,7 +35,7 @@ export class EvidenceStoreIsolationContinuityService {
       operation: 'suspendEvidenceStoreIsolationSession',
       evidenceStoreSessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {
@@ -48,15 +49,15 @@ export class EvidenceStoreIsolationContinuityService {
       evidenceStoreSessionId,
       evidenceStoreType: 'RESUMED',
       status: 'RESUMED',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     context.invocationEvidence.push({
       operation: 'resumeEvidenceStoreIsolationSession',
       evidenceStoreSessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return resumedSession;
@@ -73,7 +74,7 @@ export class EvidenceStoreIsolationContinuityService {
       operation: 'verifyEvidenceStoreIsolationContinuity',
       evidenceStoreSessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {

@@ -1,0 +1,15 @@
+{
+  "recon_timestamp": "2026-11-20T00:00:00.000Z",
+  "product_key": "acaas",
+  "existing_capabilities_found": [
+    "compliance.assessment",
+    "compliance.monitoring",
+    "compliance.evidence"
+  ],
+  "new_capabilities_required": [
+    "compliance.automation"
+  ],
+  "reuse_percentage": 100,
+  "blocked": false,
+  "recommendation": "MINIMAL FIX — tambahkan capability compliance.automation menggunakan kembali fondasi yang sudah ada"
+}

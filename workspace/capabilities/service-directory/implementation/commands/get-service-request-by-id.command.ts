@@ -1,5 +1,6 @@
 // @ts-nocheck removed: rootDir issue resolved via tsconfig.json alignment with legal-case slice
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { ServiceRequestRepositoryInMemory, getServiceRequestRepositoryPostgres } from "../repository/index.js";
 import type { ServiceRequestId, ServiceRequestAggregate, ServiceProviderAggregate } from "../contracts/service.contracts.js";
@@ -119,13 +120,13 @@ export const getServiceRequestByIdCommand: CapabilityCommand<GetServiceRequestBy
     const executionBoundary: ExecutionBoundary = {
       commandName: "service-directory.getById",
       capability: "service-directory",
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     };
     const evidenceBoundary: EvidenceBoundary = {
       eventType: "SERVICE_REQUEST_ACCESSED",
       actorId: finalActorId,
       workspaceId: finalWorkspaceId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     };
     const presentationBoundary: PresentationBoundary = {
       surface: "api",
@@ -206,7 +207,7 @@ export const getServiceRequestByIdCommand: CapabilityCommand<GetServiceRequestBy
         from: r.authorization.delegatedBy,
         to: finalActorId as any,
         actions: r.authorization.permissions ?? [],
-        expiresAt: r.authorization.expiryTimestamp ? new Date(r.authorization.expiryTimestamp) : new Date(Date.now() + 86400000)
+        expiresAt: r.authorization.expiryTimestamp ? new Date(r.authorization.expiryTimestamp) : new Date(getNow().getTime() + 86400000)
       }] : [],
       // Execution boundary data
       workspaceId: finalWorkspaceId as any,

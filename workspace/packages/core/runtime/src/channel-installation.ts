@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface ChannelInstallation {
@@ -22,15 +23,15 @@ export class ChannelInstallationService {
     validityPeriod: number
   ): Promise<ChannelInstallation> {
     const accessProof: AccessProof = {
-      proofId: `proof-${Date.now()}`,
-      generatedAt: new Date().toISOString(),
+      proofId: `proof-${getNow().getTime()}`,
+      generatedAt: getNow().toISOString(),
       validityPeriod,
       hash: this.generateHash(channelId, context.actorId)
     };
 
     const installation: ChannelInstallation = {
       channelId,
-      installationTimestamp: new Date().toISOString(),
+      installationTimestamp: getNow().toISOString(),
       accessProof,
       status: 'ACTIVE'
     };
@@ -58,7 +59,7 @@ export class ChannelInstallationService {
   }
 
   private generateHash(channelId: string, actorId: string): string {
-    return Buffer.from(`${channelId}:${actorId}:${Date.now()}`).toString('base64');
+    return Buffer.from(`${channelId}:${actorId}:${getNow().getTime()}`).toString('base64');
   }
 
   private async validateProof(channelId: string, proofId: string): Promise<boolean> {

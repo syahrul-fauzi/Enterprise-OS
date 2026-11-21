@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 
 export async function GET() {
   const correlationId = `incident-recovery-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
@@ -105,6 +106,6 @@ export async function GET() {
         heapUsed: `${Math.round(memoryUsage.heapUsed / 1024 / 1024)}MB`
       }
     },
-    timestamp: new Date().toISOString()
+    timestamp: getNow().toISOString()
   });
 }

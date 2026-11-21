@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 export interface SessionContextIsolationSession {
   sessionId: string;
@@ -12,17 +13,17 @@ export interface SessionContextIsolationSession {
 export class SessionContextIsolationContinuityService {
   async createSessionContextIsolationSession(context: ExecutionContext, sessionType: string): Promise<SessionContextIsolationSession> {
     const session: SessionContextIsolationSession = {
-      sessionId: `session-session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `session-session-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       sessionType,
       status: 'ACTIVE',
-      isolationHash: `session-hash-${sessionType}-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      isolationHash: `session-hash-${sessionType}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
     context.invocationEvidence.push({
       operation: 'createSessionContextIsolationSession',
       sessionId: session.sessionId,
       sessionType,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return session;
   }
@@ -32,7 +33,7 @@ export class SessionContextIsolationContinuityService {
       operation: 'suspendSessionContextIsolationSession',
       sessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { suspended: true, sessionId };
   }
@@ -44,12 +45,12 @@ export class SessionContextIsolationContinuityService {
       status: 'RESUMED',
       isolationHash: '',
       createdAt: '',
-      lastResumedAt: new Date().toISOString()
+      lastResumedAt: getNow().toISOString()
     };
     context.invocationEvidence.push({
       operation: 'resumeSessionContextIsolationSession',
       sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return resumedSession;
   }
@@ -64,7 +65,7 @@ export class SessionContextIsolationContinuityService {
       operation: 'verifySessionContextIsolationContinuity',
       sessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { valid: true, checks };
   }

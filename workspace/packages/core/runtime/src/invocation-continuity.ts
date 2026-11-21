@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface InvocationSession {
@@ -14,12 +15,12 @@ export interface InvocationSession {
 export class InvocationContinuityService {
   async createInvocationSession(context: ExecutionContext, actorId: string, workItemId: string): Promise<InvocationSession> {
     const session: InvocationSession = {
-      sessionId: `invocation-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `invocation-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       actorId,
       workItemId,
       status: 'ACTIVE',
-      invocationHash: `invocation-hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      invocationHash: `invocation-hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
     await InvocationEvidence.record(context, 'createInvocationSession', { actorId, workItemId, session });
     return session;
@@ -36,9 +37,9 @@ export class InvocationContinuityService {
       actorId: context.actorId,
       workItemId: context.workItemId,
       status: 'RESUMED',
-      invocationHash: `invocation-hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      invocationHash: `invocation-hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
     await InvocationEvidence.record(context, 'resumeInvocationSession', { sessionId, session });
     return session;

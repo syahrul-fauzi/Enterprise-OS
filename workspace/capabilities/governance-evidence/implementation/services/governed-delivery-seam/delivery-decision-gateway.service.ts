@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { readFileSync, mkdirSync, appendFileSync } from "node:fs";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { join, dirname } from "node:path";
 import { randomUUID } from "node:crypto";
 import { recordRuntimeInvocation, computeDigest } from "@repo/core-runtime";
@@ -307,7 +308,7 @@ export class DeliveryDecisionGatewayService {
       }
 
       const decisionId = `dec-${randomUUID()}`;
-      const timestampUtc = new Date().toISOString();
+      const timestampUtc = getNow().toISOString();
 
       // Buat record sebelum compute digest (untuk hash yang konsisten)
       const recordWithoutDigest = {

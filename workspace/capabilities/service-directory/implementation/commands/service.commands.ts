@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 // Hapus duplikasi getCapabilityRegistry - hanya gunakan satu implementasi di bawah
 import {
   CreateServiceRequestInput,
@@ -282,7 +284,7 @@ export const createServiceRequest: CreateServiceRequestCommand = {
       level: "medium" as const,
       rationale: "Default service request risk assessment",
       assessedBy: actorId,
-      assessedAt: new Date()
+      assessedAt: getNow()
     };
 
     // Calculate execution frame using canonical CMBCD function
@@ -295,7 +297,7 @@ export const createServiceRequest: CreateServiceRequestCommand = {
 
     const entity: ServiceRequestAggregate = {
       id: newServiceRequestId(),
-      workId: coreWorkResult?.workId || `temp-work-${Date.now()}`, // Mandatory workId always present
+      workId: coreWorkResult?.workId || `temp-work-${getNow().getTime()}`, // Mandatory workId always present
       title: title.trim(),
       ...(description !== undefined && description !== ""
         ? { description }
@@ -306,8 +308,8 @@ export const createServiceRequest: CreateServiceRequestCommand = {
       requesterName,
       ...(budget ? { budget } : {}),
       ...(externalId ? { externalId } : {}),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
       // PROD-002-10: CMBCD mandatory fields (non-optional per contract)
       actorMetadata: defaultActorMetadata,
       allowedCapabilities: ["service-directory.read", "service-directory.update"] as const,
@@ -334,7 +336,7 @@ export const createServiceRequest: CreateServiceRequestCommand = {
         tenant_id: tenantId,
         workspace_id: workspaceId,
         actor_id: actorId,
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         integration_note: "W-SVC-001: Service request created as domain extension of core Work primitive"
       });
     }
@@ -349,7 +351,7 @@ export const createServiceRequest: CreateServiceRequestCommand = {
           ...entity,
           providerId: cyberGuard.id,
           status: "proposed", // CR-004: Status = proposed, waiting for real provider decision
-          updatedAt: new Date()
+          updatedAt: getNow()
         };
         await serviceRepository.save(proposed);
         console.log(`[service-directory.createServiceRequest] Security audit request PROPOSED to ${cyberGuard.name} (contact: ${cyberGuard.contactName} <${cyberGuard.contactEmail}>, response: ${cyberGuard.responseHours})`);
@@ -523,7 +525,7 @@ export const providerDecisionServiceRequest: ProviderDecisionCommand = {
       throw new Error(`[service-directory.providerDecisionServiceRequest] Invalid or missing priority field on service request: ${id}. Priority must be one of: low, medium, high, critical`);
     }
 
-    const providerDecisionAt = new Date();
+    const providerDecisionAt = getNow();
     // CR-005: If provider accepts AND provides a price, set work to "proposed" with price (customer must accept)
     // If provider declines, set status to "declined" regardless
     const nextStatus: ServiceRequestStatus = decision === "declined" 
@@ -538,7 +540,7 @@ export const providerDecisionServiceRequest: ProviderDecisionCommand = {
       providerDecisionAt,
       // PROD-002-10: Update actorId di CMBCD actorMetadata, bukan top-level property
       actorMetadata: { ...current.actorMetadata, actorId },
-      updatedAt: new Date(),
+      updatedAt: getNow(),
     };
     await serviceRepository.save(next);
     
@@ -690,7 +692,7 @@ export const markServiceDelivered: MarkServiceDeliveredCommand = {
       return {
         id: current.id,
         status: "delivered",
-        deliveredAt: current.deliveredAt ?? new Date(),
+        deliveredAt: current.deliveredAt ?? getNow(),
       };
     }
 
@@ -701,7 +703,7 @@ export const markServiceDelivered: MarkServiceDeliveredCommand = {
       current.executionFrame
     );
 
-    const deliveredAt = new Date();
+    const deliveredAt = getNow();
     const next: ServiceRequestAggregate = {
       ...current,
       status: "delivered",
@@ -709,7 +711,7 @@ export const markServiceDelivered: MarkServiceDeliveredCommand = {
       // PROD-002-10: Update actorId di CMBCD actorMetadata, bukan top-level property
       actorMetadata: { ...current.actorMetadata, actorId },
       executionFrame: newExecutionFrame as any,
-      updatedAt: new Date()
+      updatedAt: getNow()
     };
     await serviceRepository.save(next);
 
@@ -814,25 +816,25 @@ export const markServiceVerified: MarkServiceVerifiedCommand = {
       return {
         id: current.id,
         status: "verified",
-        verifiedAt: current.verifiedAt ?? new Date(),
+        verifiedAt: current.verifiedAt ?? getNow(),
       };
     }
 
-    const verifiedAt = new Date();
+    const verifiedAt = getNow();
     const next: ServiceRequestAggregate = {
       ...current,
       status: "verified",
       verifiedAt,
       // PROD-002-10: Update actorId di CMBCD actorMetadata, bukan top-level property
       actorMetadata: { ...current.actorMetadata, actorId },
-      updatedAt: new Date()
+      updatedAt: getNow()
     };
     await serviceRepository.save(next);
 
     // Record verification evidence - use module-level safeRecordEvidence (MIRRORS all other EOS capabilities)
     // Tambahkan parameter wajib safeRecordEvidence (timestamp dan sessionId) sesuai canonical contract
-    const currentTimestamp = new Date().toISOString();
-    const currentSessionId = sessionId || `session-test-${Date.now()}`;
+    const currentTimestamp = getNow().toISOString();
+    const currentSessionId = sessionId || `session-test-${getNow().getTime()}`;
     await safeRecordEvidence({
       capability: "service-directory",
       command: "markServiceVerified",
@@ -1137,12 +1139,12 @@ export const updateExternalSystemStatus: UpdateExternalSystemStatusCommand = {
           status: externalStatus,
           referenceId: externalReferenceId,
           data: responseData,
-          receivedAt: new Date(receivedAt)
+          receivedAt: getNow()
         }
       ],
       // PROD-002-10: Update actorId di CMBCD actorMetadata, bukan top-level property
       actorMetadata: { ...current.actorMetadata, actorId: createActorId(actorId as unknown as string) },
-      updatedAt: new Date(),
+      updatedAt: getNow(),
     };
 
     // Persist changes
@@ -1194,14 +1196,14 @@ export const customerAcceptPriceServiceRequest: CustomerAcceptPriceCommand = {
       throw new Error(`[service-directory.customerAcceptPriceServiceRequest] Cannot accept price on work with status: ${current.status}. Must be "proposed" with proposed price.`);
     }
 
-    const priceAcceptedAt = new Date();
+    const priceAcceptedAt = getNow();
     const next: ServiceRequestAggregate = {
       ...current,
       status: "accepted", // Customer accepted price - work moves to accepted for execution
       priceAcceptedAt,
       // PROD-002-10: Update actorId di CMBCD actorMetadata, bukan top-level property
       actorMetadata: { ...current.actorMetadata, actorId },
-      updatedAt: new Date(),
+      updatedAt: getNow(),
     };
     await serviceRepository.save(next);
     
@@ -1284,11 +1286,11 @@ export const updatePaymentStatusServiceRequest: UpdatePaymentStatusCommand = {
         status: current.status,
         paymentTransactionId: current.paymentTransactionId!,
         paymentStatus: current.paymentStatus!,
-        paymentReceivedAt: new Date()
+        paymentReceivedAt: getNow()
       };
     }
 
-    const paymentReceivedAt = new Date();
+    const paymentReceivedAt = getNow();
     // If payment is successful, move work to "in_service" so provider can start execution
     const nextStatus: ServiceRequestStatus = paymentStatus === "success" 
       ? "in_service" 
@@ -1301,7 +1303,7 @@ export const updatePaymentStatusServiceRequest: UpdatePaymentStatusCommand = {
       paymentStatus,
       // PROD-002-10: Update actorId di CMBCD actorMetadata, bukan top-level property
       actorMetadata: { ...current.actorMetadata, actorId },
-      updatedAt: new Date(),
+      updatedAt: getNow(),
     };
     await serviceRepository.save(next);
     
@@ -1364,20 +1366,20 @@ export const settleServiceRequest: SettleServiceRequestCommand = {
       throw new Error(`[service-directory.settleServiceRequest] Cannot settle work with status: ${current.status}. Must be "verified".`);
     }
 
-    const settledAt = new Date();
+    const settledAt = getNow();
     const next: ServiceRequestAggregate = {
       ...current,
       status: "settled",
       settledAt,
       // PROD-002-10: Update actorId di CMBCD actorMetadata, bukan top-level property
       actorMetadata: { ...current.actorMetadata, actorId },
-      updatedAt: new Date(),
+      updatedAt: getNow(),
     };
     await serviceRepository.save(next);
     
     // Record settlement evidence
-    const currentTimestamp = new Date().toISOString();
-    const currentSessionId = sessionId || `session-test-${Date.now()}`;
+    const currentTimestamp = getNow().toISOString();
+    const currentSessionId = sessionId || `session-test-${getNow().getTime()}`;
     await safeRecordEvidence({
       capability: "service-directory",
       command: "settleServiceRequest",
@@ -1512,7 +1514,7 @@ export const scheduleOnboarding: CapabilityCommand<ScheduleOnboardingInput, Prom
           command: "midtrans-payment-verified",
           input: { midtrans_transaction_id: midtransTransactionId, payment_status: verifiedPaymentStatus, gross_amount: grossAmount },
           output: {},
-          timestamp: new Date(),
+          timestamp: getNow(),
           success: true,
           sessionId
         });
@@ -1567,7 +1569,7 @@ export const scheduleOnboarding: CapabilityCommand<ScheduleOnboardingInput, Prom
               connector_id: (ingestResult as { connectorId?: string }).connectorId 
             },
             output: ingestResult as object,
-            timestamp: new Date().toISOString(),
+            timestamp: getNow().toISOString(),
             success: true
           });
 
@@ -1603,7 +1605,7 @@ export const scheduleOnboarding: CapabilityCommand<ScheduleOnboardingInput, Prom
                 sessionId: sessionId,
                 input: { payment_gateway: paymentGatewayIntegration, correlation_id: correlationId },
                 output: reconciliationResult as object,
-                timestamp: new Date().toISOString(),
+                timestamp: getNow().toISOString(),
                 success: true
               });
               
@@ -1621,7 +1623,7 @@ export const scheduleOnboarding: CapabilityCommand<ScheduleOnboardingInput, Prom
                 sessionId: sessionId,
                 input: { payment_gateway: paymentGatewayIntegration, correlation_id: correlationId },
                 output: { error: reconciliationError instanceof Error ? reconciliationError.message : "Unknown error" },
-                timestamp: new Date().toISOString(),
+                timestamp: getNow().toISOString(),
                 success: false
               });
             }
@@ -1639,7 +1641,7 @@ export const scheduleOnboarding: CapabilityCommand<ScheduleOnboardingInput, Prom
             sessionId: sessionId,
             input: { payment_gateway: paymentGatewayIntegration, correlation_id: correlationId },
             output: { error: ingestError instanceof Error ? ingestError.message : "Unknown error" },
-            timestamp: new Date().toISOString(),
+            timestamp: getNow().toISOString(),
             success: false
           });
           // Re-throw error untuk menghentikan proses jika inisialisasi payment gateway gagal (kritikal untuk Finance Operations)
@@ -1720,7 +1722,7 @@ export const scheduleOnboarding: CapabilityCommand<ScheduleOnboardingInput, Prom
         grossAmount: grossAmount || null
       },
       output: { serviceRequestId: createResult.id, status: createResult.status },
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       success: true
     });
 
@@ -1732,7 +1734,7 @@ export const scheduleOnboarding: CapabilityCommand<ScheduleOnboardingInput, Prom
         : ServiceRequestRepositoryInMemory;
       await repository.update(createResult.id, tenantId, createWorkspaceId(workspaceId), {
         status: "accepted",
-        updatedAt: new Date()
+        updatedAt: getNow()
       });
       
       // Rekam evidence untuk state transition (Layer 8 - Evidence)
@@ -1745,7 +1747,7 @@ export const scheduleOnboarding: CapabilityCommand<ScheduleOnboardingInput, Prom
         command: "schedule-onboarding.state-update",
         input: { previousStatus: createResult.status, newStatus: "accepted" },
         output: { serviceRequestId: createResult.id },
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         success: true,
         sessionId: sessionId
       });
@@ -1799,7 +1801,7 @@ export const scheduleOnboarding: CapabilityCommand<ScheduleOnboardingInput, Prom
           command: "acaas.compliance-check.reused",
           input: { packageId: packageId },
           output: { complianceCheckId: acaasResult.result?.complianceCheckId },
-          timestamp: new Date().toISOString(),
+          timestamp: getNow().toISOString(),
           success: true,
           sessionId: sessionId
         });
@@ -1930,7 +1932,7 @@ const updateServiceInCatalog: CapabilityCommand<{
       ...(input.category && { category: input.category }),
       ...(input.stockQuantity !== undefined && { stockQuantity: input.stockQuantity }),
       ...(input.status && { status: input.status }),
-      updatedAt: new Date()
+      updatedAt: getNow()
     };
     
     // Simpan update menggunakan repository yang sudah teruji

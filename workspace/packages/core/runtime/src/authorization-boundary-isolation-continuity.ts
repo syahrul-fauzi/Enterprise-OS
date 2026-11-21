@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 export interface AuthorizationBoundaryIsolationSession {
   sessionId: string;
@@ -13,17 +14,17 @@ export interface AuthorizationBoundaryIsolationSession {
 export class AuthorizationBoundaryIsolationContinuityService {
   async createAuthorizationBoundaryIsolationSession(context: ExecutionContext, actorId: string, workItemId: string): Promise<AuthorizationBoundaryIsolationSession> {
     const session: AuthorizationBoundaryIsolationSession = {
-      sessionId: `authorization-boundary-isolation-session-${Date.now()}`,
+      sessionId: `authorization-boundary-isolation-session-${getNow().getTime()}`,
       actorId,
       workItemId,
       status: 'ACTIVE',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
     context.invocationEvidence.push({
       operation: 'createAuthorizationBoundaryIsolationSession',
       sessionId: session.sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return session;
   }
@@ -33,7 +34,7 @@ export class AuthorizationBoundaryIsolationContinuityService {
       operation: 'suspendAuthorizationBoundaryIsolationSession',
       sessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { suspended: true, sessionId };
   }
@@ -44,14 +45,14 @@ export class AuthorizationBoundaryIsolationContinuityService {
       actorId: context.actorId,
       workItemId: context.workItemId,
       status: 'RESUMED',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
     context.invocationEvidence.push({
       operation: 'resumeAuthorizationBoundaryIsolationSession',
       sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return session;
   }
@@ -66,7 +67,7 @@ export class AuthorizationBoundaryIsolationContinuityService {
       operation: 'verifyAuthorizationBoundaryIsolationContinuity',
       sessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { valid: true, checks };
   }

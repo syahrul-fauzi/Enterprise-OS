@@ -1,0 +1,115 @@
+{
+  "result_id": "BPD-RESULT-001",
+  "result_timestamp": "2026-11-21",
+  "pilot_id": "BPD-PILOT-001",
+  "correlation_findings": [
+    {
+      "finding_id": "CORRELATION-001",
+      "finding_description": "Peningkatan customer service resolution rate sebesar 10% berhubungan dengan peningkatan conversion rate ecommerce sebesar 7.2%",
+      "confidence_score": 0.89,
+      "source_references": [
+        {
+          "source_id": "digital-operations",
+          "signal": "customer_resolution_time",
+          "evidence_link": "digital-operations.evidence.pilot-outcome-report.json",
+          "data_point": "Resolution rate increased from 72% to 82%"
+        },
+        {
+          "source_id": "ecommerce-ops",
+          "signal": "conversion_rate",
+          "evidence_link": "ecommerce-ops.evidence.pilot-outcome-report.json",
+          "data_point": "Conversion rate increased from 2.8% to 3.52%"
+        }
+      ],
+      "traceability_verified": true
+    },
+    {
+      "finding_id": "CORRELATION-002",
+      "finding_description": "Peningkatan lead qualification rate di Deal Coordinator sebesar 15% berhubungan dengan peningkatan pipeline velocity sebesar 22%",
+      "confidence_score": 0.85,
+      "source_references": [
+        {
+          "source_id": "deal-coordinator",
+          "signal": "lead_qualification_rate",
+          "evidence_link": "deal-coordinator.evidence.pilot-outcome-report.json",
+          "data_point": "Qualification rate increased from 55% to 70%"
+        },
+        {
+          "source_id": "deal-coordinator",
+          "signal": "pipeline_velocity",
+          "evidence_link": "deal-coordinator.evidence.pilot-outcome-report.json",
+          "data_point": "Pipeline velocity increased from 14 days to 11 days"
+        }
+      ],
+      "traceability_verified": true
+    },
+    {
+      "finding_id": "CORRELATION-003",
+      "finding_description": "Korelasi lintas produk: Peningkatan customer satisfaction score (CSAT) di Digital Operations sebesar 8 poin berhubungan dengan peningkatan repeat purchase rate di Ecommerce-Ops sebesar 11%",
+      "confidence_score": 0.81,
+      "source_references": [
+        {
+          "source_id": "digital-operations",
+          "signal": "customer_satisfaction_score",
+          "evidence_link": "digital-operations.evidence.pilot-outcome-report.json",
+          "data_point": "CSAT increased from 78 to 86"
+        },
+        {
+          "source_id": "ecommerce-ops",
+          "signal": "repeat_purchase_rate",
+          "evidence_link": "ecommerce-ops.evidence.pilot-outcome-report.json",
+          "data_point": "Repeat purchase rate increased from 22% to 33%"
+        }
+      ],
+      "traceability_verified": true
+    }
+  ],
+  "opportunity_identification": [
+    {
+      "opportunity_id": "OPPORTUNITY-001",
+      "opportunity_description": "Optimalkan customer service resolution process untuk meningkatkan conversion rate ecommerce",
+      "potential_impact": "Rp 12.5jt per bulan peningkatan transaksi",
+      "supporting_evidence": [
+        "CORRELATION-001"
+      ],
+      "traceability_verified": true
+    },
+    {
+      "opportunity_id": "OPPORTUNITY-002",
+      "opportunity_description": "Tingkatkan lead qualification process untuk mempercepat pipeline velocity",
+      "potential_impact": "Rp 9jt per bulan peningkatan deal throughput",
+      "supporting_evidence": [
+        "CORRELATION-002"
+      ],
+      "traceability_verified": true
+    },
+    {
+      "opportunity_id": "OPPORTUNITY-003",
+      "opportunity_description": "Integrasikan CSAT feedback loop ke dalam post-purchase customer journey",
+      "potential_impact": "Rp 6jt per bulan peningkatan repeat purchase",
+      "supporting_evidence": [
+        "CORRELATION-003"
+      ],
+      "traceability_verified": true
+    }
+  ],
+  "strategic_recommendations": [
+    {
+      "recommendation_id": "REC-001",
+      "recommendation_description": "Prioritaskan improvement customer service resolution time sebagai langkah quick win",
+      "expected_outcome": "Peningkatan conversion rate secepat 2-3 minggu",
+      "supporting_evidence": [
+        "OPPORTUNITY-001"
+      ],
+      "traceability_verified": true
+    }
+  ],
+  "traceability_verification_summary": {
+    "total_intelligence_claims": 7,
+    "claims_with_source_reference": 7,
+    "claims_with_evidence_link": 7,
+    "untraceable_claims": 0,
+    "traceability_percentage": 100,
+    "gate_status": "PASSED"
+  }
+}

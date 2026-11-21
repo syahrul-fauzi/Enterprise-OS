@@ -1,0 +1,58 @@
+{
+  "product_id": "business-intelligence",
+  "recon_date": "2026-11-21",
+  "reuse_percentage": 99.2,
+  "capabilities_reused": [
+    {
+      "capability_id": "state-intelligence",
+      "reuse_percentage": 98,
+      "description": "EOS State Intelligence Substrate untuk observasi, pengingatan, dan rekomendasi lintas produk existing"
+    },
+    {
+      "capability_id": "observability",
+      "reuse_percentage": 100,
+      "description": "Observability capability untuk metrics dan snapshot bisnis dari semua produk existing"
+    },
+    {
+      "capability_id": "strategy-agent",
+      "reuse_percentage": 100,
+      "description": "Strategy Agent untuk analisis peluang dan positioning pasar dari pipeline existing"
+    },
+    {
+      "capability_id": "evidence-registry",
+      "reuse_percentage": 100,
+      "description": "Evidence Registry untuk pengumpulan bukti dan lineage lintas produk"
+    },
+    {
+      "capability_id": "esi-graph",
+      "reuse_percentage": 98,
+      "description": "ESI Graph untuk semantic relationship mapping antar produk existing"
+    },
+    {
+      "capability_id": "atomic-composition",
+      "reuse_percentage": 100,
+      "description": "Atomic Composition untuk intent understanding dan gap analysis dari pipeline existing"
+    },
+    {
+      "capability_id": "ecommerce-ops",
+      "reuse_percentage": 100,
+      "description": "Data marketplace dan fulfillment dari produk ecommerce-ops existing"
+    },
+    {
+      "capability_id": "digital-operations",
+      "reuse_percentage": 100,
+      "description": "Data customer journey dan layanan dari produk digital-operations existing"
+    },
+    {
+      "capability_id": "deal-coordinator",
+      "reuse_percentage": 100,
+      "description": "Data pipeline komersial dari produk deal-coordinator existing"
+    }
+  ],
+  "new_primitives_created": 0,
+  "architecture_compliant": true,
+  "pilot_recommended": true,
+  "pilot_use_case": "Integrasi Business Intelligence dengan produk existing (ecommerce-ops, digital-operations, deal-coordinator)",
+  "leverage_level": "MAXIMUM",
+  "next_expansion_use_case": "UMKM Batik Jaya (tahap berikutnya setelah integrasi stabil)"
+}

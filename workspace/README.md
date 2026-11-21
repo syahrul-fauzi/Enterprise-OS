@@ -9,6 +9,7 @@ The workspace root is frozen to:
 - `apps/`
 - `capabilities/`
 - `packages/`
+- `products/`
 - `contracts/`
 - `decisions/`
 - `config/`
@@ -82,6 +83,5 @@ status that ACL, CI, compiler, tooling, and `pnpm eos status` should read.
 ## Explicitly Deferred
 
 - moving `apps/lawyershub` to a different root
-- introducing `products/` as a new runtime root
 - introducing `domain/`, `application/`, `infrastructure/` as new package families
 - designing experience expansion before foundation proof exists

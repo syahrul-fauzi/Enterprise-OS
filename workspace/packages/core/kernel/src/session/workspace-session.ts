@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { z } from "zod";
+import { isSessionRevoked } from "./session-revocation.port.js";
+import { getNow } from "../time/time.provider.js";
 
 // Crypto implementation yang kompatibel dengan Node.js dan Edge Runtime
 let crypto: { 
@@ -57,7 +59,7 @@ const ANONYMOUS_SESSION_TEMPLATE = Object.freeze({
 });
 
 export function createAnonymousWorkspaceSession(customProductId?: string, capabilities?: string[]): WorkspaceSession {
-  const now = new Date();
+  const now = getNow();
   const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 jam
   return {
     actorId: ANONYMOUS_SESSION_TEMPLATE.actorId,
@@ -82,7 +84,7 @@ const DEV_SESSION_TEMPLATE = Object.freeze({
 });
 
 export function createDevAuthenticatedSession(capabilities?: string[]): WorkspaceSession {
-  const now = new Date();
+  const now = getNow();
   const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 jam
   return {
     ...DEV_SESSION_TEMPLATE,
@@ -145,8 +147,8 @@ export async function decodeWorkspaceSession(raw: string | undefined): Promise<W
     }
 
     // 2. Authoritative revocation check - panggil session store yang sebenarnya (G2 requirement)
-    const isSessionRevoked = await sessionQueries.isRevoked(session.sessionId);
-    if (isSessionRevoked) {
+    const isRevoked = await isSessionRevoked(session.sessionId);
+    if (isRevoked) {
       console.log(`[SESSION] ❌ Session revoked: ${session.sessionId} (dari authoritative store)`);
       return null;
     }

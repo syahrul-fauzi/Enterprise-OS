@@ -5,6 +5,7 @@
  * Reuses service-directory PostgreSQL patterns and maintains backward API compatibility
  */
 import { Pool, getPool } from "../../../identity/implementation/repositories/base.repository.js";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { createTenantId, type TenantId } from "@repo/contracts-core";
 
 // Initialize connection pool with unified connection string
@@ -100,7 +101,7 @@ export async function setTelegramConfigForTenant(tenantId: string, config: Omit<
     );
     
     const record = toRecord(tenantId, config as TelegramConfig);
-    const now = new Date().toISOString();
+    const now = getNow().toISOString();
     
     if (existing.rows.length > 0) {
       // Update existing

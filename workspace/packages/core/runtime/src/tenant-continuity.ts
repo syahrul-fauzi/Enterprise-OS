@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { EvidenceService } from './evidence-service.js';
 
 export interface TenantSession {
@@ -20,12 +21,12 @@ export class TenantContinuityService {
 
   async createTenantSession(context: ExecutionContext, tenantId: string, workItemId: string): Promise<TenantSession> {
     const session: TenantSession = {
-      sessionId: `ten-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `ten-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       tenantId,
       workItemId,
       status: 'ACTIVE',
-      tenantHash: Buffer.from(`${tenantId}-${workItemId}-${Date.now()}`).toString('base64'),
-      createdAt: new Date().toISOString()
+      tenantHash: Buffer.from(`${tenantId}-${workItemId}-${getNow().getTime()}`).toString('base64'),
+      createdAt: getNow().toISOString()
     };
 
     await this.evidenceService.recordInvocationEvidence(context, {
@@ -33,7 +34,7 @@ export class TenantContinuityService {
       tenantId,
       workItemId,
       sessionId: session.sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return session;
@@ -44,7 +45,7 @@ export class TenantContinuityService {
       operation: 'suspendTenantSession',
       sessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {
@@ -59,15 +60,15 @@ export class TenantContinuityService {
       tenantId: 'resumed',
       workItemId: 'resumed',
       status: 'RESUMED',
-      tenantHash: Buffer.from(`resumed-${sessionId}-${Date.now()}`).toString('base64'),
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      tenantHash: Buffer.from(`resumed-${sessionId}-${getNow().getTime()}`).toString('base64'),
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     await this.evidenceService.recordInvocationEvidence(context, {
       operation: 'resumeTenantSession',
       sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return resumedSession;
@@ -86,7 +87,7 @@ export class TenantContinuityService {
       operation: 'verifyTenantContinuity',
       sessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {

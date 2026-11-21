@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 export interface EvidenceContextIsolationSession {
   evidenceSessionId: string;
@@ -12,18 +13,18 @@ export interface EvidenceContextIsolationSession {
 export class EvidenceContextIsolationContinuityService {
   async createEvidenceContextIsolationSession(context: ExecutionContext, evidenceType: string): Promise<EvidenceContextIsolationSession> {
     const session: EvidenceContextIsolationSession = {
-      evidenceSessionId: `evidence-session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      evidenceSessionId: `evidence-session-${getNow().getTime()}-${Math.random().toString(36).substring(2, 9)}`,
       evidenceType,
       status: 'ACTIVE',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     context.invocationEvidence.push({
       operation: 'createEvidenceContextIsolationSession',
       evidenceSessionId: session.evidenceSessionId,
       evidenceType,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return session;
@@ -34,7 +35,7 @@ export class EvidenceContextIsolationContinuityService {
       operation: 'suspendEvidenceContextIsolationSession',
       evidenceSessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {
@@ -48,15 +49,15 @@ export class EvidenceContextIsolationContinuityService {
       evidenceSessionId,
       evidenceType: 'RESUMED',
       status: 'RESUMED',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     context.invocationEvidence.push({
       operation: 'resumeEvidenceContextIsolationSession',
       evidenceSessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return resumedSession;
@@ -73,7 +74,7 @@ export class EvidenceContextIsolationContinuityService {
       operation: 'verifyEvidenceContextIsolationContinuity',
       evidenceSessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {

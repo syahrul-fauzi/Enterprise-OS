@@ -17,6 +17,7 @@ import type {
   UnderstandingGap,
   AdaptiveQuestion
 } from "../contracts/intent-understanding.contracts";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { createNewInteraction } from "../contracts/intent-understanding.contracts";
 import { intentUnderstandingService } from "./intent-understanding.service";
 import { gapAnalysisService } from "./gap-analysis.service";
@@ -80,7 +81,7 @@ export class IntentInteractionEngine {
    * @returns Full interaction state with understanding, delta, and next action recommendation
    */
   async process(input: InteractionProcessInput): Promise<InteractionProcessOutput> {
-    const now = new Date().toISOString();
+    const now = getNow().toISOString();
     
     // Initialize or load existing interaction state
     let state: IntentInteractionState = input.existingState || createNewInteraction(
@@ -215,7 +216,7 @@ export class IntentInteractionEngine {
    */
   private generateHypotheses(understanding: any, previousHypotheses?: UnderstandingHypothesis[], isCorrectingUnderstanding?: boolean): UnderstandingHypothesis[] {
     const hypotheses: UnderstandingHypothesis[] = [];
-    const now = new Date().toISOString();
+    const now = getNow().toISOString();
     
     // SCENARIO 4-5: Retract previous hypotheses if user is correcting understanding or changed their mind
     if (previousHypotheses && previousHypotheses.length > 0 && isCorrectingUnderstanding) {
@@ -398,7 +399,7 @@ export class IntentInteractionEngine {
    * Maps to the final RESOLUTION → WORK phase of the pipeline
    */
   private createResolution(understanding: any, actorId?: string): IntentInteractionState["resolution"] {
-    const now = new Date().toISOString();
+    const now = getNow().toISOString();
     
     // B5: Resolution Router - fully implements the 4 resolution types per user requirement
     // Never force Work creation; only create it if explicitly eligible and user confirms

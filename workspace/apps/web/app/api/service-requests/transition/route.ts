@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { cookies } from "next/headers";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
@@ -81,7 +82,7 @@ export async function POST(request: Request) {
               externalStatus: "rejected",
               externalReferenceId: `REVIEW-${workId}`,
               responseData: body.reason ? { reason: body.reason } : undefined,
-              receivedAt: new Date().toISOString(),
+              receivedAt: getNow().toISOString(),
             }
           : { ...commonInput };
         break;
@@ -101,7 +102,7 @@ export async function POST(request: Request) {
           externalStatus: "changes_requested",
           externalReferenceId: `CHANGES-${workId}`,
           responseData: body.reason ? { reason: body.reason } : undefined,
-          receivedAt: new Date().toISOString(),
+          receivedAt: getNow().toISOString(),
         };
         break;
       default:

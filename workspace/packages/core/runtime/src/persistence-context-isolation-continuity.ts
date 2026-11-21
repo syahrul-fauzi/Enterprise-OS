@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 export interface PersistenceContextIsolationSession {
   persistenceSessionId: string;
@@ -12,18 +13,18 @@ export interface PersistenceContextIsolationSession {
 export class PersistenceContextIsolationContinuityService {
   async createPersistenceContextIsolationSession(context: ExecutionContext, persistenceType: string): Promise<PersistenceContextIsolationSession> {
     const session: PersistenceContextIsolationSession = {
-      persistenceSessionId: `persistence-session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      persistenceSessionId: `persistence-session-${getNow().getTime()}-${Math.random().toString(36).substring(2, 9)}`,
       persistenceType,
       status: 'ACTIVE',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     context.invocationEvidence.push({
       operation: 'createPersistenceContextIsolationSession',
       persistenceSessionId: session.persistenceSessionId,
       persistenceType,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return session;
@@ -34,7 +35,7 @@ export class PersistenceContextIsolationContinuityService {
       operation: 'suspendPersistenceContextIsolationSession',
       persistenceSessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {
@@ -48,15 +49,15 @@ export class PersistenceContextIsolationContinuityService {
       persistenceSessionId,
       persistenceType: 'RESUMED',
       status: 'RESUMED',
-      isolationHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      isolationHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     context.invocationEvidence.push({
       operation: 'resumePersistenceContextIsolationSession',
       persistenceSessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return resumedSession;
@@ -73,7 +74,7 @@ export class PersistenceContextIsolationContinuityService {
       operation: 'verifyPersistenceContextIsolationContinuity',
       persistenceSessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {

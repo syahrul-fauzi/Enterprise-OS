@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 
 export async function GET(request: Request) {
   const correlationId = request.headers.get("x-correlation-id") || `agent-safety-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
@@ -31,7 +32,7 @@ export async function GET(request: Request) {
     escalation: {
       escalationRules: ["Defect reproduktif pada foundation", "Konflik requirement", "Risiko keamanan atau data", "Keputusan bisnis yang hanya dapat diputuskan manusia"],
     },
-    timestamp: new Date().toISOString(),
+    timestamp: getNow().toISOString(),
   };
 
   const response = NextResponse.json(agentSafetyResponse, { status: 200 });

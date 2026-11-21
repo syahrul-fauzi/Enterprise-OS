@@ -121,7 +121,7 @@ export class CompositionRepository {
       teamId,
       requirementIds,
       assignmentIds,
-      persistedAt: new Date().toISOString(),
+      persistedAt: getNow().toISOString(),
       version: "1.0.0"
     };
 
@@ -227,7 +227,7 @@ export class CompositionRepository {
       ...existingAssignment,
       id: existingAssignment.id || bindingId,
       participantId: existingAssignment.actorId || existingAssignment.participantId || "",
-      boundAt: existingAssignment.assignedAt || new Date().toISOString(),
+      boundAt: existingAssignment.assignedAt || getNow().toISOString(),
       compositionId: compositionId as any,
       ...(existingAssignment.authority ? { authority: existingAssignment.authority as any } : {})
     } as any;
@@ -235,7 +235,7 @@ export class CompositionRepository {
     const updatedBinding: WorkBinding = {
       ...existingBinding,
       ...updates,
-      updatedAt: new Date().toISOString()
+      updatedAt: getNow().toISOString()
     };
 
     const updatedAssignment: any = {
@@ -244,7 +244,7 @@ export class CompositionRepository {
       assignmentId: AssignmentId(bindingId),
       teamId: TeamId(compositionId),
       actorId: updatedBinding.participantId,
-      assignedAt: updatedBinding.boundAt || new Date().toISOString(),
+      assignedAt: updatedBinding.boundAt || getNow().toISOString(),
       status: (updates.status || existingBinding.status) as "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED"
     };
 
@@ -257,7 +257,7 @@ export class CompositionRepository {
       previousState: existingBinding,
       newState: updatedBinding,
       changedFields: Object.keys(updates),
-      changedAt: new Date().toISOString(),
+      changedAt: getNow().toISOString(),
       actor: updates.updatedBy || "system"
     };
 
@@ -291,7 +291,7 @@ export class CompositionRepository {
     const manifestPath = statePath("composition", 'compositions', `${compositionId}.json`);
     const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
     manifest.assignmentIds.push(String(newBinding.bindingId));
-    manifest.lastModifiedAt = new Date().toISOString();
+    manifest.lastModifiedAt = getNow().toISOString();
     await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
 
     const auditLogEntry = {
@@ -300,7 +300,7 @@ export class CompositionRepository {
       action: "ADD_PARTICIPANT",
       newParticipant: newBinding.participantId,
       participantType: newBinding.participantType,
-      addedAt: new Date().toISOString(),
+      addedAt: getNow().toISOString(),
       actor: newBinding.updatedBy || "system"
     };
 
@@ -334,7 +334,7 @@ export class CompositionRepository {
       ...existingAssignment,
       id: existingAssignment.id || bindingId,
       participantId: existingAssignment.actorId || existingAssignment.participantId || "",
-      boundAt: existingAssignment.assignedAt || new Date().toISOString(),
+      boundAt: existingAssignment.assignedAt || getNow().toISOString(),
       compositionId: compositionId as any,
       ...(existingAssignment.authority ? { authority: existingAssignment.authority as any } : {})
     } as any;
@@ -347,7 +347,7 @@ export class CompositionRepository {
     const manifestPath = statePath("composition", 'compositions', `${compositionId}.json`);
     const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
     manifest.assignmentIds = manifest.assignmentIds.filter((id: string) => id !== bindingId);
-    manifest.lastModifiedAt = new Date().toISOString();
+    manifest.lastModifiedAt = getNow().toISOString();
     await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
 
     const auditLogEntry = {
@@ -355,7 +355,7 @@ export class CompositionRepository {
       compositionId,
       action: "REMOVE_PARTICIPANT",
       removedParticipantId: existingBinding.participantId,
-      removedAt: new Date().toISOString(),
+      removedAt: getNow().toISOString(),
       removedBy
     };
 

@@ -13,5 +13,5 @@ export const deliveryWorkspace = {
     "workspace.driver.mobile", 
     "workspace.customer.portal"
   ],
-  createdAt: new Date().toISOString(),
+  schemaVersion: "1.0.0",
 } as const;

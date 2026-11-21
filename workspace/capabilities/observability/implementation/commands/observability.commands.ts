@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import {
   newIncidentId,
@@ -118,8 +119,8 @@ export const createIncident: CreateIncidentCommand = {
       tenantId: createTenantId(sessionTenantId),
       workspaceId: createWorkspaceId(sessionWorkspaceId),
       actorId: createActorId(sessionActorId),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
     };
 
     const IncidentRepo = getIncidentRepository();
@@ -140,7 +141,7 @@ export const acknowledgeIncident: AcknowledgeIncidentCommand = {
     const IncidentRepo = getIncidentRepository();
     const incident = await IncidentRepo.byId(parsed.incidentId as IncidentId);
     if (!incident) throw new Error("[incident.acknowledge] Incident not found");
-    const updated = { ...incident, status: "in_progress" as const, updatedAt: new Date() };
+    const updated = { ...incident, status: "in_progress" as const, updatedAt: getNow() };
     await IncidentRepo.save(updated);
     return { id: updated.id, status: updated.status };
   },
@@ -158,7 +159,7 @@ export const resolveIncident: ResolveIncidentCommand = {
     const IncidentRepo = getIncidentRepository();
     const incident = await IncidentRepo.byId(parsed.incidentId as IncidentId);
     if (!incident) throw new Error("[incident.resolve] Incident not found");
-    const updated = { ...incident, status: "resolved" as const, updatedAt: new Date() };
+    const updated = { ...incident, status: "resolved" as const, updatedAt: getNow() };
     await IncidentRepo.save(updated);
     return { id: updated.id, status: updated.status };
   },
@@ -176,7 +177,7 @@ export const closeIncident: CloseIncidentCommand = {
     const IncidentRepo = getIncidentRepository();
     const incident = await IncidentRepo.byId(parsed.incidentId as IncidentId);
     if (!incident) throw new Error("[incident.close] Incident not found");
-    const updated = { ...incident, status: "closed" as const, updatedAt: new Date() };
+    const updated = { ...incident, status: "closed" as const, updatedAt: getNow() };
     await IncidentRepo.save(updated);
     return { id: updated.id, status: updated.status };
   },

@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface PersistedState {
@@ -19,12 +20,12 @@ export class StatePersistenceService {
     stateData: Record<string, any>
   ): Promise<PersistedState> {
     const state: PersistedState = {
-      stateId: `state-${Date.now()}`,
+      stateId: `state-${getNow().getTime()}`,
       entityType,
       entityId,
       stateData,
-      persistedAt: new Date().toISOString(),
-      integrityHash: `hash-${entityType}-${entityId}-${Date.now()}`,
+      persistedAt: getNow().toISOString(),
+      integrityHash: `hash-${entityType}-${entityId}-${getNow().getTime()}`,
       status: 'PERSISTED'
     };
 
@@ -69,7 +70,7 @@ export class StatePersistenceService {
       entityType: 'work-item',
       entityId: 'W-014',
       stateData: {},
-      persistedAt: new Date().toISOString(),
+      persistedAt: getNow().toISOString(),
       integrityHash: 'hash-valid',
       status: 'RESTORED'
     };

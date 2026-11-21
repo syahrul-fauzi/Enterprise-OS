@@ -8,6 +8,7 @@ import {
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
+  readWorkspaceSessionFromRequest,
 } from "@repo/core-kernel";
 
 // Trigger canonical registry initialization on API server startup (semua capability sudah terdaftar saat initialization)

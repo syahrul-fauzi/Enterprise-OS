@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 export interface RuntimeInvocation {
   capabilityId: string;
@@ -20,7 +21,7 @@ export class InvocationEvidence {
       actorId: context.actorId,
       action,
       data,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     };
     this.records.push(record);
     return record;
@@ -34,7 +35,7 @@ export class InvocationEvidence {
 export function recordRuntimeInvocation(invocation: RuntimeInvocation): void {
   const record = {
     ...invocation,
-    timestamp: invocation.timestamp || new Date().toISOString()
+    timestamp: invocation.timestamp || getNow().toISOString()
   };
   InvocationEvidence.records.push(record);
   console.log(`[InvocationEvidence] Recorded runtime invocation: ${invocation.operationId} for ${invocation.capabilityId}`);

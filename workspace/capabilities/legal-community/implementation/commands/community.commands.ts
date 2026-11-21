@@ -1,5 +1,6 @@
 // @ts-nocheck
 import {
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
   CommunityDiscussionAggregate,
   ContentArticleAggregate,
   ContentId,
@@ -73,8 +74,8 @@ export const createContentArticle: CreateContentArticleCommand = {
       status: defaultContentStatus,
       readCount: 0,
       engagementCount: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
     };
     await ContentArticleStore.save(entity);
     return { id: entity.id, status: entity.status };
@@ -107,10 +108,10 @@ export const publishContent: PublishContentCommand = {
       return {
         id: current.id,
         status: "published" as const,
-        publishedAt: current.publishedAt ?? new Date(),
+        publishedAt: current.publishedAt  ?? getNow(),
       };
     }
-    const publishedAt = new Date();
+    const publishedAt = getNow();
     const next: ContentArticleAggregate = { ...current, status: "published", publishedAt };
     await ContentArticleStore.save(next);
     return { id: next.id, status: "published", publishedAt };
@@ -145,8 +146,8 @@ export const createCommunityDiscussion: CreateCommunityDiscussionCommand = {
       status: defaultDiscussionStatus,
       replyCount: 0,
       viewCount: 0,
-      createdAt: new Date(),
-      latestActivityAt: new Date(),
+      createdAt: getNow(),
+      latestActivityAt: getNow(),
     };
     await CommunityDiscussionStore.save(entity);
     return { id: entity.id, status: entity.status };
@@ -180,10 +181,10 @@ export const archiveContent: ArchiveContentCommand = {
       return {
         id: current.id,
         status: "archived" as const,
-        archivedAt: current.archivedAt ?? new Date(),
+        archivedAt: current.archivedAt  ?? getNow(),
       };
     }
-    const archivedAt = new Date();
+    const archivedAt = getNow();
     const next: ContentArticleAggregate = { ...current, status: "archived", archivedAt };
     await ContentArticleStore.save(next);
     return { id: next.id, status: "archived", archivedAt };

@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface SearchIsolationSession {
   sessionId: string;
   tenantId: string;
@@ -19,12 +20,12 @@ export class SearchIsolationContinuityService {
     queryFilter: string
   ): Promise<SearchIsolationSession> {
     const session: SearchIsolationSession = {
-      sessionId: `search-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `search-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       tenantId,
       searchContext,
       indexId,
       queryFilter,
-      createdAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
       status: 'active'
     };
     this.sessions.set(session.sessionId, session);

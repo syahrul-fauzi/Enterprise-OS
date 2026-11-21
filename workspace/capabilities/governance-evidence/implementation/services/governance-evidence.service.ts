@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as fs from "node:fs";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { statePath } from "@repo/eos-cli";
 import { trustFrameworkService } from "../../../trust-framework/implementation/services/trust-framework.service.js";
 
@@ -135,7 +136,7 @@ export class GovernanceEvidenceService implements GovernanceEvidenceProvider {
       type: "commercial-revenue",
       workId,
       ...entry,
-      recordedAt: new Date().toISOString(),
+      recordedAt: getNow().toISOString(),
       source: entry.productId === "services-id" ? "services-id-marketplace" : 
               entry.productId === "ecommerce-ops" ? "ecommerce-ops-marketplace" :
               entry.productId === "lawyershub" ? "lawyershub-legal-services" : "unknown-product"
@@ -405,7 +406,7 @@ export class GovernanceEvidenceService implements GovernanceEvidenceProvider {
   calculateCapabilityConfidence(capability: CapabilityEvidenceRequirements): GovernanceConfidenceVerdict {
     // Full confidence calculation logic implementing "No proof without marginal information gain"
     const aggregatedEvidence = this.getAggregatedRuntimeEvidence();
-    const now = new Date().toISOString();
+    const now = getNow().toISOString();
 
     let confidence_score = 0.0;
     let decision: "PASS" | "HOLD" | "FAIL" = "HOLD";

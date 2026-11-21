@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { EvidenceService } from './evidence-service.js';
 
 export interface AuthorizationSession {
@@ -20,12 +21,12 @@ export class AuthorizationContinuityService {
 
   async createAuthorizationSession(context: ExecutionContext, actorId: string, workItemId: string): Promise<AuthorizationSession> {
     const session: AuthorizationSession = {
-      sessionId: `auth-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `auth-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       actorId,
       workItemId,
       status: 'ACTIVE',
-      authorizationHash: Buffer.from(`${actorId}-${workItemId}-${Date.now()}`).toString('base64'),
-      createdAt: new Date().toISOString()
+      authorizationHash: Buffer.from(`${actorId}-${workItemId}-${getNow().getTime()}`).toString('base64'),
+      createdAt: getNow().toISOString()
     };
 
     await this.evidenceService.recordInvocationEvidence(context, {
@@ -33,7 +34,7 @@ export class AuthorizationContinuityService {
       actorId,
       workItemId,
       sessionId: session.sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return session;
@@ -44,7 +45,7 @@ export class AuthorizationContinuityService {
       operation: 'suspendAuthorizationSession',
       sessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {
@@ -59,15 +60,15 @@ export class AuthorizationContinuityService {
       actorId: 'resumed',
       workItemId: 'resumed',
       status: 'RESUMED',
-      authorizationHash: Buffer.from(`resumed-${sessionId}-${Date.now()}`).toString('base64'),
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      authorizationHash: Buffer.from(`resumed-${sessionId}-${getNow().getTime()}`).toString('base64'),
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     await this.evidenceService.recordInvocationEvidence(context, {
       operation: 'resumeAuthorizationSession',
       sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return resumedSession;
@@ -86,7 +87,7 @@ export class AuthorizationContinuityService {
       operation: 'verifyAuthorizationContinuity',
       sessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
 
     return {

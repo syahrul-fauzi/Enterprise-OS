@@ -6,6 +6,7 @@ import {
   type SessionAggregate,
 } from "@repo/contracts-core/index.js";
 import { SessionRepositoryInMemory, getSessionRepositoryPostgres, } from "../repositories/index.js";
+import { registerSessionRevocationPort } from "@repo/core-kernel";
 
 const sessionRepository = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
     ? getSessionRepositoryPostgres()
@@ -47,5 +48,11 @@ export async function resetSessionRepository(): Promise<void> {
     await (sessionRepository as any).reset();
   }
 }
+
+registerSessionRevocationPort({
+  isRevoked: async (sessionId: string) => {
+    return sessionQueries.isRevoked(sessionId);
+  }
+});
 
 export type SessionQueries = typeof sessionQueries;

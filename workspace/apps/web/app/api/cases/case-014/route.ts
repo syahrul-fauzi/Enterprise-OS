@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 
 // Case data for EOS channel break test - case-014: Pendirian PT ABC
 // This is the SAME WORK that all communication events are bound to
@@ -17,8 +18,8 @@ export async function GET(request: Request) {
     lawyerId: "lawyer-001",
     customerId: "customer-001",
     notaryId: "notary-001",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    createdAt: getNow().toISOString(),
+    updatedAt: getNow().toISOString(),
     _eos_note: "This is the single work instance that all communication events are bound to. EOS keeps work connected across channels, actors, and external systems."
   });
 }

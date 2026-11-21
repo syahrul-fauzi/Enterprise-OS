@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
 import { safeRecordEvidence } from "../../../../../capabilities/work-core/implementation/utils/evidence.utils.js";
 
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
       work_id: workId,
       tenant_id: tenantId,
       actor_id: signerId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       sessionId: sessionId,
       // Metadata khusus signature
       meta_signatureType: signatureEvidence.type,

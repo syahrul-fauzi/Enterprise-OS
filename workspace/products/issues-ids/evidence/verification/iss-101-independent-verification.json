@@ -1,0 +1,39 @@
+{
+  "work_id": "ISS-101",
+  "verified_at": "2026-11-21T00:00:00.000Z",
+  "acceptance_criteria": {
+    "criterion_1": {
+      "passed": true,
+      "evidence": "All 10 lifecycle stages executed successfully: issue_reported, triage, analyze, decide, assign, execute, verify, link_work, resume, archive"
+    },
+    "criterion_2": {
+      "passed": true,
+      "evidence": "Commercial value recorded: Rp7,500,000"
+    },
+    "criterion_3": {
+      "passed": true,
+      "evidence": "Product health checks passed: version 1.0, status ACTIVE"
+    },
+    "criterion_4": {
+      "passed": true,
+      "evidence": "All 6 required capabilities bound: consultation, work-core, governance-evidence, workflow-engine, observability, identity"
+    },
+    "criterion_5": {
+      "passed": true,
+      "evidence": "FACE projection rules satisfied: server-side authorization preserved, no client-side checks"
+    }
+  },
+  "all_passed": true,
+  "total_passed": 5,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["criterion_1", "criterion_2", "criterion_3", "criterion_4", "criterion_5"],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": []
+  }
+}

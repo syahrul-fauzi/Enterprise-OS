@@ -62,7 +62,7 @@ globalThis.__EOS_INVENTORY_SCANNER_INTERVAL__ = null;
 async function startLowStockDetectionScanner(): Promise<void> {
   const scanInterval = 15 * 60 * 1000; // 15 minutes (more frequent for retail in-store operations)
   globalThis.__EOS_INVENTORY_SCANNER_INTERVAL__ = setInterval(async () => {
-    const now = new Date();
+    const now = getNow();
     const lowStockThreshold = 10; // Alert when stock falls below 10 units (retail-specific threshold)
     
     for (const [id, inventoryData] of STORE.entries()) {
@@ -159,7 +159,7 @@ export const InventoryRepositoryInMemory: InventoryRepository = {
         commandId: "inventory-adjustment.repository.byId",
         success: false,
         error: `Core Work not found for inventory adjustment ${id}`,
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
       });
       return undefined;
     }
@@ -172,7 +172,7 @@ export const InventoryRepositoryInMemory: InventoryRepository = {
         commandId: "inventory-adjustment.repository.byId",
         success: false,
         error: "Cross-tenant access violation",
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
       });
       return undefined;
     }
@@ -185,7 +185,7 @@ export const InventoryRepositoryInMemory: InventoryRepository = {
         commandId: "inventory-adjustment.repository.byId",
         success: false,
         error: "Cross-workspace access violation",
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
       });
       return undefined;
     }
@@ -231,7 +231,7 @@ export const InventoryRepositoryInMemory: InventoryRepository = {
         storeLocation: aggregate.storeLocation,
         newStockLevel: aggregate.currentStockAfter
       },
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
     });
 
     console.log(`[InventoryRepository] ✅ Inventory adjustment ${aggregate.id} saved successfully`);

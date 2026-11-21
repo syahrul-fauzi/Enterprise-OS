@@ -6,6 +6,7 @@ import {
   DeliveryStatus,
   newDeliveryId,
 } from "../contracts/index.ts";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import {
   getDeliveryRepositoryPostgres,
 } from "../repository/index.ts";
@@ -135,8 +136,8 @@ const createDelivery: CapabilityCommand = {
       workId,
       tenantId,
       status: "draft",
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
       version: 1,
       ownerId: finalActorId, // GUNAKAN finalActorId yang sudah punya fallback absolut (ctx.actor_id > input actorId > actor.merchant.001)
       customerNeed,
@@ -159,7 +160,7 @@ const createDelivery: CapabilityCommand = {
       work_id: workId,
       tenant_id: tenantId || undefined,
       actor_id: actor.id,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       data: { deliveryId: delivery.id },
     });
 
@@ -399,7 +400,7 @@ const assignHandler: CapabilityCommand = {
 
     // Update status menjadi in_transit (sesuai test expectation)
     delivery.status = "in_transit";
-    delivery.updatedAt = new Date();
+    delivery.updatedAt = getNow();
     // Tambahkan driver sebagai participant (AUTHORITY boundary compliance)
     if (!delivery.participantIds.includes(handlerId)) {
       delivery.participantIds.push(handlerId);
@@ -412,7 +413,7 @@ const assignHandler: CapabilityCommand = {
       work_id: delivery.workId,
       tenant_id: delivery.tenantId || undefined,
       actor_id: finalActorId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       data: { deliveryId: id, assignedHandler: handlerId },
     });
 
@@ -461,7 +462,7 @@ const completeDelivery: CapabilityCommand = {
     }
 
     delivery.status = "delivered";
-    delivery.updatedAt = new Date();
+    delivery.updatedAt = getNow();
     await deliveryRepository.save(delivery);
 
     await safeRecordEvidence({
@@ -470,7 +471,7 @@ const completeDelivery: CapabilityCommand = {
       work_id: delivery.workId,
       tenant_id: delivery.tenantId || undefined,
       actor_id: finalActorId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       data: { 
         deliveryId: finalDeliveryId, 
         proofUrl,
@@ -589,7 +590,7 @@ const updateDeliveryStatus: CapabilityCommand = {
           }
 
           delivery.status = status;
-          delivery.updatedAt = new Date();
+          delivery.updatedAt = getNow();
           await DELIVERY_REPO.save(delivery);
 
     await safeRecordEvidence({
@@ -598,7 +599,7 @@ const updateDeliveryStatus: CapabilityCommand = {
       work_id: delivery.workId,
       tenant_id: delivery.tenantId || undefined,
       actor_id: actorId, // Gunakan actorId dari input (sesuai semua command EOS lainnya)
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       data: { deliveryId, status },
     });
 

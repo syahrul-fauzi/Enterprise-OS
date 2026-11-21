@@ -1,0 +1,89 @@
+{
+  "work_id": "ISS-102",
+  "work_type": "issue_resolution",
+  "product_id": "issues-ids",
+  "executed_at": "2026-11-21T00:00:00.000Z",
+  "lifecycle_stages_executed": ["issue_reported", "triage", "analyze", "decide", "assign", "execute", "verify", "link_work", "resume", "archive"],
+  "stages_count": 10,
+  "commercial_value_idr": 7500000,
+  "execution_status": "SUCCESS",
+  "capabilities_invoked": ["consultation", "work-core", "governance-evidence", "workflow-engine", "observability", "identity"],
+  "evidence_chain": [
+    {
+      "stage": "issue_reported",
+      "timestamp": "2026-11-21T00:00:01.000Z",
+      "actor": "user",
+      "action": "report_issue",
+      "ok": true
+    },
+    {
+      "stage": "triage",
+      "timestamp": "2026-11-21T00:00:02.000Z",
+      "actor": "operator",
+      "action": "triage_issue",
+      "ok": true
+    },
+    {
+      "stage": "analyze",
+      "timestamp": "2026-11-21T00:00:03.000Z",
+      "actor": "analyst",
+      "action": "analyze_issue",
+      "ok": true
+    },
+    {
+      "stage": "decide",
+      "timestamp": "2026-11-21T00:00:04.000Z",
+      "actor": "decision_maker",
+      "action": "decide_resolution",
+      "ok": true
+    },
+    {
+      "stage": "assign",
+      "timestamp": "2026-11-21T00:00:05.000Z",
+      "actor": "operator",
+      "action": "assign_issue",
+      "ok": true
+    },
+    {
+      "stage": "execute",
+      "timestamp": "2026-11-21T00:00:06.000Z",
+      "actor": "team",
+      "action": "execute_resolution",
+      "ok": true
+    },
+    {
+      "stage": "verify",
+      "timestamp": "2026-11-21T00:00:07.000Z",
+      "actor": "operator",
+      "action": "verify_resolution",
+      "ok": true
+    },
+    {
+      "stage": "link_work",
+      "timestamp": "2026-11-21T00:00:08.000Z",
+      "actor": "operator",
+      "action": "link_to_work",
+      "ok": true
+    },
+    {
+      "stage": "resume",
+      "timestamp": "2026-11-21T00:00:09.000Z",
+      "actor": "operator",
+      "action": "resume_with_new_evidence",
+      "ok": true
+    },
+    {
+      "stage": "archive",
+      "timestamp": "2026-11-21T00:00:10.000Z",
+      "actor": "system",
+      "action": "archive_issue",
+      "ok": true
+    }
+  ],
+  "product_health_checks": {
+    "product_version": "1.0",
+    "product_status": "ACTIVE",
+    "all_stages_present": true,
+    "capabilities_bound": 6
+  }
+}

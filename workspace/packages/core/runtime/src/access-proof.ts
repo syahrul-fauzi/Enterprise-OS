@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface AccessProofData {
@@ -17,7 +18,7 @@ export class AccessProofService {
     channelId: string,
     validitySeconds: number = 3600
   ): Promise<AccessProofData> {
-    const now = new Date();
+    const now = getNow();
     const expiresAt = new Date(now.getTime() + validitySeconds * 1000);
     
     const proof: AccessProofData = {
@@ -44,7 +45,7 @@ export class AccessProofService {
     context: ExecutionContext,
     proof: AccessProofData
   ): Promise<{ valid: boolean; reason?: string }> {
-    const now = new Date();
+    const now = getNow();
     const expiresAt = new Date(proof.expiresAt);
 
     if (now > expiresAt) {

@@ -30,9 +30,15 @@ lifecycle:
     - id: admin-101
       name: Zendesk IT ticket resolution lifecycle
       description: Full cycle resolusi tiket IT mulai dari sinkronisasi hingga penutupan tiket
-      status: active
+      status: completed
       requirements:
         - req-admin-001
+    - id: admin-102
+      name: Intercom ticket classification & routing automation
+      description: Full cycle klasifikasi tiket Intercom, penentuan prioritas, dan routing otomatis ke tim yang sesuai
+      status: completed
+      requirements:
+        - req-admin-002
 quality:
   targets:
     evidence_required: true

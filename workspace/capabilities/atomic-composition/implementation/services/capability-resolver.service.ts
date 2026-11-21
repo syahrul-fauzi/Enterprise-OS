@@ -5,6 +5,7 @@
 // Full documentation: "Provider bukan hanya manusia. Kita harus membuat EOS mampu memilih executor dari beberapa kelas."
 
 import { randomUUID } from "crypto";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import type { IntentResolutionRequirement } from "../contracts/universal-intent.contracts";
 // Import type (untuk type annotation) dan value (fungsi constructor) dengan alias yang benar
 // FIXED: Canonical import dari single-source @capabilities/work-core (TENANT-ISOLATION-001 compliance)
@@ -200,7 +201,7 @@ class CapabilityRegistry {
         passed: isEligibleType,
         providerId: p.id,
         reason: isEligibleType ? "Provider type matches capability allowed types" : "Provider type not in capability's allowed types",
-        timestamp: new Date().toISOString()
+        timestamp: getNow().toISOString()
       });
       return isEligibleType;
     });
@@ -215,7 +216,7 @@ class CapabilityRegistry {
         passed: canHandle,
         providerId: provider.id,
         reason: canHandle ? "Provider can handle this requirement" : "Provider cannot handle this requirement",
-        timestamp: new Date().toISOString()
+        timestamp: getNow().toISOString()
       });
       if (canHandle) canHandleProviders.push(provider);
     }
@@ -228,7 +229,7 @@ class CapabilityRegistry {
         passed: hasAllAuths,
         providerId: p.id,
         reason: hasAllAuths ? "Provider has all required authorizations" : "Missing required authorizations",
-        timestamp: new Date().toISOString()
+        timestamp: getNow().toISOString()
       });
       return hasAllAuths;
     });
@@ -242,7 +243,7 @@ class CapabilityRegistry {
         passed: isAvailable,
         providerId: provider.id,
         reason: isAvailable ? "Provider is currently available" : "Provider is not available",
-        timestamp: new Date().toISOString()
+        timestamp: getNow().toISOString()
       });
       if (isAvailable) availableProviders.push(provider);
     }
@@ -293,7 +294,7 @@ class CapabilityRegistry {
           level: (capability?.riskLevel || "low") as "low" | "medium" | "high" | "critical",
           rationale: "Automatically assessed from capability risk level",
           assessedBy: createActorId("system:capability-resolver"),
-          assessedAt: new Date()
+          assessedAt: getNow()
         };
     
     // Calculate CMBCD execution frame - user's execution-boundary policy
@@ -328,7 +329,7 @@ class CapabilityRegistry {
           : !hasSufficientAuthority 
             ? "Insufficient authority for capability risk level" 
             : `Provider type (${p.providerType}) incompatible with CMBCD ${executionFrame} execution frame`,
-        timestamp: new Date().toISOString()
+        timestamp: getNow().toISOString()
       });
       
       return finalPassed;
@@ -351,7 +352,7 @@ class CapabilityRegistry {
           passed: true,
           providerId: selected.id,
           reason: "Selected as highest priority available provider",
-          timestamp: new Date().toISOString()
+          timestamp: getNow().toISOString()
         });
         return selected;
       }
@@ -585,7 +586,7 @@ class CapabilityRegistry {
       actionType: requirement.realityAction,
       invokedBy: provider.id,
       status: "pending",
-      invokedAt: new Date().toISOString(),
+      invokedAt: getNow().toISOString(),
       parameters: [], // Default empty parameters array sesuai ActionSchema
     };
     this.actions.set(action.actionId, action);
@@ -822,7 +823,7 @@ class CapabilityRegistry {
       actionId: actionId as unknown as ExecutionAttempt["actionId"],
       attemptNumber: attemptNumber,
       status: "in_progress",
-      startedAt: new Date().toISOString(),
+      startedAt: getNow().toISOString(),
       idempotencyKey: randomUUID()
     };
     this.attempts.set(attempt.attemptId, attempt);
@@ -867,7 +868,7 @@ class CapabilityRegistry {
     };
 
     const newChain: ExecutionChain = {
-      startedAt: new Date().toISOString(),
+      startedAt: getNow().toISOString(),
       workId: workId as unknown as ExecutionChain["workId"],
       executionRequirements: requirementIds,
       actions: [],
@@ -963,7 +964,7 @@ const registerCoreCapabilities = async () => {
       work_id: coreRegistrationWorkId,
       tenant_id: systemTenantId,
       actor_id: systemActorId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       capabilityRegistered: "work-core",
       auditId: "AUDIT-001-006",
       chainStep: 1
@@ -980,7 +981,7 @@ const registerCoreCapabilities = async () => {
       work_id: coreRegistrationWorkId,
       tenant_id: systemTenantId,
       actor_id: systemActorId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       capabilityRegistered: "identity-core",
       auditId: "AUDIT-001-006",
       chainStep: 2
@@ -997,7 +998,7 @@ const registerCoreCapabilities = async () => {
       work_id: coreRegistrationWorkId,
       tenant_id: systemTenantId,
       actor_id: systemActorId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       capabilityRegistered: "security-hardening",
       auditId: "AUDIT-001-006",
       chainStep: 3
@@ -1014,7 +1015,7 @@ const registerCoreCapabilities = async () => {
       work_id: coreRegistrationWorkId,
       tenant_id: systemTenantId,
       actor_id: systemActorId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       capabilityRegistered: "governance-evidence",
       auditId: "AUDIT-001-006",
       chainStep: 4
@@ -1047,7 +1048,7 @@ const registerCoreCapabilities = async () => {
       work_id: coreRegistrationWorkId,
       tenant_id: systemTenantId,
       actor_id: systemActorId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       capabilityRegistered: "legal-case",
       auditId: "AUDIT-001-006",
       chainStep: 5
@@ -1063,7 +1064,7 @@ const registerCoreCapabilities = async () => {
       work_id: coreRegistrationWorkId,
       tenant_id: systemTenantId,
       actor_id: systemActorId,
-      timestamp: new Date().toISOString(),
+      timestamp: getNow().toISOString(),
       error: chainError instanceof Error ? chainError.message : String(chainError),
       auditId: "AUDIT-001-006",
       chainFailed: true
@@ -2087,8 +2088,8 @@ export async function executeGoldenSliceCommunication(): Promise<{
       status: "pending",
       evidenceRequired: "sms:delivery_confirmation",
       authorizationVerified: false, // Added to fix missing property error
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: getNow().toISOString(),
+      updatedAt: getNow().toISOString()
     };
     executionLog.push(`[GOLDEN SLICE #1] Created execution requirement: ${requirement.executionRequirementId}`);
 
@@ -2145,7 +2146,7 @@ export async function executeGoldenSliceCommunication(): Promise<{
           stateChanged: true,
           previousState: "pending",
           newState: "sent",
-          observedAt: new Date().toISOString(),
+          observedAt: getNow().toISOString(),
           sourceAdapter: "twilio:sandbox",
           verified: false // Added to fix missing property error
         };
@@ -2160,7 +2161,7 @@ export async function executeGoldenSliceCommunication(): Promise<{
          observation: "Communication message successfully delivered to external recipient",
          matchesExpected: true,
          confidenceScore: 1.0,
-         observedAt: new Date().toISOString(),
+         observedAt: getNow().toISOString(),
          verified: false
        };
        // Gunakan helper recordObservationForEffect yang menangani semua konversi tipe Zod branded
@@ -2176,7 +2177,7 @@ export async function executeGoldenSliceCommunication(): Promise<{
          evidenceUrl: "https://api.twilio.com/2010-04-01/Accounts/.../Messages/...",
          contentHash: "sha256:abc123def456...",
          capturedBy: "system-communication-provider",
-         capturedAt: new Date().toISOString(),
+         capturedAt: getNow().toISOString(),
          verified: false
        };
        // Gunakan helper bindEvidenceToRequirement yang menangani semua konversi tipe Zod branded
@@ -2186,7 +2187,7 @@ export async function executeGoldenSliceCommunication(): Promise<{
       // 10. DO NOT mark work as completed automatically! Reality Doctrine: PROVIDER_SUCCESS ≠ OUTCOME_REACHED
       // Requirement: External verification must first confirm effect, observation, evidence, and outcome contract
       requirement.status = "in_progress"; // Maintain work as in_progress until independent verification completes
-      requirement.completedAt = new Date().toISOString();
+      requirement.completedAt = getNow().toISOString();
       const updatedChain = globalRegistry.getExecutionChain(coreWorkId);
       if (updatedChain) {
         updatedChain.overallStatus = "in_progress"; // Chain status reflects work is still in progress, not completed
@@ -2196,7 +2197,7 @@ export async function executeGoldenSliceCommunication(): Promise<{
     } else {
       // Handle failure
       requirement.status = "failed";
-      requirement.failedAt = new Date().toISOString();
+      requirement.failedAt = getNow().toISOString();
       requirement.failureMode = "EXTERNAL_API_FAILURE";
       const updatedChain = globalRegistry.getExecutionChain(coreWorkId);
       if (updatedChain) {

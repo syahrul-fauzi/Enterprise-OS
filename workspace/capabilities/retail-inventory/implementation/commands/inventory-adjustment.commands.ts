@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/dist/types.js";
 import {
   type InventoryAggregate,
@@ -180,13 +181,13 @@ const adjustInventoryFromWork: CapabilityCommand<
      }
 
     // Generate adjustmentId selalu (tidak hanya jika coreWorkResult ada) untuk kasus coreWork gagal
-    const adjustmentId = InventoryAdjustmentId(`inventory-adjustment-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`);
+    const adjustmentId = InventoryAdjustmentId(`inventory-adjustment-${getNow().getTime()}-${Math.random().toString(36).substring(2, 9)}`);
     const currentStockAfter = validated.currentStockBefore + validated.adjustmentQuantity;
     
     // Buat aggregate dasar meskipun coreWork gagal (tetap return value)
     const aggregate: InventoryAggregate = {
       id: adjustmentId,
-      workId: parsed.workId || `temp-work-${Date.now()}`,
+      workId: parsed.workId || `temp-work-${getNow().getTime()}`,
       title: validated.title,
       description: validated.description,
       adjustmentQuantity: validated.adjustmentQuantity,
@@ -197,8 +198,8 @@ const adjustInventoryFromWork: CapabilityCommand<
       currentStockAfter,
       status: "processed",
       priority: currentStockAfter < 20 ? "high" : "medium",
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
       createdBy: session.actorId,
       tenantId: session.tenantId,
       workspaceId: session.workspaceId,
@@ -206,10 +207,10 @@ const adjustInventoryFromWork: CapabilityCommand<
       executionContext: {
         propagated_from: session.actorType === "retail-staff" ? "in-store-mobile" : "direct-api",
         last_invocation_digest: null,
-        transaction_id: `txn-${Date.now()}`
+        transaction_id: `txn-${getNow().getTime()}`
       },
       evidence: [{
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         actorId: session.actorId,
         action: "inventory-adjustment-created",
         metadata: {
@@ -293,7 +294,7 @@ const adjustInventoryFromWork: CapabilityCommand<
         evidenceChain: [{
           actorId: session.actorId,
           action: "inventory-adjustment-created",
-          timestamp: new Date(),
+          timestamp: getNow(),
           workspaceId: session.workspaceId,
           deviceId: session.deviceId || "in-store-mobile-scanner",
           proofUrl: undefined // Tidak ada bukti foto untuk adjustment, tapi bisa ditambahkan nanti
@@ -340,7 +341,7 @@ const adjustInventoryFromWork: CapabilityCommand<
           newStock: currentStockAfter,
           adjustmentAmount: validated.adjustmentQuantity,
           graphTraversalSuccess: !!linkedProduct,
-          timestamp: new Date().toISOString()
+          timestamp: getNow().toISOString()
         }
       });
 
@@ -487,7 +488,7 @@ const aiSuggestInventoryAdjustment: CapabilityCommand<
     await workRepository.save({
       ...existingWork,
       actorId: aiActorMetadata.actorId, // Actor BERUBAH (human → AI)
-      updatedAt: new Date()
+      updatedAt: getNow()
     });
 
     // 9. RECORD EVIDENCE OF AI ACTOR SWITCH (EVIDENCE BOUNDARY COMPLIANCE)
@@ -502,7 +503,7 @@ const aiSuggestInventoryAdjustment: CapabilityCommand<
         suggestedAdjustment,
         averageDailySales,
         executionFrame,
-        timestamp: new Date().toISOString()
+        timestamp: getNow().toISOString()
       }
     });
 

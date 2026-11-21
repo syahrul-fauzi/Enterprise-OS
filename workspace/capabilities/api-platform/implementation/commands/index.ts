@@ -1,5 +1,6 @@
 // Import capabilityRegistry sebagai global yang sama dengan yang digunakan di registerApiPlatformCapability
 import { capabilityRegistry } from "../../../../packages/core/kernel/src/registry/capability-command-registry.js";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 const capabilityCommands = capabilityRegistry.capabilityCommands;
 // ACaaS-001-PILOT-003: Import dari observability service yang sudah mendukung canonical metering
 import { recordRuntimeInvocation } from "../../../observability/implementation/services/observability.service.js";
@@ -109,7 +110,7 @@ const ppnInvoicePolicy_v1_0_0: CompliancePolicy = {
         if (month === undefined || year === undefined) {
           return { passed: false, description: "Masa pajak format tidak valid (YYYY-MM)" };
         }
-        const currentDate = new Date();
+        const currentDate = getNow();
         const currentMonth = currentDate.getMonth() + 1;
         const currentYear = currentDate.getFullYear();
         
@@ -178,7 +179,7 @@ async function runComplianceEvaluation(
               return { passed: false, description: "Masa pajak tidak valid: harus dalam format YYYY-MM" };
             }
             const taxDate = new Date(data.taxPeriod + "-01");
-            const currentDate = new Date();
+            const currentDate = getNow();
             const threeMonthsAgo = new Date(currentDate.getFullYear(), currentDate.getMonth() - 3, 1);
             const notExpired = taxDate >= threeMonthsAgo;
             return {
@@ -224,7 +225,7 @@ async function runComplianceEvaluation(
         ruleId: "EVAL-001"
       }],
       verificationProof: "",
-      evaluatedAt: new Date().toISOString(),
+      evaluatedAt: getNow().toISOString(),
       policyVersion: "unknown",
       workId
     };
@@ -241,7 +242,7 @@ async function runComplianceEvaluation(
                 ruleId: "EVAL-002"
               }],
               verificationProof: "",
-              evaluatedAt: new Date().toISOString(),
+              evaluatedAt: getNow().toISOString(),
               policyVersion: "unknown",
               workId
             };
@@ -274,7 +275,7 @@ async function runComplianceEvaluation(
             hasAnyFailure = true;
           } else {
             const taxDate = new Date(taxPeriod + "-01");
-            const currentDate = new Date();
+            const currentDate = getNow();
             const threeMonthsAgo = new Date(currentDate.getFullYear(), currentDate.getMonth() - 3, 1);
             if (taxDate < threeMonthsAgo) {
               findings.push({
@@ -369,7 +370,7 @@ async function runComplianceEvaluation(
     status: finalStatus,
     findings,
     verificationProof,
-    evaluatedAt: new Date().toISOString(),
+    evaluatedAt: getNow().toISOString(),
     policyVersion: usedPolicyVersion,
     workId
   };
@@ -656,7 +657,7 @@ export const apiPlatformCommands = {
               }
             },
             status: "delivered" as const,
-            updatedAt: new Date()
+            updatedAt: getNow()
           };
           
           // Selalu update record di acaasExecutionStore (sumber utama untuk test saat ini)
@@ -770,7 +771,7 @@ export const apiPlatformCommands = {
             tenant_id: input.tenantId,
             workspace_id: input.workspaceId,
             sessionId: input.sessionId,
-            timestamp: new Date().toISOString(),
+            timestamp: getNow().toISOString(),
             work_id: complianceWorkId,
             payload: { inputHash, evaluationResult }
           });
@@ -1074,8 +1075,8 @@ export const apiPlatformCommands = {
             externalSystem: "acaas",
             externalStatus: "processing",
             externalReferenceId: `acaas-${input.complianceCheckId}`,
-            responseData: { statusChangedAt: new Date().toISOString() },
-            receivedAt: new Date().toISOString(),
+            responseData: { statusChangedAt: getNow().toISOString() },
+            receivedAt: getNow().toISOString(),
             sessionId: input.sessionId
           }
         );
@@ -1091,8 +1092,8 @@ export const apiPlatformCommands = {
           actor_id: input.actorId,
           previous_status: "initiated",
           new_status: "processing",
-          processing_started_at: new Date().toISOString(),
-          timestamp: new Date().toISOString(),
+          processing_started_at: getNow().toISOString(),
+          timestamp: getNow().toISOString(),
           integration_note: "ACaaS-COMMERCIAL-001: Compliance check moved to processing state"
         });
         
@@ -1100,7 +1101,7 @@ export const apiPlatformCommands = {
           success: true,
           complianceCheckId: input.complianceCheckId,
           status: "processing",
-          processingStartedAt: new Date().toISOString(),
+          processingStartedAt: getNow().toISOString(),
           message: "ACaaS compliance check processing started"
         };
         success = true;
@@ -1252,8 +1253,8 @@ export const apiPlatformCommands = {
           reviewer_findings: input.findings,
           decision_difference_detected: decisionDifference,
           verification_proof: input.verificationProof,
-          completed_at: new Date().toISOString(),
-          timestamp: new Date().toISOString(),
+          completed_at: getNow().toISOString(),
+          timestamp: getNow().toISOString(),
           integration_note: "AC-PILOT-001: Compliance check completed with mandatory human review (decision control preserved)"
         });
         
@@ -1265,7 +1266,7 @@ export const apiPlatformCommands = {
           evaluatorFindings: input.evaluatorFindings,
           reviewerFindings: input.findings,
           decisionDifferenceDetected: decisionDifference,
-          completedAt: new Date().toISOString(),
+          completedAt: getNow().toISOString(),
           verificationProof: input.verificationProof,
           evidenceId: verifiedResult.evidenceId
         };
@@ -1388,11 +1389,11 @@ export const apiPlatformCommands = {
             externalStatus: "failed",
             externalReferenceId: `acaas-${input.complianceCheckId}`,
             responseData: { 
-              statusChangedAt: new Date().toISOString(),
+              statusChangedAt: getNow().toISOString(),
               failureReason: input.failureReason,
               errorCode: input.errorCode
             },
-            receivedAt: new Date().toISOString(),
+            receivedAt: getNow().toISOString(),
             sessionId: input.sessionId
           }
         );
@@ -1410,8 +1411,8 @@ export const apiPlatformCommands = {
           new_status: "failed",
           failure_reason: input.failureReason,
           error_code: input.errorCode,
-          failed_at: new Date().toISOString(),
-          timestamp: new Date().toISOString(),
+          failed_at: getNow().toISOString(),
+          timestamp: getNow().toISOString(),
           integration_note: "ACaaS-COMMERCIAL-001: Compliance check failed during processing"
         });
         
@@ -1421,7 +1422,7 @@ export const apiPlatformCommands = {
           status: "failed",
           failureReason: input.failureReason,
           errorCode: input.errorCode,
-          failedAt: new Date().toISOString()
+          failedAt: getNow().toISOString()
         };
         success = true;
         return result;

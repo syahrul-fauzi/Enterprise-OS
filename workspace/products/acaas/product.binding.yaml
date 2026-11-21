@@ -1,0 +1,13 @@
+schema_version: "1.0"
+product_key: "acaas"
+binding_type: "vertical"
+
+capability_bindings:
+  - capability_key: "compliance.assessment"
+    invoker: "complianceAssessmentInvoker"
+  - capability_key: "compliance.monitoring"
+    invoker: "complianceMonitoringInvoker"
+  - capability_key: "compliance.evidence"
+    invoker: "complianceEvidenceInvoker"
+  - capability_key: "compliance.automation"
+    invoker: "complianceAutomationInvoker"

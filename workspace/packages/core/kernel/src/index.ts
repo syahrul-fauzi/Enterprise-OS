@@ -58,6 +58,24 @@ export {
   createWorkspaceContextHeaders,
 } from "./session/workspace-session.js";
 
+// Session revocation port (ARCH-04 compliant - kernel defines interface, capability provides implementation)
+export type {
+  SessionRevocationPort,
+} from "./session/session-revocation.port.js";
+export {
+  registerSessionRevocationPort,
+} from "./session/session-revocation.port.js";
+
+// Time provider port (ARCH-04 compliant - centralized time abstraction for testability)
+export type {
+  TimeProvider,
+} from "./time/time.provider.js";
+export {
+  registerTimeProvider,
+  getNow,
+  DefaultTimeProvider,
+} from "./time/time.provider.js";
+
 // ============================================================================
 // SERVER-ONLY BOUNDARY - capabilityRegistry excluded from shared barrel
 // ============================================================================

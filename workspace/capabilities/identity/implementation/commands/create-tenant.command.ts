@@ -2,6 +2,7 @@
 // @ts-nocheck
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { randomUUID } from "node:crypto";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 // Import 6-boundary contracts untuk compliance (canonical path untuk work-core)
 import { 
   validateBoundaryAccess,
@@ -13,6 +14,7 @@ import {
   type EvidenceBoundary, 
   type PresentationBoundary 
 } from "@repo/contracts-core";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import {
   TenantId,
   type CreateTenantInput,
@@ -89,7 +91,7 @@ export const createTenantCommand: CreateTenantCommand = {
     const executionBoundary: ExecutionBoundary = {
       workspaceId,
       runtimeEnvironment: process.env.NODE_ENV || "development",
-      executionId: `tenant-${Date.now()}`,
+      executionId: `tenant-${getNow().getTime()}`,
       propagatedFrom: "api-route"
     };
 
@@ -131,8 +133,8 @@ export const createTenantCommand: CreateTenantCommand = {
       name: input.name.trim(),
       slug,
       metadata: input.metadata, // Pertahankan metadata jika disediakan (khusus konfigurasi policy ACaaS)
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: getNow(),
+      updatedAt: getNow(),
     };
     await tenantRepository.save(entity);
     return {

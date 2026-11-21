@@ -326,7 +326,7 @@ export const ContentArticleRepositoryInMemory: ContentArticleRepository = {
       .slice(0, limit);
   },
   save(entity) {
-    const e: ContentArticleAggregate = { ...cloneArticle(entity), updatedAt: new Date() };
+    const e: ContentArticleAggregate = { ...cloneArticle(entity), updatedAt: getNow() };
     ARTICLE_STORE.set(e.id, e);
     return cloneArticle(e);
   },
@@ -355,7 +355,7 @@ export const CommunityDiscussionRepositoryInMemory: CommunityDiscussionRepositor
   save(entity) {
     const e: CommunityDiscussionAggregate = {
       ...cloneDiscussion(entity),
-      latestActivityAt: new Date(),
+      latestActivityAt: getNow(),
     };
     DISCUSSION_STORE.set(e.id, e);
     return cloneDiscussion(e);

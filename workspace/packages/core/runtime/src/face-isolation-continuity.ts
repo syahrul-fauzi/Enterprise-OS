@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface FaceIsolationSession {
@@ -13,11 +14,11 @@ export interface FaceIsolationSession {
 export class FaceIsolationContinuityService {
   async createFaceIsolationSession(context: ExecutionContext, faceRole: string): Promise<FaceIsolationSession> {
     const session: FaceIsolationSession = {
-      faceSessionId: `face-session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      faceSessionId: `face-session-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       faceRole,
       status: 'ACTIVE',
-      isolationHash: Buffer.from(`${faceRole}-${context.tenantId}-${Date.now()}`).toString('hex'),
-      createdAt: new Date().toISOString()
+      isolationHash: Buffer.from(`${faceRole}-${context.tenantId}-${getNow().getTime()}`).toString('hex'),
+      createdAt: getNow().toISOString()
     };
     
     await InvocationEvidence.record(context, 'createFaceIsolationSession', { faceRole, session });
@@ -37,7 +38,7 @@ export class FaceIsolationContinuityService {
       status: 'RESUMED',
       isolationHash: '',
       createdAt: '',
-      lastResumedAt: new Date().toISOString()
+      lastResumedAt: getNow().toISOString()
     };
     
     await InvocationEvidence.record(context, 'resumeFaceIsolationSession', { faceSessionId, session });

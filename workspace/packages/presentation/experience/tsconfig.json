@@ -12,6 +12,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "skipLibCheck": true,
+    "noImplicitAny": false,
     "paths": {
       "@repo/presentation-config": [
         "../config/dist"

@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 export interface AuthorizationBoundarySession {
   sessionId: string;
@@ -13,17 +14,17 @@ export interface AuthorizationBoundarySession {
 export class AuthorizationBoundaryContinuityService {
   async createAuthorizationBoundarySession(context: ExecutionContext, actorId: string, workItemId: string): Promise<AuthorizationBoundarySession> {
     const session: AuthorizationBoundarySession = {
-      sessionId: `auth-boundary-session-${Date.now()}`,
+      sessionId: `auth-boundary-session-${getNow().getTime()}`,
       actorId,
       workItemId,
       status: 'ACTIVE',
-      boundaryHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      boundaryHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
     context.invocationEvidence.push({
       operation: 'createAuthorizationBoundarySession',
       sessionId: session.sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return session;
   }
@@ -33,7 +34,7 @@ export class AuthorizationBoundaryContinuityService {
       operation: 'suspendAuthorizationBoundarySession',
       sessionId,
       suspendReason,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { suspended: true, sessionId };
   }
@@ -44,14 +45,14 @@ export class AuthorizationBoundaryContinuityService {
       actorId: context.actorId,
       workItemId: context.workItemId,
       status: 'RESUMED',
-      boundaryHash: `hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      boundaryHash: `hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
     context.invocationEvidence.push({
       operation: 'resumeAuthorizationBoundarySession',
       sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return session;
   }
@@ -66,7 +67,7 @@ export class AuthorizationBoundaryContinuityService {
       operation: 'verifyAuthorizationBoundaryContinuity',
       sessionId,
       checks,
-      timestamp: new Date().toISOString()
+      timestamp: getNow().toISOString()
     });
     return { valid: true, checks };
   }

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { EmailQueueRepository, startQueueProcessors } from '@repo/core-runtime/email-queue.js';
 
 // Initialize email queue processors once when route is first loaded
@@ -29,7 +30,7 @@ export async function POST(
       subject,
       html,
       executionId,
-      createdAt: new Date().toISOString()
+      createdAt: getNow().toISOString()
     });
 
     return NextResponse.json({

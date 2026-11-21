@@ -714,7 +714,7 @@ export const RequirementRepositoryInMemory: RequirementRepository = {
       ...clone(entity),
       linkedCapabilityIds: [...entity.linkedCapabilityIds],
       acceptanceCriteria: [...entity.acceptanceCriteria],
-      updatedAt: new Date(),
+      updatedAt: getNow(),
     };
     STORE.set(updated.id, updated);
     return clone(updated);
@@ -766,7 +766,7 @@ export const RequirementRepositoryFileBacked: RequirementRepository = {
       ...clone(processedEntity),
       linkedCapabilityIds: [...processedEntity.linkedCapabilityIds],
       acceptanceCriteria: [...processedEntity.acceptanceCriteria],
-      updatedAt: new Date(),
+      updatedAt: getNow(),
     };
     store.set(updated.id, updated);
     writeFileStore(path, store);

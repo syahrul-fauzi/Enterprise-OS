@@ -9,6 +9,7 @@ import {
   type RegisterUserInput,
   type UserAggregate,
 } from "@repo/contracts-core";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 // Import 6-boundary contracts untuk compliance (canonical path untuk work-core)
 import { 
   validateBoundaryAccess,
@@ -22,6 +23,7 @@ import {
 } from "@repo/contracts-core";
 import { passwordService } from "../services/password.service.js";
 import { UserRepositoryPostgres } from "../repositories/index.js";
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 
 function newUserId(): UserId {
   return UserId(`user-${randomUUID()}`);
@@ -104,14 +106,14 @@ export const createUserCommand: RegisterUserCommand = {
       workspaceId,
       runtimeEnvironment: process.env.NODE_ENV || "development",
       executionId: randomUUID(),
-      startTime: new Date().toISOString()
+      startTime: getNow().toISOString()
     };
     
     const evidenceBoundary: EvidenceBoundary = {
       evidenceChain: [{
         actorId,
         action: "user.created",
-        timestamp: new Date().toISOString(),
+        timestamp: getNow().toISOString(),
         metadata: { source: "identity.createUserCommand", email: input.email }
       }],
       evidenceIds: []
@@ -146,7 +148,7 @@ export const createUserCommand: RegisterUserCommand = {
       email: input.email,
       name: input.name,
       metadata: input.metadata || {},
-      createdAt: new Date(),
+      createdAt: getNow(),
       createdBy: actorId
     });
     

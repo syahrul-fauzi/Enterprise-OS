@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface AuthorizationSession {
@@ -18,12 +19,12 @@ export class AuthorizationBoundaryService {
     workItemId: string
   ): Promise<AuthorizationSession> {
     const session: AuthorizationSession = {
-      sessionId: `auth-session-${actorId}-${workItemId}-${Date.now()}`,
+      sessionId: `auth-session-${actorId}-${workItemId}-${getNow().getTime()}`,
       actorId,
       workItemId,
       status: 'ACTIVE',
-      authorizationHash: `auth-hash-${actorId}-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      authorizationHash: `auth-hash-${actorId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'authorization-boundary.create-auth-session', {
@@ -57,9 +58,9 @@ export class AuthorizationBoundaryService {
       actorId: 'actor-001',
       workItemId: 'W-022',
       status: 'RESUMED',
-      authorizationHash: `auth-hash-resumed-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      authorizationHash: `auth-hash-resumed-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'authorization-boundary.resume-auth-session', {

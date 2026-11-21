@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 async function logInvocationEvidence(context: ExecutionContext, action: string, data: Record<string, any>) {
@@ -17,11 +18,11 @@ export interface EventIsolationSession {
 export class EventIsolationContinuityService {
   async createEventIsolationSession(context: ExecutionContext, eventDefinitionId: string): Promise<EventIsolationSession> {
     const session: EventIsolationSession = {
-      eventSessionId: `event-session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      eventSessionId: `event-session-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       eventDefinitionId,
       status: 'ACTIVE',
-      isolationHash: Buffer.from(`${eventDefinitionId}-${context.tenantId}-${Date.now()}`).toString('hex'),
-      createdAt: new Date().toISOString()
+      isolationHash: Buffer.from(`${eventDefinitionId}-${context.tenantId}-${getNow().getTime()}`).toString('hex'),
+      createdAt: getNow().toISOString()
     };
     
     logInvocationEvidence(context, 'createEventIsolationSession', { eventDefinitionId, session });
@@ -41,7 +42,7 @@ export class EventIsolationContinuityService {
       status: 'RESUMED',
       isolationHash: '',
       createdAt: '',
-      lastResumedAt: new Date().toISOString()
+      lastResumedAt: getNow().toISOString()
     };
     
     logInvocationEvidence(context, 'resumeEventIsolationSession', { eventSessionId, session });

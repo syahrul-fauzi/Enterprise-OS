@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { z } from "zod";
+import { getNow } from "../../../../packages/core/kernel/src/utils/time-provider.js";
 import { createTenantId, createWorkspaceId, createActorId } from "../../../../packages/contracts-core/dist/index.js";
 import { safeRecordEvidence } from "../../../work-core/implementation/utils/evidence.utils.js";
 import { ExecutionStatusRepository } from "../../../../packages/core/runtime/src/execution-status.ts";
@@ -55,7 +56,7 @@ export const generateInvoiceExecute = {
       recipient,
       payer,
       description,
-      dueDate: dueDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+      dueDate: dueDate || new Date(getNow().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString()
     });
 
     // 5. Record evidence sesuai EOS requirements
@@ -67,8 +68,8 @@ export const generateInvoiceExecute = {
       workspace_id: workspaceId?.toString(),
       actor_id: actorId.toString(),
       verification_proof: verificationProof || `payment-transaction-${paymentResult.transactionId}`,
-      generated_at: new Date().toISOString(),
-      timestamp: new Date().toISOString(),
+      generated_at: getNow().toISOString(),
+      timestamp: getNow().toISOString(),
       sessionId: `session-${paymentResult.transactionId}`
     });
 

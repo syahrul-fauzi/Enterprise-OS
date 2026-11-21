@@ -30,9 +30,15 @@ lifecycle:
     - id: ins-101
       name: Create/manage institutional initiative
       description: Full lifecycle manajemen koordinasi institusional dengan alur persetujuan hierarkis
-      status: active
+      status: completed
       requirements:
         - req-ilc-001
+    - id: ins-102
+      name: Automate departmental approval
+      description: Full lifecycle otomatisasi alur persetujuan departemen, notifikasi, dan pelacakan status
+      status: completed
+      requirements:
+        - req-ilc-002
 quality:
   targets:
     evidence_required: true

@@ -1,0 +1,23 @@
+{
+  "capability_level_report": {
+    "product_id": "issues-ids",
+    "report_generated_at": "2026-11-21T00:00:00.000Z",
+    "capabilities_bound": [
+      "consultation",
+      "work-core",
+      "governance-evidence",
+      "workflow-engine",
+      "observability",
+      "identity"
+    ],
+    "capability_invocation_count": 10,
+    "successful_invocations": 10,
+    "failed_invocations": 0,
+    "invocation_success_rate_percent": 100,
+    "authorization_checks_passed": 10,
+    "authorization_checks_failed": 0,
+    "evidence_created_count": 10,
+    "canonical_mutations_persisted": 10,
+    "product_health_score": 100
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "workId": "lh-case-102",
+  "workTitle": "Legal Document Generation",
+  "executionStatus": "ALL_PASSED",
+  "executionTimestamp": "2026-11-20T14:45:00Z",
+  "reusePercentage": 100,
+  "capabilitiesRequired": 4,
+  "capabilitiesFoundInGenesis": 4,
+  "capabilitiesCreatedNew": 0,
+  "lifecycleStagesExecuted": {
+    "legalDocumentWorkflow": [
+      "intake",
+      "draft",
+      "review",
+      "approve",
+      "file",
+      "archive"
+    ],
+    "universalEosLifecycle": [
+      "discover",
+      "create",
+      "execute",
+      "progress",
+      "evidence",
+      "complete"
+    ]
+  },
+  "capabilitiesUsed": [
+    "legal-drafting",
+    "document-generation",
+    "compliance-check",
+    "legal-templates"
+  ],
+  "commercialEvidence": {
+    "totalCommercialValueIdr": 7500000,
+    "valuePerDocumentIdr": 750000,
+    "productId": "lawyershub",
+    "servicePackage": "Automated Legal Document Generation"
+  },
+  "acceptanceCriteria": {
+    "allLifecycleStagesPassed": true,
+    "allCapabilitiesAvailableInGenesis": true,
+    "reusePercentageAbove95": true,
+    "commercialEvidenceRecorded": true,
+    "productHealthChecksPassed": true,
+    "securityBoundaryVerified": true,
+    "failureRecoveryTested": true,
+    "genesisIntegrationVerified": true,
+    "complianceCheckVerified": true,
+    "legalTemplatesVerified": true
+  },
+  "testResults": {
+    "legalDocumentGenerationTest": "PASSED",
+    "legalCaseManagementTest": "PASSED",
+    "caseContinuityTest": "PASSED",
+    "documentPersistenceTest": "PASSED",
+    "complianceValidationTest": "PASSED"
+  },
+  "executionSummary": "LH-CASE-102 Legal Document Generation berhasil dieksekusi dengan ALL PASSED, reuse percentage 100%, dan nilai komersial Rp7.500.000. Semua 6 tahap legal document workflow dan 6 tahap universal lifecycle berjalan normal tanpa error, dengan verifikasi compliance check dan legal templates terkonfirmasi."
+}

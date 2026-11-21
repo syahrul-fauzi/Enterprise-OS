@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface CapabilitySession {
@@ -14,12 +15,12 @@ export interface CapabilitySession {
 export class CapabilityContinuityService {
   async createCapabilitySession(context: ExecutionContext, actorId: string, workItemId: string): Promise<CapabilitySession> {
     const session: CapabilitySession = {
-      sessionId: `cap-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `cap-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       actorId,
       workItemId,
       status: 'ACTIVE',
-      capabilityHash: `cap-hash-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      capabilityHash: `cap-hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
     await InvocationEvidence.record(context, 'createCapabilitySession', { actorId, workItemId, session });
     return session;
@@ -36,9 +37,9 @@ export class CapabilityContinuityService {
       actorId: context.actorId,
       workItemId: context.workItemId,
       status: 'RESUMED',
-      capabilityHash: `cap-hash-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      capabilityHash: `cap-hash-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
     await InvocationEvidence.record(context, 'resumeCapabilitySession', { sessionId, session });
     return session;

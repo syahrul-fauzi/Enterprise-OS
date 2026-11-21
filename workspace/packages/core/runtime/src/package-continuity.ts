@@ -1,4 +1,5 @@
 import { ExecutionContext } from './execution-context.js';
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 import { InvocationEvidence } from './invocation-evidence.js';
 
 export interface PackageSession {
@@ -16,11 +17,11 @@ export class PackageContinuityService {
     workItemId: string
   ): Promise<PackageSession> {
     const session: PackageSession = {
-      sessionId: `package-session-${workItemId}-${Date.now()}`,
+      sessionId: `package-session-${workItemId}-${getNow().getTime()}`,
       workItemId,
       status: 'ACTIVE',
-      packageHash: `package-hash-${workItemId}-${Date.now()}`,
-      createdAt: new Date().toISOString()
+      packageHash: `package-hash-${workItemId}-${getNow().getTime()}`,
+      createdAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'package-continuity.create-package-session', {
@@ -52,9 +53,9 @@ export class PackageContinuityService {
       sessionId,
       workItemId: 'W-025',
       status: 'RESUMED',
-      packageHash: `package-hash-resumed-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      lastResumedAt: new Date().toISOString()
+      packageHash: `package-hash-resumed-${getNow().getTime()}`,
+      createdAt: getNow().toISOString(),
+      lastResumedAt: getNow().toISOString()
     };
 
     await InvocationEvidence.record(context, 'package-continuity.resume-package-session', {

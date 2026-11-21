@@ -1,6 +1,7 @@
 // Readiness probe API endpoint - PR-01 EOS Online & Ready requirement
 // Minimal legacy repair: isolated non-core module errors, only critical database checks
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import { DatabaseHealthChecker } from "@repo/capabilities-shared/database/health.check";
 import { getCommunicationRepositoryPostgres } from "@repo/capabilities-communication/repository/communication.postgres.repository";
 import { getCaseRepositoryPostgres } from "@capabilities/legal-case/repository/case-postgres.repository";
@@ -55,7 +56,7 @@ export async function GET(request: Request) {
       capabilities: { status: "isolated", reason: "Non-core module bypassed per minimal repair policy" },
       session: { status: "isolated", reason: "Non-core module bypassed per minimal repair policy" }
     },
-    timestamp: new Date().toISOString(),
+    timestamp: getNow().toISOString(),
   };
 
   const response = NextResponse.json(readinessResponse, { status: httpStatusCode });

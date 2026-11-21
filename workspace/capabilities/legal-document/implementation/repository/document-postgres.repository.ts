@@ -189,7 +189,7 @@ class DocumentRepositoryPostgresImpl extends PostgresRepository<any> implements 
         (entity as any).version = (exists as any).version + 1;
         
         // Update existing
-        const updatedEntity = { ...entity, updatedAt: new Date() };
+        const updatedEntity = { ...entity, updatedAt: getNow() };
         const updatedRecord = this.toRecord(updatedEntity);
         const updateColumns = Object.keys(updatedRecord);
         const updateValues = Object.values(updatedRecord);
@@ -218,7 +218,7 @@ class DocumentRepositoryPostgresImpl extends PostgresRepository<any> implements 
         // New entity - initialize version
         (entity as any).version = 1;
         // Insert new
-        const newEntity = { ...entity, createdAt: new Date(), updatedAt: new Date() };
+        const newEntity = { ...entity, createdAt: getNow(), updatedAt: getNow() };
         const newRecord = this.toRecord(newEntity);
         const newColumns = Object.keys(newRecord);
         const newValues = Object.values(newRecord);

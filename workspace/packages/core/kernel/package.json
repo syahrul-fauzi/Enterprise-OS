@@ -14,6 +14,14 @@
       "types": "./dist/src/index.d.ts",
       "default": "./dist/src/index.js"
     },
+    "./time/time.provider": {
+      "types": "./dist/src/time/time.provider.d.ts",
+      "default": "./dist/src/time/time.provider.js"
+    },
+    "./time/time.provider.js": {
+      "types": "./dist/src/time/time.provider.d.ts",
+      "default": "./dist/src/time/time.provider.js"
+    },
     "./digest-engine": {
       "types": "./dist/src/digest-engine.d.ts",
       "default": "./dist/src/digest-engine.js"

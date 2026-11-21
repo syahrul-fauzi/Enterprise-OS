@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getNow } from "#core/kernel/timing/time-provider.js";
 import type { NextRequest } from "next/server";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
@@ -113,7 +114,7 @@ export async function PUT(request: NextRequest) {
             response: body.response,
             reason: body.reason || "No reason provided"
           },
-          createdAt: new Date().toISOString(),
+          createdAt: getNow().toISOString(),
           tenantId: parsedSession.tenantId,
           workspaceId: parsedSession.workspaceId
         }

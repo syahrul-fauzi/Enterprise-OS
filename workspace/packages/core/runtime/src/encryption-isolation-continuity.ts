@@ -1,3 +1,4 @@
+import { getNow } from "@repo/core-kernel/time/time.provider.js";
 export interface EncryptionIsolationSession {
   sessionId: string;
   tenantId: string;
@@ -19,12 +20,12 @@ export class EncryptionIsolationContinuityService {
     algorithm: string
   ): Promise<EncryptionIsolationSession> {
     const session: EncryptionIsolationSession = {
-      sessionId: `enc-sess-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      sessionId: `enc-sess-${getNow().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
       tenantId,
       encryptionContext,
       keyId,
       algorithm,
-      createdAt: new Date().toISOString(),
+      createdAt: getNow().toISOString(),
       status: 'active'
     };
     this.sessions.set(session.sessionId, session);
